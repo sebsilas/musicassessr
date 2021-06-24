@@ -3,3 +3,4 @@ test_that("melody string becomes vector", {
   y <- c(60, 62, 64, 65)
   expect_equal(x, y)
 })
+#

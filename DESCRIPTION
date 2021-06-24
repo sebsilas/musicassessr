@@ -1,16 +1,20 @@
 Package: magmaR
-Title: What the Package Does (One Line, Title Case)
+Title: Musical And General Memory Assessment
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Seb",
+           family = "Silas",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+           email = "sebsilas@gmail.com")
+Description: magmaR helps build different types of psychological tests via the psychTestR package. There is a particular emphasis on deploying musical stimuli (e.g., musical notation, melody playback) and musical response data collection (e.g., audio and MIDI) as well as testing memory more generally. 
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    sjmisc,
+    psychTestR

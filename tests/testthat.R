@@ -1,4 +1,4 @@
 library(testthat)
-library(magmaR)
+library(musicassessr)
 
-test_check("magmaR")
+test_check("musicassessr")

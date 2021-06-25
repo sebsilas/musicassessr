@@ -1,4 +1,4 @@
-Package: magmaR
+Package: musicassessr
 Title: Musical And General Memory Assessment
 Version: 0.0.0.9000
 Authors@R: 
@@ -6,7 +6,7 @@ Authors@R:
            family = "Silas",
            role = c("aut", "cre"),
            email = "sebsilas@gmail.com")
-Description: magmaR helps build different types of psychological tests via the psychTestR package. There is a particular emphasis on deploying musical stimuli (e.g., musical notation, melody playback) and musical response data collection (e.g., audio and MIDI) as well as testing memory more generally. 
+Description: musicassessr helps build different types of psychological tests via the psychTestR package. There is a particular emphasis on deploying musical stimuli (e.g., musical notation, melody playback) and musical response data collection (e.g., audio and MIDI) as well as testing memory more generally. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

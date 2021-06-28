@@ -1,14 +1,9 @@
-library(psychTestR)
-library(htmltools)
-library(rjson)
-
-source('simile.R')
 
 
 # midi notes
 
 
-present_stimuli_midi_notes_auditory <- function(stimuli, note_length, sound = "piano",
+present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.25, sound = "piano",
                                                 page_type, play_button_text = "Play",
                                                 stop_button_text = "Stop",
                                                 record_audio_method = "aws_pyin", ...) {
@@ -17,13 +12,20 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length, sound = "p
     page_type <- record_audio_method
   }
 
-  if (length(stimuli) == 1 & is.character(stimuli) == FALSE) {
-    melody.for.js <- midi_to_freq(stimuli-12) # there is a bug where the piano plays up an octave
-    js.script <- sprintf("triggerNote(\"%s\", %s, 0.25);", sound, melody.for.js)
+  if(sound == "tone") {
+    js.script <- sprintf("playTone(%s, %s, this.id, 'tone');", stimuli, note_length)
   }
+
   else {
-    melody.for.js <- toJSON(stimuli)
-    js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\");")
+
+    if (length(stimuli) == 1 & is.character(stimuli) == FALSE) {
+      melody.for.js <- hrep::midi_to_freq(stimuli-12) # there is a bug where the piano plays up an octave
+      js.script <- sprintf("triggerNote(\"%s\", %s, %s);", sound, melody.for.js, note_length)
+    }
+    else {
+      melody.for.js <- toJSON(stimuli)
+      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\");")
+    }
   }
 
   shiny::tags$div(

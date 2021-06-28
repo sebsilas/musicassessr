@@ -47,10 +47,12 @@ set.audio.parameters.js.script <- function(highest_allowed_freq, lowest_allowed_
 }
 
 
+# the parameters in this script are currently in itembankr
+# how to pass over??:
 
-audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_freq = highest.allowed.freq,
-                                                             lowest_allowed_freq = lowest.allowed.freq,
-                                                             min_confidence = min.confidence)
+# audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_freq = highest.allowed.freq,
+#                                                              lowest_allowed_freq = lowest.allowed.freq,
+#                                                              min_confidence = min.confidence)
 
 present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE, button_text = "Record") {
 

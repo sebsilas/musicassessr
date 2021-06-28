@@ -1,8 +1,3 @@
-
-source('play_words.R')
-
-# constants
-
 stimuli.carousel <- function(slide_length = 200) {
 
   # slide_length in ms

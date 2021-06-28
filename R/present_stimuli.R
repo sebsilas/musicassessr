@@ -136,7 +136,9 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
 
 present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page_type, get_answer,
                                    midi_device = " ", show_aws_controls = FALSE,
-                                   button_text = "Next", play_button_text = "Play", record_audio_method = "aws_pyin", ...) {
+                                   button_text = "Next", play_button_text = "Play",
+                                   record_audio_method = "aws_pyin", note_length = 0.25,
+                                   sound = "piano", ...) {
 
   # generic stimuli types
 
@@ -164,7 +166,8 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                                  record_audio_method = record_audio_method,
                                                  show_aws_controls = show_aws_controls,
                                                  page_label = page_label, button_text = button_text,
-                                                 play_button_text = play_button_text, ...)
+                                                 play_button_text = play_button_text, note_length = note_length,
+                                                 sound = sound, ...)
   }
 
   else if (stimuli_type == "frequencies") {
@@ -209,13 +212,15 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             page_text = " ", page_title = " ",  slide_length,
                             special_page_underlying_page_type = "one_button_page", record_audio_method = "aws_pyin",
                             answer_meta_data = NULL, get_answer = get_answer_null, stimuli_reactive = FALSE, midi_device = " ",
-                            show_aws_controls = FALSE, page_label = "x", button_text = "Next", play_button_text = "Play", ...) {
+                            show_aws_controls = FALSE, page_label = "x",
+                            button_text = "Next", play_button_text = "Play",
+                            note_length = 0.25, sound = "piano", ...) {
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive == FALSE) {
     return_stimuli <- present_stimuli_static(stimuli, stimuli_type, display_modality, page_type = page_type, get_answer = get_answer,
-                                             midi_device = midi_device,
-                                             play_button_text = play_button_text, record_audio_method = record_audio_method, ...)
+                                             midi_device = midi_device, play_button_text = play_button_text,
+                                             record_audio_method = record_audio_method, sound = sound, note_length = note_length, ...)
   }
   else {
     return_stimuli <- present_stimuli_reactive(stimuli_reactive, stimuli,

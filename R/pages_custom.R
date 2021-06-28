@@ -1,3 +1,19 @@
+play_long_tone_record_audio_page <- function(note = 60,
+                                             page_text = "Sing along with the tone for 5 seconds.",
+                                             play_button_text = "Play") {
+
+  # a page type for playing a 5-second tone and recording a user singing with it
+
+  present_stimuli(stimuli = note,
+                  stimuli_type = "midi_notes",
+                  display_modality = "auditory",
+                  page_text = page_text,
+                  page_label = "long_tone_",
+                  play_button_text = play_button_text,
+                  note_length = 5,
+                  sound = "tone"
+  )
+}
 
 
 midi_vs_audio_select_page <- function(prompt = "How will you input into the test?") {

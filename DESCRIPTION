@@ -17,4 +17,15 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
-    psychTestR
+    psychTestR,
+    rjson,
+    shiny,
+    htmltools,
+    readxl,
+    promises,
+    future,
+    httr,
+    async,
+    stringi,
+    hrep,
+    itembankr

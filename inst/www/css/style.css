@@ -1,0 +1,38 @@
+body {
+  line-height: 2em;
+}
+
+p, h1, h2, h3, h4, img {
+  margin: 0 0 20px 0;
+}
+
+ul, ol {
+    text-align: center;
+    list-style-position: inside;
+}
+
+.roman {
+ list-style-type: lower-roman;
+}
+.square {
+ list-style-type: square;
+ margin-left: -2em;
+}
+
+#sheet-music {
+  margin: auto;
+}
+
+
+._hidden {
+  display: none;
+}
+
+
+.recording {
+		background: red;
+		background: -webkit-radial-gradient(center, ellipse cover, #ff0000 0%,white 75%,white 100%,#7db9e8 100%);
+		background: -moz-radial-gradient(center, ellipse cover, #ff0000 0%,white 75%,white 100%,#7db9e8 100%);
+		background: radial-gradient(center, ellipse cover, #ff0000 0%,white 75%,white 100%,#7db9e8 100%);
+	}
+

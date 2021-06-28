@@ -31,8 +31,8 @@ present_stimuli_reactive <- function(stimuli_reactive_keyword, stimuli, stimuli_
 
 
 page_types = c("one_button_page",
-               "record_audio_page",
-               "NAFC_page",
+              "record_audio_page",
+                "NAFC_page",
                "dropdown_page",
                "slider_page",
                "text_input_page",
@@ -47,6 +47,7 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
                                button_text = "Next", play_button_text = "Play", get_answer = get_answer_null, ...) {
 
 
+  # page.fun <- get(page_type_string, asNamespace("psychTestR"))
   # the stimuli should already be wrapped by one of the present_stimuli functions
   # before reaching here
 
@@ -123,7 +124,7 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
   }
 
   else {
-    stop('Unknown special page type.')
+    #stop('Unknown special page type.')
   }
 
   # set the page up with additional arguments

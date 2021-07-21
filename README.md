@@ -10,4 +10,3 @@ To access this functionality for your own use, you need to make an AWS account a
 
 ## Notice
 Please note, there are costs associated with AWS usage. We cannot accept responsibility for any charges incurred.
-

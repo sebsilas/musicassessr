@@ -31,6 +31,8 @@ Please note, there are costs associated with AWS usage. We cannot accept respons
 
 ## References
 
+- psychTestR
+
 Audio Processing:
 - sonic annotator
 - pYIN

@@ -26,6 +26,15 @@ These steps are required if you wish to use any of the following tests we have a
 - SST
 
 ## Notice
+
 Please note, there are costs associated with AWS usage. We cannot accept responsibility for any charges incurred.
 
-## References
+## References
+
+Audio Processing:
+- sonic annotator
+- pYIN
+- crepe
+
+Data Scoring:
+- opti3

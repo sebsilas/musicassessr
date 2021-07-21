@@ -5,7 +5,7 @@
 ## Usage
 
 To build a psychology test, `musicassessr` assumes and provides some core use cases:
-1) you want to present stimuli from an item bank (e.g already created by [itembankr](https://github.com/syntheso/itembankr/) in [psychTestR](https://pmcharrison.github.io/psychTestR/)
+1) you want to present stimuli from an item bank (e.g already created by [itembankr](https://github.com/syntheso/itembankr/)) in [psychTestR](https://pmcharrison.github.io/psychTestR/)
 2) you want to sample from your item bank, perhaps based on some information the user provides at test time
 3) you are interested in recording audio/processing it
 

@@ -2,6 +2,14 @@
 
 `musicassessr` is an R package for facilitating the deployment of stimuli in psychological tests as well as recording and scoring data. Essentially, it provides some convenience functions to get (particularly, musical) stimuli into [psychTestR](https://pmcharrison.github.io/psychTestR/).
 
+# Usage
+
+The main function is `present_stimuli` which can be used in a number of ways:
+
+``` r
+# use cases
+```
+
 # Recording Audio
 
 If you wish to record audio and use complementary functionality to process such data, you will need to take some further steps.

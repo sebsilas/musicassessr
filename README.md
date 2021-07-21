@@ -39,6 +39,7 @@ These steps are required if you wish to use any of the following tests we have a
 - PBET
 - SRT
 - SST
+- PDCT
 
 ### Recording MIDI
 

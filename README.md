@@ -7,11 +7,11 @@
 To build a psychology test, `musicassessr` assumes and provides some core use cases:
 1) you want to present stimuli from an item bank (e.g already created by [`itembankr`](https://github.com/syntheso/itembankr/)) in [`psychTestR`](https://pmcharrison.github.io/psychTestR/)
 2) you want to sample from your item bank, perhaps based on some information the user provides at test time
-3) you are interested in recording audio/processing it
+3) you are interested in recording some 'non-standard' data and processing it
 
 We now discuss these uses cases
 
-## Presenting Stimuli
+## Presenting stimuli
 
 The main function is `present_stimuli` which can be used in a number of ways:
 
@@ -19,7 +19,13 @@ The main function is `present_stimuli` which can be used in a number of ways:
 # use cases
 ```
 
-## Recording Audio
+## Sampling from an item bank
+
+
+## Recording non-standard data
+
+
+### Recording audio
 
 If you wish to record audio and use complementary functionality to process such data, you will need to take some further steps.
 
@@ -33,6 +39,12 @@ These steps are required if you wish to use any of the following tests we have a
 - PBET
 - SRT
 - SST
+
+### Recording MIDI
+
+### Recording key presses
+
+### Recording spoken words
 
 ## Notice
 

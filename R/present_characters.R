@@ -2,7 +2,7 @@ stimuli.carousel <- function(slide_length = 200) {
 
   # slide_length in ms
 
-  tags$script(HTML(paste0('var slideIndex = 0;
+  shiny::tags$script(HTML(paste0('var slideIndex = 0;
   carousel(length);
 
   function carousel(slideLength) {
@@ -25,12 +25,12 @@ stimuli.carousel <- function(slide_length = 200) {
 
 wrap.char.slides <- function(chars) {
 
-  tags$p(chars, class = "slides")
+  shiny::tags$p(chars, class = "slides")
 
 }
 
 wrap.img.slide <- function(image_url = 'https://picsum.photos/200') { # dummy random image
-  tags$img(src = image_url, class = "slides")
+  shiny::tags$img(src = image_url, class = "slides")
 
 }
 
@@ -41,7 +41,7 @@ create.dummy.image.slides <- function(no_of_images) {
   # N.B: this method creates images of 1px different size each
   # i.e each image will be 1px bigger than the last
   res <- lapply(200:(200+no_of_images), function(x) wrap.img.slide(paste0('https://picsum.photos/', x)) )
-  tagList(res)
+  shiny::tagList(res)
 }
 
 
@@ -51,19 +51,19 @@ create.image.slides <- function(image_list) {
   # N.B: this method creates images of 1px different size each
   # i.e each image will be 1px bigger than the last
   res <- lapply(image_list, wrap.img.slide)
-  tagList(res)
+  shiny::tagList(res)
 }
 
 
 prepare.char.stimuli <- function(stimuli_vector) {
   res <- lapply(stimuli_vector, wrap.char.slides)
-  tagList(res)
+  shiny::tagList(res)
 }
 
 
 present_stimuli_characters_visual <- function(stimuli, slide_length = 500) {
-    div(
-      tags$style('.slides {display:none; font-size: 30px;}'),
+  shiny::tags$div(
+    shiny::tags$style('.slides {display:none; font-size: 30px;}'),
       prepare.char.stimuli(stimuli),
       stimuli.carousel(slide_length = slide_length)
     )
@@ -94,8 +94,8 @@ present_stimuli_characters <- function(stimuli, display_modality, page_type = "o
 
 
 present_stimuli_images <- function(stimuli, slide_length = 500) {
-    div(
-      tags$style('.slides {display:none;}'),
+  shiny::tags$div(
+    shiny::tags$style('.slides {display:none;}'),
       create.image.slides(stimuli),
       stimuli.carousel(slide_length = slide_length)
     )

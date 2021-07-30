@@ -1,13 +1,10 @@
 
-
-
-
 find.closest.value <- function(x, vector, return_value) {
   # given a value, x, and a vector of values,
   # return the index of the value in the vector, or the value itself, which is closest to x
   # if return_value == TRUE, return the value, otherwise the index
   res <- base::which.min(abs(vector - x))
-  res <- ifelse(return_value == TRUE, vector[res], res)
+  res <- ifelse(return_value, vector[res], res)
 }
 
 
@@ -44,14 +41,6 @@ find.closest.stimuli.pitch.to.user.production.pitches <- function(stimuli_pitche
 }
 
 
-pitch.class.to.numeric.pitch.class <- function(pitch_class) {
-  which(pitch.classes == pitch_class)
-}
-
-pitch.class.to.midi.notes <- function(pitch_class) {
-  pitch.class.to.midi.list[[pitch_class]]
-}
-
 
 # and some singing accuracy metrics on read in
 cents <- function(notea, noteb) {
@@ -84,36 +73,6 @@ vector.cents.first.note <- function(vector_of_values) {
 }
 
 
-midi.to.pitch.class <- function(midi_note) {
-
-  if (length(midi_note) == 1) {
-    pitch_class <- midi.to.pitch.classes.list[[as.character(midi_note)]]
-  }
-  else {
-    pitch_class <- unlist(lapply(midi_note, function(x) midi.to.pitch.classes.list[[as.character(x)]]))
-  }
-}
-
-
-midi.to.pitch.class.numeric <- function(midi_note) {
-
-  if (length(midi_note) == 1) {
-    pitch_class <- midi.to.pitch.classes.numeric.list[[as.character(midi_note)]]
-  }
-  else {
-    pitch_class <- unlist(lapply(midi_note, function(x) midi.to.pitch.classes.numeric.list[[as.character(x)]]))
-  }
-}
-
-
-midi.to.sci.notation <- function(midi_note) {
-  if (length(midi_note) == 1) {
-    pitch_class <- midi.to.sci.notation.list[[as.character(midi_note)]]
-  }
-  else {
-    pitch_class <- unlist(lapply(midi_note, function(x) midi.to.sci.notation.list[[as.character(x)]]))
-  }
-}
 
 choose_clef_from_mean <- function(mean_notes) {
   if(mean_notes >= 60) {
@@ -124,22 +83,35 @@ choose_clef_from_mean <- function(mean_notes) {
   }
 }
 
-wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes") {
+get_mean_of_notes <- function(notes, type, octave = NULL) {
 
-  mean_notes <- round(mean(notes))
-  notes <- format.notes(type = type, notes = notes, asChord = asChord)
+  if(type == "scientific_music_notation") {
+    round(mean(itembankr::sci_notation_to_midi(notes)))
+  } else if(type == "midi_notes") {
+    round(mean(notes))
+  } else if(type == "pitch_classes") {
+    round(mean(itembankr::sci.notation.to.midi.list[base::endsWith(names(itembankr::sci.notation.to.midi.list), as.character(octave))]))
+  } else{
+    warning("Unknown type")
+  }
+}
+
+
+wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4) {
+
+  mean_notes <- get_mean_of_notes(notes, type, octave)
+
+  notes <- format.notes(type = type, notes = notes, asChord = asChord, octave = octave)
 
   if (clef == "treble") {
     clef <- "<sign>G</sign><line>2</line>"
-  }
-  else if(clef == "bass") {
+  } else if (clef == "bass") {
     clef <- "<sign>F</sign><line>4</line>"
-  }
-  else {
+  } else {
     clef <- choose_clef_from_mean(mean_notes)
   }
 
-  res <- shiny::HTML(paste0('<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  res <- htmltools::HTML(paste0('<?xml version="1.0" encoding="UTF-8" standalone="no"?>
   <!DOCTYPE score-partwise PUBLIC
       "-//Recordare//DTD MusicXML 3.0 Partwise//EN"
       "http://www.musicxml.org/dtds/partwise.dtd">
@@ -169,42 +141,22 @@ wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "mid
 }
 
 
-get.last.char.of.string <- function(string) {
-  substr(string, nchar(string), nchar(string))
-}
-
-remove.last.char.of.string <- function(string) {
-  substr(string, 1, nchar(string)-1)
-}
-
-test.if.sci.notation <- function(x) {
-
-  last_char <- get.last.char.of.string(x)
-
-  if (is.na(as.numeric(last_char))) {
-    stop('Last character is not a number, so entry is not in sci_notation format')
-  }
-  # below can be used to detect if entry contains digit:
-  #stringr::str_detect("C", "[0-9]")
-  #stringr::str_detect("C4", "[0-9]")
-}
-
 format.accidentals.for.music.xml <- function(pitch_class_string){
   # take pitch class string, determine if sharp or flat
   # if so, return appropriate <alter> music xml element (-1 for flat, 1 for sharp)
   # if not, return empty string
   # also return the pitch class with the flat removed
 
-  last_char <- get.last.char.of.string(pitch_class_string)
+  last_char <- itembankr::get_last_char_of_string(pitch_class_string)
 
   if (last_char == "b") {
     alter.text <- '<alter>-1</alter>'
-    pitch.class <- remove.last.char.of.string(pitch_class_string)
+    pitch.class <- itembankr::remove_last_char_of_string(pitch_class_string)
   }
 
   else if (last_char == "#") {
     alter.text <- '<alter>1</alter>'
-    pitch.class <- remove.last.char.of.string(pitch_class_string)
+    pitch.class <- itembankr::remove_last_char_of_string(pitch_class_string)
   }
   else {
     alter.text <- ''
@@ -221,8 +173,8 @@ format.notes.scientific_music_notation <- function(notes, asChord = FALSE) {
 
   for(i in seq_along(notes)) {
 
-    note <- remove.last.char.of.string(notes[i])
-    octave <- get.last.char.of.string(notes[i])
+    note <- itembankr::remove_last_char_of_string(notes[i])
+    octave <- itembankr::get_last_char_of_string(notes[i])
     alter <- format.accidentals.for.music.xml(note)[[1]] # alters specifies if not sharp or flat
     note.without.sharp.or.flat <- format.accidentals.for.music.xml(note)[[2]]
 
@@ -305,24 +257,22 @@ format.notes.pitch.classes <- function(notes, octave = 4, asChord = FALSE) {
 
 
 format.notes.midi <- function(notes, asChord = FALSE) {
-  notes <- midi.to.sci.notation(notes)
-  res <- format.notes.scientific_music_notation(notes, asChord)
-  res
+  notes <- itembankr::midi_to_sci_notation(notes)
+  res <- format.notes.scientific_music_notation(notes = notes, asChord = asChord)
 }
 
 
 format.notes <- function(type, notes, octave = 4, asChord = FALSE) {
-
   if (type == "pitch_classes") {
     res <- format.notes.pitch.classes(notes, octave = octave, asChord = asChord)
   }
   else if (type == "scientific_music_notation") {
     # check if in correct format
-    lapply(notes, test.if.sci.notation)
-    res <- format.notes.scientific_music_notation(notes, asChord = asChord)
+    lapply(notes, itembankr::is_sci_notation)
+    res <- format.notes.scientific_music_notation(notes = notes, asChord = asChord)
   }
   else if (type == "midi_notes") {
-    res <- format.notes.midi(notes, asChord = asChord)
+    res <- format.notes.midi(notes = notes, asChord = asChord)
   }
 
   else {
@@ -337,8 +287,8 @@ play.notes.html.wrapper <- function(stimuli_pitches, stimuli_rhythms) {
 
   # https://developer.aliyun.com/mirror/npm/package/tone-rhythm
 
-  div(tags$button("Play", id = "playNotes"),
-      tags$script(HTML(paste0('
+  shiny::tags$div(shiny::tags$button("Play", id = "playNotes"),
+      shiny::tags$script(htmltools::HTML(paste0('
 
         var synth = new Tone.Synth().toMaster();
 
@@ -370,10 +320,10 @@ play.notes.html.wrapper <- function(stimuli_pitches, stimuli_rhythms) {
 
 open.music.display.wrapper <- function(xml) {
 
-  tags$div(
-    br(),
-    tags$div(id="sheet-music"),
-    shiny::tags$script(shiny::HTML(paste0('
+  shiny::tags$div(
+    shiny::tags$br(),
+    shiny::tags$div(id="sheet-music"),
+    shiny::tags$script(htmltools::HTML(paste0('
                 var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(\"sheet-music\", {drawingParameters: "compact",
                 drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false});
                 var loadPromise = osmd.load(`',xml,'`);

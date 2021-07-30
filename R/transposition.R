@@ -81,7 +81,7 @@ sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range,
     key_centres_in_range <- key_centres[key_centres > bottom_range & key_centres < top_range]
 
     # first try it with the first note as being the key centre
-    abs_mel <- rel_to_abs_mel(str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
+    abs_mel <- itembankr::rel_to_abs_mel(str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
     # check key
     mel_key <- get_implicit_harmonies(abs_mel)
     mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
@@ -132,7 +132,6 @@ sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range,
         # neither is in range, try a new melody
         # try again
       }
-
     }
   } # end while
 
@@ -177,7 +176,7 @@ given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, to
 
   res <- res %>%
           rowwise %>%
-          mutate(abs_melody = paste0(rel_to_abs_mel(rel_mel = str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
+          mutate(abs_melody = paste0(itembankr::rel_to_abs_mel(rel_mel = str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
                  in_range = all(str_mel_to_vector(abs_melody, ",") %in% range)
                  ) %>%
                 filter(in_range == TRUE)
@@ -201,7 +200,7 @@ produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_
   # given some melodies in relative format, and a user range, produce random transpositions which fit in that range
 
   rel_melody <- str_mel_to_vector(rel_melody, sep = ",")
-  dummy_abs_mel <- rel_to_abs_mel(rel_melody, start_note = 1)
+  dummy_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = 1)
   mel_range <- range(dummy_abs_mel)
   span <- sum(abs(mel_range))
 
@@ -217,7 +216,7 @@ produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_
     # resample until a melody is found that sits in the range
     # and is the correct tonality
     random_abs_mel_start_note <- sample(gamut, 1)
-    random_abs_mel <- rel_to_abs_mel(rel_melody, start_note = random_abs_mel_start_note)
+    random_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = random_abs_mel_start_note)
     current_key <- get_implicit_harmonies(random_abs_mel)$key
     count <- count + 1
 
@@ -244,8 +243,70 @@ sample_keys_by_difficulty <- function(inst, n_easy, n_hard) {
 }
 
 
+mean_of_stimuli <- function(rel_melody) {
+  if(class(rel_melody) == "character") {
+    rel_melody <- itembankr::str_mel_to_vector(rel_melody, ",")
+  }
+  res <- round(mean(itembankr::rel_to_abs_mel(0, rel_melody)))
+}
+
+plot_mean_centred_to_range <- function(stimuli_centred_to_user_mean, user_mean_corrected_to_stimuli, user_mean_note, min_range, max_range) {
+
+  data <- data.frame("x"=1:length(stimuli_centred_to_user_mean), "y"=stimuli_centred_to_user_mean)
+  # Plot
+  print(plot_gg <- data %>%
+    ggplot2::ggplot( ggplot2::aes(x=x, y=y)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_point() +
+    ggplot2::geom_hline(yintercept = user_mean_note, color = "blue") +
+    ggplot2::geom_hline(yintercept = user_mean_corrected_to_stimuli, color = "red", linetype="dotted") +
+    ggplot2::geom_hline(yintercept = min_range, color = "green") +
+    ggplot2::geom_hline(yintercept = max_range, color = "green"))
+}
+
+#' Convert a melody from relative to absolute form by centering the mean of the stimuli on mean of the user's range.
+#'
+#' @param rel_melody
+#' @param bottom_range
+#' @param top_range
+#' @param plot
+#'
+#' @return
+#' @export
+#'
+#' @examples
+rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plot = FALSE) {
+  # produce a melody which is centered on the user's range.
+  # NB: the "mean stimuli note" could/should be sampled from around the user's mean range i.e +/- 3 semitones
+
+  if(class(rel_melody) == "character") {
+    rel_melody <- itembankr::str_mel_to_vector(rel_melody, ",")
+  }
+
+  mean_of_stimuli <- mean_of_stimuli(rel_melody)
+
+
+  user_mean_note <- mean(bottom_range:top_range)
+
+  user_mean_corrected_to_stimuli <- round(user_mean_note - mean_of_stimuli)
+
+  stimuli_centred_to_user_mean <- itembankr::rel_to_abs_mel(rel_melody, user_mean_corrected_to_stimuli)
+  # the rel melody should be the same when converted back
+  #print(diff(stimuli_centred_to_user_mean))
+  #print(rel_melody)
+
+  if(plot) {
+    plot_mean_centred_to_range(stimuli_centred_to_user_mean, user_mean_corrected_to_stimuli, user_mean_note, bottom_range, top_range)
+  }
+
+
+  return(stimuli_centred_to_user_mean)
+
+}
+
 ## tests
 
+#rel_to_abs_mel_mean_centred(itembankr::Berkowitz[1000, "melody"], 40, 65, TRUE)
 
 
 # ra.2 <- given_range_what_keys_can_melody_go_in(melody = test_sub[1000, "melody"],

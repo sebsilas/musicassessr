@@ -8,7 +8,7 @@ getmode <- function(v) {
 
 
 insert.every.other.pos.in.list <- function(l, item_to_add) {
-  for (i in 1:length(l)) {
+  for (i in seq_along(l)) {
     l <- append(l, item_to_add, after = (i*2)-1)
   }
   l
@@ -30,11 +30,11 @@ set.note.no <- function(stimuli, note_no) {
   }
 
   if (is.null(note_no)) {
-    js_script <- paste0('var stimuli = ', toJSON(stimuli),';')
+    js_script <- paste0('var stimuli = ', rjson::toJSON(stimuli),';')
   }
 
   else {
-    js_script <- paste0('var stimuli = ', toJSON(stimuli),'; Shiny.setInputValue("note_no", ', note_no, ');')
+    js_script <- paste0('var stimuli = ', rjson::toJSON(stimuli),'; Shiny.setInputValue("note_no", ', note_no, ');')
   }
   js_script
 }
@@ -47,38 +47,48 @@ set.audio.parameters.js.script <- function(highest_allowed_freq, lowest_allowed_
 }
 
 
-# the parameters in this script are currently in itembankr
-# how to pass over??:
+audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_freq = highest.allowed.freq,
+                                                             lowest_allowed_freq = lowest.allowed.freq,
+                                                             min_confidence = min.confidence)
 
-# audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_freq = highest.allowed.freq,
-#                                                              lowest_allowed_freq = lowest.allowed.freq,
-#                                                              min_confidence = min.confidence)
+present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE, button_text = "Record", record_duration = NULL) {
 
-present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE, button_text = "Record") {
+  if (present & type == "crepe" |
+      present & type == "aws_pyin"  & is.null(record_duration)) {
 
-  if (present == TRUE & type == "crepe" |
-      present == TRUE & type == "aws_pyin") {
-
-    div(id = "button_area",
-        tags$button(button_text, id = "recordButton"),
-        tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
+    shiny::tags$div(id = "button_area",
+        shiny::tags$button(button_text, id = "recordButton"),
+        shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(null, true, false, this.id, \"',type,'\");
                            hideRecordButton();
                             });'))
     )
   }
 
-  else if (present == TRUE & type == "record_midi_page") {
-    div(id = "button_area",
-        tags$button(button_text, id = "recordButton"),
-        tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
+  else if (present& type == "crepe" |
+           present & type == "aws_pyin" & !is.null(record_duration)) {
+    record_duration <- record_duration*1000
+    shiny::tags$div(id = "button_area",
+                    shiny::tags$button(button_text, id = "recordButton"),
+                    shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
+                           recordAndStop(', record_duration, ', false, false, this.id, \"',type,'\");
+                            hideRecordButton();
+                    });
+    ')))
+  }
+
+  else if (present & type == "record_midi_page") {
+    shiny::tags$div(id = "button_area",
+        shiny::tags$button(button_text, id = "recordButton"),
+        shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(null, true, false, this.id, \"record_midi_page\");
                             hideRecordButton();
                            instantiateMIDI(\"',midi_device,'\", false); })'))
     )
   }
+
   else {
-    div(id = "button_area")
+    shiny::tags$div(id = "button_area")
   }
 }
 
@@ -148,19 +158,6 @@ item_bank_type_to_stimuli_type <- function(string_of_item_bank_type) {
 }
 
 
-
-# dictionary functions
-
-dict_key_to_translations <- function(key) {
-  cols <- names(dict_df)[!names(dict_df) %in% "key"]
-  as.vector(unlist(dict_df[dict_df$key == key, cols]))
-}
-
-translate_from_dict <- function(non_english_translation, language) {
-  as.character(dict_df[dict_df[, language] == non_english_translation, "en"])
-}
-
-
 # response check functions
 
 
@@ -175,10 +172,38 @@ check.response.type.midi<- function(state, ...) {
 }
 
 
-have.requirements <- function(answer, ...) {
+#' Check if user has requirements for musicassessr test
+#'
+#' @param answer
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+have_requirements <- function(answer, ...) {
   res <- suppressWarnings(answer)
   if (!is.na(res) && res %in% dict_key_to_translations("Yes")) TRUE
-  else display_error(i18n("requirements_error"))
+  else psychTestR::display_error(psychTestR::i18n("requirements_error"))
 }
 
 
+
+is_sci_notation <- function(x) {
+  last_char <- get.last.char.of.string(x)
+  if (is.na(as.numeric(last_char))) {
+    stop('Last character is not a number, so entry is not in sci_notation format')
+  }
+}
+
+is_microphone_only_test <- function(input) {
+  sjmisc::str_contains(input, "microphone") & input != "midi_keyboard_or_microphone"
+}
+
+
+urlFileExist <- function(url){
+  HTTP_STATUS_OK <- 200
+  hd <- httr::HEAD(url)
+  status <- hd$all_headers[[1]]$status
+  list(exists = status == HTTP_STATUS_OK, status = status)
+}

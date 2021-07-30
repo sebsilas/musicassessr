@@ -3,38 +3,54 @@
 # midi notes
 
 
-present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.25, sound = "piano",
+present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, sound = "piano",
                                                 page_type, play_button_text = "Play",
                                                 stop_button_text = "Stop",
-                                                record_audio_method = "aws_pyin", ...) {
+                                                record_audio_method = "aws_pyin", asChord = FALSE, dur_list = 'null', ...) {
 
   if(page_type == "record_audio_page") {
     page_type <- record_audio_method
   }
 
-  if(sound == "tone") {
-    js.script <- sprintf("playTone(%s, %s, this.id, 'tone');", stimuli, note_length)
+  if(dur_list != 'null') {
+    dur_list <- rjson::toJSON(dur_list)
   }
 
-  else {
+  if(sound == "tone") {
+    js.script <- paste0('playTone(',stimuli,', ', note_length,', this.id, \'tone\');')
+  } else {
 
     if (length(stimuli) == 1 & is.character(stimuli) == FALSE) {
       melody.for.js <- hrep::midi_to_freq(stimuli-12) # there is a bug where the piano plays up an octave
       js.script <- sprintf("triggerNote(\"%s\", %s, %s);", sound, melody.for.js, note_length)
     }
     else {
-      melody.for.js <- toJSON(stimuli)
-      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\");")
+      melody.for.js <- rjson::toJSON(stimuli)
+      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", dur_list, ");")
     }
   }
+
+  print(js.script)
 
   shiny::tags$div(
 
     # send stimuli to js
-    tags$script(paste0('var stimuli = ', toJSON(stimuli), ';
+    shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
                        ')),
-    br(),
+    shiny::tags$br(),
+    shiny::tags$div(id="button_area",
+                    shiny::tags$button(play_button_text, id="playButton", onclick=js.script)
+    ))
+
+
+  shiny::tags$div(
+
+    # send stimuli to js
+    shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
+                       Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
+                       ')),
+    shiny::tags$br(),
     shiny::tags$div(id="button_area",
                     shiny::tags$button(play_button_text, id="playButton", onclick=js.script)
     ))
@@ -45,8 +61,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.25, sou
 present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FALSE, ascending) {
 
   if (stimuli == "interactive") {
-    res <- tags$div(
-      tags$div(id="sheet-music"),
+    res <- shiny::tags$div(
+      shiny::tags$div(id="sheet-music"),
     )
   }
 
@@ -58,23 +74,27 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
 
 }
 
-present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano", asChord = FALSE, play_button_text = "Play", ...) {
+present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano", asChord = FALSE, play_button_text = "Play", ascending = TRUE, ...) {
 
   return_stimuli_auditory <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound, play_button_text = play_button_text, ...)
-  return_stimuli_visual <- present_stimuli_midi_notes_visual(stimuli, note_length, asChord, ascending)
+  return_stimuli_visual <- present_stimuli_midi_notes_visual(stimuli = stimuli, note_length = note_length, asChord = asChord, ascending = ascending)
 
   div(return_stimuli_auditory, return_stimuli_visual)
 }
 
-present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play", record_audio_method = "aws_pyin", ...) {
+present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play", record_audio_method = "aws_pyin",  dur_list = 'null', ...) {
 
   if (display_modality == "auditory") {
-    return_stimuli <- present_stimuli_midi_notes_auditory(stimuli, note_length, sound,
+    return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
-                                                          record_audio_method =  record_audio_method, ...)
+                                                          record_audio_method =  record_audio_method, dur_list = dur_list, ...)
+
   }
   else if (display_modality == "visual") {
-    return_stimuli <- present_stimuli_midi_notes_visual(stimuli, note_length, asChord, ascending)
+    return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
+                                                        note_length = note_length,
+                                                        asChord = asChord,
+                                                        ascending = ascending)
   }
   else {
     return_stimuli <- present_stimuli_midi_notes_both(stimuli = stimuli, note_length = note_length, sound = sound,
@@ -91,7 +111,7 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
 
 present_stimuli_scientific_music_notation_visual <- function(stimuli, asChord = FALSE) {
 
-  xml <- wrap.xml.template(format.notes(type = "scientific_music_notation", notes = stimuli, asChord = asChord))
+  xml <- wrap.xml.template(type = "scientific_music_notation", notes = stimuli, asChord = asChord)
 
   open.music.display.wrapper(xml)
 
@@ -113,18 +133,18 @@ present_stimuli_scientific_music_notation_auditory <- function(stimuli, note_len
   }
 
     # return page
-      div(
+      shiny::tags$div(
         play.notes.html.wrapper(stimuli_pitches, stimuli_rhythms)
       )
 }
 
-present_stimuli_scientific_music_notation <- function(stimuli, display_modality, ...) {
+present_stimuli_scientific_music_notation <- function(stimuli, display_modality, note_length = 0.5, sound = "piano") {
 
   if (display_modality == "auditory") {
-    return_stimuli <- present_stimuli_scientific_music_notation_auditory(stimuli, note_length, sound)
+    return_stimuli <- present_stimuli_scientific_music_notation_auditory(stimuli = stimuli, note_length = note_length, sound = sound)
   }
   else {
-    return_stimuli <- present_stimuli_scientific_music_notation_visual(stimuli)
+    return_stimuli <- present_stimuli_scientific_music_notation_visual(stimuli = stimuli)
   }
 
   return_stimuli
@@ -136,28 +156,28 @@ present_stimuli_scientific_music_notation <- function(stimuli, display_modality,
 
 present_stimuli_pitch_classes_visual <- function(stimuli, octave = 4, asChord = FALSE) {
 
-  xml <- wrap.xml.template(format.notes(type = "pitch_classes", notes = stimuli, octave, asChord))
+  xml <- wrap.xml.template(type = "pitch_classes", notes = stimuli, octave = octave, asChord = asChord)
 
   # deploy over music display wrapper
   open.music.display.wrapper(xml)
 
 }
 
-present_stimuli_pitch_classes_auditory <- function(stimuli) {
+present_stimuli_pitch_classes_auditory <- function(stimuli, octave) {
 
 }
 
-present_stimuli_pitch_classes <- function(stimuli, display_modality, ...) {
+
+present_stimuli_pitch_classes <- function(stimuli, display_modality, octave = 4, ...) {
 
   if(display_modality == "visual") {
-    return_stimuli <- present_stimuli_pitch_classes_visual(stimuli, ...)
+    return_stimuli <- present_stimuli_pitch_classes_visual(stimuli = stimuli,
+                                                           octave = octave, ...)
 
+  } else {
+    return_stimuli <- present_stimuli_pitch_classes_auditory(stimuli = stimuli,
+                                                             octave = octave, ...)
   }
-  else {
-    return_stimuli <- present_stimuli_pitch_classes_auditory(stimuli, ...)
-  }
-  return_stimuli
-
 }
 
 
@@ -181,33 +201,35 @@ present_stimuli_rhythms <- function(stimuli_rhythms) {
 
 # .mid file (only auditory currently)
 
+
+
 grab.stimuli.number.from.file.path <- function(file_path) {
-  str_replace(str_replace(file_path, "item_banks/berkowitz_midi_rhythmic/Berkowitz", ""), ".mid", "")
+  d <- strsplit(file_path, ".", fixed = TRUE)[[1]][1]
+  d <- strsplit(d, "/", fixed = TRUE)[[1]]
+  d <- d[length(d)]
+  num <- as.numeric(paste0(stringr::str_extract_all(d, "[0-9]")[[1]], collapse = ""))
 }
 
-present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "Play", transpose = 0, note_no = "max", bpm = 85, ...) {
 
-  stimuli_no <- as.numeric(grab.stimuli.number.from.file.path(stimuli))
+present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "Play", transpose = 0, start_note = 1, end_note = "end", bpm = 85, ...) {
 
-  stimuli_for_js <- berkowitz.rds.abs[[stimuli_no]]
-
-  # currently this is hacked to only work for Berkowitz, but a generalised solution should be created
-
-  if (is.null(note_no) == TRUE | note_no == "max") {
-    note_no <- "\"max\""
+  if(end_note == "end") {
+    end_note <- '\"end\"'
   }
+  # 0 indexing for JS (but not needed for end_note)
+  start_note <- start_note-1
 
   if(display_modality == "auditory") {
 
     shiny::tags$div(
 
-      tags$script(paste0('var stimuli = ', toJSON(stimuli_for_js))),
+      #shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli_for_js))),
 
       shiny::tags$div(id="button_area",
                       shiny::tags$button(button_text, id="playButton",
-                                         onclick=shiny::HTML(paste0("playMidiFileAndRecordAfter(\"",stimuli,"\", true, ",note_no,", true, this.id, ",transpose,", 'piano', ", bpm, ");")))
+                                         onclick=shiny::HTML(paste0("playMidiFileAndRecordAfter(\"",stimuli,"\", true, ",start_note,",",end_note,", true, this.id, ",transpose,", 'piano', ", bpm, ");")))
       ),
-    br()
+    shiny::tags$br()
     )
 
 
@@ -237,7 +259,7 @@ present_stimuli_music_xml_file <- function(stimuli, display_modality) {
 
 display_previous_answer_music_notation_pitch_class <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
-  reactive_page(function(state, answer, ...) {
+  psychTestR::reactive_page(function(state, answer, ...) {
 
     # grab response from previous trial
     note_no <- answer[[5]] # this has to be before the next line
@@ -288,7 +310,7 @@ display_previous_answer_music_notation_pitch_class <- function() {
     }
 
     if(!is.null(answer$rms_plot)) {
-      rms.plot <- renderPlot({ answer$rms_plot }, width = 500)
+      rms.plot <- shiny::renderPlot({ answer$rms_plot }, width = 500)
     }
     else {
       rms.plot <- " "
@@ -297,7 +319,6 @@ display_previous_answer_music_notation_pitch_class <- function() {
     # pitch classes
     present_stimuli(stimuli = user_response,
                     stimuli_type = "midi_notes",
-                    #display_modality = "visual",
                     display_modality = "auditory",
                     page_title = "Feedback: ",
                     page_text = div(tags$p(paste0("Similarity was ", similarity)),
@@ -317,7 +338,7 @@ display_previous_answer_music_notation_pitch_class <- function() {
 
 display_previous_answer_music_notation_pitch_class_aws <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
-  reactive_page(function(state, answer, ...) {
+  psychTestR::reactive_page(function(state, answer, ...) {
 
 
     user_response <- answer$user_pitch
@@ -340,7 +361,7 @@ display_previous_answer_music_notation_pitch_class_aws <- function() {
 
 display_previous_answer_music_notation_pitch_class2 <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
-  reactive_page(function(state, answer, ...) {
+  psychTestR::reactive_page(function(state, answer, ...) {
 
     print('display_previous_answer_music_notation_pitch_class2!!')
     print(answer)
@@ -411,7 +432,7 @@ display_previous_answer_music_notation_pitch_class2 <- function() {
 
 display_previous_answer_music_notation_pitch_class_aws <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
-  reactive_page(function(state, answer, ...) {
+  psychTestR::reactive_page(function(state, answer, ...) {
 
 
     user_response <- answer$user_pitch

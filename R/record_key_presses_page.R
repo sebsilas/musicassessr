@@ -1,21 +1,30 @@
 
-
-record_key_presses_page <- function(body, ...) {
+console_area <- function(show) {
+  if(show) {
+    shiny::tags$div(
+      shiny::tags$div(shiny::tags$br(),
+        tags$textarea(rows="5", name="test-target", id="test-target"),
+        tags$button('clear console', type="button", name="btn-clear-console", id="btn-clear-console")
+        ),
+        tags$div(class="flex",
+                 tags$pre(id="console-log"))
+    )
+  }
+  else {
+    shiny::tags$div()
+  }
+}
+record_key_presses_page <- function(body, show_console_area = FALSE, ...) {
     psychTestR::page(
     label = "test",
-    ui = tags$div(id = "mainDiv", tags$div(class="fx",
-                           div(
-                             div(id = "body", body),
-                             trigger_button("next", "Next"),
-                             #br(),
-                             #tags$textarea(rows="5", name="test-target", id="test-target"),
-                             #tags$button('clear console', type="button", name="btn-clear-console", id="btn-clear-console")
-                           #),
-                           #tags$div(class="flex",
-                           #         tags$pre(id="console-log")
+    ui = shiny::tags$div(id = "mainDiv", shiny::tags$div(class="fx",
+                          shiny::tags$div(
+                              shiny::tags$div(id = "body", body),
+                             psychTestR::trigger_button("next", "Next"),
+                             console_area(show_console_area)
                            )
     ),
-    includeScript(path="www/js/getButtonPresses.js")
+    shiny::includeScript(system.file("www/js/getButtonPresses.js"))
     ),
     get_answer = function(input, ...) {
 
@@ -23,7 +32,7 @@ record_key_presses_page <- function(body, ...) {
       print(input)
       lapply(input, print)
 
-      list(onsets_keydown = fromJSON(input$onsets_keydown))
+      list(onsets_keydown = rjson::fromJSON(input$onsets_keydown))
 
       # list(user_response_keypress = fromJSON(input$user_response_keypress),
       #     onsets = fromJSON(input$onsets),

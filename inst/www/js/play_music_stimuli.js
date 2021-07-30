@@ -97,8 +97,10 @@ function triggerNote(sound, freq_tone, seconds, time) {
 
 }
 
-function  playTone(tone, seconds, id, sound) {
+function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_pyin", stop_button_text = "Stop", showStop = false) {
   // play a tone for x seconds
+
+  console.log('playTone called');
   rangeTest(tone);
 
   tone = Number(tone);
@@ -109,6 +111,10 @@ function  playTone(tone, seconds, id, sound) {
 
   triggerNote(sound, freq_tone, seconds);
 
+  setTimeout(() => {  recordAndStop(ms = seconds*1000 + record_delay,
+                                    showStop = showStop, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
+
+
   updatePlaybackCount();
 
   Shiny.setInputValue("stimuli_pitch", tone);
@@ -117,11 +123,10 @@ function  playTone(tone, seconds, id, sound) {
 
 
 
-function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop") {
-    // hide play. boolean. whether to hide the play button
+function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
 
-  console.log('beginning playSeq');
-  console.log(page_type);
+  // this should go first before the piano editing:
+  Shiny.setInputValue("stimuli_pitch", note_list);
 
 
   // seems to be a bug with the piano sound where it plays an octave higher
@@ -131,39 +136,88 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   }
 
   var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
-  console.log(freq_list);
-
   var last_note = freq_list.length;
   var count = 0;
-  var pattern = new Tone.Sequence(function(time, note){
-    console.log(note);
-    triggerNote(sound, note, 0.50);
 
-    count = count + 1;
+  if(dur_list === null) {
+    var pattern = new Tone.Sequence(function(time, note){
+      console.log(note);
+      triggerNote(sound, note, 0.50);
+      count = count + 1;
+      if (count === last_note) {
+        setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
+        pattern.stop();
+        Tone.Transport.stop();
+      }
 
-    if (count === last_note) {
-
-      setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
-
-      pattern.stop();
-      Tone.Transport.stop();
-    }
-
-  }, freq_list);
+    }, freq_list);
+  } else {
+    var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+    console.log(notesAndDurations);
+    notesAndDurations = notesAndDurations.map(timeFromDurations);
+    console.log(notesAndDurations);
+    var pattern = new Tone.Part((time, value) => {
+                // the value is an object which contains both the note and the velocity
+                piano.triggerAttackRelease(value.note, value.duration, time);
+                count = count + 1;
+                  if (count === last_note) {
+                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
+                    pattern.stop();
+                    Tone.Transport.stop();
+                  }
+                }, notesAndDurations);
+  }
 
   pattern.start(0).loop = false;
   Tone.Transport.start();
 
-  Shiny.setInputValue("stimuli_pitch", note_list);
-
 }
 
+
+function timeFromDurations(value, i, arr) {
+  const prevTime = arr[i - 1]?.time;
+  value.time = prevTime + arr[i - 1]?.duration || 0;
+  return value;
+}
+
+function bind_notes_and_durations(notes, durations) {
+
+    var i;
+    var currentNote;
+    var currentDur;
+    var result = [];
+
+    for (i = 0; i < notes.length; i++) {
+        console.log(i);
+        currentNote = notes[i];
+        currentDur = durations[i];
+        result[i] = { duration: currentDur, note: currentNote };
+    }
+    return(result);
+}
 
 function metronomeStart() {
 		Tone.Transport.start();
 }
 
-function toneJSPlay (midi, note_no, hidePlay, transpose, id, sound, bpm = 90) {
+function metronome () {
+  // metronomeStart();
+
+    // var player = new Tone.Player("./sounds/woodblock.wav").toMaster();
+    // console.log(player)
+		// Tone.Transport.bpm.value = bpm;
+    //
+		// Tone.Buffer.onload = function() {
+		// 	//this will start the player on every quarter note
+		// 	Tone.Transport.setInterval(function(time){
+		// 	    player.start(time);
+		// 	}, "4n");
+		// 	//start the Transport for the events to start
+		// 	Tone.Transport.start();
+		// };
+}
+
+function toneJSPlay (midi, start_note, end_note, hidePlay, transpose, id, sound, bpm = 90) {
     console.log('hey!');
     console.log(midi);
 
@@ -172,30 +226,12 @@ function toneJSPlay (midi, note_no, hidePlay, transpose, id, sound, bpm = 90) {
     window.startTime = new Date().getTime();
     console.log(window.startTime);
 
-    // metronome stuff start
-    metronomeStart();
-
-    var player = new Tone.Player("./sounds/woodblock.wav").toMaster();
-    console.log(player)
-		Tone.Transport.bpm.value = bpm;
-
-		Tone.Buffer.onload = function() {
-			//this will start the player on every quarter note
-			Tone.Transport.setInterval(function(time){
-			    player.start(time);
-			}, "4n");
-			//start the Transport for the events to start
-			Tone.Transport.start();
-		};
-
-		// metronome stuff end
+    //metronome();
 
     // change tempo to whatever defined in R
     adjusted_tempo = midi;
     adjusted_tempo.header.tempos.bpm = bpm;
     adjusted_tempo.header.tempos[0].bpm = bpm;
-
-
     console.log('tempo adjusted');
     console.log(adjusted_tempo);
 
@@ -203,7 +239,7 @@ function toneJSPlay (midi, note_no, hidePlay, transpose, id, sound, bpm = 90) {
     var synths = [];
     adjusted_tempo.tracks.forEach(track => {
 
-        if (note_no === "max") {
+        if (end_note === "end") {
             notes_list = track.notes;
 
             // console.log(track.notes); // need to test full notes
@@ -212,7 +248,10 @@ function toneJSPlay (midi, note_no, hidePlay, transpose, id, sound, bpm = 90) {
         } else {
             // reduced note list
             var dur = 0;
-            notes_list = track['notes'].slice(0, note_no);
+            if(end_note === "end") {
+              end_note = notes_list = track['notes'].length;
+            }
+            notes_list = track['notes'].slice(start_note, end_note);
             // get duration of contracted notes list
             notes_list.forEach(el => {
                    dur = dur + el['duration'];
@@ -279,30 +318,29 @@ function toneJSPlay (midi, note_no, hidePlay, transpose, id, sound, bpm = 90) {
 
 async function midiToToneJS (url, note_no, hidePlay, transpose, id, sound, bpm) {
 
-// load a midi file in the browser
-const midi = await Midi.fromUrl(url).then(midi => {
-    toneJSPlay(midi, note_no, hidePlay, transpose, id, sound, bpm);
+  // load a midi file in the browser
+  const midi = await Midi.fromUrl(url).then(midi => {
+      toneJSPlay(midi, note_no, hidePlay, transpose, id, sound, bpm);
 
-})
+  })
 }
 
 
 // Define a function to handle status messages
 
-function playMidiFile(url, toneJS, note_no, hidePlay, id, transpose, sound, bpm) {
+function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
 
     console.log("bpm is " + bpm);
 
-    console.log(url, toneJS, note_no, hidePlay, id, transpose, sound, bpm);
+    console.log(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm);
 
     // hide after play
     hidePlayButton();
 
     // toneJS: boolean. true if file file to be played via toneJS. otherwise, via MIDIJS
-    // note_no, optional no of notes to cap at
 
-    if (toneJS === true) {
-        midiToToneJS(url, note_no, hidePlay, transpose, id, sound, bpm);
+    if (toneJS) {
+      midiToToneJS(url, note_no, hidePlay, transpose, id, sound, bpm);
     }
 
     else {
@@ -339,14 +377,13 @@ function playMidiFile(url, toneJS, note_no, hidePlay, id, transpose, sound, bpm)
 
 // Define a function to handle status messages
 
-function playMidiFileAndRecordAfter(url, toneJS, note_no, hidePlay, id, transpose, sound, bpm) {
+function playMidiFileAndRecordAfter(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
 
 
     // toneJS: boolean. true if file file to be played via toneJS. otherwise, via MIDIJS
-    // note_no, optional no of notes to cap at
 
-    if (toneJS === true) {
-        midiToToneJS(url, note_no, hidePlay, transpose, id, sound, bpm);
+    if (toneJS) {
+      midiToToneJS(url, start_note, end_note, hidePlay, transpose, id, sound, bpm);
     }
 
     else {
@@ -449,26 +486,17 @@ function hidePlayButton() {
 }
 
 
-function hideRecordButton() {
-  var x = document.getElementById("recordButton");
-  if (x.style.display === "none") {
-  x.style.display = "block";
-  } else {
-  x.style.display = "none";
-  }
-
-}
-
-
 //
 
 function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_button_text = "Stop") {
     // start recording but then stop after x milliseconds
     console.log("record and Stop!");
-    console.log(hidePlay);
+    console.log(ms);
     console.log(showStop);
+    console.log(hidePlay);
+    console.log(id);
     console.log(type);
-    console.log('start time');
+    console.log(stop_button_text);
 
     window.startTime = new Date().getTime();
 
@@ -491,6 +519,7 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_butt
       console.log('33');
     }
 
+
      if (ms === null) {
         console.log('ms null');
         recordUpdateUI(showStop, hidePlay, type);
@@ -500,7 +529,7 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_butt
         console.log('ms not null');
         console.log(ms);
         recordUpdateUI(showStop, hidePlay, type, stop_button_text);
-        setTimeout(() => {  NewAudio.stopRecording(id); }, ms);
+        setTimeout(() => {  simpleStopRecording();hideRecordImage(); }, ms);
      }
 
 }
@@ -515,7 +544,7 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
       // if showStop is true, then give the user the option to press the stop button
       // if hidePlay is true, then hide the play button
 
-      if  (hidePlay === true) {
+      if(hidePlay) {
         console.log('hide play bitch!');
         hidePlayButton();
       }
@@ -523,7 +552,7 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
       setTimeout(() => {  showRecordingIcon(); }, 500); // a little lag
 
 
-      if (showStop === true) {
+      if (showStop) {
           setTimeout(() => {  showStopButton(type, stop_button_text = stop_button_text); }, 500); // a little more lag
       }
     }
@@ -564,29 +593,42 @@ function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
           console.log('here we go1 1!');
 
           startRecording(updateUI = false);
-          recordButton.style.display = 'none';
+          if (recordButton !== undefined) {
+            recordButton.style.display = 'none';
+          }
 
           var loading = document.getElementById("loading");
-          loading.style.visibility = 'hidden';
+          if (loading !== undefined) {
+            loading.style.visibility = 'hidden';
+          }
 
           var stopButton = document.getElementById("stopButton");
-          stopButton.disabled = false;
-          stopButton.style.visibility = 'visible';
 
-          stopButton.onclick = function () {
-            next_page();
-            simpleStopRecording();
-          };
+          if(stopButton !== undefined) {
+            stopButton.disabled = false;
+            stopButton.style.visibility = 'visible';
+
+            stopButton.onclick = function () {
+              next_page();
+              simpleStopRecording();
+            };
+          }
         }
 
 }
+
+function preloadImage(url) {
+    var img = new Image();
+    img.src = url;
+}
+
+preloadImage("https://adaptiveeartraining.com/magmaGold/img/record.gif");
 
 function showRecordingIcon() {
 
   var img = document.createElement("img");
   img.style.display = "block";
-
-  img.src =  "./img/record.gif";
+  img.src =  "https://adaptiveeartraining.com/magmaGold/img/record.gif";
   img.width = "280";
   img.height = "280";
 
@@ -595,8 +637,17 @@ function showRecordingIcon() {
 
 }
 
-function hideRecordImage() {
+function hideRecordButton() {
+  var x = document.getElementById("recordButton");
+  if (x.style.display === "none") {
+  x.style.display = "block";
+  } else {
+  x.style.display = "none";
+  }
+}
 
+function hideRecordImage() {
+  console.log('hideRecordImage called');
   var x = document.getElementById("button_area");
        if (x.style.display === "none") {
    x.style.display = "block";
@@ -614,4 +665,46 @@ function toggleRecording(e) {
     }
 }
 
+// checks
 
+function getUserInfo () {
+    console.log(navigator);
+    var _navigator = {};
+    for (var i in navigator) _navigator[i] = navigator[i];
+    delete _navigator.plugins;
+    delete _navigator.mimeTypes;
+    navigatorJSON = JSON.stringify(_navigator);
+    console.log(navigatorJSON);
+    console.log("Browser:" + navigator.userAgent);
+    Shiny.setInputValue("user_info", navigatorJSON);
+}
+
+function testFeatureCapability() {
+
+    console.log(testMediaRecorder());
+    console.log(Modernizr.webaudio);
+
+    if (Modernizr.webaudio & testMediaRecorder()) {
+        console.log("This browser has the necessary features");
+        Shiny.setInputValue("browser_capable", "TRUE");
+    }
+    else {
+        console.log("This browser does not have the necessary features");
+        Shiny.setInputValue("browser_capable", "FALSE");
+    }
+
+}
+
+function testMediaRecorder () {
+
+  var isMediaRecorderSupported = false;
+
+  try {
+      MediaRecorder;
+      isMediaRecorderSupported = true;
+  } catch (err) {
+      console.log("no MediaRecorder");
+  }
+  console.log(isMediaRecorderSupported);
+  return(isMediaRecorderSupported);
+}

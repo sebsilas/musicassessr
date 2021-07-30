@@ -33,18 +33,12 @@ check_answer <- function(user_response, correct_answer,
   # match based on type of input
   if (length(user_response) > 1) {
     correct <- identical(user_response, correct_answer)
-  }
-
-  else if (type == "midi_pitches") {
-    # ngrukkon()
-  }
-
-  else if (type == "rhythms") {
+  } else if (type == "midi_pitches") {
+    # itembankr::ngrukkon()
+  } else if (type == "rhythms") {
     ## rhythm metric
-    # ngrukkon()
-  }
-
-  else if (type == "melodies_with_rhythms") {
+    # itembankr::ngrukkon()
+  } else if (type == "melodies_with_rhythms") {
 
   }
 
@@ -70,6 +64,17 @@ check_similarity <- function(user_response, correct_answer, reverse = FALSE) {
 
 # get_answer functions
 
+#' Dummy get_answer function
+#'
+#' @param input
+#' @param state
+#' @param text
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_answer_null <- function(input, state, text = "example_page", ...) {
   print("in get answer null")
   list(text)
@@ -78,47 +83,43 @@ get_answer_null <- function(input, state, text = "example_page", ...) {
 
 get_answer_midi_note_mode <- function(input, state, ...) {
 
-  if(length(fromJSON(input$user_response_midi_note_on)) == 0) {
+  if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
     list(note = NA)
   } else {
-    list(note = getmode(fromJSON(input$user_response_midi_note_on)))
+    list(note = getmode(rjson::fromJSON(input$user_response_midi_note_on)))
   }
 }
 
 
-get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors) {
-  # accuracy
-  if (no_errors == 0 & no_correct == length(stimuli)) {
-    accuracy <- 1
+
+melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures) {
+
+
+  if(is.numeric(result$freq)) {
+    result <- result %>% dplyr::mutate(pitch = round(hrep::freq_to_midi(freq)),
+                                 cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
+                                 # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
+                                 pitch_class = midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+                                 pitch_class_numeric = midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+                                 sci_notation = midi_to_sci_notation(round(hrep::freq_to_midi(freq))),
+                                 interval = c(NA, diff(pitch)),
+                                 ioi = c(NA, diff(onset)),
+                                 ioi_class = itembankr::classify_duration(ioi))
+
+    user_melody_input <- result$pitch
+    onsets_noteon <- result$onset
+
   }
   else {
-    accuracy <- no_correct/length(user_melody_input)
+    print("the result wasn't good")
+    return(NA)
   }
-
-}
-
-get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations) {
-  # similarity
-  if(length(user_melody_input) < 3) {
-    similarity <- NA
-    ng <- NA
-  }
-  else {
-    similarity <- opti3(pitch_vec1 = stimuli,
-                        dur_vec1 = rep(0.5, stimuli_length),
-                        pitch_vec2 = user_melody_input,
-                        dur_vec2 = durations)
-  }
-}
-
-
-melody_scoring_from_user_input <- function(input, user_melody_input, onsets_noteon = NA, trial_type) {
 
   # grab midi related stuff
   if(trial_type == "midi") {
-    user_response_midi_note_off <- fromJSON(input$user_response_midi_note_off)
-    onsets_noteon <- fromJSON(input$onsets_noteon)
-    onsets_noteoff <- fromJSON(input$onsets_noteoff)
+    user_response_midi_note_off <- rjson::fromJSON(input$user_response_midi_note_off)
+    onsets_noteon <- rjson::fromJSON(input$onsets_noteon)
+    onsets_noteoff <- rjson::fromJSON(input$onsets_noteoff)
   }
   else {
     onsets_noteoff <- NA
@@ -134,10 +135,10 @@ melody_scoring_from_user_input <- function(input, user_melody_input, onsets_note
   }
 
   else {
-    stimuli <- str.mel.to.vector(input$answer_meta_data$abs_melody, ",")
+
+    stimuli <- itembankr::str_mel_to_vector(input$answer_meta_data$abs_melody, ",")
     stimuli_length <- input$answer_meta_data$N
     durations <- diff(onsets_noteon)/1000
-
 
     # calculate measures
     trial_length <- onsets_noteon[length(onsets_noteon)]
@@ -148,8 +149,8 @@ melody_scoring_from_user_input <- function(input, user_melody_input, onsets_note
     errors_boolean <- as.vector(!user_melody_input %in% stimuli)
 
     # octaves independent (i.e octave errors allowed)
-    user_pitch_classes <- midi.to.pitch.class(user_melody_input) # pitch_class allows octave errors
-    stimuli_pitch_classes <- midi.to.pitch.class(stimuli)
+    user_pitch_classes <- itembankr::midi_to_pitch_class(user_melody_input) # pitch_class allows octave errors
+    stimuli_pitch_classes <- itembankr::midi_to_pitch_class(stimuli)
 
     correct_boolean_octaves_allowed <- as.vector(user_pitch_classes %in% stimuli_pitch_classes)
     errors_boolean_octaves_allowed <- as.vector(!user_pitch_classes %in% stimuli_pitch_classes)
@@ -157,10 +158,11 @@ melody_scoring_from_user_input <- function(input, user_melody_input, onsets_note
     no_correct_octaves_allowed <- sum(correct_boolean_octaves_allowed)
     no_errors_octaves_allowed <- sum(errors_boolean_octaves_allowed)
 
-
+    # accuracy
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
 
+    # similarity
     similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations)
     no_note_events <- length(user_melody_input)
 
@@ -171,6 +173,26 @@ melody_scoring_from_user_input <- function(input, user_melody_input, onsets_note
     correct_by_note_events_octaves_allowed <- no_correct_octaves_allowed/no_note_events
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
 
+    if(singing_measures) {
+      # singing stuff
+      # note precision
+      note_precision <- result %>%
+        group_by(sci_notation) %>%
+        summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
+                  participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
+                    summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE))
+
+      # cents_deviation_from_nearest_stimuli_pitch
+      mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$pitch,
+                                                       stimuli = stimuli)
+
+      # mean cents deviation
+      mean_cents_deviation_from_nearest_midi_pitch <- score_note_mean_cents_deviation(result$cents_deviation_from_nearest_midi_pitch)
+    } else {
+      note_precision <- NA
+      mean_cents_deviation_from_nearest_stimuli_pitch <- NA
+      mean_cents_deviation_from_nearest_midi_pitch <- NA
+    }
 
     list(stimuli = stimuli,
          stimuli_length = stimuli_length,
@@ -196,6 +218,9 @@ melody_scoring_from_user_input <- function(input, user_melody_input, onsets_note
          accuracy = accuracy,
          accuracy_octaves_allowed = accuracy_octaves_allowed,
          opti3 = similarity,
+         note_precision = note_precision,
+         mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
+         mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
          answer_meta_data = input$answer_meta_data
     )
   }
@@ -204,9 +229,9 @@ melody_scoring_from_user_input <- function(input, user_melody_input, onsets_note
 get_answer_midi <- function(input, state, ...) {
   print('get_answer_midi')
 
-  user_response_midi_note_on <- fromJSON(input$user_response_midi_note_on)
+  user_response_midi_note_on <- rjson::fromJSON(input$user_response_midi_note_on)
 
-  melody_scoring_from_user_input(input = input, user_melody_input = user_response_midi_note_on, trial_type = "midi")
+  melody_scoring_from_user_input(input = input, user_melody_input = user_response_midi_note_on, trial_type = "midi", singing_measures = FALSE)
 }
 
 
@@ -219,30 +244,25 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
   if (floor_or_ceiling == "floor") {
 
     function(input, ...) {
-      freqs <- fromJSON(input$user_response_frequencies)
+      freqs <- rjson::fromJSON(input$user_response_frequencies)
       notes <- tidy_freqs(freqs)
       list(user_response = floor(mean(notes)))
     }
 
-  }
-
-  else if (floor_or_ceiling == "ceiling") {
+  } else if (floor_or_ceiling == "ceiling") {
 
     function(input, ...) {
       # process some new info
-      freqs <- fromJSON(input$user_response_frequencies)
+      freqs <- rjson::fromJSON(input$user_response_frequencies)
       notes <- tidy_freqs(freqs)
       list(user_response = ceiling(mean(notes)))
     }
 
-  }
-
-
-  else {
+  } else {
 
     function(input, ...) {
       # process some new info
-      freqs <- fromJSON(input$user_response_frequencies)
+      freqs <- rjson::fromJSON(input$user_response_frequencies)
       notes <- tidy_freqs(freqs)
       list(user_response = round(mean(notes)))
     }
@@ -251,66 +271,66 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 }
 
 
-get_answer_store_async <- function(input, state, opt, ...) {
 
-  print('get_answer_store_async!')
+#' Get answer and recode the last answer if its corresponding promise has resolved
+#'
+#' @param input
+#' @param state
+#' @param opt
+#' @param scoring
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_store_async <- function(input, state, opt, scoring = "melody", ...) {
 
-  current_results <- as.list(get_results(state, complete = FALSE))$results
+  current_results <- as.list(psychTestR::get_results(state, complete = FALSE))$results
 
   latest_result <- current_results[[length(current_results)]]
 
-  if(length(latest_result) > 1 & is.promise(latest_result$promise_result)) {
+  if(length(latest_result) > 1 & promises::is.promise(latest_result$promise_result)) {
     if(future::resolved(latest_result$promise_result)) {
-      then(latest_result$promise_result,
+      promises::then(latest_result$promise_result,
            function(value) {
 
-             ans_plus_meta_data <- melody_scoring_from_user_input(input = input,
-                                                                  user_melody_input = value$midi,
-                                                                  onsets_noteon = value$onset,
-                                                                  trial_type = "audio")
+             if(scoring == "melody") {
+               print('boom melody')
+               ans_plus_meta_data <- melody_scoring_from_user_input(input = input,
+                                                                    result = value,
+                                                                    trial_type = "audio",
+                                                                    singing_measures = TRUE)
+             } else if(scoring == "long_note") {
+               print('booom long-note')
+               print(input$stimuli)
+               print(value$freq)
+               target_pitch <- rjson::fromJSON(input$stimuli)
+               pitch_vector <- rjson::fromJSON(value$freq)
+               ans_plus_meta_data <- long_note_pitch_metrics(target_pitch, pitch_vector)
 
+             } else {
+               warning('Unknown scoring function')
+             }
+
+             # update psychTestR results object
              psychTestR::results(state)$results[[length(current_results)]]$promise_result <- ans_plus_meta_data
-
 
            })
     }
   }
 
   print("checked latest")
+  print(input$sourceBucket)
+  print(input$key)
+  print(input$destBucket)
+  print(api_url)
 
   json <- rjson::toJSON(list(sourceBucket = input$sourceBucket,
                              key = input$key,
                              destBucket = input$destBucket))
 
-
-  do <- function() {
-    headers <- c("content-type" = "application/json")
-    http_post(api_url, data = json, headers = headers)$
-      then(http_stop_for_status)$
-      then(function(x) {
-
-        key <- rjson::fromJSON(rawToChar(x$content))$key
-        bucket <- rjson::fromJSON(rawToChar(x$content))$Bucket
-        link_href <- paste0("https://", bucket, ".s3.amazonaws.com/", key)
-        csv <- read_csv(link_href, col_names = c("onset", "dur", "freq"))
-        print('answer back!')
-        print(csv)
-        if(is.numeric(csv$freq)) {
-          csv <- csv %>% mutate(midi = round(freq_to_midi(freq)))
-          print(csv$midi)
-        }
-        else {
-          print("the result wasn't good")
-          csv <- NA
-        }
-        csv
-
-      })
-  }
-
-  user_response <- NULL
-
-  page_promise <- future({ synchronise(do()) })%...>% (function(result) {
+  page_promise <- future::future({ async::synchronise(do(api_url, json)) }) %...>% (function(result) {
         result
   })
 
@@ -319,13 +339,64 @@ get_answer_store_async <- function(input, state, opt, ...) {
 
 }
 
+do <- function(api_url, json) {
+
+  headers <- c("content-type" = "application/json")
+  async::http_post(api_url, data = json, headers = headers)$
+    then(async::http_stop_for_status)$
+    then(function(x) {
+
+      key <- rjson::fromJSON(rawToChar(x$content))$key
+      bucket <- rjson::fromJSON(rawToChar(x$content))$Bucket
+      link_href <- paste0("https://", bucket, ".s3.amazonaws.com/", key)
+      print('link_href!')
+      print(link_href)
+      csv <- readr::read_csv(link_href, col_names = c("onset", "dur", "freq"))
+      print('answer back!')
+      print(csv)
+      csv
+
+    })
+}
 
 
+#' Simple saving of the corresponding URL of a trial file
+#'
+#' @param input
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_save_aws_key <- function(input, ...) {
+  list(key = input$key,
+       file_url = input$file_url)
+}
+
+
+get_answer_store_async_long_note <- function(...) {
+  print('get_answer_store_async_long_note!')
+  get_answer_store_async(scoring = "long_note", ...)
+}
+
+
+#' Recode an asynchronous result through a psychTestR on_complete function
+#'
+#' @param input
+#' @param state
+#' @param opt
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 on_complete_recode_async_penultimate <- function(input, state, opt, ...) {
 
   print('on_complete_recode_async_penultimate!')
 
-  current_results <- as.list(get_results(state, complete = FALSE))$results
+  current_results <- as.list(psychTestR::get_results(state, complete = FALSE))$results
 
   # first check penultimate result, then latest (this needs factoring!!!)
 
@@ -333,15 +404,16 @@ on_complete_recode_async_penultimate <- function(input, state, opt, ...) {
   penultimate_result <- current_results[[length(current_results)-1]]
 
   if(length(penultimate_result) > 1 ) {
-    if(is.promise(penultimate_result$promise_result)) {
+    if(promises::is.promise(penultimate_result$promise_result)) {
       if(future::resolved(penultimate_result$promise_result)) {
-        then(penultimate_result$promise_result,
+        promises::then(penultimate_result$promise_result,
              function(value) {
 
                ans_plus_meta_data <- melody_scoring_from_user_input(input = input,
-                                                                    user_melody_input = value$midi,
+                                                                    user_melody_input = value$pitch,
                                                                     onsets_noteon = value$onset,
-                                                                    trial_type = "audio")
+                                                                    trial_type = "audio",
+                                                                    singing_measures = TRUE)
 
                psychTestR::results(state)$results[[length(current_results)-1]]$promise_result <- ans_plus_meta_data
 
@@ -359,15 +431,16 @@ on_complete_recode_async_penultimate <- function(input, state, opt, ...) {
   print(latest_result)
 
   if(length(latest_result) > 1) {
-    if(is.promise(latest_result$promise_result)) {
+    if(promises::is.promise(latest_result$promise_result)) {
       if(future::resolved(latest_result$promise_result)) {
-        then(latest_result$promise_result,
+        promises::then(latest_result$promise_result,
              function(value) {
 
                ans_plus_meta_data <- melody_scoring_from_user_input(input = input,
-                                                                    user_melody_input = value$midi,
+                                                                    user_melody_input = value$pitch,
                                                                     onsets_noteon = value$onset,
-                                                                    trial_type = "audio")
+                                                                    trial_type = "audio",
+                                                                    singing_measures = TRUE)
 
                psychTestR::results(state)$results[[length(current_results)]]$promise_result <- ans_plus_meta_data
 
@@ -386,7 +459,7 @@ on_complete_recode_async <- function(input, state, opt, ...) {
 
   print('on_complete_recode_async!')
 
-  current_results <- as.list(get_results(state, complete = FALSE))$results
+  current_results <- as.list(psychTestR::get_results(state, complete = FALSE))$results
 
   # first check penultimate result, then latest (this needs factoring!!!)
 
@@ -396,15 +469,16 @@ on_complete_recode_async <- function(input, state, opt, ...) {
   print(latest_result)
 
   if(length(latest_result) > 1) {
-    if(is.promise(latest_result$promise_result)) {
+    if(promises::is.promise(latest_result$promise_result)) {
       if(future::resolved(latest_result$promise_result)) {
-        then(latest_result$promise_result,
+        promises::then(latest_result$promise_result,
              function(value) {
 
                ans_plus_meta_data <- melody_scoring_from_user_input(input = input,
-                                                                    user_melody_input = value$midi,
+                                                                    user_melody_input = value$pitch,
                                                                     onsets_noteon = value$onset,
-                                                                    trial_type = "audio")
+                                                                    trial_type = "audio",
+                                                                    singing_measures = TRUE)
 
                psychTestR::results(state)$results[[length(current_results)]]$promise_result <- ans_plus_meta_data
 
@@ -419,6 +493,28 @@ on_complete_recode_async <- function(input, state, opt, ...) {
 }
 
 
+get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors) {
+  # accuracy
+  if (no_errors == 0 & no_correct == length(stimuli)) {
+    accuracy <- 1
+  } else {
+    accuracy <- no_correct/length(user_melody_input)
+  }
+
+}
+
+get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations) {
+  # similarity
+  if(length(user_melody_input) < 3) {
+    similarity <- NA
+    ng <- NA
+  } else {
+    similarity <- itembankr::opti3(pitch_vec1 = stimuli,
+                                   dur_vec1 = rep(0.5, stimuli_length),
+                                   pitch_vec2 = user_melody_input,
+                                   dur_vec2 = durations)
+  }
+}
 # do <- cbind(WJD[5, ], data.frame(abs_melody = "64,62,57"))
 # ta <- melody_scoring_from_user_input(input = list(answer_meta_data = do),
 #                                      user_melody_input = 60:65,

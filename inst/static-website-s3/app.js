@@ -85,9 +85,9 @@ function pauseRecording(){
 		//pause
 		rec.stop();
 		pauseButton.innerHTML="Resume";
-	}else{
+	} else{
 		//resume
-		rec.record()
+		rec.record();
 		pauseButton.innerHTML="Pause";
 
 	}
@@ -130,14 +130,30 @@ function simpleStopRecording() {
 }
 
 
+function create_recordkey() {
+  var currentDate = new Date();
+  var recordkey = currentDate.getDate().toString() + '-' + currentDate.getMonth().toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString() + '.wav';
+  return(recordkey)
+}
 
 function upload_file_to_s3(blob){
 
+    var recordkey = create_recordkey();
 
-    var currentDate = new Date();
+    var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
+    console.log(file_url);
 
-    var recordkey = currentDate.getDate().toString() + '-' + currentDate.getMonth().toString() + '-' +
-    currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes().toString() + '.wav';
+    Shiny.setInputValue("sourceBucket", bucketName);
+    Shiny.setInputValue("key", recordkey);
+    Shiny.setInputValue("file_url", file_url);
+    Shiny.setInputValue("destBucket", destBucket);
+
+    // call next page after credentials saved
+    if(auto_next_page) {
+      next_page();
+    }
+
+
     AWS.config.update({
         region: bucketRegion,
         credentials: new AWS.CognitoIdentityCredentials({
@@ -160,17 +176,10 @@ function upload_file_to_s3(blob){
         }
     });
 
-    console.log(bucketName);
-    console.log(recordkey);
-    console.log(destBucket);
-
-    Shiny.setInputValue("sourceBucket", bucketName);
-    Shiny.setInputValue("key", recordkey);
-    Shiny.setInputValue("destBucket", destBucket);
 
     var promise = upload.promise();
-	var para = document.createElement("p");                       // Create a <p> node
-	var t = document.createTextNode("Please wait a moment, your file is just loading.");      // Create a text node
+	  var para = document.createElement("p");                       // Create a <p> node
+	  var t = document.createTextNode("Please wait a moment, your file is just loading.");      // Create a text node
 	para.appendChild(t);                                          // Append the text to <p>
 	document.getElementById("loading").appendChild(para);
     promise.then(
@@ -180,7 +189,7 @@ function upload_file_to_s3(blob){
 			if (div) {
         div.innerHTML="<p>Your File is still being processed</p>";
       }
-			createDownloadLink(recordkey)
+			createDownloadLink(recordkey);
 			getFile(recordkey);
 
         },

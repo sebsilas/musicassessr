@@ -28,4 +28,13 @@ Imports:
     async,
     stringi,
     hrep,
-    itembankr
+    itembankr,
+    magrittr,
+    dplyr,
+    ggplot2,
+    tuneR,
+    seewave,
+    warbleR,
+    psyquest
+Depends: 
+    R (>= 2.10)

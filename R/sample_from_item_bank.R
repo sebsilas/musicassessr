@@ -1,3 +1,67 @@
+#' Item sampler
+#'
+#' @param item_bank
+#' @param no_items
+#'
+#' @return
+#' @export
+#'
+#' @examples
+item_sampler <- function(item_bank, no_items) {
+
+  # what values are there?
+  N_values <- unique(item_bank$N)
+  no_of_Ns <- length(N_values)
+  # given the no. of items, how many of each N will we need? let's count
+
+  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
+
+  count <- 1
+  N_list <- c()
+
+  while(count < no_items+1) {
+    N_list <- c(N_list, N_values[idxes[count]])
+    count <- count + 1
+  }
+
+  tabl <- as.data.frame(table(N_list))
+
+  sample_dat <- apply(tabl, MARGIN = 1, function(x) {
+    dat_subset <- item_bank[item_bank$N == as.integer(x["N_list"]), ]
+    sample_i <- sample(1:nrow(dat_subset), x["Freq"])
+    sampl <- dat_subset[sample_i, ]
+  })
+
+  res <- dplyr::bind_rows(sample_dat)
+  res$trial_no <- 1:nrow(res)
+  res
+}
+
+item_characteristics_sampler <- function(length = 3:15, difficulty = list("easy" = 10, "hard" = 10)) {
+  # given a range of stimuli lengths and a number of difficulties, produce the test parameters
+  no_items <- sum(unlist(difficulty))
+
+  # what values are there?
+  no_of_Ns <- length(length)
+  # given the no. of items, how many of each N will we need? let's count
+
+  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
+
+  count <- 1
+  N_list <- c()
+
+  while(count < no_items+1) {
+    N_list <- c(N_list, length[idxes[count]])
+    count <- count + 1
+  }
+
+  data.frame(trial_no = 1:no_items,
+             melody_length = N_list[order(N_list)],
+             difficulty = c(rep("easy", difficulty$easy),
+                            rep("hard", difficulty$hard))
+  )
+
+}
 
 remove_duplicates_and_resample <- function(df, item_bank) {
 
@@ -127,75 +191,52 @@ item_sampler_rds <- function(item_bank, no_items) {
 }
 
 
-item_sampler <- function(item_bank, no_items) {
-
-  # what values are there?
-  N_values <- unique(item_bank$N)
-  no_of_Ns <- length(N_values)
-  # given the no. of items, how many of each N will we need? let's count
-
-  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-
-  count <- 1
-  N_list <- c()
-
-  while(count < no_items+1) {
-    N_list <- c(N_list, N_values[idxes[count]])
-    count <- count + 1
-  }
-
-  tabl <- as.data.frame(table(N_list))
-
-  sample_dat <- apply(tabl, MARGIN = 1, function(x) {
-    dat_subset <- item_bank[item_bank$N == as.integer(x["N_list"]), ]
-    sample_i <- sample(1:nrow(dat_subset), x["Freq"])
-    sampl <- dat_subset[sample_i, ]
-  })
-
-  res <- bind_rows(sample_dat)
-  res$trial_no <- 1:nrow(res)
-  res
-}
-
-
-item_characteristics_sampler <- function(length = 3:15, difficulty = list("easy" = 10, "hard" = 10)) {
-  # given a range of stimuli lengths and a number of difficulties, produce the test parameters
-  no_items <- sum(unlist(difficulty))
-
-  # what values are there?
-  no_of_Ns <- length(length)
-  # given the no. of items, how many of each N will we need? let's count
-
-  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-
-  count <- 1
-  N_list <- c()
-
-  while(count < no_items+1) {
-    N_list <- c(N_list, length[idxes[count]])
-    count <- count + 1
-  }
-
-  data.frame(trial_no = 1:no_items,
-            melody_length = N_list[order(N_list)],
-             difficulty = c(rep("easy", difficulty$easy),
-                            rep("hard", difficulty$hard))
-             )
-
-}
-
-
-items_characteristics_sampler_block <- function(n_items_key_difficulty) {
-  code_block(function(state, ...) {
-    set_global("trials", item_characteristics_sampler(difficulty = n_items_key_difficulty), state)
-  })
-}
 
 get_trial_characteristics <- function(trial_df, trial_no) {
   # given the trial number, return what info is needed for the sampler
   list("melody_length" = trial_df[trial_df$trial_no == trial_no, "melody_length"],
        "difficulty" = trial_df[trial_df$trial_no == trial_no, "difficulty"]
   )
+}
+
+#' Sample from the user's range (determined at test time)
+#'
+#' @param no_to_sample
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sample_from_user_range <- function(no_to_sample) {
+  psychTestR::code_block(function(state, ...) {
+    bottom_range <- psychTestR::get_global("bottom_range", state)
+    top_range <- psychTestR::get_global("top_range", state)
+    range <- bottom_range:top_range
+    sample <- sample(range, no_to_sample)
+    psychTestR::set_global("user_range_sample", sample, state)
+  })
+}
+
+
+sample_arrhythmic <- function(item_bank, num_items_arrhythmic) {
+  psychTestR::code_block(function(state, ...) {
+    span <- psychTestR::get_global("span", state)
+    # sample arrhythmic
+    arrythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank("main"), span_max = span)
+    arrhythmic_sample <- musicassessr::item_sampler(arrythmic_item_bank_subset, num_items_arrhythmic)
+    psychTestR::set_global("arrhythmic_melody", arrhythmic_sample, state)
+
+  })
+}
+
+sample_rhythmic <- function(item_bank, num_items_rhythmic) {
+  psychTestR::code_block(function(state, ...) {
+    span <- psychTestR::get_global("span", state)
+    # sample rhythmic
+    rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank("phrases"), span_max = span)
+    rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
+    psychTestR::set_global("rhythmic_melody", rhythmic_sample, state)
+  })
 }
 
 #pra <- item_characteristics_sampler()

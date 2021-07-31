@@ -87,7 +87,7 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type, butt
         # logic page 1, get new note
         midi_or_audio(page_type, prompt_text, var_name),
         # logic page 2, was everything ok with this note?
-        check_note_ok(answer, state),
+        check_note_ok(answer, state, var_name),
         psychTestR::code_block(function(state, answer, ...) {
           psychTestR::set_global("user_satisfied", answer, state)
         })
@@ -128,7 +128,7 @@ get_instrument_range_pages <- function(type) {
 
 # internal funs
 
-check_note_ok <- function(answer, state) {
+check_note_ok <- function(answer, state, var_name) {
   psychTestR::reactive_page(function(answer, state, ...) {
     note <- answer[[1]]
     if(is.na(note)) {

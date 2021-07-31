@@ -19,9 +19,14 @@ t <- function() {
 
     microphone_type_page(),
 
-    arrhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
+    play_long_tone_record_audio_page(60),
 
     play_long_tone_record_audio_page(60),
+
+    rhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
+
+
+    arrhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
 
     #musicassessr::long_tone_trials(num_items = 2L, num_examples = 2L, feedback = FALSE),
 
@@ -84,4 +89,6 @@ t <- function() {
     psychTestR::final_page("The end")
     ), dict = psychTestR::i18n_dict$new(musicassessr_dict_df)), opt = psychTestR::test_options(title = "test", admin_password = "demo", demo = TRUE))
 }
+
+#t()
 

@@ -111,7 +111,7 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_py
 
   triggerNote(sound, freq_tone, seconds);
 
-  setTimeout(() => {  recordAndStop(ms = seconds*1000 + record_delay,
+  setTimeout(() => {  recordAndStop(ms = seconds*1000,
                                     showStop = showStop, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
 
 
@@ -145,7 +145,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
       triggerNote(sound, note, 0.50);
       count = count + 1;
       if (count === last_note) {
-        setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
+        setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
         pattern.stop();
         Tone.Transport.stop();
       }
@@ -161,7 +161,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
                 piano.triggerAttackRelease(value.note, value.duration, time);
                 count = count + 1;
                   if (count === last_note) {
-                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
+                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording
                     pattern.stop();
                     Tone.Transport.stop();
                   }

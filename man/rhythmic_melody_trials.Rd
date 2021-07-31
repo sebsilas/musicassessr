@@ -9,7 +9,7 @@ rhythmic_melody_trials(
   num_items,
   num_examples = NULL,
   feedback = FALSE,
-  page_title = "Sing this melody plus rhythm"
+  page_title = "Sing This Melody Plus Rhythm"
 )
 }
 \arguments{

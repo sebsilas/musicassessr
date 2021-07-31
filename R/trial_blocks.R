@@ -33,7 +33,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, 
               shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
             sample_arrhythmic(item_bank, num_examples),
             # trials
-            musicassessr::build_multi_page_play_melody_until_satisfied_loop(
+            musicassessr::multi_page_play_melody_loop(
               n_items = num_examples,
               var_name = "arrhythmic_melody",
               page_type = "record_audio_page",
@@ -53,7 +53,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, 
         shiny::tags$p("Now you're ready for the real thing!"))),
       sample_arrhythmic(item_bank, num_items),
         ## trials
-          musicassessr::build_multi_page_play_melody_until_satisfied_loop(
+          musicassessr::multi_page_play_melody_loop(
             n_items = num_items,
             var_name = "arrhythmic_melody",
             page_type = "record_audio_page",
@@ -100,7 +100,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
             shiny::tags$p(paste0("First try ", num_examples, " example trials."))
             )),
           sample_rhythmic(item_bank, num_examples),
-          musicassessr::build_multi_page_play_melody_until_satisfied_loop(
+          musicassessr::multi_page_play_melody_loop(
             stimuli_type = "midi_notes",
             var_name = "rhythmic_melody",
             n_items = num_examples,
@@ -118,7 +118,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
       # sample
       sample_rhythmic(item_bank, num_items),
       ## trials
-      musicassessr::build_multi_page_play_melody_until_satisfied_loop(
+      musicassessr::multi_page_play_melody_loop(
         stimuli_type = "midi_notes",
         var_name = "rhythmic_melody",
         n_items = num_items,
@@ -161,7 +161,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
           shiny::tags$h2(page_title),
           shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
           musicassessr::sample_from_user_range(num_examples),
-          musicassessr::build_multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback)
+          musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback)
         )
       },
       psychTestR::one_button_page(shiny::div(
@@ -170,7 +170,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
       # sample
       musicassessr::sample_from_user_range(num_items),
       # build pages
-      musicassessr::build_multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = "record_audio_page", feedback = feedback)
+      musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = "record_audio_page", feedback = feedback)
     )
   )
 }
@@ -185,7 +185,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
 #                                      feedback) {
 #   music_module(module_name = "arrhythmic_melody_trials",
 #                intro_text = "Now you will hear some melodies. Please try and sing the melodies.",
-#                build_page_fun = build_multi_page_play_melody_until_satisfied_loop,
+#                build_page_fun = multi_page_play_melody_until_satisfied_loop,
 #                sample_fun = sample_arrhythmic,
 #                feedback_fun = feedback_melodic_production, ...)
 # }

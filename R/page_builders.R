@@ -87,7 +87,7 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type, butt
         # logic page 1, get new note
         midi_or_audio(page_type, prompt_text, var_name),
         # logic page 2, was everything ok with this note?
-        check_note_ok(answer, state, ...),
+        check_note_ok(answer, state),
         psychTestR::code_block(function(state, answer, ...) {
           psychTestR::set_global("user_satisfied", answer, state)
         })
@@ -112,14 +112,14 @@ get_instrument_range_pages <- function(type) {
     c(
       get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_low_note")), var_name = "bottom_range", page_type = "record_audio_page"),
       get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_high_note")), var_name = "top_range", page_type = "record_audio_page"),
-      present_range(state, ...)
+      present_range(state)
     )
   }
   else {
     c(
       get_note_until_satisfied_loop(prompt_text = psychTestR::i18n("get_range_midi_low_note"), var_name = "bottom_range", page_type = "record_midi_page"),
       get_note_until_satisfied_loop(prompt_text = psychTestR::i18n("get_range_midi_high_note"), var_name = "top_range", page_type = "record_midi_page"),
-      present_range(state, ...)
+      present_range(state)
     )
   }
 
@@ -128,7 +128,7 @@ get_instrument_range_pages <- function(type) {
 
 # internal funs
 
-check_note_ok <- function(answer, state, ...) {
+check_note_ok <- function(answer, state) {
   psychTestR::reactive_page(function(answer, state, ...) {
     note <- answer[[1]]
     if(is.na(note)) {
@@ -148,7 +148,7 @@ check_note_ok <- function(answer, state, ...) {
   })
 }
 
-present_range <- function(state, ...) {
+present_range <- function(state) {
   psychTestR::reactive_page(function(state, ...) {
     lowest_user_note <- psychTestR::get_global("bottom_range", state)
     highest_user_note <- psychTestR::get_global("top_range", state)

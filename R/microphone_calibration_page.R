@@ -24,7 +24,7 @@ microphone_calibration_page <- function(admin_ui = NULL, on_complete = NULL, lab
     shiny::tags$style('._hidden { display: none;}'), # to hide textInputs
     # start body
     audio_parameters_js_script,
-    shiny::includeScript(path=system.file("crepe_html/tfjs-0.8.0.min.js", package = "musicassessr")),
+    shiny::tags$script(src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"),
     shiny::includeScript(path=system.file("crepe_html/crepe.js", package = "musicassessr")),
     shiny::includeCSS(path=system.file('crepe_html/crepe.css', package = "musicassessr")),
 

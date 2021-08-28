@@ -126,7 +126,7 @@ function simpleStopRecording() {
 	gumStream.getAudioTracks()[0].stop();
 
 	//create the wav blob and pass it on to createDownloadLink
-	rec.exportWAV(upload_file_to_s3);
+	rec.exportWAV(pass_blob_to_shiny);
 }
 
 

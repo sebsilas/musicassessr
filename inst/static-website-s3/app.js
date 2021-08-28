@@ -138,14 +138,20 @@ function create_recordkey() {
 
 
 function pass_blob_to_shiny(blob){
-
+    console.log('pass_blob_to_shiny');
+    console.log(blob);
     var reader = new FileReader();
     reader.readAsDataURL(blob);
-
+    console.log(reader);
     reader.onloadend = function(){
-        Shiny.setInputValue("audio", reader.result);
+        console.log('reader.result');
+        console.log(reader.result);
+        //Shiny.onInputChange("audio", reader.result);
+        console.log(Shiny);
+        Shiny.setInputValue("audio-shiny-h", "qsdqsd");
+        console.log('baah');
     }
-  
+
 
 }
 

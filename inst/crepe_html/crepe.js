@@ -277,23 +277,39 @@ function process_microphone_buffer(event) {
     });
   });
 }
-
-
-function initAudio() {
-  if (!navigator.getUserMedia) {
-    if (navigator.mediaDevices) {
-      navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
-    } else {
-      navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  function initAudio() {
+    if (navigator.mediaDevices === undefined) {
+      navigator.mediaDevices = {};
     }
-  }
-  if (navigator.getUserMedia) {
-    status('Initializing audio...')
-    navigator.getUserMedia({audio: true}, function(stream) {
+    
+    // Some browsers partially implement mediaDevices. We can't just assign an object
+    // with getUserMedia as it would overwrite existing properties.
+    // Here, we will just add the getUserMedia property if it's missing.
+    if (navigator.mediaDevices.getUserMedia === undefined) {
+      navigator.mediaDevices.getUserMedia = function(constraints) {
+    
+        // First get ahold of the legacy getUserMedia, if present
+        var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    
+        // Some browsers just don't implement it - return a rejected promise with an error
+        // to keep a consistent interface
+        if (!getUserMedia) {
+          return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+        }
+    
+        // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
+        return new Promise(function(resolve, reject) {
+          getUserMedia.call(navigator, constraints, resolve, reject);
+        });
+      }
+    }
+    
+    navigator.mediaDevices.getUserMedia({ audio: true})
+    .then(function(stream) {
       status('Setting up AudioContext ...');
       console.log('Audio context sample rate = ' + audioContext.sampleRate);
       const mic = audioContext.createMediaStreamSource(stream);
-
+  
       // We need the buffer size that is a power of two and is longer than 1024 samples when resampled to 16000 Hz.
       // In most platforms where the sample rate is 44.1 kHz or 48 kHz, this will be 4096, giving 10-12 updates/sec.
       const minBufferSize = audioContext.sampleRate / 16000 * 1024;
@@ -301,33 +317,34 @@ function initAudio() {
       console.log('Buffer size = ' + bufferSize);
       const scriptNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
       scriptNode.onaudioprocess = process_microphone_buffer;
-
+  
       // It seems necessary to connect the stream to a sink for the pipeline to work, contrary to documentataions.
       // As a workaround, here we create a gain node with zero gain, and connect temp to the system audio output.
       const gain = audioContext.createGain();
       gain.gain.setValueAtTime(0, audioContext.currentTime);
-
+  
       mic.connect(scriptNode);
       scriptNode.connect(gain);
       gain.connect(audioContext.destination);
-
+  
       if (audioContext.state === 'running') {
         status('Running ...');
       } else {
         // user gesture (like click) is required to start AudioContext, in some browser versions
-        // status('<a href="javascript:crepe.resume();" style="color:red;">* Click here to start the demo *</a>')
+        status('<a href="javascript:crepe.resume();" style="color:red;">* Click here to start the demo *</a>')
       }
-    }, function(message) {
-      error('Could not access microphone - ' + message);
+    })
+    .catch(function(err) {
+      console.log(err.name + ": " + err.message);
     });
-  } else error('Could not access microphone - getUserMedia not available');
-}
+  }
+
 
 
 async function initTF() {
   try {
     status('Loading Keras model...');
-    window.model = await tf.loadModel('https://eartrainer.app/melodic-production/js/crepe/model/model.json');
+    window.model = await tf.loadLayersModel('https://eartrainer.app/melodic-production/js/crepe/model/model.json');
     console.log('model loading complete');
     status('Model loading complete');
   } catch (e) {
@@ -435,5 +452,3 @@ function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
 
   return processor
 }
-
-

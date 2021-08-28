@@ -52,7 +52,7 @@ write_wav_file <- function(input, ...) {
   audio <- input$audio
   audio <- gsub('data:audio/wav;base64,', '', audio)
   audio <- gsub(' ', '+', audio)
-  audio <- base64Decode(audio, mode = 'raw')
+  audio <- RCurl::base64Decode(audio, mode = 'raw')
 
   # Save to file on server.
   inFile <- list()

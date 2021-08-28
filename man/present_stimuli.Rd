@@ -8,7 +8,7 @@ present_stimuli(
   stimuli,
   stimuli_type,
   display_modality,
-  page_type = "one_button_page",
+  page_type = NULL,
   page_text = " ",
   page_title = " ",
   slide_length,
@@ -32,6 +32,7 @@ present_stimuli(
   dur_list = "null",
   show_record_button = FALSE,
   auto_next_page = FALSE,
+  choices = NULL,
   ...
 )
 }

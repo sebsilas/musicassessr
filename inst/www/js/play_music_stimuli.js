@@ -122,6 +122,33 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_py
 }
 
 
+function playTones (note_list) {
+
+    console.log(note_list); // testing
+    note_list.forEach(element => console.log(element)); // testing
+
+    note_list = note_list.map(x => Tone.Frequency(x));
+    last_note = note_list[note_list.length - 1];
+
+    var pattern = new Tone.Sequence(function(time, note){
+    synth.triggerAttackRelease(note, 0.5);
+    console.log(note);
+
+    if (note === last_note) {
+      console.log("finished!");
+    }
+
+    }, note_list);
+
+
+    pattern.start(0).loop = false;
+    // begin at the beginning
+    Tone.Transport.start();
+
+
+}
+
+
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
 
@@ -144,7 +171,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
       console.log(note);
       triggerNote(sound, note, 0.50);
       count = count + 1;
-      if (count === last_note) {
+      if (count === last_note & page_type !== 'null') {
         setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
         pattern.stop();
         Tone.Transport.stop();
@@ -160,7 +187,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
                 // the value is an object which contains both the note and the velocity
                 piano.triggerAttackRelease(value.note, value.duration, time);
                 count = count + 1;
-                  if (count === last_note) {
+                  if (count === last_note & page_type !== 'null') {
                     setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording
                     pattern.stop();
                     Tone.Transport.stop();

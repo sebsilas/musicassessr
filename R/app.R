@@ -14,7 +14,13 @@ t <- function() {
                             bucket_region = "us-east-1",
                             identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                             destination_bucket = "shinny-app-destination-41630"))),
+
+    play_interval_page(),
+
     microphone_calibration_page(),
+
+    get_instrument_range_pages("record_audio_page"),
+
     musicassessr::fake_range(),
 
     microphone_type_page(),
@@ -89,6 +95,5 @@ t <- function() {
     psychTestR::final_page("The end")
     ), dict = psychTestR::i18n_dict$new(musicassessr_dict_df)), opt = psychTestR::test_options(title = "test", admin_password = "demo", demo = TRUE))
 }
-
 #t()
 

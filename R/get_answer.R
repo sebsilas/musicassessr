@@ -49,16 +49,16 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 
 write_wav_file <- function(input, ...) {
   # Decode wav file.
-  print('in write_wav_file')
-  print(input)
+  cat(file=stderr(), 'in write_wav_file', "\n")
+  cat(file=stderr(), input, "\n")
   audio <- input$audio
-  print(audio)
+  cat(file=stderr(), audio, "\n")
   audio <- gsub('data:audio/wav;base64,', '', audio)
-  print(audio)
+  cat(file=stderr(), audio, "\n")
   audio <- gsub(' ', '+', audio)
-  print(audio)
+  cat(file=stderr(), audio, "\n")
   audio <- RCurl::base64Decode(audio, mode = 'raw')
-
+  cat(file=stderr(), audio, "\n")
   # Save to file on server.
   inFile <- list()
   file_name <- paste0('temp', sample(1:100000, 1), '.wav')

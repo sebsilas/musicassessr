@@ -126,11 +126,14 @@ function simpleStopRecording() {
 	gumStream.getAudioTracks()[0].stop();
 
   Shiny.setInputValue("audio-shiny-f", "qsdqsd");
-
+  console.log('send to s3...');
 	//create the wav blob and pass it on to createDownloadLink
-	rec.exportWAV(pass_blob_to_shiny);
+	rec.exportWAV(upload_file_to_s3);
 }
 
+function da () {
+  Shiny.setInputValue("chicken", "qsdqsd");
+}
 
 function create_recordkey() {
   var currentDate = new Date();
@@ -151,68 +154,68 @@ function pass_blob_to_shiny(blob){
     }
 }
 
-// function upload_file_to_s3(blob){
+function upload_file_to_s3(blob){
+    console.log('upload_file_to_s3');
+     var recordkey = create_recordkey();
 
-//     var recordkey = create_recordkey();
+     var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
+     console.log(file_url);
 
-//     var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
-//     console.log(file_url);
+     Shiny.setInputValue("sourceBucket", bucketName);
+     Shiny.setInputValue("key", recordkey);
+     Shiny.setInputValue("file_url", file_url);
+     Shiny.setInputValue("destBucket", destBucket);
 
-//     Shiny.setInputValue("sourceBucket", bucketName);
-//     Shiny.setInputValue("key", recordkey);
-//     Shiny.setInputValue("file_url", file_url);
-//     Shiny.setInputValue("destBucket", destBucket);
-
-//     // call next page after credentials saved
-//     if(auto_next_page) {
-//       next_page();
-//     }
-
-
-//     // AWS.config.update({
-//     //     region: bucketRegion,
-//     //     credentials: new AWS.CognitoIdentityCredentials({
-//     //         IdentityPoolId: IdentityPoolId
-//     //     })
-//     // });
-
-//     // var s3 = new AWS.S3({
-//     //     apiVersion: "2006-03-01",
-//     //     params: { Bucket: bucketName }
-//     // });
-
-//     // var upload = new AWS.S3.ManagedUpload({
-//     //     params: {
-//     //         Bucket: bucketName,
-//     //         Key: recordkey,
-//     //         ContentType: 'audio/wav',
-//     //         ACL: 'public-read',
-//     //         Body: blob
-//     //     }
-//     // });
+     // call next page after credentials saved
+     if(auto_next_page) {
+       next_page();
+     }
 
 
-//     // var promise = upload.promise();
-// 	  var para = document.createElement("p");                       // Create a <p> node
-// 	  var t = document.createTextNode("Please wait a moment, your file is just loading.");      // Create a text node
-// 	para.appendChild(t);                                          // Append the text to <p>
-// 	document.getElementById("loading").appendChild(para);
-//     promise.then(
-//         function (data) {
-//             console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
-// 			var div = document.getElementById('loading');
-// 			if (div) {
-//         div.innerHTML="<p>Your File is still being processed</p>";
-//       }
-// 			createDownloadLink(recordkey);
-// 			getFile(recordkey);
+      AWS.config.update({
+          region: bucketRegion,
+          credentials: new AWS.CognitoIdentityCredentials({
+              IdentityPoolId: IdentityPoolId
+          })
+      });
 
-//         },
-//         function (err) {
-//             return alert("There was an error uploading your record: ", err.message);
-//         }
-//     );
-// }
+      var s3 = new AWS.S3({
+          apiVersion: "2006-03-01",
+          params: { Bucket: bucketName }
+      });
+
+      var upload = new AWS.S3.ManagedUpload({
+          params: {
+              Bucket: bucketName,
+              Key: recordkey,
+              ContentType: 'audio/wav',
+              ACL: 'public-read',
+              Body: blob
+          }
+      });
+
+
+      var promise = upload.promise();
+ 	  var para = document.createElement("p");                       // Create a <p> node
+ 	  var t = document.createTextNode("Please wait a moment, your file is just loading.");      // Create a text node
+ 	para.appendChild(t);                                          // Append the text to <p>
+ 	document.getElementById("loading").appendChild(para);
+     promise.then(
+         function (data) {
+             console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
+ 			var div = document.getElementById('loading');
+ 			if (div) {
+         div.innerHTML="<p>Your File is still being processed</p>";
+       }
+ 			createDownloadLink(recordkey);
+ 			getFile(recordkey);
+
+         },
+         function (err) {
+             return alert("There was an error uploading your record: ", err.message);
+         }
+     );
+}
 
 async function getFile(recordkey) {
 	let response = await fetch(api_url,{ method: 'POST', body: JSON.stringify({"sourceBucket":bucketName,"key":recordkey,"destBucket":destBucket}) })

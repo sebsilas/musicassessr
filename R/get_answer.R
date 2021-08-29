@@ -457,6 +457,10 @@ do <- function(api_url, json) {
 #'
 #' @examples
 get_answer_save_aws_key <- function(input, ...) {
+  print('get_answer_save_aws_key')
+  print(input)
+  print(input$key)
+  print(input$file_url)
   list(key = input$key,
        file_url = input$file_url)
 }

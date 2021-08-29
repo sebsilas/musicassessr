@@ -90,3 +90,81 @@ select_musical_instrument_page <- function() {
 
 
 
+
+play_interval_page <- function(interval = NULL,
+                               page_title = "What is the interval?",
+                               play_button_text = "Play",
+                               example = FALSE,
+                               label = "interval_",
+                               save_answer = TRUE,
+                               get_answer = interval_page_get_answer) {
+
+  if(example) {
+    save_answer <- FALSE
+  } else {
+    save_answer <- TRUE
+  }
+
+  psychTestR::reactive_page(function(state, ...) {
+    print('in reactive interval page')
+    if(is.null(interval)) {
+      start_note <- sample(48:72, 1)
+      direction <- sample(c("ascending", "descending"), 1)
+      interval <- sample(itembankr::intervals, 1)
+      print('sampled interval')
+      print(interval)
+      print('semitones:')
+      print(interval[[1]])
+      abs_interval <- c(start_note, start_note+interval[[1]])
+      #abs_interval <- ifelse(direction == "ascending", c(start_note, start_note+interval[[1]]), c(start_note, start_note-interval[[1]]))
+      print('abs_interval')
+      print(abs_interval)
+      print('setting correct answer tiwht:')
+      print(names(interval))
+      answer_meta_data <- list(correct_answer = names(interval),
+                              direction = direction,
+                              abs_interval = abs_interval)
+
+      print('answer_meta_data:')
+      print(answer_meta_data)
+
+      psychTestR::set_global("answer_meta_data", answer_meta_data, state)
+    }
+
+    psychTestR::page(ui = shiny::tags$div(
+        shiny::tags$h2(page_title),
+      present_stimuli(stimuli = abs_interval,
+                      stimuli_type = "midi_notes",
+                      display_modality = "auditory",
+                      page_label = "interval_",
+                      play_button_text = play_button_text,
+                      sound = "piano"),
+      shiny::selectInput(inputId = "dropdown",
+                         label = NULL,
+                         choices = names(itembankr::intervals)),
+      psychTestR::trigger_button("next", "Next")),
+    label = label, get_answer = get_answer, save_answer = save_answer)
+  })
+
+}
+
+interval_page_get_answer <- function(input, state, ...) {
+    print('interval_page_get_answer')
+    answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
+    # print('dropdown said: ')
+    # print(input$dropdown)
+    # print('answerMeta correct answer is::')
+    # print(answer_meta_data$correct_answer)
+    msg <- ifelse(input$dropdown == answer_meta_data$correct_answer, "Correct Answer!", "Wrong Answer!")
+    shiny::showNotification(msg)
+    print('store the following list:')
+    print(list(user_choice = input$dropdown,
+         correct_answer = answer_meta_data$correct_answer,
+         direction = answer_meta_data$direction,
+         abs_interval = answer_meta_data$abs_interval))
+    list(user_choice = input$dropdown,
+         correct_answer = answer_meta_data$correct_answer,
+         direction = answer_meta_data$direction,
+         abs_interval = answer_meta_data$abs_interval)
+}
+

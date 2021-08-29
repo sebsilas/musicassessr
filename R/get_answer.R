@@ -1,3 +1,88 @@
+pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
+
+  if(is.null(transform_file)) {
+    args <- c("-d",
+              "vamp:pyin:pyin:notes",
+              file_name,
+              "-w",
+              "csv --csv-stdout")
+  } else {
+    args <- c(paste0('-t ', transform_file),
+              file_name,
+              "-w",
+              "csv --csv-stdout")
+  }
+
+  if(normalise == 1) {
+    args <- c(args, "--normalise")
+  }
+
+
+  if(hidePrint) {
+    sa_out <- system2(command = "/opt/sonic-annotator/sonic-annotator",
+                      args = args,
+                      stdout = TRUE, stderr = FALSE)
+  } else {
+    sa_out <- system2(command = "/opt/sonic-annotator/sonic-annotator",
+                      args = args,
+                      stdout = TRUE)
+  }
+
+  if(length(sa_out) == 0) {
+    res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
+  } else {
+    res <- read.csv(text = sa_out, header = FALSE) %>%
+      dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+      dplyr::mutate(
+        onset = round(onset, 2),
+        dur = round(dur, 2),
+        freq = round(freq, 2),
+        note = round(hrep::freq_to_midi(freq)))
+
+    file_name <- res$V1[[1]]
+
+    res <- res %>% dplyr::select(-V1)
+
+    res <- tibble::tibble(file_name, res)
+  }
+}
+
+write_wav_file <- function(input, ...) {
+  # Decode wav file.
+  print('in write_wav_file')
+  print(input$audio)
+  audio <- input$audio
+  audio <- gsub('data:audio/wav;base64,', '', audio)
+  audio <- gsub(' ', '+', audio)
+  audio <- RCurl::base64Decode(audio, mode = 'raw')
+  # Save to file on server.
+  inFile <- list()
+  file_name <- paste0('temp', sample(1:100000, 1), '.wav')
+  inFile$datapath <- file_name
+  inFile$file <- file(inFile$datapath, 'wb')
+  writeBin(audio, inFile$file)
+  close(inFile$file)
+
+  # return file name
+  file_name
+}
+
+#' Produce wav from audio recorded in browser and return pyin result
+#'
+#' @param input
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_wav_then_pyin <- function(input, ...) {
+  print(input)
+  print(input$audio-shiny-h)
+  file <- write_wav_file(input, ...)
+  pyin(file)
+}
+
 log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 
 

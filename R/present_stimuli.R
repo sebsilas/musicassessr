@@ -12,7 +12,7 @@ reactive_stimuli <- function(stimuli_function, stimuli_reactive, prepared_stimul
 
 
 present_stimuli_reactive <- function(stimuli_reactive_keyword, stimuli, stimuli_type, display_modality, page_type, record_audio_method = "aws_pyin",
-                                     page_title = " ", start_note = start_note, end_note = end_note, ...) {
+                                     page_title = " ", start_note = start_note, end_note = end_note, auto_next_page = FALSE, ...) {
 
   # basically just pass down the stimuli to be called at run time
   # stimuli_reactive_keyword defines the type of reactive stimuli
@@ -23,7 +23,7 @@ present_stimuli_reactive <- function(stimuli_reactive_keyword, stimuli, stimuli_
                            interactive = interactive, answer_meta_data = answer_meta_data,
                            stimuli_reactive = stimuli_reactive, stimuli_type = stimuli_type,
                            page_type = page_type, record_audio_method = record_audio_method,
-                           start_note = start_note, end_note = end_note)
+                           start_note = start_note, end_note = end_note, auto_next_page = auto_next_page)
   }
 
   list(stimuli_reactive_keyword, return_fun)
@@ -47,13 +47,13 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
                                stimuli_reactive = FALSE, answer_meta_data = NULL, midi_device = " ",
                                record_audio_method = "aws_pyin", show_aws_controls = FALSE, page_label = " ",
                                button_text = "Next", play_button_text = "Play", get_answer = get_answer_null,
-                               show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE, ...) {
+                               show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE,
+                               choices = NULL, ...) {
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
   # before reaching here
 
-  #page.fun <- get(page_type_string)
   if(page_type_string == "record_audio_page" |
      page_type_string == "record_midi_page" |
      page_type_string == "record_key_presses_page" |
@@ -70,7 +70,7 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
   args$octave <- NULL
 
   # check if certain page types have their required arguments
-  validate.page.types(page_type_string, args)
+  #validate.page.types(page_type_string, args)
 
   # feed the body to the page, but using the correct argument
   # i.e some pages accept "body" whilst others accept "prompt"
@@ -160,7 +160,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                    button_text = "Next", play_button_text = "Play",
                                    record_audio_method = "aws_pyin", note_length = 0.5,
                                    sound = "piano", asChord = FALSE, slide_length = 0.5, page_title = " ",
-                                   start_note = 0, end_note = "end", dur_list = 'null', ...) {
+                                   start_note = 0, end_note = "end", dur_list = 'null', auto_next_page = FALSE,...) {
 
   # generic stimuli types
 
@@ -193,7 +193,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                                  show_aws_controls = show_aws_controls,
                                                  page_label = page_label, button_text = button_text,
                                                  play_button_text = play_button_text, note_length = note_length,
-                                                 sound = sound, asChord = asChord, ascending = ascending, dur_list = dur_list, ...)
+                                                 sound = sound, asChord = asChord, ascending = ascending, dur_list = dur_list, auto_next_page = auto_next_page, ...)
   }
 
   else if (stimuli_type == "frequencies") {
@@ -261,7 +261,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
 #' @export
 #'
 #' @examples
-present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type = "one_button_page",
+present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type = NULL,
                             page_text = " ", page_title = " ",  slide_length,
                             special_page_underlying_page_type = "one_button_page", record_audio_method = "aws_pyin",
                             answer_meta_data = NULL, get_answer = get_answer_null, save_answer = FALSE,
@@ -270,8 +270,11 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             button_text = "Next", play_button_text = "Play",
                             note_length = 0.5, sound = "piano", asChord = FALSE, ascending = TRUE,
                             start_note = 0, end_note = "end", dur_list = 'null', show_record_button = FALSE,
-                            auto_next_page = FALSE, ...) {
+                            auto_next_page = FALSE, choices = NULL, ...) {
 
+  if(is.null(page_type)) {
+    page_type <- 'null'
+  }
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (!stimuli_reactive) {
@@ -279,7 +282,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                              midi_device = midi_device, play_button_text = play_button_text,
                                              record_audio_method = record_audio_method, sound = sound, note_length = note_length,
                                              asChord = asChord, slide_length = slide_length, page_title = page_title,
-                                             start_note = start_note, end_note = end_note, dur_list = dur_list, ...)
+                                             start_note = start_note, end_note = end_note, dur_list = dur_list, auto_next_page = auto_next_page, ...)
   }
   else {
     return_stimuli <- present_stimuli_reactive(stimuli_reactive, stimuli,
@@ -288,7 +291,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                                get_answer = get_answer, midi_device = midi_device,
                                                record_audio_method = record_audio_method,
                                                asChord = asChord, slide_length = slide_length, page_title = page_title,
-                                               start_note = start_note, end_note = end_note, dur_list = dur_list, ...)
+                                               start_note = start_note, end_note = end_note, dur_list = dur_list, auto_next_page = auto_next_page, ...)
   }
 
   # append page text to the page
@@ -299,7 +302,10 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
   # is interactive?
   interactive <- ifelse(stimuli == "interactive", TRUE, FALSE)
 
-  if(!is.null(return_stimuli$present_stimuli_characters_auditory)) {
+  if(is.null(page_type) | page_type == 'null') {
+    res <- return_stimuli
+  }
+  else if(!is.null(return_stimuli$present_stimuli_characters_auditory)) {
 
     res <- retrieve_page_type(page_type = "play_text_page",
                               stimuli_wrapped = return_stimuli, underlying_page_type = page_type,
@@ -338,7 +344,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
 
   else {
     full_page <- shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(page_text), shiny::tags$br(), return_stimuli)
-    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, ...)
+    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, ...)
   }
 
   res

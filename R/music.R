@@ -318,21 +318,23 @@ play.notes.html.wrapper <- function(stimuli_pitches, stimuli_rhythms) {
 
 }
 
-open.music.display.wrapper <- function(xml) {
+open.music.display.wrapper <- function(xml, id = "sheet-music", return_div = TRUE) {
+
+  non_underscore_id <- stringr::str_remove(id, "_")
 
   shiny::tags$div(
     shiny::tags$br(),
-    shiny::tags$div(id="sheet-music"),
+    if(return_div) shiny::tags$div(id=id),
     shiny::tags$script(htmltools::HTML(paste0('
-                var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(\"sheet-music\", {drawingParameters: "compact",
+                var ', id, '_osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(\"', id, '\", {drawingParameters: "compact",
                 drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false});
-                var loadPromise = osmd.load(`',xml,'`);
+                var loadPromise = ', id, '_osmd.load(`',xml,'`);
                               loadPromise.then(function(){
-                              var sheetmusic = document.getElementById("sheet-music");
-                              osmd.render();
-                              var scoreWidth = String(parseInt(osmd.graphic.musicPages[0].musicSystems[0].PositionAndShape.size.width)*10);
+                              var ', non_underscore_id, ' = document.getElementById("', id, '");
+                              ', id, '_osmd.render();
+                              var scoreWidth = String(parseInt(', id, '_osmd.graphic.musicPages[0].musicSystems[0].PositionAndShape.size.width)*10);
                               scoreWidth = scoreWidth.concat("px");
-                              sheetmusic.style.width = scoreWidth;
+                              ', non_underscore_id, '.style.width = scoreWidth;
                               });'))))
 }
 

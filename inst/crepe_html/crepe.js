@@ -344,7 +344,7 @@ function process_microphone_buffer(event) {
 async function initTF() {
   try {
     status('Loading Keras model...');
-    window.model = await tf.loadLayersModel('model/model.json');
+    window.model = await tf.loadLayersModel('/MST-demo/model/model.json');
     console.log('model loading complete');
     status('Model loading complete');
   } catch (e) {

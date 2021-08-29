@@ -15,34 +15,28 @@ xhr = null;
 }
 return xhr;
 }
-
 // Helper method to parse the title tag from the response.
 function getTitle(text) {
 return text.match(\'<title>(.*)?</title>\')[1];
 }
-
 // Make the actual CORS request.
 function makeCorsRequest() {
 // This is a sample server that supports CORS.
 var url = \'https://eartrainer.app/melodic-production/js/midi.js\';
-
 var xhr = createCORSRequest(\'GET\', url);
 if (!xhr) {
 alert(\'CORS not supported\');
 return;
 }
-
 // Response handlers.
 xhr.onload = function() {
 var text = xhr.responseText;
 var title = getTitle(text);
 alert(\'Response from CORS request to \' + url + \': \' + title);
 };
-
 xhr.onerror = function() {
 alert(\'Woops, there was an error making the request.\');
 };
-
 xhr.send();
 }
 '
@@ -70,8 +64,8 @@ musicassessr_js_scripts <- function(destination_bucket, api_url, bucket_name, bu
                                             var bucketName = "',bucket_name,'";
                                             var bucketRegion = "',bucket_region,'";
                                             var IdentityPoolId = "',identity_pool_id,'";')),
-    shiny::includeScript(path=system.file("crepe_html/tfjs-0.8.0.min.js", package = "musicassessr")),
-    #shiny::includeScript(path=system.file("crepe_html/crepe.js", package = "musicassessr")),
+    shiny::tags$script(src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"),
+    shiny::includeScript(path=system.file("crepe_html/crepe.js", package = "musicassessr")),
     shiny::includeCSS(path = system.file('crepe_html/crepe.css', package = "musicassessr")),
     shiny::tags$script(src="https://www.midijs.net/lib/midi.js"),
     shiny::tags$script(src="https://unpkg.com/@tonejs/midi"),

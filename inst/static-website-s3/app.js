@@ -147,7 +147,7 @@ function pass_blob_to_shiny(blob){
     Shiny.setInputValue("audio-shiny-g", "qsdqsd");
     reader.onloadend = function() {
         Shiny.setInputValue("audio-shiny-h", "qsdqsd");
-        Shiny.setInputValue("audio", result.reader);
+        Shiny.setInputValue("audio", reader.result);
     }
 }
 

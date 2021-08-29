@@ -125,6 +125,8 @@ function simpleStopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
+  Shiny.setInputValue("audio-shiny-f", "qsdqsd");
+
 	//create the wav blob and pass it on to createDownloadLink
 	rec.exportWAV(pass_blob_to_shiny);
 }
@@ -139,20 +141,14 @@ function create_recordkey() {
 
 function pass_blob_to_shiny(blob){
     console.log('pass_blob_to_shiny');
-    console.log(blob);
+    console.log(Shiny);
     var reader = new FileReader();
     reader.readAsDataURL(blob);
-    console.log(reader);
-    reader.onloadend = function(){
-        console.log('reader.result');
-        console.log(reader.result);
-        //Shiny.onInputChange("audio", reader.result);
-        console.log(Shiny);
+    Shiny.setInputValue("audio-shiny-g", "qsdqsd");
+    reader.onloadend = function() {
         Shiny.setInputValue("audio-shiny-h", "qsdqsd");
-        console.log('baah');
+        Shiny.setInputValue("audio", result.reader);
     }
-
-
 }
 
 // function upload_file_to_s3(blob){

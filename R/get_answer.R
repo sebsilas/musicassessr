@@ -51,6 +51,9 @@ write_wav_file <- function(input, ...) {
   # Decode wav file.
   print('in write_wav_file')
   print(input$audio)
+  print(input$`audio-shiny-f`)
+  print(input$`audio-shiny-g`)
+  print(input$`audio-shiny-h`)
   audio <- input$audio
   audio <- gsub('data:audio/wav;base64,', '', audio)
   audio <- gsub(' ', '+', audio)
@@ -78,7 +81,6 @@ write_wav_file <- function(input, ...) {
 #' @examples
 get_answer_wav_then_pyin <- function(input, ...) {
   print(input)
-  print(input$audio-shiny-h)
   file <- write_wav_file(input, ...)
   pyin(file)
 }

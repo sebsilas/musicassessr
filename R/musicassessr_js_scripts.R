@@ -70,9 +70,9 @@ musicassessr_js_scripts <- function(destination_bucket, api_url, bucket_name, bu
                                             var bucketName = "',bucket_name,'";
                                             var bucketRegion = "',bucket_region,'";
                                             var IdentityPoolId = "',identity_pool_id,'";')),
-    # shiny::tags$script(src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"),
-    # shiny::includeScript(path=system.file("crepe_html/crepe.js", package = "musicassessr")),
-    # shiny::includeCSS(path = system.file('crepe_html/crepe.css', package = "musicassessr")),
+    shiny::tags$script(src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"),
+    shiny::includeScript(path=system.file("crepe_html/crepe.js", package = "musicassessr")),
+    shiny::includeCSS(path = system.file('crepe_html/crepe.css', package = "musicassessr")),
     shiny::tags$script(src="https://www.midijs.net/lib/midi.js"),
     shiny::tags$script(src="https://unpkg.com/@tonejs/midi"),
     shiny::includeScript(system.file("www/js/modernizr-custom.js", package = "musicassessr")),

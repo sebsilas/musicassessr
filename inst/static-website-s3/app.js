@@ -112,7 +112,7 @@ function stopRecording() {
 	gumStream.getAudioTracks()[0].stop();
 
 	//create the wav blob and pass it on to createDownloadLink
-	rec.exportWAV(pass_blob_to_shiny);
+	rec.exportWAV(upload_file_to_s3);
 }
 
 
@@ -125,173 +125,116 @@ function simpleStopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-  Shiny.setInputValue("audio-shiny-f", "qsdqsd");
-  console.log('send to s3...');
 	//create the wav blob and pass it on to createDownloadLink
 	rec.exportWAV(upload_file_to_s3);
 }
 
-function da () {
-  Shiny.setInputValue("chicken", "qsdqsd");
-}
 
 function create_recordkey() {
   var currentDate = new Date();
-  var recordkey = currentDate.getDate().toString() + '-' + currentDate.getMonth().toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString() + '.wav';
+  var recordkey = currentDate.getDate().toString() + '-' + currentDate.getMonth().toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
   return(recordkey)
 }
 
-
-function pass_blob_to_shiny(blob){
-    console.log('pass_blob_to_shiny');
-    console.log(Shiny);
-    var reader = new FileReader();
-    reader.readAsDataURL(blob);
-    Shiny.setInputValue("audio-shiny-g", "qsdqsd");
-    reader.onloadend = function() {
-        Shiny.setInputValue("audio-shiny-h", "qsdqsd");
-        Shiny.setInputValue("audio", reader.result);
-    }
-}
-
 function upload_file_to_s3(blob){
-    console.log('upload_file_to_s3');
-     var recordkey = create_recordkey();
 
-     var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
-     console.log(file_url);
+    var recordkey = create_recordkey();
 
-     Shiny.setInputValue("sourceBucket", bucketName);
-     Shiny.setInputValue("key", recordkey);
-     Shiny.setInputValue("file_url", file_url);
-     Shiny.setInputValue("destBucket", destBucket);
+    var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
+    console.log(file_url);
 
-     // call next page after credentials saved
-     if(auto_next_page) {
-       next_page();
-     }
+    Shiny.setInputValue("sourceBucket", bucketName);
+    Shiny.setInputValue("key", recordkey);
+    Shiny.setInputValue("file_url", file_url);
+    Shiny.setInputValue("destBucket", destBucket);
 
+    // call next page after credentials saved
+    if(auto_next_page) {
+      next_page();
+    }
 
-      AWS.config.update({
-          region: bucketRegion,
-          credentials: new AWS.CognitoIdentityCredentials({
-              IdentityPoolId: IdentityPoolId
-          })
-      });
-
-      var s3 = new AWS.S3({
-          apiVersion: "2006-03-01",
-          params: { Bucket: bucketName }
-      });
-
-      var upload = new AWS.S3.ManagedUpload({
-          params: {
-              Bucket: bucketName,
-              Key: recordkey,
-              ContentType: 'audio/wav',
-              ACL: 'public-read',
-              Body: blob
-          }
-      });
-
-
-      var promise = upload.promise();
- 	  var para = document.createElement("p");                       // Create a <p> node
- 	  var t = document.createTextNode("Please wait a moment, your file is just loading.");      // Create a text node
- 	para.appendChild(t);                                          // Append the text to <p>
- 	document.getElementById("loading").appendChild(para);
-     promise.then(
-         function (data) {
-             console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
- 			var div = document.getElementById('loading');
- 			if (div) {
-         div.innerHTML="<p>Your File is still being processed</p>";
-       }
- 			createDownloadLink(recordkey);
- 			getFile(recordkey);
-
-         },
-         function (err) {
-             return alert("There was an error uploading your record: ", err.message);
-         }
-     );
-}
-
-async function getFile(recordkey) {
-	let response = await fetch(api_url,{ method: 'POST', body: JSON.stringify({"sourceBucket":bucketName,"key":recordkey,"destBucket":destBucket}) })
-	let csv_file = await response.json()
-	var link = document.createElement('a');
-
-	link.href = "https://"+csv_file.Bucket+".s3.amazonaws.com/"+csv_file.key;
-	link.download = true
-	link.innerHTML = "csv file";
-
-	var div = document.getElementById('csv_file');
-  var loading = document.getElementById("loading");
-
-  if (loading) {
-    loading.innerHTML="<p>Processing complete successfully</p>";
-  }
-
-  if (typeof recordButton !== 'undefined') {
-    recordButton.disabled = false;
-  }
-
-  if (div) {
-    div.appendChild(link);
-    parseCsvFile(link.href)
-  }
+	var xhr=new XMLHttpRequest();
+	var filename = new Date().toISOString();
+	var fd=new FormData();
+	fd.append("audio_data",blob, recordkey);
+	xhr.open("POST","/api/store_audio",true);
+	xhr.send(fd);
 
 }
 
+// async function getFile(recordkey) {
+// 	let response = await fetch(api_url,{ method: 'POST', body: JSON.stringify({"sourceBucket":bucketName,"key":recordkey,"destBucket":destBucket}) })
+// 	let csv_file = await response.json()
+// 	var link = document.createElement('a');
 
-function createDownloadLink(key) {
+// 	link.href = "https://"+csv_file.Bucket+".s3.amazonaws.com/"+csv_file.key;
+// 	link.download = true
+// 	link.innerHTML = "csv file";
 
-	var au = document.createElement('audio');
-	var li = document.createElement('li');
-	var link = document.createElement('a');
+// 	var div = document.getElementById('csv_file');
+//   var loading = document.getElementById("loading");
 
-	//name of .wav file to use during upload and download (without extendion)
+//   if (loading) {
+//     loading.innerHTML="<p>Processing complete successfully</p>";
+//   }
 
-	//add controls to the <audio> element
-	au.controls = true;
-	au.src =  "https://"+bucketName+".s3.amazonaws.com/"+key;
+//   if (typeof recordButton !== 'undefined') {
+//     recordButton.disabled = false;
+//   }
 
-	//save to disk link
-	link.href = "https://"+bucketName+".s3.amazonaws.com/"+key;
-	link.download = true
-	link.innerHTML = "Save to disk";
+//   if (div) {
+//     div.appendChild(link);
+//     parseCsvFile(link.href)
+//   }
 
-	//add the new audio element to li
-	li.appendChild(au);
-
-	//add the filename to the li
-	// li.appendChild(document.createTextNode(filename+".wav "))
-
-	//add the save to disk link to li
-	li.appendChild(link);
-	if(typeof recordingsList !== 'undefined') {
-	  recordingsList.appendChild(li);
-	}
-
-}
-
-//Export 3rd column of the csv file
-
-async function parseCsvFile(filename){
-	let response = await fetch(filename,{ method: 'GET'})
-	let csv_file = response
-	//Convert each line to array and append each 3 element to a new array
-	csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
-	  Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
-		var div = document.getElementById('csv_file');
-		p=document.createElement('p');
-		p.innerHTML=JSON.stringify(result);
-		if(div) {
-		  div.appendChild(p);
-		}
-	})
-
-}
+// }
 
 
+// function createDownloadLink(key) {
+
+// 	var au = document.createElement('audio');
+// 	var li = document.createElement('li');
+// 	var link = document.createElement('a');
+
+// 	//name of .wav file to use during upload and download (without extendion)
+
+// 	//add controls to the <audio> element
+// 	au.controls = true;
+// 	au.src =  "https://"+bucketName+".s3.amazonaws.com/"+key;
+
+// 	//save to disk link
+// 	link.href = "https://"+bucketName+".s3.amazonaws.com/"+key;
+// 	link.download = true
+// 	link.innerHTML = "Save to disk";
+
+// 	//add the new audio element to li
+// 	li.appendChild(au);
+
+// 	//add the filename to the li
+// 	// li.appendChild(document.createTextNode(filename+".wav "))
+
+// 	//add the save to disk link to li
+// 	li.appendChild(link);
+// 	if(typeof recordingsList !== 'undefined') {
+// 	  recordingsList.appendChild(li);
+// 	}
+
+// }
+
+// //Export 3rd column of the csv file
+
+// async function parseCsvFile(filename){
+// 	let response = await fetch(filename,{ method: 'GET'})
+// 	let csv_file = response
+// 	//Convert each line to array and append each 3 element to a new array
+// 	csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
+// 	  Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
+// 		var div = document.getElementById('csv_file');
+// 		p=document.createElement('p');
+// 		p.innerHTML=JSON.stringify(result);
+// 		if(div) {
+// 		  div.appendChild(p);
+// 		}
+// 	})
+
+// }

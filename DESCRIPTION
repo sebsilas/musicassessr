@@ -36,6 +36,10 @@ Imports:
     seewave,
     warbleR,
     psyquest,
-    RCurl
+    RCurl,
+    DT,
+    stringr,
+    tidyr,
+    xlsx
 Depends: 
     R (>= 2.10)

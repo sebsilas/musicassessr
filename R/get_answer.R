@@ -97,7 +97,7 @@ get_answer_wav_then_pyin <- function(input, ...) {
 #'
 #' @examples
 get_answer_pyin <- function(input, ...) {
-  file <- paste0('/srv/shiny-server/files/', input$recordkey)
+  file <- paste0('/srv/shiny-server/files/', input$key)
   pyin(file)
 }
 

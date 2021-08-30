@@ -39,7 +39,6 @@ Imports:
     RCurl,
     DT,
     stringr,
-    tidyr,
-    xlsx
+    tidyr
 Depends: 
     R (>= 2.10)

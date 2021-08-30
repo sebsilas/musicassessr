@@ -85,6 +85,14 @@ get_answer_wav_then_pyin <- function(input, ...) {
   pyin(file)
 }
 
+
+
+get_answer_pyin <- function(input, ...) {
+  file <- paste0('/srv/shiny-server/files/', input$recordkey)
+  pyin(file)
+}
+
+
 log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 
 
@@ -461,6 +469,7 @@ get_answer_save_aws_key <- function(input, ...) {
   print(input)
   print(input$key)
   print(input$file_url)
+  print(input$`audio-shiny-f`)
   list(key = input$key,
        file_url = input$file_url)
 }

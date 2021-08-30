@@ -636,7 +636,7 @@ function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
             stopButton.style.visibility = 'visible';
 
             stopButton.onclick = function () {
-              next_page();
+              //next_page();
               simpleStopRecording();
             };
           }

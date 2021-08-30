@@ -1,3 +1,14 @@
+#' pyin
+#'
+#' @param file_name
+#' @param transform_file
+#' @param normalise
+#' @param hidePrint
+#'
+#' @return
+#' @export
+#'
+#' @examples
 pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
 
   if(is.null(transform_file)) {

@@ -80,7 +80,6 @@ write_wav_file <- function(input, ...) {
 #'
 #' @examples
 get_answer_wav_then_pyin <- function(input, ...) {
-  print(input)
   file <- write_wav_file(input, ...)
   pyin(file)
 }
@@ -97,7 +96,7 @@ get_answer_wav_then_pyin <- function(input, ...) {
 #'
 #' @examples
 get_answer_pyin <- function(input, ...) {
-  file <- paste0('/srv/shiny-server/files/', input$key)
+  file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   pyin(file)
 }
 

@@ -160,7 +160,7 @@ function upload_file_to_s3(blob){
 	xhr.send(fd);
 	setTimeout(function(){
     }, 20000);
-	validateFile(recordkey):
+	validateFile(recordkey);
 	if(auto_next_page) {
         next_page();
       }

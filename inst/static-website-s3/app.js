@@ -146,9 +146,7 @@ function upload_file_to_s3(blob){
    
 
     // call next page after credentials saved
-    if(auto_next_page) {
-      next_page();
-    }
+
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();
@@ -156,15 +154,16 @@ function upload_file_to_s3(blob){
 	fd.append("audio_data",blob, recordkey);
 	xhr.open("POST","/api/store_audio",true);
 	xhr.send(fd);
-	xhr.onload = () => { console.log(xhr.responseText); 
+	xhr.onload = () => { console.log(xhr.responseText);
+	}
 	Shiny.setInputValue("sourceBucket", bucketName);
     Shiny.setInputValue("key", recordkey);
     Shiny.setInputValue("file_url", file_url);
     Shiny.setInputValue("destBucket", destBucket);
-	}
 
-
-
+    if(auto_next_page) {
+		next_page();
+	  }
 }
 
 // async function getFile(recordkey) {

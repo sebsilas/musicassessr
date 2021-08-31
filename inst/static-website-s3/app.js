@@ -161,7 +161,7 @@ function upload_file_to_s3(blob){
         next_page();
       }
 
-    }, 20000);
+    }, 8000);
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();

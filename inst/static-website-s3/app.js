@@ -158,8 +158,9 @@ function upload_file_to_s3(blob){
 	fd.append("audio_data",blob, recordkey);
 	xhr.open("POST","/api/store_audio",true);
 	xhr.send(fd);
-
-
+	setTimeout(function(){
+    }, 20000);
+	validateFile(recordkey):
 	if(auto_next_page) {
         next_page();
       }

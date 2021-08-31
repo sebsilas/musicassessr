@@ -154,14 +154,14 @@ function upload_file_to_s3(blob){
 
     setTimeout(function(){
 
-    }, 20000);
-
     console.log('end delay');
 
     // call next page after credentials saved
     if(auto_next_page) {
       next_page();
     }
+
+    }, 20000);
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();

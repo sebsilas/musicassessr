@@ -228,7 +228,7 @@ function upload_file_to_s3(blob){
 // //Export 3rd column of the csv file
 
 async function validateFile(filename){
-	let response = await fetch("https://adaptiveeartraining.com/files/"+filename,{ method: 'GET'})
+	let response = await fetch("https://adaptiveeartraining.com/files/"+filename+".wav",{ method: 'GET'})
 	let csv_file = response
 	console.log(csv_file.ok); // returns true if the response returned successfully
 

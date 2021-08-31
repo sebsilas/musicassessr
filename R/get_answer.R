@@ -28,11 +28,7 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
     args <- c(args, "--normalise")
   }
 
-  file_exists <- file.exists(file_name)
-
-  while(!file_exists) {
-    file_exists <- file.exists(file_name)
-  }
+  Sys.sleep(5)
 
   if(hidePrint) {
     sa_out <- system2(command = "/opt/sonic-annotator/sonic-annotator",

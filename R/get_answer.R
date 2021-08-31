@@ -28,8 +28,6 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
     args <- c(args, "--normalise")
   }
 
-  Sys.sleep(5)
-
   if(hidePrint) {
     sa_out <- system2(command = "/opt/sonic-annotator/sonic-annotator",
                       args = args,
@@ -108,7 +106,6 @@ get_answer_wav_then_pyin <- function(input, ...) {
 #'
 #' @examples
 get_answer_pyin <- function(input, ...) {
-  Sys.sleep(5)
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   pyin(file)
 }

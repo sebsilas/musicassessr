@@ -148,7 +148,15 @@ function upload_file_to_s3(blob){
     Shiny.setInputValue("file_url", file_url);
     Shiny.setInputValue("destBucket", destBucket);
 
+    console.log('start delay');
+
     // call next page after credentials saved
+    setTimeout(function(){
+
+    }, 8000);
+
+    console.log('end delay');
+
     if(auto_next_page) {
       next_page();
     }

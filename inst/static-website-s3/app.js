@@ -154,7 +154,7 @@ function upload_file_to_s3(blob){
 
     setTimeout(function(){
 
-    }, 8000);
+    }, 20000);
 
     console.log('end delay');
 

@@ -154,12 +154,12 @@ function upload_file_to_s3(blob){
 
     setTimeout(function(){
 
-    console.log('end delay');
+      console.log('end delay');
 
-    // call next page after credentials saved
-    if(auto_next_page) {
-      next_page();
-    }
+      // call next page after credentials saved
+      if(auto_next_page) {
+        next_page();
+      }
 
     }, 20000);
 

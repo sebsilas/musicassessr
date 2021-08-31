@@ -143,14 +143,12 @@ function upload_file_to_s3(blob){
     var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
     console.log(file_url);
 
-    Shiny.setInputValue("sourceBucket", bucketName);
-    Shiny.setInputValue("key", recordkey);
-    Shiny.setInputValue("file_url", file_url);
-    Shiny.setInputValue("destBucket", destBucket);
-
-    console.log('start delay');
+   
 
     // call next page after credentials saved
+    if(auto_next_page) {
+      next_page();
+    }
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();
@@ -158,12 +156,15 @@ function upload_file_to_s3(blob){
 	fd.append("audio_data",blob, recordkey);
 	xhr.open("POST","/api/store_audio",true);
 	xhr.send(fd);
-	setTimeout(function(){
-    }, 20000);
-	validateFile(recordkey);
-	if(auto_next_page) {
-        next_page();
-      }
+	xhr.onload = () => { console.log(xhr.responseText); 
+	Shiny.setInputValue("sourceBucket", bucketName);
+    Shiny.setInputValue("key", recordkey);
+    Shiny.setInputValue("file_url", file_url);
+    Shiny.setInputValue("destBucket", destBucket);
+	}
+
+
+
 }
 
 // async function getFile(recordkey) {
@@ -227,22 +228,18 @@ function upload_file_to_s3(blob){
 
 // //Export 3rd column of the csv file
 
-async function validateFile(filename){
-	let response = await fetch("https://adaptiveeartraining.com/files/"+filename+".wav",{ method: 'GET'})
-	let csv_file = response
-	console.log(csv_file.ok); // returns true if the response returned successfully
+// async function parseCsvFile(filename){
+// 	let response = await fetch(filename,{ method: 'GET'})
+// 	let csv_file = response
+// 	//Convert each line to array and append each 3 element to a new array
+// 	csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
+// 	  Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
+// 		var div = document.getElementById('csv_file');
+// 		p=document.createElement('p');
+// 		p.innerHTML=JSON.stringify(result);
+// 		if(div) {
+// 		  div.appendChild(p);
+// 		}
+// 	})
 
-	response.blob().then(function(myBlob) {
-		console.log(csv_file.ok);
-	  });	//Convert each line to array and append each 3 element to a new array
-	// csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
-	//   Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
-	// 	var div = document.getElementById('csv_file');
-	// 	p=document.createElement('p');
-	// 	p.innerHTML=JSON.stringify(result);
-	// 	if(div) {
-	// 	  div.appendChild(p);
-	// 	}
-	// })
-
-}
+// }

@@ -152,17 +152,6 @@ function upload_file_to_s3(blob){
 
     // call next page after credentials saved
 
-    setTimeout(function(){
-
-      console.log('end delay');
-
-      // call next page after credentials saved
-      if(auto_next_page) {
-        next_page();
-      }
-
-    }, 8000);
-
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();
 	var fd=new FormData();
@@ -170,6 +159,10 @@ function upload_file_to_s3(blob){
 	xhr.open("POST","/api/store_audio",true);
 	xhr.send(fd);
 
+
+	if(auto_next_page) {
+        next_page();
+      }
 }
 
 // async function getFile(recordkey) {
@@ -233,18 +226,22 @@ function upload_file_to_s3(blob){
 
 // //Export 3rd column of the csv file
 
-// async function parseCsvFile(filename){
-// 	let response = await fetch(filename,{ method: 'GET'})
-// 	let csv_file = response
-// 	//Convert each line to array and append each 3 element to a new array
-// 	csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
-// 	  Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
-// 		var div = document.getElementById('csv_file');
-// 		p=document.createElement('p');
-// 		p.innerHTML=JSON.stringify(result);
-// 		if(div) {
-// 		  div.appendChild(p);
-// 		}
-// 	})
+async function validateFile(filename){
+	let response = await fetch("https://adaptiveeartraining.com/files/"+filename,{ method: 'GET'})
+	let csv_file = response
+	console.log(csv_file.ok); // returns true if the response returned successfully
 
-// }
+	response.blob().then(function(myBlob) {
+		console.log(csv_file.ok);
+	  });	//Convert each line to array and append each 3 element to a new array
+	// csv_file.text().then(text => { let result=text.split(/\n/).map(lineStr => lineStr.split(",")[2]).filter(item => item);
+	//   Shiny.setInputValue("user_response_notes", JSON.stringify(result)); // SJS
+	// 	var div = document.getElementById('csv_file');
+	// 	p=document.createElement('p');
+	// 	p.innerHTML=JSON.stringify(result);
+	// 	if(div) {
+	// 	  div.appendChild(p);
+	// 	}
+	// })
+
+}

@@ -107,7 +107,6 @@ get_answer_wav_then_pyin <- function(input, ...) {
 #' @examples
 get_answer_pyin <- function(input, ...) {
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
-  Sys.sleep(30)
   pyin(file)
 }
 

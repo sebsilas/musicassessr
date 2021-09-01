@@ -138,13 +138,10 @@ function create_recordkey() {
 
 function upload_file_to_s3(blob){
 
-    var recordkey = create_recordkey();
+  var recordkey = create_recordkey();
 
-    var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
-    console.log(file_url);
-
-   
-
+  var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
+  console.log(file_url);
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();
@@ -157,16 +154,16 @@ function upload_file_to_s3(blob){
     Shiny.setInputValue("key", recordkey);
     Shiny.setInputValue("file_url", file_url);
     Shiny.setInputValue("destBucket", destBucket);
-	
+
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
-	
 
-}; 
 
-if(auto_next_page) {
-	next_page();
-	}
+};
+
+  if(auto_next_page) {
+  	next_page();
+  	}
 }
 
 // async function getFile(recordkey) {

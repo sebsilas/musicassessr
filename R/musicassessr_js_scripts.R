@@ -74,6 +74,7 @@ musicassessr_js_scripts <- function(destination_bucket, api_url, bucket_name, bu
     shiny::includeScript(system.file("www/js/Tonejs-Instruments.js", package = "musicassessr")),
     shiny::includeScript(system.file("www/js/opensheetmusicdisplay.min.js", package = "musicassessr")),
     shiny::includeScript('https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js'),
+    shiny::includeScript(system.file("static-website-s3/spinner/spin.js", package = "musicassessr")),
     shiny::includeScript(system.file("static-website-s3/app.js", package = "musicassessr")),
     shiny::includeScript(system.file("www/js/play_music_stimuli.js", package = "musicassessr")),
     )

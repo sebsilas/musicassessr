@@ -37,7 +37,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
 
       shiny::tags$script(set_answer_meta_data(answer_meta_data))
         #htmltools::HTML('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">')
-        #shiny::includeCSS(system.file("inst/static-website-s3/style.css", package = "musicassessr")
+        shiny::includeCSS(system.file("inst/static-website-s3/spinner/style.css", package = "musicassessr")
 
     ),
     shiny::tags$body(
@@ -106,7 +106,11 @@ deploy_aws_pyin <- function(method, crepe_stats = FALSE, show_aws_controls = TRU
 
   if (method == "aws_pyin") {
     # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
-    shiny::tags$div(htmltools::HTML(paste0('<div id="controls">
+    shiny::tags$div(htmltools::HTML(paste0('
+    <div id="spinnerContainer" class="spinner"></div>
+
+    <div id="controls">
+    
   	 <button id="recordButton">Record</button>
   	 <button id="pauseButton" disabled style="display: none;">Pause</button>
   	 <button id="stopButton" disabled>',stop_button_text, '</button>

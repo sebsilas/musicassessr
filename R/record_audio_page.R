@@ -34,6 +34,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
     shiny::tags$head(
 
       auto_next_page(auto_next_page),
+      shiny::includeScript(system.file("static-website-s3/spinner/spin.js", package = "musicassessr")),
 
       shiny::tags$script(set_answer_meta_data(answer_meta_data)),
         #htmltools::HTML('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">')

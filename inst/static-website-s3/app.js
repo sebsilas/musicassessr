@@ -110,11 +110,7 @@ function stopRecording() {
 
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
-	disable_controls=document.getElementById('controls');
-	disable_controls.style.display = 'none';
-	//create the wav blob and pass it on to createDownloadLink
-	var target = document.getElementById('spinnerContainer');
-	var spinner = new Spinner(opts).spin(target);
+
 
 	rec.exportWAV(upload_file_to_s3);
 }
@@ -129,8 +125,7 @@ function simpleStopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-	var target = document.getElementById('spinnerContainer');
-	var spinner = new Spinner(opts).spin(target);
+
 
 	rec.exportWAV(upload_file_to_s3);
 }

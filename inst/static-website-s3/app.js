@@ -121,7 +121,7 @@ function stopRecording() {
 
 
 function simpleStopRecording() {
-	console.log("simpleStopButton clicked");
+	console.log("simpleStopButton clicked!");
 
 	//tell the recorder to stop the recording
 	rec.stop();
@@ -129,7 +129,9 @@ function simpleStopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-	//create the wav blob and pass it on to createDownloadLink
+	var target = document.getElementById('spinnerContainer');
+	var spinner = new Spinner(opts).spin(target);
+
 	rec.exportWAV(upload_file_to_s3);
 }
 
@@ -161,11 +163,12 @@ function upload_file_to_s3(blob){
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
+
+		if(auto_next_page) {
+		}
 	};
 
-  if(auto_next_page) {
-  	next_page();
-  	}
+
 }
 
 // async function getFile(recordkey) {

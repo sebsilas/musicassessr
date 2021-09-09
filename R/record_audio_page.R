@@ -55,6 +55,12 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
 
       present_record_button(present = show_record_button, type = method, button_text = button_text, record_duration = record_duration),
 
+      #loading(),
+
+      #user_rating(user_rating),
+
+      #happy_with_response_message(happy_with_response_message, attempts_left),
+
       shiny::tags$div(id ="container",
                       deploy_aws_pyin(method = method, show_aws_controls = show_aws_controls, stop_button_text),
                       deploy_crepe(method),
@@ -110,7 +116,7 @@ deploy_aws_pyin <- function(method, crepe_stats = FALSE, show_aws_controls = TRU
     <div id="spinnerContainer" class="spinner"></div>
 
     <div id="controls">
-    
+
   	 <button id="recordButton">Record</button>
   	 <button id="pauseButton" disabled style="display: none;">Pause</button>
   	 <button id="stopButton" disabled>',stop_button_text, '</button>
@@ -139,3 +145,125 @@ show_aws_buttons <- function(show_aws_controls) {
   }
   aws_controls
 }
+
+
+user_rating <- function(user_rating) {
+  if(user_rating) {
+    shiny::HTML('<div id="user_rating" style="display:none;">
+  <p>How do you feel you performed that melody?</p>
+  <div id="response_ui" style="visibility: inherit">
+    <button id="Very Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Very Bad</button>
+    <button id="Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Bad</button>
+    <button id="Okay" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Okay</button>
+    <button id="Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Good</button>
+    <button id="Very Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Very Good</button>
+  </div>
+  <script>
+                          myMain();
+                            function myMain() {
+                              document.getElementById("response_ui").onclick = buton;
+                            }
+                            function buton(e) {
+                              console.log("butt2");
+                              console.log(e);
+                              if (e.target.tagName == \'BUTTON\') {
+                                    console.log("rating: ");
+                                    console.log(e.target.id);
+                                    Shiny.onInputChange("user_rating", this.id);
+                              }
+                            }
+                            function show_happy_with_response() {
+                                	happy_with_response=document.getElementById("happy_with_response");
+                                	happy_with_response.style.display="block";
+                                	user_rating=document.getElementById("user_rating");
+	                                user_rating.style.display = "none";
+	                                if (!file_is_ready){
+                                  	spinner = document.getElementsByClassName("hollow-dots-spinner");
+                                  	spinner[0].style.display = "block";
+	                                 }
+                                }
+                         </script>
+                </div>')
+  }
+}
+
+
+loading <- function() {
+  htmltools::HTML('
+  <style>
+    .hollow-dots-spinner, .hollow-dots-spinner * {
+        box-sizing: border-box;
+      }
+      .hollow-dots-spinner {
+        display: none;
+        height: 15px;
+        width: calc(30px * 3);
+        margin-bottom: 15px;
+      }
+      .hollow-dots-spinner .dot {
+        width: 15px;
+        height: 15px;
+        margin: 0 calc(15px / 2);
+        border: calc(15px / 5) solid #ff1d5e;
+        border-radius: 50%;
+        float: left;
+        transform: scale(0);
+        animation: hollow-dots-spinner-animation 1000ms ease infinite 0ms;
+      }
+      .hollow-dots-spinner .dot:nth-child(1) {
+        animation-delay: calc(300ms * 1);
+      }
+      .hollow-dots-spinner .dot:nth-child(2) {
+        animation-delay: calc(300ms * 2);
+      }
+      .hollow-dots-spinner .dot:nth-child(3) {
+        animation-delay: calc(300ms * 3);
+      }
+      @keyframes hollow-dots-spinner-animation {
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+  </style>
+  <div class="hollow-dots-spinner" :style="spinnerStyle;display:none;">
+    <div class="dot"></div>
+      <div class="dot"></div>
+        <div class="dot"></div>
+          </div>')
+}
+
+
+return_correct_attempts_left <- function(attempts_left) {
+  if(attempts_left == 0) {
+    #label = paste0(var_name,"_attempt_", number_attempts, "_choice"),
+    shiny::tags$div(id = "happy_with_response", style = "display:none;",
+                    shiny::tags$p(psychTestR::i18n("attempts_remaining_0")),
+                    psychTestR::make_ui_NAFC(choices = psychTestR::i18n("Continue"), arrange_vertically = FALSE))
+  } else if (attempts_left == 1) {
+    # label = paste0(var_name,"_attempt_", number_attempts, "_choice")
+    shiny::tags$div(id = "happy_with_response", style = "display:none;",
+                    shiny::tags$p(psychTestR::i18n("happy_with_response_message")), shiny::tags$p(psychTestR::i18n("attempts_remaining_1")),
+                    shiny::actionButton(inputId = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "next_page();"),
+                    shiny::actionButton(inputId = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "next_page();")
+    )
+  } else {
+    # label = paste0(var_name,"_attempt_", number_attempts, "_choice")
+    shiny::tags$div(id = "happy_with_response", style = "display:none;",
+                    shiny::tags$p(psychTestR::i18n("happy_with_response_message")),
+                    shiny::tags$p(paste0(psychTestR::i18n("attempts_remaining_several.1"), " ", attempts_left, " ", psychTestR::i18n("attempts_remaining_several.2"))),
+                    psychTestR::make_ui_NAFC(choices = c(psychTestR::i18n("Continue"), psychTestR::i18n("Try_Again")), arrange_vertically = FALSE))
+  }
+}
+
+
+
+happy_with_response_message <- function(happy_with_response_message, attempts_left) {
+  if(happy_with_response_message) {
+    return_correct_attempts_left(attempts_left)
+  }
+}
+

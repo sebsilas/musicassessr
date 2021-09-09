@@ -55,9 +55,11 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
 
       present_record_button(present = show_record_button, type = method, button_text = button_text, record_duration = record_duration),
 
+      shiny::tags$p("test code: 1"),
+
       loading(),
 
-      #user_rating(user_rating),
+      user_rating(TRUE),
 
       #happy_with_response_message(happy_with_response_message, attempts_left),
 

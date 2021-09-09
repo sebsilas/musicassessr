@@ -48,14 +48,13 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                     '),
       shiny::tags$h2(page_title),
       shiny::tags$p(page_text),
+      shiny::tags$p("test code: 1"),
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
                        stimuli_reactive = stimuli_reactive,
                        prepared_stimuli = abs_mel),
 
       present_record_button(present = show_record_button, type = method, button_text = button_text, record_duration = record_duration),
-
-      shiny::tags$p("test code: 1"),
 
       loading(),
 

@@ -48,7 +48,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                     '),
       shiny::tags$h2(page_title),
       shiny::tags$p(page_text),
-      shiny::tags$p("test code: 3"),
+      shiny::tags$p("test code: 4"),
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
                        stimuli_reactive = stimuli_reactive,
@@ -153,11 +153,11 @@ user_rating <- function(user_rating) {
     shiny::HTML('<div id="user_rating" style="display:none;">
   <p>How do you feel you performed that melody?</p>
   <div id="response_ui" style="visibility: inherit">
-    <button id="Very Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Very Bad</button>
-    <button id="Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Bad</button>
-    <button id="Okay" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Okay</button>
-    <button id="Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Good</button>
-    <button id="Very Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" disabled="TRUE" style="">Very Good</button>
+    <button id="Very Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Very Bad</button>
+    <button id="Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Bad</button>
+    <button id="Okay" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Okay</button>
+    <button id="Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Good</button>
+    <button id="Very Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Very Good</button>
   </div>
   <script>
                           myMain();

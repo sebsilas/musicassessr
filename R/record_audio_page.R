@@ -55,7 +55,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
 
       present_record_button(present = show_record_button, type = method, button_text = button_text, record_duration = record_duration),
 
-      #loading(),
+      loading(),
 
       #user_rating(user_rating),
 

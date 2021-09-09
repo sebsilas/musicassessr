@@ -48,7 +48,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                     '),
       shiny::tags$h2(page_title),
       shiny::tags$p(page_text),
-      shiny::tags$p("test code: 1"),
+      shiny::tags$p("test code: 2"),
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
                        stimuli_reactive = stimuli_reactive,
@@ -60,7 +60,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
 
       user_rating(TRUE),
 
-      happy_with_response_message(happy_with_response_message, attempts_left),
+      happy_with_response_message(TRUE, 1),
 
       shiny::tags$div(id ="container",
                       deploy_aws_pyin(method = method, show_aws_controls = show_aws_controls, stop_button_text),

@@ -1,6 +1,9 @@
 //webkitURL is deprecated but nevertheless
 URL = window.URL || window.webkitURL;
 //
+
+var file_is_ready=false
+
 var gumStream; 						//stream from getUserMedia()
 var rec; 							//Recorder.js object
 var input;
@@ -117,6 +120,13 @@ function stopRecording() {
 
 
 function simpleStopRecording() {
+
+	button_area=document.getElementById("button_area")
+	button_area.style.display="none"
+	stop_button=document.getElementById("stopButton")
+	stop_button.style.display="none"
+	user_rating=document.getElementById("user_rating")
+	user_rating.style.display="block"
 	console.log("simpleStopButton clicked");
 
 	//tell the recorder to stop the recording
@@ -157,7 +167,9 @@ function upload_file_to_s3(blob){
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
-
+		spinner=document.getElementsByClassName("hollow-dots-spinner")
+		spinner[0].style.display="none"
+		file_is_ready=true
 		if(auto_next_page) {
 			next_page();
 			}

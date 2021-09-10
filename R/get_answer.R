@@ -58,55 +58,55 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 }
 
 
-pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
-  print('pyin')
-  file_name <- '/Users/sebsilas/true.wav'
-  print(file_name)
-  if(is.null(transform_file)) {
-    args <- c("-d",
-              "vamp:pyin:pyin:notes",
-              file_name,
-              "-w",
-              "csv --csv-stdout")
-  } else {
-    args <- c(paste0('-t ', transform_file),
-              file_name,
-              "-w",
-              "csv --csv-stdout")
-  }
-
-  if(normalise == 1) {
-    args <- c(args, "--normalise")
-  }
-
-  if(hidePrint) {
-    sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
-                      args = args,
-                      stdout = TRUE, stderr = FALSE)
-  } else {
-    sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
-                      args = args,
-                      stdout = TRUE)
-  }
-
-  if(length(sa_out) == 0) {
-    res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
-  } else {
-    res <- read.csv(text = sa_out, header = FALSE) %>%
-      dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
-      dplyr::mutate(
-        onset = round(onset, 2),
-        dur = round(dur, 2),
-        freq = round(freq, 2),
-        note = round(hrep::freq_to_midi(freq)))
-
-    file_name <- res$V1[[1]]
-
-    res <- res %>% dplyr::select(-V1)
-
-    res <- tibble::tibble(file_name, res)
-  }
-}
+# pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
+#   print('pyin')
+#   file_name <- '/Users/sebsilas/true.wav'
+#   print(file_name)
+#   if(is.null(transform_file)) {
+#     args <- c("-d",
+#               "vamp:pyin:pyin:notes",
+#               file_name,
+#               "-w",
+#               "csv --csv-stdout")
+#   } else {
+#     args <- c(paste0('-t ', transform_file),
+#               file_name,
+#               "-w",
+#               "csv --csv-stdout")
+#   }
+#
+#   if(normalise == 1) {
+#     args <- c(args, "--normalise")
+#   }
+#
+#   if(hidePrint) {
+#     sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
+#                       args = args,
+#                       stdout = TRUE, stderr = FALSE)
+#   } else {
+#     sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
+#                       args = args,
+#                       stdout = TRUE)
+#   }
+#
+#   if(length(sa_out) == 0) {
+#     res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
+#   } else {
+#     res <- read.csv(text = sa_out, header = FALSE) %>%
+#       dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+#       dplyr::mutate(
+#         onset = round(onset, 2),
+#         dur = round(dur, 2),
+#         freq = round(freq, 2),
+#         note = round(hrep::freq_to_midi(freq)))
+#
+#     file_name <- res$V1[[1]]
+#
+#     res <- res %>% dplyr::select(-V1)
+#
+#     res <- tibble::tibble(file_name, res)
+#   }
+# }
 #pyin('/Users/sebsilas/true.wav')
 
 

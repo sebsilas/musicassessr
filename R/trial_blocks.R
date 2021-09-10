@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE, get_answer = get_answer = musicassessr::get_answer_save_aws_key) {
+arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE, get_answer = musicassessr::get_answer_save_aws_key) {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_melodic_production

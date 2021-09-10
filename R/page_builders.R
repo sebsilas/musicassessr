@@ -46,6 +46,9 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
   })
 
   items <- add_feedback(items, feedback, after = 4) # a play_melody_loop is 4 pages long
+  print(items)
+  print('just after add feedback^')
+  items
 
 }
 

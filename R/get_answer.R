@@ -57,43 +57,6 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
   }
 }
 
-write_wav_file <- function(input, ...) {
-  # Decode wav file.
-  print('in write_wav_file')
-  print(input$audio)
-  print(input$`audio-shiny-f`)
-  print(input$`audio-shiny-g`)
-  print(input$`audio-shiny-h`)
-  audio <- input$audio
-  audio <- gsub('data:audio/wav;base64,', '', audio)
-  audio <- gsub(' ', '+', audio)
-  audio <- RCurl::base64Decode(audio, mode = 'raw')
-  # Save to file on server.
-  inFile <- list()
-  file_name <- paste0('temp', sample(1:100000, 1), '.wav')
-  inFile$datapath <- file_name
-  inFile$file <- file(inFile$datapath, 'wb')
-  writeBin(audio, inFile$file)
-  close(inFile$file)
-
-  # return file name
-  file_name
-}
-
-#' Produce wav from audio recorded in browser and return pyin result
-#'
-#' @param input
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_answer_wav_then_pyin <- function(input, ...) {
-  file <- write_wav_file(input, ...)
-  pyin(file)
-}
-
 
 
 #' Use pyin on a file
@@ -107,8 +70,17 @@ get_answer_wav_then_pyin <- function(input, ...) {
 #' @examples
 get_answer_pyin <- function(input, ...) {
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
-  Sys.sleep(5)
-  pyin(file)
+  #Sys.sleep(5)
+  pyin_res <- pyin(file)
+
+  c(
+    melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE),
+
+  list(file = file,
+       user_satisfied = input$user_satisfied,
+       user_rating = input$user_rating
+       )
+  )
 }
 
 
@@ -340,6 +312,10 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
   }
 }
 
+
+
+
+
 get_answer_midi <- function(input, state, ...) {
   print('get_answer_midi')
 
@@ -485,12 +461,13 @@ do <- function(api_url, json) {
 #' @examples
 get_answer_save_aws_key <- function(input, ...) {
   print('get_answer_save_aws_key')
-  print(input)
   print(input$key)
   print(input$file_url)
-  print(input$`audio-shiny-f`)
+  print(input$user_rating)
   list(key = input$key,
-       file_url = input$file_url)
+       file_url = input$file_url,
+       user_satisfied = input$user_satisfied,
+       user_rating = input$user_rating)
 }
 
 

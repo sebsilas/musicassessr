@@ -44,7 +44,11 @@ setup_pages <- function(input = c("microphone",
 
     if(SNR_test) musicassessr::get_SNR_pages(),
 
-    if(get_instrument_range) musicassessr::get_instrument_range_pages("record_audio_page")
+    if(get_instrument_range == "test") {
+      musicassessr::fake_range()
+    } else {
+      if(get_instrument_range) musicassessr::get_instrument_range_pages("record_audio_page")
+    }
 
     )
   }

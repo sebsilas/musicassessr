@@ -4,9 +4,8 @@
 feedback_melodic_production <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
-
     # pitch classes
-    present_stimuli(stimuli = answer$user_response,
+    present_stimuli(stimuli = answer$user_response_note,
                     stimuli_type = "midi_notes",
                     display_modality = "both",
                     page_title = "Feedback: ",

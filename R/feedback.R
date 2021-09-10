@@ -4,6 +4,7 @@
 feedback_melodic_production <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
+    #plot <-
     # pitch classes
     present_stimuli(stimuli = answer$user_response_note,
                     stimuli_type = "midi_notes",
@@ -14,7 +15,8 @@ feedback_melodic_production <- function() {
                                     shiny::tags$p(paste0("Number of errors: ", answer$no_errors)),
                                     shiny::tags$p(paste0("Accuracy (error by note events): ", answer$accuracy)),
                                     shiny::tags$p(paste0("Time taken: ", answer$trial_length, " seconds.")),
-                                    shiny::tags$p(plot)))
+                                    #shiny::tags$p(plot)
+                                    ))
 
 
   })

@@ -310,9 +310,6 @@ check_melody_ok <- function(state, var_name, page_title, max_goes) {
 
 update_play_melody_loop_and_save <- function(state) {
   psychTestR::code_block(function(state, answer, opt, ...) {
-    print('update_play_melody_loop_and_save code_block')
-    print(answer)
-    print(answer$user_satisfied)
     psychTestR::set_global("user_satisfied", answer$user_satisfied, state)
     number_attempts <- psychTestR::get_global("number_attempts", state)
     number_attempts <- number_attempts + 1

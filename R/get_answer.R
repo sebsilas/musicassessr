@@ -72,15 +72,14 @@ get_answer_pyin <- function(input, ...) {
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   #Sys.sleep(5)
   pyin_res <- pyin(file)
-
-  c(
-    melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE),
+#
+#   c(
+#     melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE),
+#   )
 
   list(file = file,
        user_satisfied = input$user_satisfied,
-       user_rating = input$user_rating
-       )
-  )
+       user_rating = input$user_rating)
 }
 
 

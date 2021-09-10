@@ -61,8 +61,8 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
 #' @export
 #'
 #' @examples
-multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page", example = FALSE, feedback = FALSE) {
-  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type, example = example)))
+multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page", example = FALSE, feedback = FALSE, get_answer = musicassessr::get_answer_save_aws_key) {
+  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type, example = example, get_answer = get_answer)))
   items <- add_feedback(items, feedback)
 }
 

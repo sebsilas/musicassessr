@@ -1,17 +1,19 @@
 
 
+
 #' Arrhythmic Melody Trials Block
 #'
 #' @param item_bank
 #' @param num_items
 #' @param num_examples
 #' @param feedback
+#' @param get_answer
 #'
 #' @return
 #' @export
 #'
 #' @examples
-arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE) {
+arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE, get_answer = get_answer = musicassessr::get_answer_save_aws_key) {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_melodic_production
@@ -39,7 +41,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, 
               page_type = "record_audio_page",
               page_title = "Sing the Melody",
               page_text = psychTestR::i18n("sing_melody_trial"),
-              get_answer = musicassessr::get_answer_save_aws_key,
+              get_answer = get_answer,
               rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
               arrhythmic = TRUE,
               example = TRUE,
@@ -69,17 +71,22 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, 
 }
 
 
-#' Present a block of rhythmic melody trials
+
+#' Rhythmic melody trials block
 #'
 #' @param item_bank
 #' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param page_title
+#' @param get_answer
 #'
 #' @return
 #' @export
 #'
 #' @examples
 rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE,
-                                   page_title = "Sing This Melody Plus Rhythm") {
+                                   page_title = "Sing This Melody Plus Rhythm", get_answer = musicassessr::get_answer_save_aws_key) {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_melodic_production
@@ -106,7 +113,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
             n_items = num_examples,
             page_title = page_title,
             page_text = psychTestR::i18n("sing_melody_trial"),
-            get_answer = musicassessr::get_answer_save_aws_key,
+            get_answer = get_answer,
             rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
             example = TRUE,
             feedback = feedback)
@@ -132,16 +139,21 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
   )
 }
 
+
 #' Present a block of long tone trials
 #'
 #' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param page_title
+#' @param get_answer
 #'
 #' @return
 #' @export
 #'
 #' @examples
 long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
-                             page_title = "Sing Along With This Note") {
+                             page_title = "Sing Along With This Note", get_answer = musicassessr::get_answer_save_aws_key) {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_long_tone
@@ -161,7 +173,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
           shiny::tags$h2(page_title),
           shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
           musicassessr::sample_from_user_range(num_examples),
-          musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback)
+          musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer)
         )
       },
       psychTestR::one_button_page(shiny::div(
@@ -170,7 +182,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
       # sample
       musicassessr::sample_from_user_range(num_items),
       # build pages
-      musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = "record_audio_page", feedback = feedback)
+      musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = "record_audio_page", feedback = feedback, get_answer = get_answer)
     )
   )
 }

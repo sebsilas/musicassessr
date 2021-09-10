@@ -1,10 +1,19 @@
 
+
 #' Create a page which produces a given tone
 #'
 #' @param note
+#' @param long_note_no
 #' @param note_length
+#' @param page_title
 #' @param page_text
 #' @param play_button_text
+#' @param page_type
+#' @param show_aws_controls
+#' @param show_record_button
+#' @param auto_next_page
+#' @param example
+#' @param get_answer
 #'
 #' @return
 #' @export
@@ -20,7 +29,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              show_aws_controls = FALSE,
                                              show_record_button = FALSE,
                                              auto_next_page = TRUE,
-                                             example = FALSE) {
+                                             example = FALSE,
+                                             get_answer = musicassessr::get_answer_save_aws_key) {
 
   # a page type for playing a 5-second tone and recording a user singing with it
 
@@ -51,7 +61,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                       show_record_button = show_record_button,
                       auto_next_page = auto_next_page,
                       save_answer = save_answer,
-                      get_answer = musicassessr::get_answer_save_aws_key)
+                      get_answer = get_answer)
     })
 
 }

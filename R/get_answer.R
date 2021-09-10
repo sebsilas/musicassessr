@@ -272,7 +272,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
                     summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE))
 
       # cents_deviation_from_nearest_stimuli_pitch
-      mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$pitch,
+      mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli)
 
       # mean cents deviation

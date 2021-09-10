@@ -14,8 +14,8 @@ feedback_melodic_production <- function() {
                                     shiny::tags$p(paste0("No correct: ", answer$no_correct)),
                                     shiny::tags$p(paste0("Number of errors: ", answer$no_errors)),
                                     shiny::tags$p(paste0("Accuracy (error by note events): ", answer$accuracy)),
-                                    shiny::tags$p(paste0("Time taken: ", answer$trial_length, " seconds.")),
-                                    #shiny::tags$p(plot)
+                                    shiny::tags$p(paste0("Time taken: ", answer$trial_length, " seconds."))
+                                    #, shiny::tags$p(plot)
                                     ))
 
 

@@ -49,6 +49,8 @@ add_feedback <- function(items, feedback, after = 2) {
   if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)
   } else {
-    insert.every.other.pos.in.list(items, feedback())
+    res <- insert.every.other.pos.in.list(items, feedback())
+    res <- lapply(res, function(x) if(is.list(x)) unlist(x))
+    unlist(res)
   }
 }

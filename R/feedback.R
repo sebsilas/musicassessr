@@ -46,7 +46,7 @@ plot_note_data <- function(notes, onsets, quantized_notes) {
 
 
 add_feedback <- function(items, feedback) {
-  if(is.null(feedback) | !feedback) {
+  if(is.null(feedback) | feedback == FALSE) {
     unlist(items)
   } else {
     insert.every.other.pos.in.list(items, feedback())

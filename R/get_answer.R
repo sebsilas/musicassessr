@@ -70,16 +70,17 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 #' @examples
 get_answer_pyin <- function(input, ...) {
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
-  #Sys.sleep(5)
   pyin_res <- pyin(file)
-#
-#   c(
-#     melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE),
-#   )
 
-  list(file = file,
-       user_satisfied = input$user_satisfied,
-       user_rating = input$user_rating)
+  c(
+    list(file = file,
+         user_satisfied = input$user_satisfied,
+         user_rating = input$user_rating),
+
+    melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE),
+  )
+
+
 }
 
 
@@ -179,19 +180,19 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures) {
 
+  # onset, dur, freq, result
 
   if(is.numeric(result$freq)) {
-    result <- result %>% dplyr::mutate(pitch = round(hrep::freq_to_midi(freq)),
-                                 cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
+    result <- result %>% dplyr::mutate(cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
                                  # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
                                  pitch_class = midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
                                  pitch_class_numeric = midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
                                  sci_notation = midi_to_sci_notation(round(hrep::freq_to_midi(freq))),
-                                 interval = c(NA, diff(pitch)),
+                                 interval = c(NA, diff(note)),
                                  ioi = c(NA, diff(onset)),
                                  ioi_class = itembankr::classify_duration(ioi))
 
-    user_melody_input <- result$pitch
+    user_melody_input <- result$note
     onsets_noteon <- result$onset
 
   }

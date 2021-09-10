@@ -8,11 +8,12 @@ arrhythmic_melody_trials(
   item_bank,
   num_items,
   num_examples = NULL,
-  feedback = FALSE
+  feedback = FALSE,
+  get_answer = musicassessr::get_answer_save_aws_key
 )
 }
 \arguments{
-\item{feedback}{}
+\item{get_answer}{}
 }
 \value{
 

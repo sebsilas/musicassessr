@@ -8,11 +8,12 @@ long_tone_trials(
   num_items,
   num_examples = NULL,
   feedback = FALSE,
-  page_title = "Sing Along With This Note"
+  page_title = "Sing Along With This Note",
+  get_answer = musicassessr::get_answer_save_aws_key
 )
 }
 \arguments{
-\item{num_items}{}
+\item{get_answer}{}
 }
 \value{
 

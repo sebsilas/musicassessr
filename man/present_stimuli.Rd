@@ -33,6 +33,7 @@ present_stimuli(
   show_record_button = FALSE,
   auto_next_page = FALSE,
   choices = NULL,
+  user_rating = FALSE,
   ...
 )
 }

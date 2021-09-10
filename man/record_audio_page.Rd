@@ -21,11 +21,12 @@ record_audio_page(
   show_aws_controls = FALSE,
   crepe_stats = FALSE,
   button_text = "Record",
-  stop_button_text,
+  stop_button_text = "Stop",
   record_duration = NULL,
   on_complete = NULL,
   auto_next_page = FALSE,
   save_answer = TRUE,
+  user_rating = FALSE,
   ...
 )
 }

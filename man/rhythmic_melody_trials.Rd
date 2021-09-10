@@ -2,22 +2,23 @@
 % Please edit documentation in R/trial_blocks.R
 \name{rhythmic_melody_trials}
 \alias{rhythmic_melody_trials}
-\title{Present a block of rhythmic melody trials}
+\title{Rhythmic melody trials block}
 \usage{
 rhythmic_melody_trials(
   item_bank,
   num_items,
   num_examples = NULL,
   feedback = FALSE,
-  page_title = "Sing This Melody Plus Rhythm"
+  page_title = "Sing This Melody Plus Rhythm",
+  get_answer = musicassessr::get_answer_save_aws_key
 )
 }
 \arguments{
-\item{num_items}{}
+\item{get_answer}{}
 }
 \value{
 
 }
 \description{
-Present a block of rhythmic melody trials
+Rhythmic melody trials block
 }

@@ -167,9 +167,9 @@ function upload_file_to_s3(blob){
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
-		spinner=document.getElementsByClassName("hollow-dots-spinner")
-		spinner[0].style.display="none"
-		file_is_ready=true
+		spinner=document.getElementsByClassName("hollow-dots-spinner");
+		spinner[0].style.display="none";
+		file_is_ready = true;
 		if(auto_next_page) {
 			next_page();
 			}

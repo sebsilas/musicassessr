@@ -228,67 +228,6 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
   ) # end join
 }
 
-present_melody <- function(stimuli, stimuli_type, display_modality, page_title, page_text,
-                           page_type, record_audio_method, answer_meta_data, get_answer,
-                           save_answer, page_label, button_text, play_button_text, start_note,
-                           end_note, dur_list, state, melody_no, var_name, ...) {
-
-  psychTestR::reactive_page(function(state, ...) {
-
-    number_attempts <- psychTestR::get_global("number_attempts", state)
-
-    # grab vars
-    melody <- melody_checks(stimuli, state, stimuli_type)$melody
-    start_note <- melody_checks(stimuli, state, stimuli_type)$start_note
-    end_note <- melody_checks(stimuli, state, stimuli_type)$end_note
-    dur_list <- melody_checks(stimuli, state, stimuli_type)$dur_list
-
-    answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
-
-    if(page_type == "record_midi_page") {
-
-      midi_device <- psychTestR::get_global("midi_device", state)
-      if(is.null(midi_device)) { shiny::showNotification(psychTestR::i18n("no_midi_device_selected")) }
-
-      present_stimuli(stimuli = melody,
-                      stimuli_type = stimuli_type,
-                      display_modality = "auditory",
-                      page_title = page_title,
-                      page_text = page_text,
-                      page_type = page_type,
-                      answer_meta_data = answer_meta_data,
-                      get_answer = get_answer,
-                      save_answer = save_answer,
-                      midi_device = midi_device,
-                      page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
-                      play_button_text = play_button_text,
-                      start_note = start_note,
-                      end_note = end_note,
-                      dur_list = dur_list)
-
-    } else {
-      # page 1, play melody
-      present_stimuli(stimuli = melody,
-                      stimuli_type = stimuli_type,
-                      display_modality = "auditory",
-                      page_title = page_title,
-                      page_text = page_text,
-                      page_type = "record_audio_page",
-                      record_audio_method = "aws_pyin",
-                      answer_meta_data = answer_meta_data,
-                      get_answer = get_answer,
-                      save_answer = save_answer,
-                      page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
-                      button_text = psychTestR::i18n("Record"),
-                      play_button_text = play_button_text,
-                      start_note = start_note,
-                      end_note = end_note,
-                      dur_list = dur_list)
-    }
-
-  })
-}
-
 example_save <- function(example) {
   ifelse(example, FALSE, TRUE)
 }

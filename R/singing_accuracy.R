@@ -1,4 +1,23 @@
+# singing
 
+score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, stimuli, freq) {
+
+
+  nearest_pitches <- find.closest.stimuli.pitch.to.user.production.pitches(stimuli_pitches = stimuli,
+                                                                           user_production_pitches = user_prod_pitches,
+                                                                           allOctaves = TRUE
+  )
+
+  res <- vector.cents.between.two.vectors(freq, hrep::midi_to_freq(nearest_pitches))
+
+  res <- mean(abs(res), na.rm = TRUE)
+  if(is.na(res)) {
+    print('na!')
+  }
+
+  res
+
+}
 
 ### long tone scoring
 

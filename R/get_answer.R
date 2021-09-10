@@ -58,6 +58,57 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 }
 
 
+pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
+  print('pyin')
+  file_name <- '/Users/sebsilas/true.wav'
+  print(file_name)
+  if(is.null(transform_file)) {
+    args <- c("-d",
+              "vamp:pyin:pyin:notes",
+              file_name,
+              "-w",
+              "csv --csv-stdout")
+  } else {
+    args <- c(paste0('-t ', transform_file),
+              file_name,
+              "-w",
+              "csv --csv-stdout")
+  }
+
+  if(normalise == 1) {
+    args <- c(args, "--normalise")
+  }
+
+  if(hidePrint) {
+    sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
+                      args = args,
+                      stdout = TRUE, stderr = FALSE)
+  } else {
+    sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
+                      args = args,
+                      stdout = TRUE)
+  }
+
+  if(length(sa_out) == 0) {
+    res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
+  } else {
+    res <- read.csv(text = sa_out, header = FALSE) %>%
+      dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+      dplyr::mutate(
+        onset = round(onset, 2),
+        dur = round(dur, 2),
+        freq = round(freq, 2),
+        note = round(hrep::freq_to_midi(freq)))
+
+    file_name <- res$V1[[1]]
+
+    res <- res %>% dplyr::select(-V1)
+
+    res <- tibble::tibble(file_name, res)
+  }
+}
+#pyin('/Users/sebsilas/true.wav')
+
 
 #' Use pyin on a file
 #'
@@ -188,9 +239,9 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
   if(is.numeric(result$freq)) {
     result <- result %>% dplyr::mutate(cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
                                  # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
-                                 pitch_class = midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
-                                 pitch_class_numeric = midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
-                                 sci_notation = midi_to_sci_notation(round(hrep::freq_to_midi(freq))),
+                                 pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+                                 pitch_class_numeric = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+                                 sci_notation = itembankr::midi_to_sci_notation(round(hrep::freq_to_midi(freq))),
                                  interval = c(NA, diff(note)),
                                  ioi = c(NA, diff(onset)),
                                  ioi_class = itembankr::classify_duration(ioi))
@@ -266,17 +317,17 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
       # singing stuff
       # note precision
       note_precision <- result %>%
-        group_by(sci_notation) %>%
-        summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
+        dplyr::group_by(sci_notation) %>%
+        dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
-                    summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE))
+                    dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE))
 
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
-                                                       stimuli = stimuli)
+                                                       stimuli = stimuli, freq = result$freq)
 
       # mean cents deviation
-      mean_cents_deviation_from_nearest_midi_pitch <- score_note_mean_cents_deviation(result$cents_deviation_from_nearest_midi_pitch)
+      mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
     } else {
       note_precision <- NA
       mean_cents_deviation_from_nearest_stimuli_pitch <- NA
@@ -604,7 +655,7 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 
 get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations) {
   # similarity
-  if(length(user_melody_input) < 3) {
+  if(length(user_melody_input) < 3 | stimuli_length < 3) {
     similarity <- NA
     ng <- NA
   } else {

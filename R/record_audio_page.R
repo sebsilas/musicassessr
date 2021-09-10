@@ -48,7 +48,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                     '),
       shiny::tags$h2(page_title),
       shiny::tags$p(page_text),
-      shiny::tags$p("test code: 6"),
+      shiny::tags$p("test code: 7"),
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
                        stimuli_reactive = stimuli_reactive,
@@ -185,6 +185,8 @@ user_rating <- function(user_rating) {
                                 }
                          </script>
                 </div>')
+  } else {
+    shiny::HTML('<div id="user_rating" style="display:none;"></div>')
   }
 }
 

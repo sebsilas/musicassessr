@@ -69,6 +69,9 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 #'
 #' @examples
 get_answer_pyin <- function(input, ...) {
+  print('get_answer_pyin')
+  print(input)
+  print(input$answer_meta_data)
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   pyin_res <- pyin(file)
 
@@ -77,7 +80,7 @@ get_answer_pyin <- function(input, ...) {
          user_satisfied = input$user_satisfied,
          user_rating = input$user_rating),
 
-    melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE),
+    melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE)
   )
 
 
@@ -180,7 +183,7 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures) {
 
-  # onset, dur, freq, result
+  # onset, dur, freq, note
 
   if(is.numeric(result$freq)) {
     result <- result %>% dplyr::mutate(cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),

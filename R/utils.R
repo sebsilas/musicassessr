@@ -7,12 +7,17 @@ getmode <- function(v) {
 }
 
 
-insert.every.other.pos.in.list <- function(l, item_to_add) {
+insert.every.other.pos.in.list <- function(l, item_to_add, n = 2) {
   for (i in seq_along(l)) {
-    l <- append(l, item_to_add, after = (i*2)-1)
+    l <- append(l, item_to_add, after = (i*n)-1)
   }
   l
 }
+
+#g <- as.list(1:10)
+# g2 <- insert.every.other.pos.in.list(g, "a")
+# g3 <- insert.every.other.pos.in.list(g, "a", n = 3)
+# g4 <- insert.every.other.pos.in.list(g, "a", n = 4)
 
 
 

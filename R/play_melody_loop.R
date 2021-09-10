@@ -1,3 +1,148 @@
+#' Create a psychTestR test loop for having several attempts at playing back a melody.
+#'
+#' @param melody
+#' @param melody_no
+#' @param var_name
+#' @param stimuli_type
+#' @param max_goes
+#' @param page_type
+#' @param page_title
+#' @param page_text
+#' @param answer_meta_data
+#' @param get_answer
+#' @param rel_to_abs_mel_function
+#' @param clip_stimuli_length
+#' @param start_note
+#' @param end_note
+#' @param dur_list
+#' @param arrhythmic
+#' @param note_length
+#' @param play_button_text
+#' @param example
+#'
+#' @return
+#' @export
+#'
+#' @examples
+play_melody_loop2 <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3,
+                             page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
+                             answer_meta_data = " ", get_answer = get_answer_store_async,
+                             rel_to_abs_mel_function = function(){}, clip_stimuli_length = FALSE,
+                             start_note = 1, end_note = "end", dur_list = 'null', arrhythmic = FALSE, note_length = 0.5,
+                             play_button_text = psychTestR::i18n("Play"), example = FALSE) {
+
+  save_answer <- example_save(example)
+
+  c(
+    # set the user satisfied state to false
+
+    psychTestR::code_block(function(state, ...) {
+      # repeat melody logic stuff
+      psychTestR::set_global("user_satisfied", "Try Again", state)
+      psychTestR::set_global("number_attempts", 1, state)
+      # grab sampled melody for this trial (if one not specified)
+      grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function)
+    }),
+
+    # keep in loop until the participant confirms they are happy with their entry
+    psychTestR::while_loop(test = function(state, ...) {
+      number_attempts <- psychTestR::get_global("number_attempts", state)
+      user_answer <- psychTestR::get_global("user_satisfied", state)
+      user_wants_to_play_again <- user_answer %in% dict_key_to_translations("Try_Again")
+    },
+    logic = list(
+      # present the melody
+      present_melody(stimuli = melody,
+                     stimuli_type = stimuli_type,
+                     display_modality = "auditory",
+                     page_title = page_title,
+                     page_text = page_text,
+                     page_type = page_type,
+                     record_audio_method = "aws_pyin",
+                     answer_meta_data = answer_meta_data,
+                     get_answer = get_answer,
+                     save_answer = save_answer,
+                     page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
+                     button_text = psychTestR::i18n("Record"),
+                     play_button_text = play_button_text,
+                     start_note = start_note,
+                     end_note = end_note,
+                     dur_list = dur_list,
+                     state = state,
+                     melody_no = melody_no,
+                     var_name = var_name),
+
+      # was the user ok with this response?
+      # check_melody_ok(state, var_name, page_title, max_goes),
+
+      # update and see how to proceed
+      update_play_melody_loop_and_save(state)
+    )
+    ) # end psychTestR::while_loop
+  ) # end join
+}
+
+present_melody <- function(stimuli, stimuli_type, display_modality, page_title, page_text,
+                           page_type, record_audio_method, answer_meta_data, get_answer,
+                           save_answer, page_label, button_text, play_button_text, start_note,
+                           end_note, dur_list, state, melody_no, var_name, ...) {
+
+  psychTestR::reactive_page(function(state, ...) {
+
+    number_attempts <- psychTestR::get_global("number_attempts", state)
+
+    # grab vars
+    melody <- melody_checks(stimuli, state, stimuli_type)$melody
+    start_note <- melody_checks(stimuli, state, stimuli_type)$start_note
+    end_note <- melody_checks(stimuli, state, stimuli_type)$end_note
+    dur_list <- melody_checks(stimuli, state, stimuli_type)$dur_list
+
+    answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
+
+    if(page_type == "record_midi_page") {
+
+      midi_device <- psychTestR::get_global("midi_device", state)
+      if(is.null(midi_device)) { shiny::showNotification(psychTestR::i18n("no_midi_device_selected")) }
+
+      present_stimuli(stimuli = melody,
+                      stimuli_type = stimuli_type,
+                      display_modality = "auditory",
+                      page_title = page_title,
+                      page_text = page_text,
+                      page_type = page_type,
+                      answer_meta_data = answer_meta_data,
+                      get_answer = get_answer,
+                      save_answer = save_answer,
+                      midi_device = midi_device,
+                      page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
+                      play_button_text = play_button_text,
+                      start_note = start_note,
+                      end_note = end_note,
+                      dur_list = dur_list)
+
+    } else {
+      # page 1, play melody
+      present_stimuli(stimuli = melody,
+                      stimuli_type = stimuli_type,
+                      display_modality = "auditory",
+                      page_title = page_title,
+                      page_text = page_text,
+                      page_type = "record_audio_page",
+                      record_audio_method = "aws_pyin",
+                      answer_meta_data = answer_meta_data,
+                      get_answer = get_answer,
+                      save_answer = save_answer,
+                      page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
+                      button_text = psychTestR::i18n("Record"),
+                      play_button_text = play_button_text,
+                      start_note = start_note,
+                      end_note = end_note,
+                      dur_list = dur_list,
+                      user_rating = TRUE)
+    }
+
+  })
+}
 
 #' Create a psychTestR test loop for having several attempts at playing back a melody.
 #'

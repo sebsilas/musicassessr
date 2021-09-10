@@ -31,7 +31,7 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
   # items should be a dataframe
   # this will return a sequence of test items
   items <- lapply(start_from_trial_no:n_items, function(melody_no) {
-    play_melody_loop(melody_no = melody_no,
+    play_melody_loop2(melody_no = melody_no,
                                      var_name = var_name,
                                      max_goes = max_goes,
                                      page_type = page_type,
@@ -45,7 +45,7 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
                                      example = example)
   })
 
-  items <- add_feedback(items, feedback)
+  items <- add_feedback(items, feedback, after = 4) # a play_melody_loop is 4 pages long
 
 }
 

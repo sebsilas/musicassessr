@@ -3,7 +3,7 @@
 
 feedback_melodic_production <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
-  reactive_page(function(state, answer, ...) {
+  psychTestR::reactive_page(function(state, answer, ...) {
 
     # pitch classes
     present_stimuli(stimuli = answer$user_response,
@@ -45,8 +45,8 @@ plot_note_data <- function(notes, onsets, quantized_notes) {
 
 
 
-add_feedback <- function(items, feedback) {
-  if(is.null(feedback) | feedback == FALSE) {
+add_feedback <- function(items, feedback, after = 2) {
+  if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)
   } else {
     insert.every.other.pos.in.list(items, feedback())

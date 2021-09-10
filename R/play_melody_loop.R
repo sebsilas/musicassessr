@@ -26,7 +26,7 @@
 #' @examples
 play_melody_loop2 <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                             answer_meta_data = " ", get_answer = get_answer_store_async,
+                             answer_meta_data = " ", get_answer = get_answer_pyin,
                              rel_to_abs_mel_function = function(){}, clip_stimuli_length = FALSE,
                              start_note = 1, end_note = "end", dur_list = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE) {

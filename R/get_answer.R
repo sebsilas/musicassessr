@@ -278,7 +278,12 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
 
     stimuli <- itembankr::str_mel_to_vector(input$answer_meta_data$abs_melody, ",")
     stimuli_length <- input$answer_meta_data$N
-    durations <- diff(onsets_noteon)/1000
+
+    if(is.null(result$dur)) {
+      durations <- diff(onsets_noteon)
+    } else {
+      durations <- result$dur
+    }
 
     # calculate measures
     trial_length <- onsets_noteon[length(onsets_noteon)]
@@ -357,7 +362,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
          correct_by_note_events_octaves_allowed_log_normal = correct_by_note_events_octaves_allowed_log_normal,
          accuracy = accuracy,
          accuracy_octaves_allowed = accuracy_octaves_allowed,
-         opti3 = similarity,
+         similarity = similarity,
          note_precision = note_precision,
          mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
          mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
@@ -654,10 +659,15 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 }
 
 get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations) {
+  print('get_similarity')
+  print(stimuli)
+  print(stimuli_length)
+  print(user_melody_input)
+  print(durations)
   # similarity
   if(length(user_melody_input) < 3 | stimuli_length < 3) {
     similarity <- NA
-    ng <- NA
+    #ng <- NA
   } else {
     similarity <- itembankr::opti3(pitch_vec1 = stimuli,
                                    dur_vec1 = rep(0.5, stimuli_length),

@@ -17,8 +17,6 @@ feedback_melodic_production <- function() {
                                     shiny::tags$p(paste0("Time taken: ", answer$trial_length, " seconds."))
                                     #, shiny::tags$p(plot)
                                     ))
-
-
   })
 }
 
@@ -50,8 +48,20 @@ add_feedback <- function(items, feedback, after = 2) {
   if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)
   } else {
-    res <- insert.every.other.pos.in.list(items, feedback())
-    res <- lapply(res, function(x) if(is.list(x)) unlist(x))
+    res <- insert.every.other.pos.in.list(items, feedback(), n = after)
+    res <- lapply(res, function(x) {
+      if(is.list(x)) {
+        unlist(x)
+      } else { x } })
+    print('added_feedback')
+    print(res)
     unlist(res)
   }
 }
+
+# tl <- psychTestR::join(
+#   lapply(LETTERS, psychTestR::one_button_page)
+# )
+#
+# tl2 <- add_feedback(tl, function() 'feedback_melodic_production', after = 4)
+

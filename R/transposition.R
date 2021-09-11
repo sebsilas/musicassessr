@@ -3,9 +3,10 @@ key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
   if(nchar(inst) > 4) {
     inst <- instrument_list[[inst]]
   }
-  res <- filter(key_rankings, instrument == inst) %>% arrange(desc(n))
+  res <- dplyr::filter(key_rankings, instrument == inst) %>% dplyr::arrange(dplyr::desc(n))
   if (remove_atonal) {
-    res <- filter(res, key != "")
+    print(res)
+    res <- res %>% dplyr::filter(key != "")
   }
   res
 }
@@ -30,7 +31,7 @@ easy_keys_for_inst <- function(instrument_name) {
 hard_keys_for_inst <- function(instrument_name) {
   # get the easy keys and just make sure that the sampled key is not in that list
   easy_keys <- easy_keys_for_inst(instrument_name)$key
-  filter(keys_table, !key %in% easy_keys)
+  dplyr::filter(keys_table, !key %in% easy_keys)
 }
 
 
@@ -175,11 +176,11 @@ given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, to
                     )
 
   res <- res %>%
-          rowwise %>%
-          mutate(abs_melody = paste0(itembankr::rel_to_abs_mel(rel_mel = str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
+          dplyr::rowwise() %>%
+          dplyr::mutate(abs_melody = paste0(itembankr::rel_to_abs_mel(rel_mel = str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
                  in_range = all(str_mel_to_vector(abs_melody, ",") %in% range)
                  ) %>%
-                filter(in_range == TRUE)
+                dplyr::filter(in_range == TRUE)
 
   idxes <- sample(1:nrow(res), 10)
 

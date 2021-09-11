@@ -14,7 +14,7 @@ multi_page_play_melody_loop(
  
     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
   get_answer = get_answer_save_aws_key,
-  rel_to_abs_mel_function,
+  rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
   start_from_trial_no = 1,
   clip_stimuli_length = FALSE,
   arrhythmic = FALSE,

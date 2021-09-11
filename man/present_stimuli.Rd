@@ -34,6 +34,7 @@ present_stimuli(
   auto_next_page = FALSE,
   choices = NULL,
   user_rating = FALSE,
+  page_text_first = TRUE,
   ...
 )
 }

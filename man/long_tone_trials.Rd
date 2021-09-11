@@ -9,7 +9,7 @@ long_tone_trials(
   num_examples = NULL,
   feedback = FALSE,
   page_title = "Sing Along With This Note",
-  get_answer = musicassessr::get_answer_save_aws_key
+  get_answer = musicassessr::get_answer_pyin_long_note
 )
 }
 \arguments{

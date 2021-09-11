@@ -4,41 +4,111 @@
 feedback_melodic_production <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
-    #plot <-
-    # pitch classes
-    present_stimuli(stimuli = answer$user_response_note,
+
+    amd <- answer$answer_meta_data
+    answer$answer_meta_data <- NULL
+    d_names <- names(answer)[!names(answer) == "answer_meta_data"]
+    amd_names <- names(amd)
+
+    # plot
+    plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
+
+    tab <- shiny::renderTable({
+      # nb, duplicate code, make functions
+      d <- lapply(1:length(answer), function(x) {
+        if(length(answer[[x]]) > 1) {
+        paste0(answer[[x]], collapse = ",")
+      } else {
+        answer[[x]]
+        }
+      })
+
+      d <- base::t(as.data.frame(d))
+      row.names(d) <- d_names
+      d
+    }, rownames = TRUE, colnames = FALSE, width = "50%")
+
+    tab2 <- shiny::renderTable({
+      amd <- lapply(1:length(amd), function(x) {
+        if(length(amd[[x]]) > 1) {
+          paste0(amd[[x]], collapse = ",")
+        } else {
+          amd[[x]]
+        }
+      })
+      amd <- base::t(as.data.frame(amd))
+      row.names(amd) <- amd_names
+      amd
+    }, rownames = TRUE, colnames = FALSE, width = "50%")
+
+
+    present_stimuli(answer$user_response_note,
                     stimuli_type = "midi_notes",
                     display_modality = "both",
-                    page_title = "Feedback: ",
+                    page_title = "Your Response",
                     page_type = 'one_button_page',
-                    page_text = shiny::tags$div(shiny::tags$p(paste0("Similarity was ", answer$similarity)),
-                                    shiny::tags$p(paste0("No correct: ", answer$no_correct)),
-                                    shiny::tags$p(paste0("Number of errors: ", answer$no_errors)),
-                                    shiny::tags$p(paste0("Accuracy (error by note events): ", answer$accuracy)),
-                                    shiny::tags$p(paste0("Time taken: ", answer$trial_length, " seconds."))
-                                    #, shiny::tags$p(plot)
-                                    ))
+                    page_text = shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab, tags$h3('Stimuli Info'), tab2),
+                    page_text_first = FALSE
+                    )
   })
 }
 
 feedback_long_tone <- function() {
-  ##
+  # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
+  psychTestR::reactive_page(function(state, answer, ...) {
+
+    # plot
+    plot <- feedback_long_note_plot(answer$onset, answer$freq, answer$stimuli)
+
+    answer$stimuli <- NULL
+    answer$onset <- NULL
+    answer$freq <- NULL
+
+    tab <- shiny::renderTable({
+      d_names <- names(answer)
+      d <- base::t(as.data.frame(answer))
+      row.names(d) <- d_names
+      d }, rownames = TRUE, colnames = FALSE, width = "50%")
+
+    psychTestR::one_button_page(
+      shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab)
+    )
+  })
 }
 
-plot_note_data <- function(notes, onsets, quantized_notes) {
+feedback_mel_plot <- function(onsets, pitch_plot, error_plot, stimuli) {
 
   # create df
-  data <- data.frame(onsets = onsets,
-                     note = unlist(notes),
-                     quantized = quantized_notes)
+  prod.df <- tibble::tibble("onset" = c(0, onsets),
+                            "pitch" = c(NA, pitch_plot),
+                            "error" = c(NA, as.numeric(error_plot)))
 
-  # Plot
-  plot <- ggplot2::ggplot(data, aes(onsets) ) +
-          #geom_line(aes(y = note, colour = "red"), alpha = 0.5) +
-          geom_line(aes(y = quantized, colour = "blue"), alpha = 0.5, size = 3) +
-          geom_point(aes(y = note, colour = "red"), shape=21, color="black", fill="#69b3a2", size=1) +
-          theme_ipsum() +
-          ggtitle("pitches")
+  prod.df$error <- as.factor(prod.df$error)
+
+  target.notes.other.octaves <- unlist(lapply(stimuli, function(x) get_all_octaves_in_gamut (x, midi.gamut.min, midi.gamut.max)))
+
+  plot <- plot_prod(prod.df, stimuli, target.notes.other.octaves, pitchOctaveIndependent = FALSE)
+
+  rendered_plot <- renderPlot({ plot }, width = 500)
+}
+
+
+feedback_long_note_plot <- function(onsets, freqs, stimuli) {
+
+  stimuli <- hrep::midi_to_freq(stimuli)
+
+  # create df
+  prod_df <- tibble::tibble("onset" = c(0, onsets),
+                            "freq" = c(NA, freqs))
+
+  print(prod_df)
+
+  plot <- ggplot2::ggplot(prod_df, ggplot2::aes(x=onset, y=freq)) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
+                   axis.ticks.x=ggplot2::element_blank()) +
+    ggplot2::geom_hline(yintercept = stimuli, color = magma.colors[3], size = 4, alpha = 0.7) +
+    ggplot2::geom_line( color=magma.colors[5])
 
   rendered_plot <- renderPlot({ plot }, width = 500)
 }

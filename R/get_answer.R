@@ -4,16 +4,26 @@
 #' @param transform_file
 #' @param normalise
 #' @param hidePrint
+#' @param type
 #'
 #' @return
 #' @export
 #'
 #' @examples
-pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
+pyin <- function(file_name, transform_file = NULL,
+                 normalise = FALSE, hidePrint = TRUE, type = "notes") {
+
+  if(type == "pitch_track") {
+    type <- "vamp:pyin:pyin:smoothedpitchtrack"
+  } else if(type == "notes") {
+    type <- "vamp:pyin:pyin:notes"
+  } else {
+    stop("Unknown type")
+  }
 
   if(is.null(transform_file)) {
     args <- c("-d",
-              "vamp:pyin:pyin:notes",
+              type,
               file_name,
               "-w",
               "csv --csv-stdout")
@@ -41,13 +51,25 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
   if(length(sa_out) == 0) {
     res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
   } else {
-    res <- read.csv(text = sa_out, header = FALSE) %>%
-      dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
-      dplyr::mutate(
-        onset = round(onset, 2),
-        dur = round(dur, 2),
-        freq = round(freq, 2),
-        note = round(hrep::freq_to_midi(freq)))
+    print(read.csv(text = sa_out, header = FALSE))
+
+    res <- read.csv(text = sa_out, header = FALSE)
+
+    if(type == "notes") {
+      res <- res %>%
+        dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+        dplyr::mutate(
+          onset = round(onset, 2),
+          dur = round(dur, 2),
+          freq = round(freq, 2),
+          note = round(hrep::freq_to_midi(freq)))
+    } else {
+      res <- res %>%
+        dplyr::rename(onset = V2, freq = V3) %>%
+        dplyr::mutate(
+          onset = round(onset, 2),
+          freq = round(freq, 2))
+    }
 
     file_name <- res$V1[[1]]
 
@@ -58,11 +80,22 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 }
 
 
-# pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
+# pyin <- function(file_name, transform_file = NULL,
+#                  normalise = FALSE, hidePrint = TRUE, type = "notes") {
+#
 #   file_name <- '/Users/sebsilas/true.wav'
+#
+#   if(type == "pitch_track") {
+#     type <- "vamp:pyin:pyin:smoothedpitchtrack"
+#   } else if(type == "notes") {
+#     type <- "vamp:pyin:pyin:notes"
+#   } else {
+#     stop("Unknown type")
+#   }
+#
 #   if(is.null(transform_file)) {
 #     args <- c("-d",
-#               "vamp:pyin:pyin:notes",
+#               type,
 #               file_name,
 #               "-w",
 #               "csv --csv-stdout")
@@ -90,13 +123,23 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 #   if(length(sa_out) == 0) {
 #     res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
 #   } else {
-#     res <- read.csv(text = sa_out, header = FALSE) %>%
-#       dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
-#       dplyr::mutate(
-#         onset = round(onset, 2),
-#         dur = round(dur, 2),
-#         freq = round(freq, 2),
-#         note = round(hrep::freq_to_midi(freq)))
+#     res <- read.csv(text = sa_out, header = FALSE)
+#
+#     if(type == "notes") {
+#       res <- res %>%
+#         dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+#         dplyr::mutate(
+#           onset = round(onset, 2),
+#           dur = round(dur, 2),
+#           freq = round(freq, 2),
+#           note = round(hrep::freq_to_midi(freq)))
+#     } else {
+#       res <- res %>%
+#         dplyr::rename(onset = V2, freq = V3) %>%
+#         dplyr::mutate(
+#           onset = round(onset, 2),
+#           freq = round(freq, 2))
+#     }
 #
 #     file_name <- res$V1[[1]]
 #
@@ -105,6 +148,7 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 #     res <- tibble::tibble(file_name, res)
 #   }
 # }
+
 #pyin('/Users/sebsilas/true.wav')
 
 
@@ -118,9 +162,7 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 #'
 #' @examples
 get_answer_pyin <- function(input, ...) {
-  print('get_answer_pyin')
-  print(input)
-  print(input$answer_meta_data)
+
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   pyin_res <- pyin(file)
 
@@ -135,6 +177,25 @@ get_answer_pyin <- function(input, ...) {
 
 }
 
+
+
+get_answer_pyin_long_note <- function(input, ...) {
+
+  file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
+  pyin_res <- pyin(file, type = "pitch_track")
+
+  c(
+    list(file = file,
+         stimuli = as.numeric(input$stimuli),
+         onset = pyin_res$onset,
+         freq = pyin_res$freq
+         ),
+
+    long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
+  )
+
+
+}
 
 log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 
@@ -304,10 +365,8 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     # accuracy
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
-    print('just before sim')
     # similarity
     similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations)
-    print('after sim')
     no_note_events <- length(user_melody_input)
 
     # by note events measures
@@ -316,7 +375,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
 
     correct_by_note_events_octaves_allowed <- no_correct_octaves_allowed/no_note_events
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
-    print('just before siging_measures')
+
     if(singing_measures) {
       # singing stuff
       # note precision
@@ -324,21 +383,21 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
         dplyr::group_by(sci_notation) %>%
         dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
-                    dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE))
-      print('note_precision')
+                    dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE)) %>% dplyr::pull(note_precision_melody)
+
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli, freq = result$freq)
-      print('after mean_cents_deviation_from_nearest_stimuli_pitch')
+
       # mean cents deviation
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
-      print('after mean_cents_deviation_from_nearest_midi_pitch')
+
     } else {
       note_precision <- NA
       mean_cents_deviation_from_nearest_stimuli_pitch <- NA
       mean_cents_deviation_from_nearest_midi_pitch <- NA
     }
-      print('after singing_measures')
+
     list(stimuli = stimuli,
          stimuli_length = stimuli_length,
          user_response_note = user_melody_input,

@@ -21,28 +21,29 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 
 ### long tone scoring
 
-long_note_pitch_metrics <- function(target_pitch, pitch_vector) {
+long_note_pitch_metrics <- function(target_pitch, pyin_res) {
   print('long_note_pitch_metrics')
   ## dtw scoring
-
-  ref <- itembankr::produce_arrhythmic_durations(pitch_vector, target_pitch)
-  dtw.distance <- dtw(pitch_vector, ref)$distance
+  print(target_pitch)
+  print(pyin_res)
+  ref <- itembankr::produce_arrhythmic_durations(pyin_res$freq, target_pitch)
+  dtw.distance <- dtw::dtw(pyin_res$freq, ref)$distance
 
   # note accuracy, interval accuracy, note precision, interval precision
   # see DOI: 10.1121/1.3478782
 
-  cents_vector_in_rel_to_target_note <- vector.cents(target_pitch, pitch_vector)
+  cents_vector_in_rel_to_target_note <- vector.cents(target_pitch, pyin_res$freq)
 
   # the note accuracy is the average deviation from the target note
   note.accuracy <- mean(abs(cents_vector_in_rel_to_target_note))
 
-  cents_vector_in_rel_to_mean <- vector_cents(mean(pitch_vector), pitch_vector)
+  cents_vector_in_rel_to_mean <- vector_cents(mean(pyin_res$freq), pyin_res$freq)
   # the precision is the standard deviation of pitches not in relation to the target note
   # but instead in relation to whatever the mean was the the participant sang
   # in this long note context, then, this measures how stable the pitch was and has a slightly different meaning
   # note precision in the context of melody trials, which is the consistency of producing the same pitch classes on multiple occurences
   # note that note precision has no reference to target pitch and therefore thus independent of accuracy
-  note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(pitch_vector) )
+  note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(pyin_res$freq) )
 
   print(list("note_accuracy" = note.accuracy,
                "note_precision" = note.precision,

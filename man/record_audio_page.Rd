@@ -27,6 +27,7 @@ record_audio_page(
   auto_next_page = FALSE,
   save_answer = TRUE,
   user_rating = FALSE,
+  page_text_first = TRUE,
   ...
 )
 }

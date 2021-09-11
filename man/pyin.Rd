@@ -4,10 +4,16 @@
 \alias{pyin}
 \title{pyin}
 \usage{
-pyin(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE)
+pyin(
+  file_name,
+  transform_file = NULL,
+  normalise = FALSE,
+  hidePrint = TRUE,
+  type = "notes"
+)
 }
 \arguments{
-\item{hidePrint}{}
+\item{type}{}
 }
 \value{
 

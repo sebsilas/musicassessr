@@ -15,8 +15,8 @@ play_melody_loop2(
  
     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
   answer_meta_data = " ",
-  get_answer = get_answer_store_async,
-  rel_to_abs_mel_function = function() { },
+  get_answer = get_answer_pyin,
+  rel_to_abs_mel_function = musicassessr:rel_to_abs_mel_mean_centred,
   clip_stimuli_length = FALSE,
   start_note = 1,
   end_note = "end",

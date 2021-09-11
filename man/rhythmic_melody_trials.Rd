@@ -10,7 +10,7 @@ rhythmic_melody_trials(
   num_examples = NULL,
   feedback = FALSE,
   page_title = "Sing This Melody Plus Rhythm",
-  get_answer = musicassessr::get_answer_save_aws_key
+  get_answer = musicassessr::get_answer_pyin
 )
 }
 \arguments{

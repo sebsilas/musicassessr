@@ -27,7 +27,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                               note_no = "max", show_record_button = TRUE, get_answer = get_answer_store_async, transpose = 0, answer_meta_data = 0,
                               method = c("aws_pyin", "crepe"), show_aws_controls = FALSE, crepe_stats = FALSE,
                               button_text = "Record", stop_button_text = "Stop", record_duration = NULL, on_complete = NULL,
-                              auto_next_page = FALSE, save_answer = TRUE, user_rating = FALSE, ...) {
+                              auto_next_page = FALSE, save_answer = TRUE, user_rating = FALSE, page_text_first = TRUE, ...) {
 
   psychTestR::page(ui = shiny::tags$div(
 
@@ -47,8 +47,8 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                     var answer_meta_data;
                     '),
       shiny::tags$h2(page_title),
-      shiny::tags$p(page_text),
-      shiny::tags$p("test code: 13"),
+      if(page_text_first) shiny::tags$p(page_text),
+
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
                        stimuli_reactive = stimuli_reactive,
@@ -65,7 +65,9 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
       shiny::tags$div(id ="container",
                       deploy_aws_pyin(method = method, show_aws_controls = show_aws_controls, stop_button_text),
                       deploy_crepe(method),
-      )
+      ),
+
+      if(!page_text_first) shiny::tags$p(page_text)
     )
   ),
   label = label,

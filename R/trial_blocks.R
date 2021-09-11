@@ -153,7 +153,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
 #'
 #' @examples
 long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
-                             page_title = "Sing Along With This Note", get_answer = musicassessr::get_answer_save_aws_key) {
+                             page_title = "Sing Along With This Note", get_answer = musicassessr::get_answer_pyin_long_note) {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_long_tone

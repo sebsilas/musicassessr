@@ -28,7 +28,7 @@ Imports:
     async,
     stringi,
     hrep,
-    itembankr,
+    itembankr (>= 0.1.0),
     magrittr,
     dplyr,
     ggplot2,

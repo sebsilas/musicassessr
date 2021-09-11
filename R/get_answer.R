@@ -59,9 +59,7 @@ pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint 
 
 
 # pyin <- function(file_name, transform_file = NULL, normalise = FALSE, hidePrint = TRUE) {
-#   print('pyin')
 #   file_name <- '/Users/sebsilas/true.wav'
-#   print(file_name)
 #   if(is.null(transform_file)) {
 #     args <- c("-d",
 #               "vamp:pyin:pyin:notes",
@@ -306,9 +304,10 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     # accuracy
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
-
+    print('just before sim')
     # similarity
     similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations)
+    print('after sim')
     no_note_events <- length(user_melody_input)
 
     # by note events measures
@@ -317,7 +316,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
 
     correct_by_note_events_octaves_allowed <- no_correct_octaves_allowed/no_note_events
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
-
+    print('just before siging_measures')
     if(singing_measures) {
       # singing stuff
       # note precision
@@ -326,19 +325,20 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
         dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
                     dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE))
-
+      print('note_precision')
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli, freq = result$freq)
-
+      print('after mean_cents_deviation_from_nearest_stimuli_pitch')
       # mean cents deviation
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
+      print('after mean_cents_deviation_from_nearest_midi_pitch')
     } else {
       note_precision <- NA
       mean_cents_deviation_from_nearest_stimuli_pitch <- NA
       mean_cents_deviation_from_nearest_midi_pitch <- NA
     }
-
+      print('after singing_measures')
     list(stimuli = stimuli,
          stimuli_length = stimuli_length,
          user_response_note = user_melody_input,
@@ -659,11 +659,6 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 }
 
 get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations) {
-  print('get_similarity')
-  print(stimuli)
-  print(stimuli_length)
-  print(user_melody_input)
-  print(durations)
   # similarity
   if(length(user_melody_input) < 3 | stimuli_length < 3) {
     similarity <- NA

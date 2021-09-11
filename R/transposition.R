@@ -5,7 +5,6 @@ key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
   }
   res <- dplyr::filter(key_rankings, instrument == inst) %>% dplyr::arrange(dplyr::desc(n))
   if (remove_atonal) {
-    print(res)
     res <- res %>% dplyr::filter(key != "")
   }
   res
@@ -199,7 +198,6 @@ given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, to
 
 produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_range = 108, key) {
   # given some melodies in relative format, and a user range, produce random transpositions which fit in that range
-
   rel_melody <- str_mel_to_vector(rel_melody, sep = ",")
   dummy_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = 1)
   mel_range <- range(dummy_abs_mel)

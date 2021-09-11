@@ -27,7 +27,7 @@
 play_melody_loop2 <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                              answer_meta_data = " ", get_answer = get_answer_pyin,
-                             rel_to_abs_mel_function = function(){}, clip_stimuli_length = FALSE,
+                             rel_to_abs_mel_function = musicassessr:rel_to_abs_mel_mean_centred, clip_stimuli_length = FALSE,
                              start_note = 1, end_note = "end", dur_list = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE) {
 
@@ -41,7 +41,7 @@ play_melody_loop2 <- function(melody = NULL, melody_no = "x", var_name = "melody
       psychTestR::set_global("user_satisfied", "Try Again", state)
       psychTestR::set_global("number_attempts", 1, state)
       # grab sampled melody for this trial (if one not specified)
-      grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function)
+      grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = rel_to_abs_mel_function)
     }),
 
     # keep in loop until the participant confirms they are happy with their entry
@@ -173,7 +173,7 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
 play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3,
                                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                              answer_meta_data = " ", get_answer = get_answer_store_async,
-                                             rel_to_abs_mel_function = function(){}, clip_stimuli_length = FALSE,
+                                             rel_to_abs_mel_function = musicassessr:rel_to_abs_mel_mean_centred, clip_stimuli_length = FALSE,
                                              start_note = 1, end_note = "end", dur_list = 'null', arrhythmic = FALSE, note_length = 0.5,
                                              play_button_text = psychTestR::i18n("Play"), example = FALSE) {
 
@@ -232,7 +232,7 @@ example_save <- function(example) {
   ifelse(example, FALSE, TRUE)
 }
 
-grab_sampled_melody <- function(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, ...) {
+grab_sampled_melody <- function(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred, ...) {
   if(is.null(melody)) {
     print('sample melody because one not specified')
 
@@ -265,11 +265,15 @@ sort_arrhythmic <- function(arrhythmic, rel_melody, note_length) {
   list("melody" = melody, "dur_list" = dur_list)
 }
 
-sort_sampled_melody <- function(trials, melody_no, state, arrhythmic, rel_to_abs_mel_function, bottom_range, top_range, note_length = 0.5) {
+sort_sampled_melody <- function(trials, melody_no, state, arrhythmic, rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred, bottom_range, top_range, note_length = 0.5) {
+  cat('rel_to_abs_mel_function is ', as.character(substitute(rel_to_abs_mel_function)), '\n')
   rel_melody <- trials[melody_no, ]
   melody <- sort_arrhythmic(arrhythmic, rel_melody, note_length)$melody
   dur_list <- sort_arrhythmic(arrhythmic, rel_melody, note_length)$dur_list
+  print('rel_to_abs_mel_function in ss_m')
+  print(rel_to_abs_mel_function)
   abs_melody <- rel_to_abs_mel_function(rel_melody = rel_melody$melody, bottom_range = bottom_range, top_range = top_range)
+  print('other side?')
   # attach abs mel to meta data
   answer_meta_data <- cbind(rel_melody, data.frame(abs_melody = paste0(abs_melody, collapse = ",")))
   psychTestR::set_global("melody", list("melody" = abs_melody, "dur_list" = dur_list), state)

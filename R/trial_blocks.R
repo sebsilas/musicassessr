@@ -16,7 +16,6 @@
 arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE, get_answer = musicassessr::get_answer_pyin) {
 
   if(feedback & !is.function(feedback)) {
-    print('add feedback_melodic_production')
     feedback <- feedback_melodic_production
   }
 
@@ -90,7 +89,6 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
                                    page_title = "Sing This Melody Plus Rhythm", get_answer = musicassessr::get_answer_pyin) {
 
   if(feedback & !is.function(feedback)) {
-    print('add feedback_melodic_production')
     feedback <- feedback_melodic_production
   }
 

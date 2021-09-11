@@ -24,7 +24,7 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
                                                               page_type = "record_audio_page", max_goes = 3,
                                                               page_title = psychTestR::i18n("copy_melody_title"),
                                                               page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                                              get_answer = get_answer_save_aws_key, rel_to_abs_mel_function,
+                                                              get_answer = get_answer_save_aws_key, rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
                                                               start_from_trial_no = 1, clip_stimuli_length = FALSE,
                                                               arrhythmic = FALSE, example = FALSE, feedback = FALSE) {
 

@@ -179,6 +179,15 @@ get_answer_pyin <- function(input, ...) {
 
 
 
+#' get_answer pyin for long notes
+#'
+#' @param input
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_answer_pyin_long_note <- function(input, ...) {
 
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')

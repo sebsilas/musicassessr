@@ -10,6 +10,7 @@ feedback_melodic_production <- function() {
                     stimuli_type = "midi_notes",
                     display_modality = "both",
                     page_title = "Feedback: ",
+                    page_type = 'one_button_page',
                     page_text = shiny::tags$div(shiny::tags$p(paste0("Similarity was ", answer$similarity)),
                                     shiny::tags$p(paste0("No correct: ", answer$no_correct)),
                                     shiny::tags$p(paste0("Number of errors: ", answer$no_errors)),

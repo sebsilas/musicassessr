@@ -195,21 +195,19 @@ results_explorer <- function(results_df = PBET_calibration_results,
   shiny::shinyApp(ui, server)
 }
 
-# used for downloading results:
-# results_explorer(PBET_calibration_results)
-#results_explorer(errorsOctaveAllowed = T, pitchOctaveIndependent = T)
+download_results_fromS3 <- function() {
+  # used for downloading results:
+  # results_explorer(PBET_calibration_results)
+  #results_explorer(errorsOctaveAllowed = T, pitchOctaveIndependent = T)
 
-#keys <- PBET_calibration_results$key
-#keys <- keys[!is.na(keys)]
-#
-# Sys.setenv("AWS_ACCESS_KEY_ID" = "AKIAX5SHKLSKR6RA4NCN",
-#            "AWS_SECRET_ACCESS_KEY" = "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",
-#            "AWS_DEFAULT_REGION" = "us-east-1")
-#
-# s3sync(bucket = "shinny-app-source-41630", direction = "download")
+  #keys <- PBET_calibration_results$key
+  #keys <- keys[!is.na(keys)]
+  #
+  #
+  # s3sync(bucket = "shinny-app-source-41630", direction = "download")
 
-# file_list <- list.files("PBET_calibration_audio")
-# files_to_delete <- file_list[!file_list %in% keys]
-# files_to_delete <- paste0("PBET_calibration_audio/", files_to_delete)
-# unlink(files_to_delete)
-
+  # file_list <- list.files("PBET_calibration_audio")
+  # files_to_delete <- file_list[!file_list %in% keys]
+  # files_to_delete <- paste0("PBET_calibration_audio/", files_to_delete)
+  # unlink(files_to_delete)
+}

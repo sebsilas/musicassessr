@@ -306,7 +306,7 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 
 
-melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures, rhythmic = FALSE) {
+melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures) {
 
   # onset, dur, freq, note
 
@@ -352,8 +352,10 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
   else {
 
     stimuli <- itembankr::str_mel_to_vector(input$answer_meta_data$abs_melody, ",")
-    stimuli_durations <- itembankr::str_mel_to_vector(input$answer_meta_data$dur_list, ",")
+
+    stimuli_durations <- itembankr::str_mel_to_vector(input$answer_meta_data$durations, ",")
     stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
+
     stimuli_length <- input$answer_meta_data$N
 
     if(is.null(result$dur)) {

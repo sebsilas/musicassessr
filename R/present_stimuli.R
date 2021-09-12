@@ -82,6 +82,9 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
   if (page_type_string == "one_button_page") {
     args$button_text <- button_text
   }
+  else if(page_type_string == "NAFC_page") {
+    args$choices <- choices
+  }
   else if(page_type_string == "play_text_page") {
     args <- stimuli_wrapped
     args$present_stimuli_characters_auditory <- NULL

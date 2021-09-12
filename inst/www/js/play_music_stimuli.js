@@ -583,7 +583,7 @@ function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
 
           var stopButton = document.createElement("button");
           stopButton.style.display = "block";
-          stopButton.class = "btn btn-default action-button"
+          stopButton.classList.add("btn", "btn-default", "action-button");
           stopButton.innerText = stop_button_text; // Insert text
           stopButton.addEventListener("click", function () {
               if(type === "crepe") {

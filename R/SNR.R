@@ -38,8 +38,8 @@ get_SNR_pages <- function(min_SNR = 14) {
 
 compute_SNR <- function(signal_file, noise_file) {
 
-  signal <- warbleR::read_wave(signal_file)
-  noise <- warbleR::read_wave(noise_file)
+  signal <- warbleR::read_wave(paste0(".", signal_file))
+  noise <- warbleR::read_wave(paste0(".",noise_file))
   # nice interpretation: https://reviseomatic.org/help/e-misc/Decibels.php
   signal <- seewave::env(signal, f = 44100)
   noise <- seewave::env(noise, f = 44100)
@@ -63,7 +63,6 @@ record_background_page <- function() {
                     get_answer = get_answer_save_aws_key,
                     button_text = psychTestR::i18n("record_bg_button"),
                     on_complete = function(input, state, ...) {
-                      print(input$file_url)
                       psychTestR::set_global("SNR_noise", input$file_url, state)
                     })
 }

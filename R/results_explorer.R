@@ -6,11 +6,6 @@ path.to.audio <- 'all_audio_both_data_collections/'
 
 magma.colors <- c("#aadb37", "#ff523b", "#daf571", "#efffb0", "#A5B3AF", "#163F50")
 
-
-# set up WavPlayer
-sound::setWavPlayer("./sox/play")
-
-
 # functions
 # graph production data
 
@@ -200,7 +195,8 @@ results_explorer <- function(results_df = PBET_calibration_results,
   shiny::shinyApp(ui, server)
 }
 
-#results_explorer(PBET_calibration_results)
+# used for downloading results:
+# results_explorer(PBET_calibration_results)
 #results_explorer(errorsOctaveAllowed = T, pitchOctaveIndependent = T)
 
 #keys <- PBET_calibration_results$key

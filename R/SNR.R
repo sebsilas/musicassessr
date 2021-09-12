@@ -16,7 +16,9 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url) {
 
       signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
       noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
-
+      print('SNR...')
+      print(signal_file)
+      print(noise_file)
 
       valid_url <- FALSE
 

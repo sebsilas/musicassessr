@@ -601,10 +601,11 @@ get_answer_save_aws_key <- function(input, ...) {
   print(input$key)
   print(input$file_url)
   print(input$user_rating)
+
   list(key = input$key,
        file_url = input$file_url,
        user_satisfied = input$user_satisfied,
-       user_rating = input$user_rating)
+       user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating))
 }
 
 

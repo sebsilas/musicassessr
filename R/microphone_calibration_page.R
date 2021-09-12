@@ -46,7 +46,7 @@ microphone_calibration_page <- function(admin_ui = NULL, on_complete = NULL, lab
              deploy_crepe_stats(deploy_crepe_stats)
     ),
 
-    shiny::tags$button(button_text, id = "next", onclick = "crepeStop(true);"),
+    shiny::tags$button(button_text, id = "next", onclick = "crepeStop(true);", class="btn btn-default action-button"),
     shiny::tags$hr()
   ) # end main div
 

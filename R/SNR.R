@@ -78,7 +78,6 @@ record_signal_page <- function(page_text = shiny::tags$div(
                     auto_next_page = TRUE,
                     get_answer = get_answer_save_aws_key,
                     on_complete = function(input, state, ...) {
-                      print(input$file_url)
                       psychTestR::set_global("SNR_signal", input$file_url, state)
                     })
 }
@@ -91,8 +90,6 @@ SNR_conclusion <- function(SNR, min_SNR) {
                                           shiny::tags$p(paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate"))), psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
                      get_answer = function(input, state, ...) {
                        SNR <- psychTestR::get_global("SNR", state)
-                       print('get_answer SNR')
-                       print(SNR)
                        list("SNR" = SNR)
                      })
   }
@@ -107,17 +104,11 @@ do_SNR <- function(signal_file, noise_file) {
  async::http_get(noise_file)$
     then(async::http_stop_for_status)$
     then(function(x) {
-      print('answer back!')
 
       SNR <- compute_SNR(signal_file = signal_file,
                         noise_file = noise_file)
 
-      # SNR <- compute_SNR(signal_file = "https://shinny-app-source-41630.s3.amazonaws.com/23-6-2021--14-24--45.wav",
-      #                    noise_file = "https://shinny-app-source-41630.s3.amazonaws.com/22-6-2021--16-11.wav")
-      print(SNR)
       SNR
-      #print(x)
-      #res <- rjson::fromJSON(rawToChar(x$content))
-      #print(res)
+
     })
 }

@@ -150,8 +150,10 @@ function upload_file_to_s3(blob){
 
   var recordkey = create_recordkey();
 
-  var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
+  //var file_url = "https://"+bucketName+".s3.amazonaws.com/"+recordkey;
+  var file_url = "/files" + recordkey;
   console.log(file_url);
+
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();

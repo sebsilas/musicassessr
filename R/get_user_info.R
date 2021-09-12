@@ -27,7 +27,7 @@ get_user_info_page<- function() {
                          ),
       shiny::tags$p(psychTestR::i18n("browser_requirements2")),
       shiny::tags$div(shiny::tags$input(id = "user_info"), class="_hidden"),
-    shiny::tags$button(psychTestR::i18n("check_browser_button"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();")
+    shiny::tags$button(psychTestR::i18n("check_browser_button"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
   )
 
   psychTestR::page(ui = ui, label = "user_info", save_answer = TRUE, get_answer = user_info_check)

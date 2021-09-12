@@ -306,13 +306,12 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 
 
-melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures) {
+melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures, rhythmic = FALSE) {
 
   # onset, dur, freq, note
 
   if(is.numeric(result$freq)) {
-    print('laarr')
-    print(result)
+
     result <- result %>% dplyr::mutate(cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
                                  # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
                                  pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
@@ -353,6 +352,8 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
   else {
 
     stimuli <- itembankr::str_mel_to_vector(input$answer_meta_data$abs_melody, ",")
+    stimuli_durations <- itembankr::str_mel_to_vector(input$answer_meta_data$dur_list, ",")
+    stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
     stimuli_length <- input$answer_meta_data$N
 
     if(is.null(result$dur)) {
@@ -383,7 +384,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
     # similarity
-    similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations)
+    similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations)
     no_note_events <- length(user_melody_input)
 
     # by note events measures
@@ -416,6 +417,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     }
 
     list(stimuli = stimuli,
+         stimuli_durations = stimuli_durations,
          stimuli_length = stimuli_length,
          user_response_note = user_melody_input,
          user_response_midi_note_off = user_response_midi_note_off,
@@ -734,14 +736,19 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 
 }
 
-get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations) {
+get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations = NA) {
   # similarity
   if(length(user_melody_input) < 3 | stimuli_length < 3) {
     similarity <- NA
     #ng <- NA
   } else {
+
+    if(is.na(stimuli_durations)) {
+      stimuli_durations <- rep(0.5, stimuli_length)
+    }
+
     similarity <- itembankr::opti3(pitch_vec1 = stimuli,
-                                   dur_vec1 = rep(0.5, stimuli_length),
+                                   dur_vec1 = stimuli_durations,
                                    pitch_vec2 = user_melody_input,
                                    dur_vec2 = durations)
   }

@@ -30,29 +30,10 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
     }
   }
 
-  print(js.script)
 
   shiny::tags$div(
-
-    # send stimuli to js
-    shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
-                       Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
-                       ')),
-    shiny::tags$br(),
     shiny::tags$div(id="button_area",
-                    shiny::tags$button(play_button_text, id="playButton", onclick=js.script)
-    ))
-
-
-  shiny::tags$div(
-
-    # send stimuli to js
-    shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
-                       Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
-                       ')),
-    shiny::tags$br(),
-    shiny::tags$div(id="button_area",
-                    shiny::tags$button(play_button_text, id="playButton", onclick=js.script)
+                    shiny::tags$button(play_button_text, id="playButton", onclick=js.script, class="btn btn-default action-button")
     ))
 
 }
@@ -253,7 +234,7 @@ present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "
       #shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli_for_js))),
 
       shiny::tags$div(id="button_area",
-                      shiny::tags$button(button_text, id="playButton",
+                      shiny::tags$button(button_text, id="playButton", class="btn btn-default action-button",
                                          onclick=shiny::HTML(paste0("playMidiFileAndRecordAfter(\"",stimuli,"\", true, ",start_note,",",end_note,", true, this.id, ",transpose,", 'piano', ", bpm, ");")))
       ),
     shiny::tags$br()

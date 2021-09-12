@@ -517,13 +517,6 @@ function hidePlayButton() {
 
 function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_button_text = "Stop") {
     // start recording but then stop after x milliseconds
-    console.log("record and Stop!");
-    console.log(ms);
-    console.log(showStop);
-    console.log(hidePlay);
-    console.log(id);
-    console.log(type);
-    console.log(stop_button_text);
 
     window.startTime = new Date().getTime();
 
@@ -563,9 +556,6 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_butt
 
 function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text = "Stop") {
 
-      console.log('recordUpdateUI called');
-      console.log(type);
-
     if(['aws_pyin', 'crepe', 'record_audio_page', 'record_midi_page'].includes(type)) {
       // update the recording UI
       // if showStop is true, then give the user the option to press the stop button
@@ -588,13 +578,12 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
 
 
 function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
-        console.log("what is the type?");
-        console.log(type);
 
         if(type === "crepe" | type === "record_midi_page") {
 
           var stopButton = document.createElement("button");
           stopButton.style.display = "block";
+          stopButton.class = "btn btn-default action-button"
           stopButton.innerText = stop_button_text; // Insert text
           stopButton.addEventListener("click", function () {
               if(type === "crepe") {

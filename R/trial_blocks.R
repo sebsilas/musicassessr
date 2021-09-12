@@ -131,7 +131,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
         n_items = num_items,
         page_title = page_title,
         page_text = psychTestR::i18n("sing_melody_trial"),
-        get_answer = musicassessr::get_answer_save_aws_key,
+        get_answer = get_answer,
         rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
         feedback = feedback
         )

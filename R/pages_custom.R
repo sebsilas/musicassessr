@@ -30,7 +30,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              show_record_button = FALSE,
                                              auto_next_page = TRUE,
                                              example = FALSE,
-                                             get_answer = musicassessr::get_answer_save_aws_key) {
+                                             get_answer = get_answer_pyin_long_note) {
 
   # a page type for playing a 5-second tone and recording a user singing with it
 

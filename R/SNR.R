@@ -38,8 +38,8 @@ get_SNR_pages <- function(min_SNR = 14) {
 
 compute_SNR <- function(signal_file, noise_file) {
 
-  signal <- warbleR::read_wave(paste0(".", signal_file))
-  noise <- warbleR::read_wave(paste0(".",noise_file))
+  signal <- warbleR::read_wave(signal_file)
+  noise <- warbleR::read_wave(noise_file)
   # nice interpretation: https://reviseomatic.org/help/e-misc/Decibels.php
   signal <- seewave::env(signal, f = 44100)
   noise <- seewave::env(noise, f = 44100)
@@ -103,6 +103,9 @@ do_SNR <- function(signal_file, noise_file) {
  async::http_get(noise_file)$
     then(async::http_stop_for_status)$
     then(function(x) {
+
+      signal_file <- system.file(paste0("/srv/shiny-server", signal_file))
+      noise_file <- system.file(paste0("/srv/shiny-server", noise_file))
 
       SNR <- compute_SNR(signal_file = signal_file,
                         noise_file = noise_file)

@@ -89,7 +89,7 @@ feedback_mel_plot <- function(onsets, pitch_plot, error_plot, stimuli) {
 
   plot <- plot_prod(prod.df, stimuli, target.notes.other.octaves, pitchOctaveIndependent = FALSE)
 
-  rendered_plot <- renderPlot({ plot }, width = 500)
+  rendered_plot <- shiny::renderPlot({ plot }, width = 500)
 }
 
 
@@ -101,7 +101,6 @@ feedback_long_note_plot <- function(onsets, freqs, stimuli) {
   prod_df <- tibble::tibble("onset" = c(0, onsets),
                             "freq" = c(NA, freqs))
 
-  print(prod_df)
 
   plot <- ggplot2::ggplot(prod_df, ggplot2::aes(x=onset, y=freq)) +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
@@ -110,7 +109,7 @@ feedback_long_note_plot <- function(onsets, freqs, stimuli) {
     ggplot2::geom_hline(yintercept = stimuli, color = magma.colors[3], size = 4, alpha = 0.7) +
     ggplot2::geom_line( color=magma.colors[5])
 
-  rendered_plot <- renderPlot({ plot }, width = 500)
+  rendered_plot <- shiny::renderPlot({ plot }, width = 500)
 }
 
 

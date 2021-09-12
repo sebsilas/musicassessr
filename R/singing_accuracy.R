@@ -22,10 +22,9 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 ### long tone scoring
 
 long_note_pitch_metrics <- function(target_pitch, pyin_res) {
-  print('long_note_pitch_metrics')
+
   ## dtw scoring
-  print(target_pitch)
-  print(pyin_res)
+
   ref <- itembankr::produce_arrhythmic_durations(pyin_res$freq, target_pitch)
   dtw.distance <- dtw::dtw(pyin_res$freq, ref)$distance
 

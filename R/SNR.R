@@ -4,7 +4,7 @@
 #' @export
 #'
 #' @examples
-get_SNR_pages <- function(min_SNR = 14) {
+get_SNR_pages <- function(min_SNR = 14, absolute_url) {
   c(
     record_background_page(),
     record_signal_page(),
@@ -14,13 +14,13 @@ get_SNR_pages <- function(min_SNR = 14) {
     )),
     psychTestR::reactive_page(function(state, ...) {
 
-      signal_file <- psychTestR::get_global("SNR_signal", state)
-      noise_file <- psychTestR::get_global("SNR_noise", state)
+      signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
+      noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
+
 
       valid_url <- FALSE
 
       while(!valid_url) {
-        print('while')
         valid_url <- urlFileExist(noise_file)$exists
       }
 
@@ -99,18 +99,16 @@ SNR_conclusion <- function(SNR, min_SNR) {
 # while(!valid_url) {
 #   valid_url <- urlFileExist(noise_file)$exists
 
-do_SNR <- function(signal_file, noise_file) {
- async::http_get(noise_file)$
-    then(async::http_stop_for_status)$
-    then(function(x) {
-
-      signal_file <- system.file(paste0("/srv/shiny-server", signal_file))
-      noise_file <- system.file(paste0("/srv/shiny-server", noise_file))
-
-      SNR <- compute_SNR(signal_file = signal_file,
-                        noise_file = noise_file)
-
-      SNR
-
-    })
-}
+# do_SNR <- function(signal_file, noise_file) {
+#  async::http_get(noise_file)$
+#     then(async::http_stop_for_status)$
+#     then(function(x) {
+#
+#
+#       SNR <- compute_SNR(signal_file = signal_file,
+#                         noise_file = noise_file)
+#
+#       SNR
+#
+#     })
+# }

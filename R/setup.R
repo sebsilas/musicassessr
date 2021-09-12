@@ -23,7 +23,8 @@ setup_pages <- function(input = c("microphone",
                         min_SNR = 14,
                          get_user_info = TRUE,
                         demo = FALSE,
-                        get_instrument_range = FALSE) {
+                        get_instrument_range = FALSE,
+                        absolute_url) {
 
   if(!demo) {
 
@@ -42,7 +43,7 @@ setup_pages <- function(input = c("microphone",
 
     if(sjmisc::str_contains(input, "microphone") | sjmisc::str_contains(input, "midi")) psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$p(psychTestR::i18n("record_instructions")), shiny::tags$img(src = "musicassessr-assets/img/record.gif")), button_text = psychTestR::i18n("Next")),
 
-    if(SNR_test) musicassessr::get_SNR_pages(),
+    if(SNR_test) musicassessr::get_SNR_pages(absolute_url = absolute_url),
 
     if(get_instrument_range == "test") {
       musicassessr::fake_range()

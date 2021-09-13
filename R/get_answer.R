@@ -169,16 +169,17 @@ pyin <- function(file_name, transform_file = NULL,
 #'
 #' @examples
 get_answer_pyin <- function(input, ...) {
+  print('get_answer_pyin')
 
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   pyin_res <- pyin(file)
 
   if(is.na(pyin_res$onset)) {
-    list(result = NA,
-         reason = "pyin returned no result")
+
+    res <- list(error = NA, reason = "pyin returned no result", user_satisfied = input$user_satisfied)
   } else {
 
-    c(
+    res <- c(
       list(file = file,
            user_satisfied = input$user_satisfied,
            user_rating = input$user_rating),
@@ -186,6 +187,7 @@ get_answer_pyin <- function(input, ...) {
       melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE)
     )
   }
+  res
 
 
 }

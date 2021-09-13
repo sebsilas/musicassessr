@@ -4,15 +4,14 @@
 feedback_melodic_production <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
+    print('feedback_melodic_production')
 
-    amd <- answer$answer_meta_data
-    answer$answer_meta_data <- NULL
-    d_names <- names(answer)[!names(answer) == "answer_meta_data"]
-    amd_names <- names(amd)
+    if(is.null(answer$error)) {
+      amd <- answer$answer_meta_data
+      answer$answer_meta_data <- NULL
+      d_names <- names(answer)[!names(answer) == "answer_meta_data"]
+      amd_names <- names(amd)
 
-    if(is.na(answer$result)) {
-      psychTestR::one_button_page("Unfortunately a valid response was not recorded.")
-    } else {
       # plot
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
@@ -20,9 +19,9 @@ feedback_melodic_production <- function() {
         # nb, duplicate code, make functions
         d <- lapply(1:length(answer), function(x) {
           if(length(answer[[x]]) > 1) {
-          paste0(answer[[x]], collapse = ",")
-        } else {
-          answer[[x]]
+            paste0(answer[[x]], collapse = ",")
+          } else {
+            answer[[x]]
           }
         })
 
@@ -44,7 +43,6 @@ feedback_melodic_production <- function() {
         amd
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-
       present_stimuli(answer$user_response_note,
                       stimuli_type = "midi_notes",
                       display_modality = "both",
@@ -52,7 +50,10 @@ feedback_melodic_production <- function() {
                       page_type = 'one_button_page',
                       page_text = shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab, tags$h3('Stimuli Info'), tab2),
                       page_text_first = FALSE
-                      )
+      )
+
+    } else {
+      psychTestR::one_button_page("Unfortunately a valid response was not recorded.")
     }
   })
 }

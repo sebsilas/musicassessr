@@ -10,46 +10,50 @@ feedback_melodic_production <- function() {
     d_names <- names(answer)[!names(answer) == "answer_meta_data"]
     amd_names <- names(amd)
 
-    # plot
-    plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
+    if(is.na(answer$result)) {
+      psychTestR::one_button_page("Unfortunately a valid response was not recorded.")
+    } else {
+      # plot
+      plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
-    tab <- shiny::renderTable({
-      # nb, duplicate code, make functions
-      d <- lapply(1:length(answer), function(x) {
-        if(length(answer[[x]]) > 1) {
-        paste0(answer[[x]], collapse = ",")
-      } else {
-        answer[[x]]
-        }
-      })
-
-      d <- base::t(as.data.frame(d))
-      row.names(d) <- d_names
-      d
-    }, rownames = TRUE, colnames = FALSE, width = "50%")
-
-    tab2 <- shiny::renderTable({
-      amd <- lapply(1:length(amd), function(x) {
-        if(length(amd[[x]]) > 1) {
-          paste0(amd[[x]], collapse = ",")
+      tab <- shiny::renderTable({
+        # nb, duplicate code, make functions
+        d <- lapply(1:length(answer), function(x) {
+          if(length(answer[[x]]) > 1) {
+          paste0(answer[[x]], collapse = ",")
         } else {
-          amd[[x]]
-        }
-      })
-      amd <- base::t(as.data.frame(amd))
-      row.names(amd) <- amd_names
-      amd
-    }, rownames = TRUE, colnames = FALSE, width = "50%")
+          answer[[x]]
+          }
+        })
+
+        d <- base::t(as.data.frame(d))
+        row.names(d) <- d_names
+        d
+      }, rownames = TRUE, colnames = FALSE, width = "50%")
+
+      tab2 <- shiny::renderTable({
+        amd <- lapply(1:length(amd), function(x) {
+          if(length(amd[[x]]) > 1) {
+            paste0(amd[[x]], collapse = ",")
+          } else {
+            amd[[x]]
+          }
+        })
+        amd <- base::t(as.data.frame(amd))
+        row.names(amd) <- amd_names
+        amd
+      }, rownames = TRUE, colnames = FALSE, width = "50%")
 
 
-    present_stimuli(answer$user_response_note,
-                    stimuli_type = "midi_notes",
-                    display_modality = "both",
-                    page_title = "Your Response",
-                    page_type = 'one_button_page',
-                    page_text = shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab, tags$h3('Stimuli Info'), tab2),
-                    page_text_first = FALSE
-                    )
+      present_stimuli(answer$user_response_note,
+                      stimuli_type = "midi_notes",
+                      display_modality = "both",
+                      page_title = "Your Response",
+                      page_type = 'one_button_page',
+                      page_text = shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab, tags$h3('Stimuli Info'), tab2),
+                      page_text_first = FALSE
+                      )
+    }
   })
 }
 

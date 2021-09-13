@@ -86,6 +86,7 @@ pyin <- function(file_name, transform_file = NULL,
 #                  normalise = FALSE, hidePrint = TRUE, type = "notes") {
 #
 #   file_name <- '/Users/sebsilas/true.wav'
+#   file_name <- '/Users/sebsilas/Downloads/13-8-2021--17-8--18.wav'
 #
 #   if(type == "pitch_track") {
 #     vamp_cmd <- "vamp:pyin:pyin:smoothedpitchtrack"
@@ -172,13 +173,19 @@ get_answer_pyin <- function(input, ...) {
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
   pyin_res <- pyin(file)
 
-  c(
-    list(file = file,
-         user_satisfied = input$user_satisfied,
-         user_rating = input$user_rating),
+  if(is.na(pyin_res$onset)) {
+    list(result = NA,
+         reason = "pyin returned no result")
+  } else {
 
-    melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE)
-  )
+    c(
+      list(file = file,
+           user_satisfied = input$user_satisfied,
+           user_rating = input$user_rating),
+
+      melody_scoring_from_user_input(input, result = pyin_res, trial_type = "audio", singing_measures = TRUE)
+    )
+  }
 
 
 }

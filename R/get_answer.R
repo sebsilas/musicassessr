@@ -482,27 +482,37 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
   if (floor_or_ceiling == "floor") {
 
     function(input, ...) {
-      freqs <- rjson::fromJSON(input$user_response_frequencies)
-      notes <- tidy_freqs(freqs)
-      list(user_response = floor(mean(notes)))
+      if(is.null(input$user_response_frequencies)) {
+        list(user_response = NA)
+      } else {
+        freqs <- rjson::fromJSON(input$user_response_frequencies)
+        notes <- tidy_freqs(freqs)
+        list(user_response = floor(mean(notes)))
+      }
     }
 
   } else if (floor_or_ceiling == "ceiling") {
 
     function(input, ...) {
-      # process some new info
-      freqs <- rjson::fromJSON(input$user_response_frequencies)
-      notes <- tidy_freqs(freqs)
-      list(user_response = ceiling(mean(notes)))
+      if(is.null(input$user_response_frequencies)) {
+        list(user_response = NA)
+      } else {
+        freqs <- rjson::fromJSON(input$user_response_frequencies)
+        notes <- tidy_freqs(freqs)
+        list(user_response = ceiling(mean(notes)))
+      }
     }
 
   } else {
 
     function(input, ...) {
-      # process some new info
-      freqs <- rjson::fromJSON(input$user_response_frequencies)
-      notes <- tidy_freqs(freqs)
-      list(user_response = round(mean(notes)))
+      if(is.null(input$user_response_frequencies)) {
+        list(user_response = NA)
+      } else {
+        freqs <- rjson::fromJSON(input$user_response_frequencies)
+        notes <- tidy_freqs(freqs)
+        list(user_response = round(mean(notes)))
+      }
     }
   }
 

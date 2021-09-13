@@ -131,7 +131,9 @@ get_instrument_range_pages <- function(type) {
 
 check_note_ok <- function(answer, state, var_name) {
   psychTestR::reactive_page(function(answer, state, ...) {
-    note <- answer[[1]]
+    note <- answer$user_response
+    print('check_note_ok')
+    print(note)
     if(is.na(note)) {
       psychTestR::one_button_page(psychTestR::i18n("nothing_entered"))
     } else {

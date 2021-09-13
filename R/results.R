@@ -28,7 +28,7 @@ present_scores <- function(res) {
   # long tones
   long_tones <- as.data.frame(lapply(res$MST.long_note_trials$long_tone_, paste0, collapse = ","))
 
-  long_tone_summary <- ress %>%
+  long_tone_summary <- long_tones %>%
     dplyr::select(note_accuracy, note_precision, dtw_distance) %>%
       dplyr::mutate_if(is.character,as.numeric) %>%
         dplyr::summarise(mean_note_accuracy = mean(note_accuracy, na.rm = TRUE),
@@ -69,32 +69,49 @@ present_scores <- function(res) {
 #'
 #' @examples
 final_results <- function() {
-
+  print('final_results')
   psychTestR::reactive_page(function(state, ...) {
-    res <- psychTestR::get_results(state)
+    res <- as.list(psychTestR::get_results(state, complete = FALSE))
+
     processed_results <- present_scores(res)
+
 
   psychTestR::one_button_page(
 
-    shiny::tags$div(
-
-      shiny::tags$h2('Long Note Scores'),
-
-      shiny::renderTable({
-        processed_results$long_note
-      }, width = "50%"),
-
-      shiny::tags$h2('Arrhythmic Melody Scores'),
+    shiny::tags$div(style = "width: 500px;",
+      shiny::tags$h2('Final Results'),
+      shiny::tags$h3('Long Note Scores'),
 
       shiny::renderTable({
-        processed_results$arrhythmic
-      }, width = "50%"),
 
-      shiny::tags$h2('Rhythmic Melody Scores'),
+        long_note_df <- processed_results$long_note
+        long_note_df_names <- names(long_note_df)
+        long_note_df <- base::t(long_note_df)
+        row.names(long_note_df) <- long_note_df_names
+        long_note_df
+      }, rownames = TRUE, colnames = FALSE, width = "50%"),
+
+      shiny::tags$h3('Arrhythmic Melody Scores'),
 
       shiny::renderTable({
-        processed_results$rhythmic
-      }, width = "50%")
+
+        arrhythmic_df <- processed_results$arrhythmic
+        arrhythmic_df_names <- names(arrhythmic_df)
+        arrhythmic_df <- base::t(arrhythmic_df)
+        row.names(arrhythmic_df) <- arrhythmic_df_names
+        arrhythmic_df
+      }, rownames = TRUE, colnames = FALSE, width = "50%"),
+
+      shiny::tags$h3('Rhythmic Melody Scores'),
+
+      shiny::renderTable({
+
+        rhythmic_df <- processed_results$rhythmic
+        rhythmic_df_names <- names(rhythmic_df)
+        rhythmic_df <- base::t(rhythmic_df)
+        row.names(rhythmic_df) <- rhythmic_df_names
+        rhythmic_df
+      }, rownames = TRUE, colnames = FALSE, width = "50%")
 
     )
   )

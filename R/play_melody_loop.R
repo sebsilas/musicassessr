@@ -41,6 +41,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
       psychTestR::set_global("user_satisfied", "Try Again", state)
       psychTestR::set_global("number_attempts", 1, state)
       psychTestR::set_global("max_goes", max_goes, state)
+      psychTestR::set_global("attempts_left", max_goes, state)
+
       # grab sampled melody for this trial (if one not specified)
       grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = rel_to_abs_mel_function)
     }),
@@ -74,11 +76,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                      melody_no = melody_no,
                      var_name = var_name),
 
-      # was the user ok with this response?
-      # check_melody_ok(state, var_name, page_title, max_goes),
-
       # update and see how to proceed
-      update_play_melody_loop_and_save(state)
+      update_play_melody_loop_and_save(state, max_goes)
     )
     ) # end psychTestR::while_loop
   ) # end join
@@ -93,7 +92,7 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
 
     number_attempts <- psychTestR::get_global("number_attempts", state)
     max_goes <- psychTestR::get_global("max_goes", state)
-    attempts_left <- max_goes - number_attempts
+    attempts_left <- psychTestR::get_global("attempts_left", state) - 1
 
     # grab vars
     melody <- melody_checks(stimuli, state, stimuli_type)$melody
@@ -192,14 +191,11 @@ sort_arrhythmic <- function(arrhythmic, rel_melody, note_length) {
 }
 
 sort_sampled_melody <- function(trials, melody_no, state, arrhythmic, rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred, bottom_range, top_range, note_length = 0.5) {
-  cat('rel_to_abs_mel_function is ', as.character(substitute(rel_to_abs_mel_function)), '\n')
   rel_melody <- trials[melody_no, ]
   melody <- sort_arrhythmic(arrhythmic, rel_melody, note_length)$melody
   dur_list <- sort_arrhythmic(arrhythmic, rel_melody, note_length)$dur_list
-  print('rel_to_abs_mel_function in ss_m')
-  print(rel_to_abs_mel_function)
   abs_melody <- rel_to_abs_mel_function(rel_melody = rel_melody$melody, bottom_range = bottom_range, top_range = top_range)
-  print('other side?')
+
   # attach abs mel to meta data
   answer_meta_data <- cbind(rel_melody, data.frame(abs_melody = paste0(abs_melody, collapse = ",")))
   psychTestR::set_global("melody", list("melody" = abs_melody, "dur_list" = dur_list), state)
@@ -219,19 +215,12 @@ sort_sampled_midi_file <- function(trials, melody_no, clip_stimuli_length, state
                                         "end_note" = end_note), state)
 }
 
-check_melody_ok <- function(state, var_name, page_title, max_goes) {
-  psychTestR::reactive_page(function(answer, state, ...) {
-    number_attempts <- psychTestR::get_global("number_attempts", state)
-    attempts_left <- max_goes - number_attempts
-    return_correct_attempts_left_page(attempts_left, var_name, number_attempts, page_title)
-  })
-}
-
-
-update_play_melody_loop_and_save <- function(state) {
+update_play_melody_loop_and_save <- function(state, max_goes) {
   psychTestR::code_block(function(state, answer, opt, ...) {
     psychTestR::set_global("user_satisfied", answer$user_satisfied, state)
     number_attempts <- psychTestR::get_global("number_attempts", state)
+    attempts_left <- max_goes - number_attempts
+    psychTestR::set_global("attempts_left", attempts_left, state)
     number_attempts <- number_attempts + 1
     psychTestR::set_global("number_attempts", number_attempts, state)
     psychTestR::save_results_to_disk(complete = FALSE, state, opt)

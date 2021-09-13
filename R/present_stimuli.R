@@ -48,7 +48,8 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
                                record_audio_method = "aws_pyin", show_aws_controls = FALSE, page_label = " ",
                                button_text = "Next", play_button_text = "Play", get_answer = get_answer_null,
                                show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE,
-                               choices = NULL, user_rating = FALSE, page_text_first = TRUE, ...) {
+                               choices = NULL, user_rating = FALSE, page_text_first = TRUE,
+                               happy_with_response = FALSE, attempts_left = NULL, ...) {
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
@@ -113,6 +114,8 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
     args$save_answer <- save_answer
     args$auto_next_page <- auto_next_page
     args$user_rating <- user_rating
+    args$happy_with_response <- happy_with_response
+    args$attempts_left <- attempts_left
   }
 
   else if(stimuli_reactive & page_type_string == "record_audio_page") {
@@ -131,6 +134,8 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
     args$save_answer <- save_answer
     args$auto_next_page <- auto_next_page
     args$user_rating <- user_rating
+    args$happy_with_response <- happy_with_response
+    args$attempts_left <- attempts_left
   }
 
   else if(stimuli_reactive & page_type_string == "record_midi_page") {
@@ -148,6 +153,8 @@ retrieve_page_type <- function(page_type_string, stimuli_wrapped, special_page_u
     args$save_answer <- save_answer
     args$auto_next_page <- auto_next_page
     args$user_rating <- user_rating
+    args$happy_with_response <- happy_with_response
+    args$attempts_left <- attempts_left
   }
 
   else {
@@ -276,7 +283,9 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             button_text = "Next", play_button_text = "Play",
                             note_length = 0.5, sound = "piano", asChord = FALSE, ascending = TRUE,
                             start_note = 0, end_note = "end", dur_list = 'null', show_record_button = FALSE,
-                            auto_next_page = FALSE, choices = NULL, user_rating = FALSE, page_text_first = TRUE, ...) {
+                            auto_next_page = FALSE, choices = NULL, user_rating = FALSE,
+                            page_text_first = TRUE, happy_with_response = FALSE,
+                            attempts_left = NULL, ...) {
 
   if(is.null(page_type)) {
     page_type <- 'null'
@@ -329,7 +338,9 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               page_label = page_label, button_text = button_text, play_button_text = play_button_text,
                               show_record_button = show_record_button,
                               save_answer = save_answer,
-                              auto_next_page = auto_next_page, user_rating = user_rating, ...)
+                              auto_next_page = auto_next_page, user_rating = user_rating,
+                              happy_with_response = happy_with_response,
+                              attempts_left = attempts_left, ...)
 
   }
 
@@ -345,7 +356,9 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               show_record_button = show_record_button,
                               save_answer = save_answer,
                               auto_next_page = auto_next_page, user_rating = user_rating,
-                              page_text_first = page_text_first, ...)
+                              page_text_first = page_text_first,
+                              happy_with_response = happy_with_response,
+                              attempts_left = attempts_left, ...)
 
   }
 

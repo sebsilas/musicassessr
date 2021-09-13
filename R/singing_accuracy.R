@@ -25,7 +25,7 @@ long_note_pitch_metrics <- function(target_pitch, pyin_res) {
 
   ## dtw scoring
 
-  ref <- itembankr::produce_arrhythmic_durations(pyin_res$freq, target_pitch)
+  ref <- itembankr::produce_arrhythmic_durations(length(pyin_res$freq), hrep::midi_to_freq(target_pitch))
   dtw.distance <- dtw::dtw(pyin_res$freq, ref)$distance
 
   # note accuracy, interval accuracy, note precision, interval precision

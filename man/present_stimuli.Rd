@@ -35,6 +35,8 @@ present_stimuli(
   choices = NULL,
   user_rating = FALSE,
   page_text_first = TRUE,
+  happy_with_response = FALSE,
+  attempts_left = NULL,
   ...
 )
 }

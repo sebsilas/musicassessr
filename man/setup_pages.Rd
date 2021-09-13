@@ -12,7 +12,8 @@ setup_pages(
   min_SNR = 14,
   get_user_info = TRUE,
   demo = FALSE,
-  get_instrument_range = FALSE
+  get_instrument_range = FALSE,
+  absolute_url
 )
 }
 \arguments{

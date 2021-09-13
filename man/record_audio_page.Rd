@@ -28,6 +28,8 @@ record_audio_page(
   save_answer = TRUE,
   user_rating = FALSE,
   page_text_first = TRUE,
+  happy_with_response = FALSE,
+  attempts_left = NULL,
   ...
 )
 }

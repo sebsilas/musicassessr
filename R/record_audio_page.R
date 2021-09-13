@@ -27,7 +27,8 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
                               note_no = "max", show_record_button = TRUE, get_answer = get_answer_store_async, transpose = 0, answer_meta_data = 0,
                               method = c("aws_pyin", "crepe"), show_aws_controls = FALSE, crepe_stats = FALSE,
                               button_text = "Record", stop_button_text = "Stop", record_duration = NULL, on_complete = NULL,
-                              auto_next_page = FALSE, save_answer = TRUE, user_rating = FALSE, page_text_first = TRUE, ...) {
+                              auto_next_page = FALSE, save_answer = TRUE, user_rating = FALSE, page_text_first = TRUE,
+                              happy_with_response =  FALSE, attempts_left = NULL, ...) {
 
   psychTestR::page(ui = shiny::tags$div(
 
@@ -60,7 +61,7 @@ record_audio_page <- function(body = NULL, label = "record_audio_page", stimuli 
 
       user_rating(user_rating),
 
-      happy_with_response_message(TRUE, 1),
+      happy_with_response_message(happy_with_response, attempts_left),
 
       shiny::tags$div(id ="container",
                       deploy_aws_pyin(method = method, show_aws_controls = show_aws_controls, stop_button_text),

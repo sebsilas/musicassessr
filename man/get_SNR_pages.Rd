@@ -4,7 +4,7 @@
 \alias{get_SNR_pages}
 \title{Get SNR pages}
 \usage{
-get_SNR_pages(min_SNR = 14)
+get_SNR_pages(min_SNR = 14, absolute_url)
 }
 \value{
 

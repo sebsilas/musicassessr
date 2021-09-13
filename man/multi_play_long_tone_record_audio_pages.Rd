@@ -9,7 +9,7 @@ multi_play_long_tone_record_audio_pages(
   page_type = "record_audio_page",
   example = FALSE,
   feedback = FALSE,
-  get_answer = musicassessr::get_answer_save_aws_key
+  get_answer = get_answer_pyin_long_note
 )
 }
 \arguments{

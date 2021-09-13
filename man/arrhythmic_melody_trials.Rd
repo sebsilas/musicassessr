@@ -7,7 +7,7 @@
 arrhythmic_melody_trials(
   item_bank,
   num_items,
-  num_examples = NULL,
+  num_examples = FALSE,
   feedback = FALSE,
   get_answer = musicassessr::get_answer_pyin
 )

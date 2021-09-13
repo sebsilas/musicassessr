@@ -1,5 +1,5 @@
 
-t <- function() {
+t3 <- function() {
   make_aws_credentials_global(list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                                    bucket_name = "shinny-app-source-41630",
                                    bucket_region = "us-east-1",
@@ -110,23 +110,39 @@ t <- function() {
 
 
 
-# testApp2 <- function() {
-#   MST::MST2(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-#                                    "bucket_name" = "shinny-app-source-41630",
-#                                    "bucket_region" = "us-east-1",
-#                                    "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-#                                    "destination_bucket" = "shinny-app-destination-41630"),
-#             num_items = list("long_tones" = 1L,
-#                              "arrhythmic" = 5L,
-#                              "rhythmic" = 5L),
-#             SNR_test = FALSE,
-#             get_range = "test",
-#             demo = FALSE, feedback = TRUE)
-# }
-#
-# testApp2()
+testApp2 <- function() {
 
+  MST::MST2(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
+                                   "bucket_name" = "shinny-app-source-41630",
+                                   "bucket_region" = "us-east-1",
+                                   "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
+                                   "destination_bucket" = "shinny-app-destination-41630"),
+            num_items = list("long_tones" = 2L,
+                             "arrhythmic" = 2L,
+                             "rhythmic" = 2L),
+            SNR_test = F,
+            get_range = TRUE,
+            demo = FALSE,
+            feedback = TRUE,
+            examples = FALSE,
+            absolute_url = "https://adaptiveeartraining.com",
+            final_results = TRUE
+            )
+}
 
+t2 <- function() {
+  psychTestR::make_test(
 
+    psychTestR::join(
 
+      feedback_melodic_production(),
+
+      psychTestR::final_page("the end")
+    )
+
+  )
+}
+#testApp2()
+
+# da <- readRDS('/Users/sebsilas/Downloads/results (1).rds')
 

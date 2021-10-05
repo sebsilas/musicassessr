@@ -16,33 +16,33 @@ t3 <- function() {
 
     psychTestR::one_button_page("hi"),
 
-    present_stimuli(60:61, "midi_notes", "auditory", "record_audio_page",
-                    get_answer = get_answer_wav_then_pyin),
+    present_stimuli(20:88, "midi_notes", "auditory", "record_audio_page",
+                    get_answer = get_answer_pyin, sound = "voice_doo"),
 
-
-    # display results from previous
-    psychTestR::reactive_page(function(state, answer, ...) {
-      psychTestR::one_button_page(shiny::tags$div(str(answer)))
-    }),
-
-    play_interval_page(),
-
-    microphone_calibration_page(),
-
-    get_instrument_range_pages("record_audio_page"),
-
-    musicassessr::fake_range(),
-
-    microphone_type_page(),
-
-    play_long_tone_record_audio_page(60),
-
-    play_long_tone_record_audio_page(60),
-
-    rhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
-
-
-    arrhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
+#
+#     # display results from previous
+#     psychTestR::reactive_page(function(state, answer, ...) {
+#       psychTestR::one_button_page(shiny::tags$div(str(answer)))
+#     }),
+#
+#     play_interval_page(),
+#
+#     microphone_calibration_page(),
+#
+#     get_instrument_range_pages("record_audio_page"),
+#
+#     musicassessr::fake_range(),
+#
+#     microphone_type_page(),
+#
+#     play_long_tone_record_audio_page(60),
+#
+#     play_long_tone_record_audio_page(60),
+#
+#     rhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
+#
+#
+#     arrhythmic_melody_trials(itembankr::Berkowitz, 2L, 2L),
 
     #musicassessr::long_tone_trials(num_items = 2L, num_examples = 2L, feedback = FALSE),
 
@@ -117,17 +117,16 @@ testApp2 <- function() {
                                    "bucket_region" = "us-east-1",
                                    "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                                    "destination_bucket" = "shinny-app-destination-41630"),
-            num_items = list("long_tones" = 2L,
-                             "arrhythmic" = 2L,
-                             "rhythmic" = 2L),
+            num_items = list("long_tones" = 1L,
+                             "arrhythmic" = 5L,
+                             "rhythmic" = 5L),
             SNR_test = F,
-            get_range = TRUE,
+            get_range = "test",
             demo = FALSE,
             feedback = TRUE,
-            examples = FALSE,
+            examples = 1L,
             absolute_url = "https://adaptiveeartraining.com",
-            final_results = TRUE
-            )
+            final_results = TRUE)
 }
 
 t2 <- function() {
@@ -145,4 +144,20 @@ t2 <- function() {
 #testApp2()
 
 # da <- readRDS('/Users/sebsilas/Downloads/results (1).rds')
+
+
+testApp <- function() {
+  library(PBET)
+  PBET(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
+                              "bucket_name" = "shinny-app-source-41630",
+                              "bucket_region" = "us-east-1",
+                              "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
+                              "destination_bucket" = "shinny-app-destination-41630"),
+       num_items = list("find_the_note" = 3L,
+                        "arrhythmic" = 5L,
+                        "rhythmic" = 5L),
+       demo = FALSE)
+}
+
+#testApp2()
 

@@ -1,9 +1,18 @@
-#pyin('/Users/sebsilas/true.wav')
-#library(dplyr)
+
+
+#' Melconv
+#'
+#' @param file_name
+#' @param return_notes_and_durs
+#'
+#' @return
+#' @export
+#'
+#' @examples
 melconv <- function(file_name, return_notes_and_durs = TRUE) {
 
   # then use melconv
-  melconv_res <- system2(command = '../melospy/bin/melconv',
+  melconv_res <- system2(command = '/opt/melospy/bin/melconv',
                     args = c('-f midi',
                              paste0('-i ', file_name)),
                     stdout = TRUE, stderr = FALSE)
@@ -22,6 +31,28 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
 }
 
 
+# melconv <- function(file_name, return_notes_and_durs = TRUE) {
+#
+#   # then use melconv
+#   melconv_res <- system2(command = '../melospy/bin/melconv',
+#                          args = c('-f midi',
+#                                   paste0('-i ', file_name)),
+#                          stdout = TRUE, stderr = FALSE)
+#
+#   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]
+#   res <- res[length(res)]
+#   res <- strsplit(res, ".", fixed = TRUE)[[1]][1]
+#   # res <- paste0('/Users/sebsilas/musicassessr/', res, '.mid')
+#   res <- paste0(res, '.mid')
+#   if(return_notes_and_durs) {
+#     itembankr::midi_file_to_notes_and_durations(res)
+#   } else {
+#     tuneR::readMidi(res)
+#   }
+#
+# }
+
+
 # melconv_res <- system2(command = '../melospy/bin/melconv',
 #                        args = c('-f midi',
 #                                 paste0('-i ', '/Users/sebsilas/musicassessr/6236558644498592.csv')),
@@ -31,6 +62,14 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
 #
 # melconv_res <- melconv('/Users/sebsilas/29-3-2021--8-19_vamp_pyin_pyin_notes.csv')
 
+#' Melconv from a pyin result
+#'
+#' @param pyin_res
+#'
+#' @return
+#' @export
+#'
+#' @examples
 melconv_from_pyin_res <- function(pyin_res) {
 
   #pyin_res <- pyin(audio_file)
@@ -241,15 +280,15 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
     pyin_pitch_track <- pyin(file, type = "pitch_track")
   }
 
-  print('get_answer_pyin')
+
   stimuli_both <- psychTestR::get_global("melody", state)
-  print(stimuli_both)
+
   stimuli <- stimuli_both$melody
-  print(stimuli)
+
   stimuli_durations <- stimuli_both$dur_list
-  print(stimuli_durations)
+
   stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
-  print(stimuli_durations)
+
 
   melconv_res <- melconv_from_pyin_res(pyin_res)
 

@@ -13,7 +13,8 @@ setup_pages(
   get_user_info = TRUE,
   demo = FALSE,
   get_instrument_range = FALSE,
-  absolute_url
+  absolute_url,
+  select_instrument = FALSE
 )
 }
 \arguments{

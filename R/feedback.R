@@ -8,14 +8,23 @@ feedback_melodic_production <- function() {
 
     if(is.null(answer$error)) {
       amd <- answer$answer_meta_data
+
+      melody_dtw_plot <- answer$melody_dtw_plot
+
       answer$answer_meta_data <- NULL
+      answer$melody_dtw_plot <- NULL
+
       d_names <- names(answer)[!names(answer) == "answer_meta_data"]
+      d_names <- names(answer)[!names(answer) == "melody_dtw_plot"]
+
       amd_names <- names(amd)
 
       # plot
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
       tab <- shiny::renderTable({
+
+
         # nb, duplicate code, make functions
         d <- lapply(1:length(answer), function(x) {
           if(length(answer[[x]]) > 1) {
@@ -43,14 +52,25 @@ feedback_melodic_production <- function() {
         amd
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-      present_stimuli(answer$user_response_note,
-                      stimuli_type = "midi_notes",
-                      display_modality = "both",
-                      page_title = "Your Response",
-                      page_type = 'one_button_page',
-                      page_text = shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab, tags$h3('Stimuli Info'), tab2),
-                      page_text_first = FALSE
-      )
+      melconv_out <- present_stimuli(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
+                                     visual_music_notation_id = "melconv")
+
+
+        present_stimuli(answer$user_response_note,
+                        stimuli_type = "midi_notes",
+                        display_modality = "both",
+                        page_title = "Your Response",
+                        page_type = 'one_button_page',
+                        page_text = shiny::tags$div(shiny::tags$h3('Melconv Output'),
+                                                    melconv_out,
+                                                    shiny::tags$p(plot),
+                                                    shiny::tags$h3('Melody DTW Plot'),
+                                                    shiny::tags$p(melody_dtw_plot),
+                                                    shiny::tags$h3('Response Data'),
+                                                    tab,
+                                                    shiny::tags$h3('Stimuli Info'),
+                                                    tab2),
+                        page_text_first = FALSE)
 
     } else {
       psychTestR::one_button_page("Unfortunately a valid response was not recorded.")

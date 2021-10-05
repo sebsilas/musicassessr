@@ -81,6 +81,14 @@ function toneJSInit() {
 
   window.piano.toMaster();
 
+    // create a piano and connect to master output
+  window.voice_doo = SampleLibrary.load({
+    instruments: "voice_doo",
+    minify: true
+   });
+
+  window.voice_doo.toMaster();
+
 }
 
 
@@ -89,6 +97,10 @@ function triggerNote(sound, freq_tone, seconds, time) {
 
   if (sound === "piano") {
   	piano.triggerAttackRelease(freq_tone, seconds, time);
+  }
+
+  else if (sound === "voice_doo") {
+  	voice_doo.triggerAttackRelease(freq_tone, seconds, time);
   }
 
   else {

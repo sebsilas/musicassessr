@@ -150,7 +150,9 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
 #'
 #' @examples
 long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
-                             page_title = "Sing Along With This Note", get_answer = get_answer_pyin_long_note) {
+                             page_title = "Sing Along With This Note",
+                             get_answer = get_answer_pyin_long_note,
+                             page_type = "record_audio_page") {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_long_tone
@@ -170,7 +172,18 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
           shiny::tags$h2(page_title),
           shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
           musicassessr::sample_from_user_range(num_examples),
-          musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer),
+          if(page_type == "reactive") {
+            psychTestR::conditional(function(state, ...) {
+              psychTestR::get_global("response_type", state) == "MIDI"
+            }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page", example = TRUE, feedback = feedback, get_answer = get_answer_midi))
+
+            psychTestR::conditional(function(state, ...){
+              psychTestR::get_global("response_type", state) == "Microphone"
+            }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer_pyin))
+
+          } else {
+            musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type, example = TRUE, feedback = feedback, get_answer = get_answer)
+          },
       psychTestR::one_button_page(shiny::div(
         shiny::tags$h2(page_title),
         shiny::tags$p("Now you're ready for the real thing!")))
@@ -178,11 +191,61 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
       # sample
       musicassessr::sample_from_user_range(num_items),
       # build pages
-      musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = "record_audio_page", feedback = feedback, get_answer = get_answer)
+      musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = page_type, feedback = feedback, get_answer = get_answer)
     )
   )
 }
 
+
+
+
+#' Present "Find This Note" trials
+#'
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param page_title
+#' @param get_answer
+#' @param page_type
+#'
+#' @return
+#' @export
+#'
+#' @examples
+find_this_note_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
+                             page_title = "Find This Note", get_answer = get_answer_pyin,
+                             page_type = "record_audio_page") {
+
+  if(feedback & !is.function(feedback)) {
+    feedback <- feedback_melodic_production
+  }
+
+  # sample melodies based on range
+  psychTestR::module("long_note_trials",
+                     c(
+                       # instructions
+                       psychTestR::one_button_page(shiny::div(
+                         shiny::tags$h2(page_title),
+                         shiny::tags$p("Now you will hear some long notes. Please try play the exact same note along with the tone as soon as you can. It will last 5 seconds.")
+                       )),
+                       # examples
+                       if(is.numeric(num_examples)) {
+                         c(psychTestR::one_button_page(shiny::div(
+                           shiny::tags$h2(page_title),
+                           shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+                           musicassessr::sample_from_user_range(num_examples),
+                           musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer),
+                           psychTestR::one_button_page(shiny::div(
+                             shiny::tags$h2(page_title),
+                             shiny::tags$p("Now you're ready for the real thing!")))
+                         )},
+                       # sample
+                       musicassessr::sample_from_user_range(num_items),
+                       # build pages
+                       musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = "record_audio_page", feedback = feedback, get_answer = get_answer)
+                     )
+  )
+}
 
 
 # abstracted way of defining trials:: WIP

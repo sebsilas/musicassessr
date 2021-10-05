@@ -341,23 +341,6 @@ open.music.display.wrapper <- function(xml, id = "sheet-music", return_div = TRU
 
 # range functions
 
-get_instrument_range <- function(inst) {
-  insts_table[insts_table$Instruments == inst, c("low_note", "high_note")]
-}
-
-set_instrument_range_code_block <- function(inst = NULL) {
-  code_block(function(state, ...) {
-    print('setting MIDI pages default')
-    if(is.null(inst)) {
-      inst <- get_global("inst", state)
-    }
-    set_global("bottom_range", get_instrument_range(inst)$low_note, state)
-    set_global("top_range", get_instrument_range(inst)$high_note, state)
-  })
-}
-
-
-
 produce_stimuli_in_range <- function(rel_melody, bottom_range = 21, top_range = 108) {
   # given some melodies in relative format, and a user range, produce random transpositions which fit in that range
 

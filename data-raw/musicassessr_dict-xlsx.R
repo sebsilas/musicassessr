@@ -4,5 +4,5 @@ musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")
 
 usethis::use_data(musicassessr_dict_df, overwrite = TRUE)
 
-usethis::use_data(musicassessr_dict_df, overwrite = TRUE, internal = TRUE)
+#usethis::use_data(musicassessr_dict_df, overwrite = TRUE, internal = TRUE)
 

@@ -195,10 +195,8 @@ results_explorer <- function(results_df = PBET_calibration_results,
   shiny::shinyApp(ui, server)
 }
 
-download_results_fromS3 <- function() {
+download_results_from_S3 <- function() {
   # used for downloading results:
-  # results_explorer(PBET_calibration_results)
-  #results_explorer(errorsOctaveAllowed = T, pitchOctaveIndependent = T)
 
   #keys <- PBET_calibration_results$key
   #keys <- keys[!is.na(keys)]
@@ -211,3 +209,7 @@ download_results_fromS3 <- function() {
   # files_to_delete <- paste0("PBET_calibration_audio/", files_to_delete)
   # unlink(files_to_delete)
 }
+
+# need internet
+#results_explorer(PBET_calibration_results)
+#results_explorer(errorsOctaveAllowed = T, pitchOctaveIndependent = T)

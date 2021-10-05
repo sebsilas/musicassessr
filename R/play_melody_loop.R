@@ -180,11 +180,12 @@ grab_sampled_melody <- function(melody, var_name, stimuli_type, state, melody_no
 
 
 sort_arrhythmic <- function(arrhythmic, rel_melody, note_length) {
+
   melody <- itembankr::str_mel_to_vector(rel_melody$melody, ",")
   if(arrhythmic) {
     dur_list <- rep(note_length, length(melody)+1)
+    print(dur_list)
   } else {
-    print('rhythmic..')
     dur_list <- itembankr::str_mel_to_vector(rel_melody$durations, ",")
   }
   list("melody" = melody, "dur_list" = dur_list)
@@ -257,20 +258,6 @@ melody_checks <- function(melody, state, stimuli_type = "midi_notes") {
        "start_note" = start_note,
        "end_note" = end_note,
        "dur_list" = dur_list)
-}
-
-
-return_correct_attempts_left_page <- function(attempts_left, var_name, number_attempts, page_title = "Play The Melody") {
-  if(attempts_left == 0) {
-    psychTestR::NAFC_page(label = paste0(var_name,"_attempt_", number_attempts, "_choice"), prompt = shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(psychTestR::i18n("attempts_remaining_0"))),
-                          choices = psychTestR::i18n("Continue"), save_answer = FALSE)
-  } else if (attempts_left == 1) {
-    psychTestR::NAFC_page(label = paste0(var_name,"_attempt_", number_attempts, "_choice"), prompt = shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(psychTestR::i18n("happy_with_response_message")), shiny::tags$p(psychTestR::i18n("attempts_remaining_1"))),
-                          choices = c(psychTestR::i18n("Continue"), psychTestR::i18n("Try_Again")), save_answer = FALSE)
-  } else {
-    psychTestR::NAFC_page(label = paste0(var_name,"_attempt_", number_attempts, "_choice"), prompt = shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(psychTestR::i18n("happy_with_response_message")), shiny::tags$p(paste0(psychTestR::i18n("attempts_remaining_several.1"), " ", attempts_left, " ", psychTestR::i18n("attempts_remaining_several.2")))),
-                          choices = c(psychTestR::i18n("Continue"), psychTestR::i18n("Try_Again")), save_answer = FALSE)
-  }
 }
 
 

@@ -24,32 +24,46 @@ setup_pages <- function(input = c("microphone",
                          get_user_info = TRUE,
                         demo = FALSE,
                         get_instrument_range = FALSE,
-                        absolute_url) {
+                        absolute_url,
+                        select_instrument = FALSE) {
 
   if(!demo) {
 
   psychTestR::join(
 
-    requirements_page(headphones = headphones,
-                      input = input),
+    requirements_page(headphones = headphones, input = input),
 
     if(get_user_info) musicassessr::get_user_info_page(),
 
     if(headphones) musicassessr::test_headphones_page(),
 
-    if(is_microphone_only_test(input)) musicassessr::microphone_calibration_page(),
+    if(select_instrument) select_musical_instrument_page(),
 
-    if(sjmisc::str_contains(input, "microphone")) microphone_type_page(),
 
-    if(sjmisc::str_contains(input, "microphone") | sjmisc::str_contains(input, "midi")) psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$p(psychTestR::i18n("record_instructions")), shiny::tags$img(src = "musicassessr-assets/img/record.gif")), button_text = psychTestR::i18n("Next")),
-
-    if(SNR_test) musicassessr::get_SNR_pages(absolute_url = absolute_url),
-
-    if(get_instrument_range == "test") {
-      musicassessr::fake_range()
+    if(!sjmisc::str_contains(input, "midi_keyboard")) {
+      microphone_setup(input, SNR_test, absolute_url)
+    } else if(!sjmisc::str_contains(input, "microphone")) {
+      midi_setup()
     } else {
-      if(get_instrument_range) musicassessr::get_instrument_range_pages("record_audio_page")
-    }
+
+      c(
+        midi_vs_audio_select_page(),
+
+        psychTestR::conditional(function(state, ...) {
+          psychTestR::get_global("response_type", state) == "Microphone"
+        }, logic = microphone_setup(input, SNR_test, absolute_url)),
+
+        psychTestR::conditional(function(state, ...) {
+          psychTestR::get_global("response_type", state) == "MIDI"
+        }, logic = midi_setup())
+      )
+
+    },
+
+    record_instructions(),
+
+
+    get_instrument_range_pages(input, get_instrument_range)
 
     )
   }
@@ -113,6 +127,51 @@ microphone_type_page <- function() {
                           ), shiny::tags$br()
                         ),
                         choices = c("Internal", "External"))
+}
+
+
+microphone_setup <- function(input, SNR_test, absolute_url) {
+  c(
+
+    microphone_type_page(),
+
+    musicassessr::microphone_calibration_page(),
+
+    if(SNR_test) musicassessr::get_SNR_pages(absolute_url = absolute_url)
+  )
+}
+
+record_instructions <- function() {
+  psychTestR::one_button_page(body = shiny::tags$div(shiny::tags$p(psychTestR::i18n("record_instructions")), shiny::tags$img(src = "musicassessr-assets/img/record.gif")), button_text = psychTestR::i18n("Next"))
+}
+
+
+get_instrument_range <- function(inst) {
+  insts_table[insts_table$Instruments == inst, c("low_note", "high_note")]
+}
+
+set_instrument_range_code_block <- function(inst = NULL) {
+  psychTestR::code_block(function(state, ...) {
+    print('setting MIDI pages default')
+    if(is.null(inst)) {
+      inst <- psychTestR::get_global("inst", state)
+    }
+    psychTestR::set_global("bottom_range", get_instrument_range(inst)$low_note, state)
+    psychTestR::set_global("top_range", get_instrument_range(inst)$high_note, state)
+  })
+}
+
+midi_setup <- function() {
+
+  c(
+    select_midi_device_page(title = "select_midi_device_title",
+                            message = "select_midi_device_message",
+                            button_text = psychTestR::i18n("Next")),
+    psychTestR::code_block(fun = function(state, ...) {
+      psychTestR::set_global("inst", "Piano", state)
+    }),
+    set_instrument_range_code_block("Piano")
+  )
 }
 
 

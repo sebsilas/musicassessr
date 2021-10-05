@@ -9,7 +9,8 @@ long_tone_trials(
   num_examples = NULL,
   feedback = FALSE,
   page_title = "Sing Along With This Note",
-  get_answer = get_answer_pyin_long_note
+  get_answer = get_answer_pyin_long_note,
+  page_type = "record_audio_page"
 )
 }
 \arguments{

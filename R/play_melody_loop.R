@@ -29,7 +29,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                              answer_meta_data = " ", get_answer = get_answer_pyin,
                              rel_to_abs_mel_function = musicassessr:rel_to_abs_mel_mean_centred, clip_stimuli_length = FALSE,
                              start_note = 1, end_note = "end", dur_list = 'null', arrhythmic = FALSE, note_length = 0.5,
-                             play_button_text = psychTestR::i18n("Play"), example = FALSE) {
+                             play_button_text = psychTestR::i18n("Play"), example = FALSE, sound = "piano") {
 
   save_answer <- example_save(example)
 
@@ -74,7 +74,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                      dur_list = dur_list,
                      state = state,
                      melody_no = melody_no,
-                     var_name = var_name),
+                     var_name = var_name,
+                     sound = sound),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -86,7 +87,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
 present_melody <- function(stimuli, stimuli_type, display_modality, page_title, page_text,
                            page_type, record_audio_method, answer_meta_data, get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note,
-                           end_note, dur_list, state, melody_no, var_name, ...) {
+                           end_note, dur_list, state, melody_no, var_name, sound = "piano", ...) {
 
   psychTestR::reactive_page(function(state, ...) {
 
@@ -123,7 +124,8 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                       end_note = end_note,
                       dur_list = dur_list,
                       happy_with_response = TRUE,
-                      attempts_left = attempts_left)
+                      attempts_left = attempts_left,
+                      sound = sound)
 
     } else {
       # page 1, play melody
@@ -145,7 +147,8 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                       dur_list = dur_list,
                       user_rating = TRUE,
                       happy_with_response = TRUE,
-                      attempts_left = attempts_left
+                      attempts_left = attempts_left,
+                      sound = sound
                       )
     }
 

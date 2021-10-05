@@ -26,7 +26,7 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
                                         page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                         get_answer = get_answer_save_aws_key, rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
                                         start_from_trial_no = 1, clip_stimuli_length = FALSE,
-                                        arrhythmic = FALSE, example = FALSE, feedback = FALSE) {
+                                        arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano") {
 
   # items should be a dataframe
   # this will return a sequence of test items
@@ -42,7 +42,8 @@ multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_ty
                      rel_to_abs_mel_function = rel_to_abs_mel_function,
                      clip_stimuli_length = clip_stimuli_length,
                      arrhythmic = arrhythmic,
-                     example = example)
+                     example = example,
+                     sound = sound)
   })
 
   items <- add_feedback(items, feedback, after = 2) # a play_melody_loop is 3 pages long

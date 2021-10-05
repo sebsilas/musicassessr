@@ -13,7 +13,8 @@
 #' @export
 #'
 #' @examples
-arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE, feedback = FALSE, get_answer = musicassessr::get_answer_pyin) {
+arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE, feedback = FALSE,
+                                     get_answer = musicassessr::get_answer_pyin, sound = "piano") {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_melodic_production
@@ -45,7 +46,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
               rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
               arrhythmic = TRUE,
               example = TRUE,
-              feedback = feedback),
+              feedback = feedback,
+              sound = sound),
       ## sample
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$h2("Sing the Melody"),
@@ -62,7 +64,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
             get_answer = get_answer,
             rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
             arrhythmic = TRUE,
-            feedback = feedback)
+            feedback = feedback,
+            sound = sound)
     )
   )
 }
@@ -83,7 +86,9 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
 #'
 #' @examples
 rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE,
-                                   page_title = "Sing This Melody Plus Rhythm", get_answer = musicassessr::get_answer_pyin) {
+                                   page_title = "Sing This Melody Plus Rhythm",
+                                   get_answer = musicassessr::get_answer_pyin,
+                                   sound = "piano") {
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_melodic_production
@@ -113,7 +118,8 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
             get_answer = get_answer,
             rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
             example = TRUE,
-            feedback = feedback),
+            feedback = feedback,
+            sound = sound),
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$h2(page_title),
         shiny::tags$p("Now you're ready for the real thing!")))
@@ -130,7 +136,8 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
         page_text = psychTestR::i18n("sing_melody_trial"),
         get_answer = get_answer,
         rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
-        feedback = feedback
+        feedback = feedback,
+        sound = sound
         )
     )
   )

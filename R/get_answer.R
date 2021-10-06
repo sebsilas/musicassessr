@@ -302,7 +302,7 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
     res <- c(
       list(file = file,
            user_satisfied = input$user_satisfied,
-           user_rating = input$user_rating,
+           user_rating = input$user_rating
            #melconv_notes = itembankr::str_mel_to_vector(melconv_res$notes),
            #melconv_dur = itembankr::str_mel_to_vector(melconv_res$dur)
            ),

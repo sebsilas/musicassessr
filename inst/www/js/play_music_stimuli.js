@@ -200,7 +200,11 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
     console.log(notesAndDurations);
     var pattern = new Tone.Part((time, value) => {
                 // the value is an object which contains both the note and the velocity
-                piano.triggerAttackRelease(value.note, value.duration, time);
+                if(sound === "voice_doo") {
+                  voice_doo.triggerAttackRelease(value.note, value.duration, time);
+                } else {
+                  piano.triggerAttackRelease(value.note, value.duration, time);
+                }
                 count = count + 1;
                   if (count === last_note & page_type !== 'null') {
                     setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording

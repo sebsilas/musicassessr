@@ -292,7 +292,7 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
   stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
 
 
-  melconv_res <- melconv_from_pyin_res(pyin_res)
+  #melconv_res <- melconv_from_pyin_res(pyin_res)
 
   if(is.na(pyin_res$onset)) {
 
@@ -303,8 +303,8 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
       list(file = file,
            user_satisfied = input$user_satisfied,
            user_rating = input$user_rating,
-           melconv_notes = itembankr::str_mel_to_vector(melconv_res$notes),
-           melconv_dur = itembankr::str_mel_to_vector(melconv_res$dur)
+           #melconv_notes = itembankr::str_mel_to_vector(melconv_res$notes),
+           #melconv_dur = itembankr::str_mel_to_vector(melconv_res$dur)
            ),
 
       melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = TRUE,

@@ -182,16 +182,46 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   if(sound === "tone") {
     window.piano = null;
     window.voice_doo = null;
-    window.synth.toMaster();
+     window.synthParameters = {
+      oscillator: {
+        type: 'sine',
+        partialCount: 4
+      },
+      envelope: { // http://shura.shu.ac.uk/8259/1/96913_Soranzo_psychoacoustics.pdf
+        attack: 0.01,
+        decay: 0.01,
+        sustain: 0.50, // this is changed from the parameters above, which was 0.25
+        release: 0.01,
+        attackCurve: 'cosine'
+      }
+    };
+
+  //create a synth and connect it to the master output (your speakers)
+  window.synth = new Tone.Synth(synthParameters).toMaster();
+
   } else if(sound === "voice_doo") {
+
     window.piano = null;
     window.synth = null;
-    window.voice_doo.toMaster();
-  }
+    // create a piano and connect to master output
+    window.voice_doo = SampleLibrary.load({
+      instruments: "voice_doo",
+      minify: true
+     });
+      window.voice_doo.toMaster();
+    }
   else {
+
     window.synth = null;
     window.voice_doo = null;
+    // create a piano and connect to master output
+    window.piano = SampleLibrary.load({
+      instruments: "piano",
+      minify: true
+     });
+
     window.piano.toMaster();
+
   }
 
   // this should go first before the piano editing:

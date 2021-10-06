@@ -15,7 +15,7 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
   melconv_res <- system2(command = 'melconv',
                     args = c('-f midi',
                              paste0('-i ', file_name),
-                             '-o srv/shiny-server/files/mid/'),
+                             '-o /srv/shiny-server/files/mid/'),
                     stdout = TRUE, stderr = FALSE)
 
   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]

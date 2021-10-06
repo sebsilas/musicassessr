@@ -52,8 +52,8 @@ feedback_melodic_production <- function() {
         amd
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-      # melconv_out <- present_stimuli(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
-      #                                visual_music_notation_id = "melconv")
+      melconv_out <- present_stimuli(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
+                                     visual_music_notation_id = "melconv")
 
 
         present_stimuli(answer$user_response_note,

@@ -82,7 +82,7 @@ melconv_from_pyin_res <- function(pyin_res) {
 
   pyin_res <- pyin_res %>% dplyr::select(onset, freq, dur)
 
-  new_file <- paste0(paste0('/srv/shiny-server/files/csv/', sample(1:9, 20, replace = TRUE), collapse = ""), '.csv')
+  new_file <- paste0('/srv/shiny-server/files/csv/', paste0(sample(1:9, 20, replace = TRUE), collapse = ""), '.csv')
 
   print(new_file)
   # write out

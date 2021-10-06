@@ -556,7 +556,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
       mean_cents_deviation_from_nearest_midi_pitch <- NA
       melody_dtw <- NA
     }
-    print('just before list')
+
     list(stimuli = stimuli,
          stimuli_durations = stimuli_durations,
          stimuli_length = stimuli_length,

@@ -1,25 +1,10 @@
-# library(dtw)
-# library(readr)
-# hbd_pt <- read_csv('/Users/sebsilas/true_vamp_pyin_pyin_smoothedpitchtrack.csv',
-#                    col_names = c('onset', 'freq'))
-#
-# hbd_notes <- read_csv('/Users/sebsilas/true_vamp_pyin_pyin_notes.csv',
-#                       col_names = c('onset', 'dur', 'freq'))
-
 
 
 plot_dtw_melody <- function(stimuli, stimuli_durations, pyin_smoothed_pitchtrack) {
-  print('plot_dtw_melody')
-  print(stimuli)
-  print(stimuli_durations)
-  stimuli <- tibble::tibble(freq = c(hrep::midi_to_freq(stimuli), NA), dur = c(stimuli_durations, NA), onset = c(0, cumsum(stimuli_durations)))
-  print(stimuli)
-  print(stimuli_durations[nrow(stimuli)])
 
+  stimuli <- tibble::tibble(freq = c(hrep::midi_to_freq(stimuli), NA), dur = c(stimuli_durations, NA), onset = c(0, cumsum(stimuli_durations)))
   # stimuli <- stimuli %>%
   #   dplyr::add_row(onset = stimuli_durations[nrow(stimuli)]+stimuli_durations[nrow(stimuli)], dur = NA, freq = NA)
-
-  print(stimuli)
 
 
   plot <- ggplot2::ggplot(NULL, ggplot2::aes(x = onset, y = freq)) +
@@ -34,7 +19,6 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
   # participant entry to dtw
   pyin_notes2 <- pyin_res %>% dplyr::select(-dur)
 
-
   res <- dplyr::full_join(pyin_notes2, pyin_smoothed_pitchtrack, by = "onset") %>% dplyr::rename(quantized_note = freq.x, freq =  freq.y) %>%
     dplyr::arrange(onset) %>% tidyr::fill(quantized_note)
 
@@ -44,10 +28,9 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
 
 
 prepare_mel_stimuli_for_dtw <- function(melody, durations) {
-  print('prepare_mel_stimuli_for_dtw')
+
   melody <- hrep::midi_to_freq(melody)
-  print(melody)
-  print(durations)
+
   end <- durations[length(durations)]
   out <- data.frame(dur = cumsum(rep(.01, end/.01)))
 
@@ -58,7 +41,6 @@ prepare_mel_stimuli_for_dtw <- function(melody, durations) {
   plot <- ggplot2::ggplot(df2) +
     ggplot2::geom_point(ggplot2::aes(x = dur, y = note), size = 0.2)
 
-  print(plot)
 
   df2$note
 }

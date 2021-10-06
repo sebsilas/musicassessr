@@ -95,6 +95,7 @@ function toneJSInit() {
 
 function triggerNote(sound, freq_tone, seconds, time) {
 
+  console.log('triggerNote called');
   console.log('sound is...');
   console.log(sound);
 
@@ -167,7 +168,7 @@ function playTones (note_list) {
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
 
-  console.log('playSeq');
+  console.log('playSeq called');
   console.log(sound);
   console.log(page_type);
 

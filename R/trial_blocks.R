@@ -71,7 +71,6 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
 }
 
 
-
 #' Rhythmic melody trials block
 #'
 #' @param item_bank

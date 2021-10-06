@@ -530,9 +530,9 @@ function rangeTest(notes_list) {
 
 // UI functions
 
-function hidePlayButton() {
+function hidePlayButton(play_button_id = "playButton") {
   console.log('now we real!');
-  var x = document.getElementById("playButton");
+  var x = document.getElementById(play_button_id);
   if (x.style.display === "none") {
   x.style.display = "block";
   } else {

@@ -103,7 +103,7 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
                                                           record_audio_method =  record_audio_method, dur_list = dur_list,
-                                                          auto_next_page = auto_next_page, ...)
+                                                          auto_next_page = auto_next_page, play_button_id = play_button_id, ...)
 
   }
   else if (display_modality == "visual") {
@@ -118,7 +118,7 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
                                                       asChord = asChord, ascending = ascending,
                                                       play_button_text = play_button_text,
                                                       record_audio_method = record_audio_method,
-                                                      visual_music_notation_id = visual_music_notation_id, ...)
+                                                      visual_music_notation_id = visual_music_notation_id, play_button_id = play_button_id, ...)
   }
 
   return_stimuli

@@ -95,6 +95,9 @@ function toneJSInit() {
 
 function triggerNote(sound, freq_tone, seconds, time) {
 
+  console.log('sound is...');
+  console.log(sound);
+
   if (sound === "piano") {
   	piano.triggerAttackRelease(freq_tone, seconds, time);
   }

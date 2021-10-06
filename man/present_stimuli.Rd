@@ -37,6 +37,7 @@ present_stimuli(
   page_text_first = TRUE,
   happy_with_response = FALSE,
   attempts_left = NULL,
+  visual_music_notation_id = "sheet_music",
   ...
 )
 }

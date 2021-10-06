@@ -11,6 +11,7 @@ present_stimuli_midi_notes_both(
   asChord = FALSE,
   play_button_text = "Play",
   ascending = TRUE,
+  visual_music_notation_id = "sheet_music",
   ...
 )
 }

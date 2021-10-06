@@ -24,7 +24,8 @@ play_melody_loop(
   arrhythmic = FALSE,
   note_length = 0.5,
   play_button_text = psychTestR::i18n("Play"),
-  example = FALSE
+  example = FALSE,
+  sound = "piano"
 )
 }
 \arguments{

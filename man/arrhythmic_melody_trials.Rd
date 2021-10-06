@@ -9,7 +9,8 @@ arrhythmic_melody_trials(
   num_items,
   num_examples = FALSE,
   feedback = FALSE,
-  get_answer = musicassessr::get_answer_pyin
+  get_answer = musicassessr::get_answer_pyin,
+  sound = "piano"
 )
 }
 \arguments{

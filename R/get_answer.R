@@ -12,7 +12,7 @@
 melconv <- function(file_name, return_notes_and_durs = TRUE) {
 
   # then use melconv
-  melconv_res <- system2(command = '/opt/melospy/bin/melconv',
+  melconv_res <- system2(command = 'melconv',
                     args = c('-f midi',
                              paste0('-i ', file_name)),
                     stdout = TRUE, stderr = FALSE)
@@ -81,7 +81,7 @@ melconv_from_pyin_res <- function(pyin_res) {
 
   pyin_res <- pyin_res %>% dplyr::select(onset, freq, dur)
 
-  new_file <- paste0(paste0(sample(1:9, 20, replace = TRUE), collapse = ""), '.csv')
+  new_file <- paste0(paste0('/srv/shiny-server/files/csv/', sample(1:9, 20, replace = TRUE), collapse = ""), '.csv')
 
   print(new_file)
   # write out

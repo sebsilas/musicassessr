@@ -19,7 +19,8 @@ multi_page_play_melody_loop(
   clip_stimuli_length = FALSE,
   arrhythmic = FALSE,
   example = FALSE,
-  feedback = FALSE
+  feedback = FALSE,
+  sound = "piano"
 )
 }
 \arguments{

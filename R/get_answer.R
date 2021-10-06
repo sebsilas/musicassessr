@@ -292,7 +292,7 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
   stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
 
 
-  #melconv_res <- melconv_from_pyin_res(pyin_res)
+  melconv_res <- melconv_from_pyin_res(pyin_res)
 
   if(is.na(pyin_res$onset)) {
 

@@ -14,7 +14,8 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
   # then use melconv
   melconv_res <- system2(command = 'melconv',
                     args = c('-f midi',
-                             paste0('-i ', file_name)),
+                             paste0('-i ', file_name),
+                             '-o /srv/shiny-server/files/csv/'),
                     stdout = TRUE, stderr = FALSE)
 
   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]

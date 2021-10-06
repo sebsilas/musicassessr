@@ -175,6 +175,19 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   // make sure not playing
   Tone.Transport.stop();
 
+  // reset Master
+  Tone.Master.dispose();
+
+   //create a synth and connect it to the master output (your speakers)
+  if(sound === "tone") {
+    window.synth.toMaster();
+  } else if(sound === "voice_doo") {
+    window.voice_doo.toMaster();
+  }
+  else {
+    window.piano.toMaster();
+  }
+
   // this should go first before the piano editing:
   Shiny.setInputValue("stimuli_pitch", note_list);
 

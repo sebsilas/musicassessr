@@ -542,7 +542,7 @@ function hidePlayButton() {
 
 function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_button_text = "Stop") {
     // start recording but then stop after x milliseconds
-
+    console.log('recordAndStop called');
     window.startTime = new Date().getTime();
 
     if (type === "aws_pyin") {

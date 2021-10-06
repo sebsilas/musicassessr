@@ -15,14 +15,14 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
   melconv_res <- system2(command = 'melconv',
                     args = c('-f midi',
                              paste0('-i ', file_name),
-                             '-o /srv/shiny-server/files/csv/'),
+                             '-o /srv/shiny-server/files/mid/'),
                     stdout = TRUE, stderr = FALSE)
 
   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]
   res <- res[length(res)]
   res <- strsplit(res, ".", fixed = TRUE)[[1]][1]
   # res <- paste0('/Users/sebsilas/musicassessr/', res, '.mid')
-  res <- paste0(res, '.mid')
+  res <- paste0('/srv/shiny-server/files/mid/', res, '.mid')
   if(return_notes_and_durs) {
     itembankr::midi_file_to_notes_and_durations(res)
   } else {

@@ -176,15 +176,21 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   Tone.Transport.stop();
 
   // reset Master
-  Tone.Master.dispose();
+  //Tone.Master.dispose();
 
    //create a synth and connect it to the master output (your speakers)
   if(sound === "tone") {
+    window.piano = null;
+    window.voice_doo = null;
     window.synth.toMaster();
   } else if(sound === "voice_doo") {
+    window.piano = null;
+    window.synth = null;
     window.voice_doo.toMaster();
   }
   else {
+    window.synth = null;
+    window.voice_doo = null;
     window.piano.toMaster();
   }
 

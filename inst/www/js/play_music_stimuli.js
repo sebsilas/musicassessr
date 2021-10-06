@@ -167,6 +167,10 @@ function playTones (note_list) {
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
 
+  console.log(playSeq);
+  console.log(sound);
+  console.log(page_type);
+
   // this should go first before the piano editing:
   Shiny.setInputValue("stimuli_pitch", note_list);
 
@@ -201,8 +205,10 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
     var pattern = new Tone.Part((time, value) => {
                 // the value is an object which contains both the note and the velocity
                 if(sound === "voice_doo") {
+                  console.log('voice_doo trigger!');
                   voice_doo.triggerAttackRelease(value.note, value.duration, time);
                 } else {
+                  console.log('piano trigger!');
                   piano.triggerAttackRelease(value.note, value.duration, time);
                 }
                 count = count + 1;

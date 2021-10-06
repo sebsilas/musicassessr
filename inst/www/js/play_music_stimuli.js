@@ -167,9 +167,12 @@ function playTones (note_list) {
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
 
-  console.log(playSeq);
+  console.log('playSeq');
   console.log(sound);
   console.log(page_type);
+
+  // make sure not playing
+  Tone.Transport.stop();
 
   // this should go first before the piano editing:
   Shiny.setInputValue("stimuli_pitch", note_list);

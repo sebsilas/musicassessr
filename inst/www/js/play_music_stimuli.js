@@ -191,6 +191,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   // make sure not playing
   Tone.Transport.stop();
+  pattern = null;
 
   // reset Master
   //Tone.Master.dispose();
@@ -218,7 +219,6 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   // this should go first before the piano editing:
   Shiny.setInputValue("stimuli_pitch", note_list);
-
 
   // seems to be a bug with the piano sound where it plays an octave higher
 

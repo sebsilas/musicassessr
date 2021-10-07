@@ -242,8 +242,11 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
       console.log(note);
       triggerNote(sound, note, 0.50);
       count = count + 1;
-      if (count === last_note & page_type == "aws_pyin" | page_type == "crepe" | page_type == "record_midi_page" | page_type == "record_audio_page") {
-        setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
+      if (count === last_note) {
+        if(page_type == "aws_pyin" | page_type == "crepe" | page_type == "record_midi_page" | page_type == "record_audio_page") {
+          setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
+        }
+        console.log('last note!');
         pattern.stop();
         Tone.Transport.stop();
       }
@@ -265,8 +268,12 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
                   piano.triggerAttackRelease(value.note, value.duration, time);
                 }
                 count = count + 1;
-                  if (count === last_note & page_type !== 'null') {
+                  if (count === last_note) {
+                  console.log("last note2!");
+                  if(page_type !== 'null') {
                     setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording
+                  }
+
                     pattern.stop();
                     Tone.Transport.stop();
                   }

@@ -39,6 +39,7 @@ present_stimuli(
   attempts_left = NULL,
   visual_music_notation_id = "sheet_music",
   play_button_id = "playButton",
+  button_area_id = "button_area",
   ...
 )
 }

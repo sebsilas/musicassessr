@@ -13,6 +13,7 @@ present_stimuli_midi_notes_both(
   ascending = TRUE,
   visual_music_notation_id = "sheet_music",
   play_button_id = "playButton",
+  button_area_id = "button_area",
   ...
 )
 }

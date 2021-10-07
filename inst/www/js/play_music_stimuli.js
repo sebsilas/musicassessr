@@ -224,7 +224,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   // seems to be a bug with the piano sound where it plays an octave higher
 
-  if (sound === "piano") {
+  if (sound === "piano" | sound === "voice_doo") {
     note_list = note_list.map(x => x-12);
   }
 

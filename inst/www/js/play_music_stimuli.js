@@ -49,13 +49,9 @@ function updatePlaybackCount() {
 
 }
 
-function toneJSInit() {
+function initSynth() {
 
-  // sound: i.e "tone" or "piano"
-
-  console.log("toneJS Inited!");
-
-  window.synthParameters = {
+    window.synthParameters = {
       oscillator: {
         type: 'sine',
         partialCount: 4
@@ -72,6 +68,10 @@ function toneJSInit() {
   //create a synth and connect it to the master output (your speakers)
   window.synth = new Tone.Synth(synthParameters).toMaster();
 
+}
+
+function initPiano() {
+
 
   // create a piano and connect to master output
   window.piano = SampleLibrary.load({
@@ -81,7 +81,11 @@ function toneJSInit() {
 
   window.piano.toMaster();
 
-    // create a piano and connect to master output
+}
+
+function initVoiceDoo() {
+
+      // create a piano and connect to master output
   window.voice_doo = SampleLibrary.load({
     instruments: "voice_doo",
     minify: true
@@ -89,6 +93,19 @@ function toneJSInit() {
 
   window.voice_doo.toMaster();
 
+}
+
+function toneJSInit() {
+
+  // sound: i.e "tone" or "piano"
+
+  console.log("toneJS Inited!");
+
+  initPiano();
+
+  initSynth();
+
+  initVoiceDoo();
 }
 
 
@@ -180,46 +197,21 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
    //create a synth and connect it to the master output (your speakers)
   if(sound === "tone") {
-    window.piano = null;
-    window.voice_doo = null;
-     window.synthParameters = {
-      oscillator: {
-        type: 'sine',
-        partialCount: 4
-      },
-      envelope: { // http://shura.shu.ac.uk/8259/1/96913_Soranzo_psychoacoustics.pdf
-        attack: 0.01,
-        decay: 0.01,
-        sustain: 0.50, // this is changed from the parameters above, which was 0.25
-        release: 0.01,
-        attackCurve: 'cosine'
-      }
-    };
-
-  //create a synth and connect it to the master output (your speakers)
-  window.synth = new Tone.Synth(synthParameters).toMaster();
+    window.piano.disconnect();
+    window.voice_doo.disconnect();
+    //create a synth and connect it to the master output (your speakers)
+    window.synth = new Tone.Synth(synthParameters).toMaster();
 
   } else if(sound === "voice_doo") {
 
-    window.piano = null;
-    window.synth = null;
-    // create a piano and connect to master output
-    window.voice_doo = SampleLibrary.load({
-      instruments: "voice_doo",
-      minify: true
-     });
-      window.voice_doo.toMaster();
+    window.piano.disconnect();
+    window.synth.disconnect();
+    window.voice_doo.toMaster();
     }
   else {
 
-    window.synth = null;
-    window.voice_doo = null;
-    // create a piano and connect to master output
-    window.piano = SampleLibrary.load({
-      instruments: "piano",
-      minify: true
-     });
-
+    window.synth.disconnect();
+    window.voice_doo.disconnect();
     window.piano.toMaster();
 
   }

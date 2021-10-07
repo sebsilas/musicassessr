@@ -188,6 +188,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   console.log('playSeq called');
   console.log(sound);
   console.log(page_type);
+  console.log(id);
 
   // make sure not playing
   Tone.Transport.stop();

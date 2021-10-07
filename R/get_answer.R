@@ -34,26 +34,26 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
 }
 
 
-melconv <- function(file_name, return_notes_and_durs = TRUE) {
-
-  # then use melconv
-  melconv_res <- system2(command = '../melospy/bin/melconv',
-                         args = c('-f midi',
-                                  paste0('-i ', file_name)),
-                         stdout = TRUE, stderr = FALSE)
-
-  res <- strsplit(file_name, "/", fixed = TRUE)[[1]]
-  res <- res[length(res)]
-  res <- strsplit(res, ".", fixed = TRUE)[[1]][1]
-  # res <- paste0('/Users/sebsilas/musicassessr/', res, '.mid')
-  res <- paste0(res, '.mid')
-  if(return_notes_and_durs) {
-    itembankr::midi_file_to_notes_and_durations(res)
-  } else {
-    tuneR::readMidi(res)
-  }
-
-}
+# melconv <- function(file_name, return_notes_and_durs = TRUE) {
+#
+#   # then use melconv
+#   melconv_res <- system2(command = '../melospy/bin/melconv',
+#                          args = c('-f midi',
+#                                   paste0('-i ', file_name)),
+#                          stdout = TRUE, stderr = FALSE)
+#
+#   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]
+#   res <- res[length(res)]
+#   res <- strsplit(res, ".", fixed = TRUE)[[1]][1]
+#   # res <- paste0('/Users/sebsilas/musicassessr/', res, '.mid')
+#   res <- paste0(res, '.mid')
+#   if(return_notes_and_durs) {
+#     itembankr::midi_file_to_notes_and_durations(res)
+#   } else {
+#     tuneR::readMidi(res)
+#   }
+#
+# }
 
 
 # melconv_res <- system2(command = '../melospy/bin/melconv',

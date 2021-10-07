@@ -39,7 +39,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
                        ')),
     shiny::tags$div(id=button_area_id,
-                    shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default action-button")
+                    shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default")
     ))
 
 }

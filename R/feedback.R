@@ -52,7 +52,7 @@ feedback_melodic_production <- function() {
         amd
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-      melconv_out <- present_stimuli(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
+      melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
                                      visual_music_notation_id = "melconv", play_button_id = "playButtonMelConv",
                                      button_area_id = "buttonArea2")
 

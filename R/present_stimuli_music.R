@@ -250,7 +250,7 @@ present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "
       #shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli_for_js))),
 
       shiny::tags$div(id="button_area",
-                      shiny::tags$button(button_text, id="playButton", class="btn btn-default action-button",
+                      shiny::tags$button(button_text, id="playButton", class="btn btn-default",
                                          onclick=shiny::HTML(paste0("playMidiFileAndRecordAfter(\"",stimuli,"\", true, ",start_note,",",end_note,", true, this.id, ",transpose,", 'piano', ", bpm, ");")))
       ),
     shiny::tags$br()

@@ -71,7 +71,9 @@ feedback_melodic_production <- function() {
                                                     tab,
                                                     shiny::tags$h3('Stimuli Info'),
                                                     tab2),
-                        page_text_first = FALSE)
+                        page_text_first = FALSE,
+                        play_button_id = "playButtonFeedback",
+                        button_area_id = "buttonArea3")
 
     } else {
       psychTestR::one_button_page("Unfortunately a valid response was not recorded.")

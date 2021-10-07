@@ -235,7 +235,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
       console.log(note);
       triggerNote(sound, note, 0.50);
       count = count + 1;
-      if (count === last_note & page_type !== 'null') {
+      if (count === last_note & page_type !== 'null' | page_type !== 'one_button_page') {
         setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
         pattern.stop();
         Tone.Transport.stop();

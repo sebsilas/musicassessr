@@ -189,6 +189,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   console.log(sound);
   console.log(page_type);
   console.log(id);
+  console.log('note_list');
 
   // make sure not playing
   Tone.Transport.stop();
@@ -228,8 +229,13 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   }
 
   var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
+
+  console.log('freq_list');
+  console.log(freq_list);
+
   var last_note = freq_list.length;
   var count = 0;
+  console.log(pattern);
 
   if(dur_list === null) {
     var pattern = new Tone.Sequence(function(time, note){
@@ -243,6 +249,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
       }
 
     }, freq_list);
+    console.log(pattern);
   } else {
     var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
     console.log(notesAndDurations);

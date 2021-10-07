@@ -174,7 +174,8 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                    record_audio_method = "aws_pyin", note_length = 0.5,
                                    sound = "piano", asChord = FALSE, slide_length = 0.5, page_title = " ",
                                    start_note = 0, end_note = "end", dur_list = 'null', auto_next_page = FALSE,
-                                   visual_music_notation_id = "sheet_music", play_button_id = "playButton", ...) {
+                                   visual_music_notation_id = "sheet_music", play_button_id = "playButton",
+                                   button_area_id = "button_area", ...) {
 
   # generic stimuli types
 
@@ -210,7 +211,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                                  sound = sound, asChord = asChord, ascending = ascending, dur_list = dur_list,
                                                  auto_next_page = auto_next_page,
                                                  visual_music_notation_id = visual_music_notation_id,
-                                                 play_button_id = play_button_id, ...)
+                                                 play_button_id = play_button_id, button_area_id = button_area_id, ...)
   }
 
   else if (stimuli_type == "frequencies") {
@@ -290,7 +291,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             auto_next_page = FALSE, choices = NULL, user_rating = FALSE,
                             page_text_first = TRUE, happy_with_response = FALSE,
                             attempts_left = NULL, visual_music_notation_id = "sheet_music",
-                            play_button_id = "playButton", ...) {
+                            play_button_id = "playButton", button_area_id = "button_area", ...) {
 
   if(is.null(page_type)) {
     page_type <- 'null'
@@ -305,7 +306,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                              start_note = start_note, end_note = end_note, dur_list = dur_list,
                                              auto_next_page = auto_next_page,
                                              visual_music_notation_id = visual_music_notation_id,
-                                             play_button_id = play_button_id, ...)
+                                             play_button_id = play_button_id, button_area_id = button_area_id, ...)
   }
   else {
     return_stimuli <- present_stimuli_reactive(stimuli_reactive, stimuli,

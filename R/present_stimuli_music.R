@@ -8,7 +8,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 stop_button_text = "Stop",
                                                 record_audio_method = "aws_pyin",
                                                 asChord = FALSE, dur_list = 'null', auto_next_page = FALSE,
-                                                play_button_id = "playButton", ...) {
+                                                play_button_id = "playButton", button_area_id = "button_area", ...) {
 
   if(page_type == "record_audio_page") {
     page_type <- record_audio_method
@@ -38,7 +38,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
     shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
                        ')),
-    shiny::tags$div(id="button_area",
+    shiny::tags$div(id=button_area_id,
                     shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default action-button")
     ))
 
@@ -87,9 +87,12 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
 #'
 #' @examples
 present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano", asChord = FALSE, play_button_text = "Play",
-                                            ascending = TRUE, visual_music_notation_id = "sheet_music", play_button_id = "playButton", ...) {
+                                            ascending = TRUE, visual_music_notation_id = "sheet_music",
+                                            play_button_id = "playButton", button_area_id = "button_area", ...) {
 
-  return_stimuli_auditory <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound, play_button_text = play_button_text, play_button_id = play_button_id, ...)
+  return_stimuli_auditory <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length,
+                                                                 sound = sound, play_button_text = play_button_text,
+                                                                 play_button_id = play_button_id, button_area_id = button_area_id, ...)
   return_stimuli_visual <- present_stimuli_midi_notes_visual(stimuli = stimuli, note_length = note_length, asChord = asChord, ascending = ascending, id = visual_music_notation_id)
 
   shiny::tags$div(return_stimuli_auditory, return_stimuli_visual)
@@ -97,13 +100,15 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano
 
 present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
                                        record_audio_method = "aws_pyin",  dur_list = 'null', auto_next_page = FALSE,
-                                       visual_music_notation_id = "sheet_music", play_button_id = "playButton", ...) {
+                                       visual_music_notation_id = "sheet_music", play_button_id = "playButton",
+                                       button_area_id = "button_area", ...) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
                                                           record_audio_method =  record_audio_method, dur_list = dur_list,
-                                                          auto_next_page = auto_next_page, play_button_id = play_button_id, ...)
+                                                          auto_next_page = auto_next_page, play_button_id = play_button_id,
+                                                          button_area_id = button_area_id, ...)
 
   }
   else if (display_modality == "visual") {
@@ -118,7 +123,8 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
                                                       asChord = asChord, ascending = ascending,
                                                       play_button_text = play_button_text,
                                                       record_audio_method = record_audio_method,
-                                                      visual_music_notation_id = visual_music_notation_id, play_button_id = play_button_id, ...)
+                                                      visual_music_notation_id = visual_music_notation_id,
+                                                      play_button_id = play_button_id, button_area_id = button_area_id, ...)
   }
 
   return_stimuli

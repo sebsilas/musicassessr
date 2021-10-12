@@ -52,9 +52,9 @@ feedback_melodic_production <- function() {
         amd
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-      melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
-                                     visual_music_notation_id = "melconv", play_button_id = "playButtonMelConv",
-                                     button_area_id = "buttonArea2")
+      # melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
+      #                                visual_music_notation_id = "melconv", play_button_id = "playButtonMelConv",
+      #                                button_area_id = "buttonArea2")
 
 
         present_stimuli(answer$user_response_note,
@@ -62,8 +62,8 @@ feedback_melodic_production <- function() {
                         display_modality = "both",
                         page_title = "Your Response",
                         page_type = 'one_button_page',
-                        page_text = shiny::tags$div(shiny::tags$h3('Melconv Output'),
-                                                    melconv_out,
+                        page_text = shiny::tags$div(#shiny::tags$h3('Melconv Output'),
+                                                    #melconv_out,
                                                     shiny::tags$p(plot),
                                                     shiny::tags$h3('Melody DTW Plot'),
                                                     shiny::tags$p(melody_dtw_plot),

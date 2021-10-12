@@ -647,7 +647,7 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
       // if hidePlay is true, then hide the play button
 
       if(hidePlay) {
-        console.log('hide play bitch!');
+        console.log('hide play!');
         hidePlayButton();
       }
 

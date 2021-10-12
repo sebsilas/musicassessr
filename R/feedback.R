@@ -12,10 +12,11 @@ feedback_melodic_production <- function() {
       melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
 
       answer$answer_meta_data <- NULL
-      answer$melody_dtw_plot <- NULL
+      answer$pyin_pitch_track <- NULL
 
       d_names <- names(answer)[!names(answer) == "answer_meta_data"]
       d_names <- names(answer)[!names(answer) == "melody_dtw_plot"]
+      d_names <- names(answer)[!names(answer) == "pyin_pitch_track"]
 
       amd_names <- names(amd)
 

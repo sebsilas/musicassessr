@@ -233,6 +233,7 @@ update_play_melody_loop_and_save <- function(state, max_goes) {
 
 
 melody_checks <- function(melody, state, stimuli_type = "midi_notes") {
+
   if(is.null(melody)) {
     melody <- psychTestR::get_global("melody", state)
   }

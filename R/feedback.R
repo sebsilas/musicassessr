@@ -9,7 +9,7 @@ feedback_melodic_production <- function() {
     if(is.null(answer$error)) {
       amd <- answer$answer_meta_data
 
-      melody_dtw_plot <- answer$melody_dtw_plot
+      melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
 
       answer$answer_meta_data <- NULL
       answer$melody_dtw_plot <- NULL

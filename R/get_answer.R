@@ -582,6 +582,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
          stimuli_length = stimuli_length,
          user_response_note = user_melody_input,
          user_response_midi_note_off = user_response_midi_note_off,
+         pyin_pitch_track = pyin_pitch_track,
          durations = durations,
          user_response_pitch_classes = user_pitch_classes,
          onsets_noteon = onsets_noteon,
@@ -604,7 +605,6 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
          similarity = similarity,
          note_precision = note_precision,
          melody_dtw = melody_dtw$distance,
-         melody_dtw_plot = plot_dtw_melody(stimuli, stimuli_durations, pyin_pitch_track),
          mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
          mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
          answer_meta_data = input$answer_meta_data)

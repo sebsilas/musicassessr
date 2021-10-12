@@ -344,6 +344,16 @@ get_answer_pyin_long_note <- function(input, ...) {
   pyin_res <- pyin(file, type = "pitch_track")
   print(pyin_res)
 
+  if(is.na(pyin_res$onset)) {
+
+    long_note_pitch_measures <- list("note_accuracy" = NA,
+                                     "note_precision" = NA,
+                                     "dtw_distance" = NA)
+
+  } else {
+    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
+  }
+
   c(
     list(file = file,
          stimuli = as.numeric(input$stimuli),
@@ -351,7 +361,7 @@ get_answer_pyin_long_note <- function(input, ...) {
          freq = pyin_res$freq
          ),
 
-    long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
+    long_note_pitch_measures
   )
 
 

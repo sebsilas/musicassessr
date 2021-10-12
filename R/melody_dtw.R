@@ -38,8 +38,8 @@ prepare_mel_stimuli_for_dtw <- function(melody, durations) {
 
   df2 <- dplyr::full_join(df, out) %>% dplyr::arrange(dur) %>% tidyr::fill(note, .direction = "up")
 
-  plot <- ggplot2::ggplot(df2) +
-    ggplot2::geom_point(ggplot2::aes(x = dur, y = note), size = 0.2)
+  # plot <- ggplot2::ggplot(df2) +
+  #   ggplot2::geom_point(ggplot2::aes(x = dur, y = note), size = 0.2)
 
 
   df2$note

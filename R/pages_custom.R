@@ -6,8 +6,6 @@
 #' @examples
 select_musical_instrument_page <- function() {
 
-  insts_dict <- lapply(insts, psychTestR::i18n)
-
   psychTestR::dropdown_page(label = "select_musical_instrument",
                 prompt = psychTestR::i18n("instrument_selection_message"),
                 next_button_text = psychTestR::i18n("Next"),

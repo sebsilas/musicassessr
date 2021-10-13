@@ -4,7 +4,13 @@
 \alias{get_answer_pyin}
 \title{Use pyin on a file}
 \usage{
-get_answer_pyin(input, type = c("both", "note", "pitch_track"), state, ...)
+get_answer_pyin(
+  input,
+  type = c("both", "note", "pitch_track"),
+  state,
+  melconv = FALSE,
+  ...
+)
 }
 \arguments{
 \item{...}{}

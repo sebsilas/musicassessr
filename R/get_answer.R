@@ -286,7 +286,7 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
   }
 
   if(is.null(psychTestR::get_global("melody", state))) {
-    stimuli <- rjson::fromJSON(input$stimuli)
+    stimuli <- as.numeric(input$stimuli)
   } else {
 
     stimuli_both <- psychTestR::get_global("melody", state)

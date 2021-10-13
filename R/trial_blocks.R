@@ -205,6 +205,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
 
 
 
+
 #' Present "Find This Note" trials
 #'
 #' @param num_items
@@ -213,6 +214,7 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
 #' @param page_title
 #' @param get_answer
 #' @param page_type
+#' @param page_text
 #'
 #' @return
 #' @export

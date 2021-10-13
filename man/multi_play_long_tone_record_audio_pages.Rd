@@ -10,6 +10,7 @@ multi_play_long_tone_record_audio_pages(
   page_type = "record_audio_page",
   page_text = "Sing along with the tone for 5 seconds.",
   example = FALSE,
+  page_title = "Sing Along With This Note",
   feedback = FALSE,
   get_answer = get_answer_pyin_long_note
 )
@@ -19,6 +20,7 @@ multi_play_long_tone_record_audio_pages(
   page_type = "record_audio_page",
   page_text = "Sing along with the tone for 5 seconds.",
   example = FALSE,
+  page_title = "Sing Along With This Note",
   feedback = FALSE,
   get_answer = get_answer_pyin_long_note
 )

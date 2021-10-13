@@ -246,7 +246,7 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
                            shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
                            musicassessr::sample_from_user_range(num_examples),
                            musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
-                                                                                 page_text = page_text,
+                                                                                 page_text = page_text, page_title = page_title,
                                                                                  example = TRUE, feedback = feedback, get_answer = get_answer),
                            psychTestR::one_button_page(shiny::div(
                              shiny::tags$h2(page_title),
@@ -257,6 +257,7 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
                        # build pages
                        musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items,
                                                                              page_text = page_text,
+                                                                             page_title = page_title,
                                                                              page_type = "record_audio_page",
                                                                              feedback = feedback,
                                                                              get_answer = get_answer)

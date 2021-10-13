@@ -16,7 +16,7 @@ find_this_note_trials(
 )
 }
 \arguments{
-\item{page_type}{}
+\item{page_text}{}
 }
 \value{
 

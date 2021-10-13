@@ -12,8 +12,9 @@
 multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page",
                                                     page_text = "Sing along with the tone for 5 seconds.",
                                                     example = FALSE,
+                                                    page_title = "Sing Along With This Note",
                                                     feedback = FALSE, get_answer = get_answer_pyin_long_note) {
-  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type,
+  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type, page_title = page_title,
                                                                                   page_text = page_text, example = example, get_answer = get_answer)))
   items <- add_feedback(items, feedback)
 }

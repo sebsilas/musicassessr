@@ -119,7 +119,11 @@ final_results <- function() {
   })
 }
 
-#res <- readRDS('/Users/sebsilas/Downloads/results.rds')
+res <- readRDS('/Users/sebsilas/Downloads/results (1).rds')
+res2 <- readRDS('/Users/sebsilas/Downloads/results.rds')
+
 #ress <- present_scores(res)
+#ress_ln <- ress$long_note
+#ress_mel <- rbind(ress$arrhythmic, ress$rhythmic)
 
 

@@ -9,8 +9,12 @@
 #' @export
 #'
 #' @examples
-multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page", example = FALSE, feedback = FALSE, get_answer = get_answer_pyin_long_note) {
-  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type, example = example, get_answer = get_answer)))
+multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page",
+                                                    page_text = "Sing along with the tone for 5 seconds.",
+                                                    example = FALSE,
+                                                    feedback = FALSE, get_answer = get_answer_pyin_long_note) {
+  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type,
+                                                                                  page_text = page_text, example = example, get_answer = get_answer)))
   items <- add_feedback(items, feedback)
 }
 
@@ -44,7 +48,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              show_record_button = FALSE,
                                              auto_next_page = TRUE,
                                              example = FALSE,
-                                             get_answer = get_answer_pyin_long_note) {
+                                             get_answer = get_answer_pyin_long_note,
+                                             page_label = "long_tone_") {
 
   # a page type for playing a 5-second tone and recording a user singing with it
 
@@ -67,7 +72,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     page_title = page_title,
                     page_text = page_text,
                     page_type = page_type,
-                    page_label = "long_tone_",
+                    page_label = page_label,
                     play_button_text = play_button_text,
                     note_length = note_length,
                     sound = "tone",

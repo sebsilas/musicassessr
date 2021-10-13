@@ -285,15 +285,15 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
     pyin_pitch_track <- pyin(file, type = "pitch_track")
   }
 
+  if(is.null(psychTestR::get_global("melody", state))) {
+    stimuli <- input$stimuli
+  } else {
 
-  stimuli_both <- psychTestR::get_global("melody", state)
-
-  stimuli <- stimuli_both$melody
-
-  stimuli_durations <- stimuli_both$dur_list
-
-  stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
-
+    stimuli_both <- psychTestR::get_global("melody", state)
+    stimuli <- stimuli_both$melody
+    stimuli_durations <- stimuli_both$dur_list
+    stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
+  }
 
   if(melconv) {
     melconv_res <- melconv_from_pyin_res(pyin_res)

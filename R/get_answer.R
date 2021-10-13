@@ -316,10 +316,10 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
            user_rating = input$user_rating,
            melconv_notes = melconv_notes,
            melconv_dur = melconv_dur
-           ),
+           )#,
 
-      melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = TRUE,
-                                     pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
+      #melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = TRUE,
+      #                               pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
     )
   }
   res

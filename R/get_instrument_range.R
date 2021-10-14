@@ -111,7 +111,7 @@ get_instrument_range_pages <- function(type, get_range) {
   # a short multi-page protocol to get the user's frequency range
   print('get_instrument_range_pages')
   print(get_range)
-  if(get_range == "test") {
+  if(get_range == "test" | get_range == FALSE) {
     fake_range()
   } else {
     if (type == "microphone") {

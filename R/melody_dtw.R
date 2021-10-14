@@ -28,19 +28,24 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
 
 
 prepare_mel_stimuli_for_dtw <- function(melody, durations) {
+  print('prepare_mel_stimuli_for_dtw')
 
+  if(is.na(durations)) {
+    durations <- 5
+  }
   melody <- hrep::midi_to_freq(melody)
 
   end <- durations[length(durations)]
+
   out <- data.frame(dur = cumsum(rep(.01, end/.01)))
 
   df <- data.frame(note = melody, dur = durations)
 
   df2 <- dplyr::full_join(df, out) %>% dplyr::arrange(dur) %>% tidyr::fill(note, .direction = "up")
 
-  # plot <- ggplot2::ggplot(df2) +
-  #   ggplot2::geom_point(ggplot2::aes(x = dur, y = note), size = 0.2)
-
+  print('df2')
+  print(df2)
+  print(df2$note)
 
   df2$note
 }

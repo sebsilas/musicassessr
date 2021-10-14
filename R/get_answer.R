@@ -312,14 +312,14 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
 
     res <- c(
       list(file = file,
-           user_satisfied = input$user_satisfied,
-           user_rating = input$user_rating,
+           user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
+           user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
            melconv_notes = melconv_notes,
            melconv_dur = melconv_dur
-           )#,
+           ),
 
-      #melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = TRUE,
-      #                               pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
+      melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = TRUE,
+                                    pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
     )
   }
   res
@@ -465,8 +465,6 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures, pyin_pitch_track = NULL, stimuli = NA, stimuli_durations = NA) {
 
   print('melody_scoring_from_user_input')
-  print(stimuli)
-  print(stimuli_durations)
 
   # onset, dur, freq, note
 
@@ -501,7 +499,6 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     user_response_midi_note_off <- NA
   }
 
-
   if(length(user_melody_input) == 0) {
     if(trial_type == "midi") { shiny::showNotification(i18n("nothing_entered")) }
     return(list(user_melody_input = NA, reason = "nothing_entered"))
@@ -509,7 +506,12 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
 
   else {
 
-    stimuli_length <- input$answer_meta_data$N
+    if(length(input$answer_meta_data) > 1) {
+      stimuli_length <- input$answer_meta_data$N
+    } else {
+      stimuli_length <- 1
+    }
+
 
     if(is.null(result$dur)) {
       durations <- diff(onsets_noteon)
@@ -538,10 +540,11 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     # accuracy
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
+
     # similarity
     similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations)
     no_note_events <- length(user_melody_input)
-
+    print('19dh')
     # by note events measures
     correct_by_note_events <- no_correct/no_note_events
     correct_by_note_events_log_normal <- correct_by_note_events * log_normal(no_note_events/stimuli_length)
@@ -557,19 +560,20 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
         dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
                     dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE)) %>% dplyr::pull(note_precision_melody)
-
+      print('22')
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli, freq = result$freq)
-
+      print('33')
       # mean cents deviation
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
-
+      print('44')
       # melody dtw
       user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, result)
       stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
 
       melody_dtw <- dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)
+
 
     } else {
       note_precision <- NA
@@ -577,6 +581,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
       mean_cents_deviation_from_nearest_midi_pitch <- NA
       melody_dtw <- NA
     }
+
 
     list(stimuli = stimuli,
          stimuli_durations = stimuli_durations,
@@ -714,10 +719,10 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 }
 
 get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations = NA) {
+
   # similarity
   if(length(user_melody_input) < 3 | stimuli_length < 3) {
     similarity <- NA
-    #ng <- NA
   } else {
 
     if(is.na(stimuli_durations)) {

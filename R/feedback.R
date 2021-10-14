@@ -40,18 +40,24 @@ feedback_melodic_production <- function() {
         d
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-      tab2 <- shiny::renderTable({
-        amd <- lapply(1:length(amd), function(x) {
-          if(length(amd[[x]]) > 1) {
-            paste0(amd[[x]], collapse = ",")
-          } else {
-            amd[[x]]
-          }
-        })
-        amd <- base::t(as.data.frame(amd))
-        row.names(amd) <- amd_names
-        amd
-      }, rownames = TRUE, colnames = FALSE, width = "50%")
+      print(tab)
+
+      if(amd == 0) {
+        tab2 <- shiny::tags$div()
+      } else {
+        tab2 <- shiny::renderTable({
+          amd <- lapply(1:length(amd), function(x) {
+            if(length(amd[[x]]) > 1) {
+              paste0(amd[[x]], collapse = ",")
+            } else {
+              amd[[x]]
+            }
+          })
+          amd <- base::t(as.data.frame(amd))
+          row.names(amd) <- amd_names
+          amd
+        }, rownames = TRUE, colnames = FALSE, width = "50%")
+      }
 
       # melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
       #                                visual_music_notation_id = "melconv", play_button_id = "playButtonMelConv",

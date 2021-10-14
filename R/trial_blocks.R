@@ -223,12 +223,12 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
 find_this_note_trials <- function(num_items, num_examples = NULL,
                                   feedback = FALSE,
                                  page_title = "Find This Note",
-                                 get_answer = get_answer_pyin,
+                                 get_answer = get_answer_pyin_long_note,
                                  page_type = "record_audio_page",
                                  page_text = "Press play to hear the note. Try and play it on your instrument when you can.") {
 
   if(feedback & !is.function(feedback)) {
-    feedback <- feedback_melodic_production
+    feedback <- feedback_long_tone
   }
 
   # sample melodies based on range

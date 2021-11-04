@@ -150,8 +150,8 @@ function upload_file_to_s3(blob){
 
   var recordkey = create_recordkey();
 
-  // var file_url = "/files/" + recordkey + ".wav"; // remote / production
-  var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // remote / production
+  var file_url = "/files/" + recordkey + ".wav"; // remote / production
+  //var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // remote / production
   console.log(file_url);
 
 
@@ -159,8 +159,8 @@ function upload_file_to_s3(blob){
 	var filename = new Date().toISOString();
 	var fd=new FormData();
 	fd.append("audio_data",blob, recordkey);
-	// xhr.open("POST","/api/store_audio",true); // production
-	xhr.open("POST","http://localhost:3000/upload-audio",true); // local
+	xhr.open("POST","/api/store_audio",true); // production
+	//xhr.open("POST","http://localhost:3000/upload-audio",true); // local
 	xhr.send(fd);
 
 	Shiny.setInputValue("sourceBucket", bucketName);

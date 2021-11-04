@@ -274,8 +274,8 @@ pyin <- function(file_name, transform_file = NULL,
 get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE,  ...) {
 
   pyin_pitch_track <- NULL
-  #file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
-  file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+  file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
+  #file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
 
   if(type == "note") {
     pyin_res <- pyin(file)
@@ -347,7 +347,7 @@ get_answer_pyin_long_note <- function(input, ...) {
 
   print('get_answer_pyin_long_note')
   file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
-  file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+  #file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
   pyin_res <- pyin(file, type = "pitch_track")
   print(pyin_res)
 
@@ -635,7 +635,8 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
 
 get_answer_simple_pyin_summary <- function(input, ...) {
   print('get_answer_simple_pyin_summary')
-  file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+  file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
+  #file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
   pyin_res <- pyin(file)
   print(pyin_res)
   res <- as.list(round(summary(pyin_res$note)))

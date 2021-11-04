@@ -1,5 +1,6 @@
 
 t3 <- function() {
+
   make_aws_credentials_global(list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                                    bucket_name = "shinny-app-source-41630",
                                    bucket_region = "us-east-1",
@@ -16,6 +17,21 @@ t3 <- function() {
 
     psychTestR::one_button_page("hi"),
 
+
+    sing_happy_birthday_page(feedback = TRUE),
+
+    present_voice_ranges_page(),
+
+    MAST21_trials(),
+
+    interval_perception_trials(),
+
+    psychTestR::one_button_page('u2'),
+
+    psychTestR::reactive_page(function(state, ...) {
+      psychTestR::one_button_page(present_stimuli_audio_WJD(asdw))
+    }),
+
     present_stimuli(20:88, "midi_notes", "auditory", "record_audio_page",
                     get_answer = get_answer_pyin, sound = "voice_doo"),
 
@@ -25,7 +41,6 @@ t3 <- function() {
 #       psychTestR::one_button_page(shiny::tags$div(str(answer)))
 #     }),
 #
-#     play_interval_page(),
 #
 #     microphone_calibration_page(),
 #
@@ -105,7 +120,7 @@ t3 <- function() {
     psychTestR::final_page("The end")
     ), dict = psychTestR::i18n_dict$new(musicassessr_dict_df)), opt = psychTestR::test_options(title = "test", admin_password = "demo", demo = TRUE))
 }
-#t()
+#t3()
 
 
 
@@ -118,8 +133,8 @@ testApp2 <- function() {
                                    "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                                    "destination_bucket" = "shinny-app-destination-41630"),
             num_items = list("long_tones" = 1L,
-                             "arrhythmic" = 5L,
-                             "rhythmic" = 5L),
+                             "arrhythmic" = 1L,
+                             "rhythmic" = 1L),
             SNR_test = F,
             get_range = "test",
             demo = FALSE,
@@ -128,6 +143,7 @@ testApp2 <- function() {
             absolute_url = "https://adaptiveeartraining.com",
             final_results = TRUE)
 }
+
 
 t2 <- function() {
   psychTestR::make_test(
@@ -146,18 +162,24 @@ t2 <- function() {
 # da <- readRDS('/Users/sebsilas/Downloads/results (1).rds')
 
 
-testApp <- function() {
+p <- function() {
   library(PBET)
+
   PBET(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                               "bucket_name" = "shinny-app-source-41630",
                               "bucket_region" = "us-east-1",
                               "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                               "destination_bucket" = "shinny-app-destination-41630"),
-       num_items = list("find_the_note" = 3L,
-                        "arrhythmic" = 5L,
-                        "rhythmic" = 5L),
+       num_items = list("find_the_note" = 1L,
+                        "arrhythmic" = 2L,
+                        "rhythmic" = 5L,
+                        "wjd_audio" = 5L),
+       feedback = T,
+       SNR_test = F,
+       get_range = F,
        demo = FALSE)
 }
+#p()
 
 #testApp2()
 

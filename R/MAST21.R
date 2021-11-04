@@ -150,8 +150,8 @@ MAST <- function() {
 
   psychTestR::make_test(psychTestR::new_timeline(psychTestR::join(
     psychTestR::one_button_page(shiny::tags$div(
-      tags$h1("MAST-21 Test Battery"),
-      tags$p("This is a test protocol for the new MAST-21 battery"),
+      shiny::tags$h1("MAST-21 Test Battery"),
+      shiny::tags$p("This is a test protocol for the new MAST-21 battery"),
       musicassessr_js_scripts(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                               bucket_name = "shinny-app-source-41630",
                               bucket_region = "us-east-1",
@@ -159,19 +159,19 @@ MAST <- function() {
                               destination_bucket = "shinny-app-destination-41630"))),
 
     psychTestR::one_button_page(tags$div(
-      tags$p("The next page will show an example of the Sing Happy Birthday page, followed by a summary page of the MIDI pitch range.")
+      shiny::tags$p("The next page will show an example of the Sing Happy Birthday page, followed by a summary page of the MIDI pitch range.")
     )),
 
     sing_happy_birthday_page(feedback = TRUE),
 
-    psychTestR::one_button_page(tags$div(
-      tags$p("The next page will show an example of the page which allows the participant to choose a vocal range.")
+    psychTestR::one_button_page(shiny::tags$div(
+      shiny::tags$p("The next page will show an example of the page which allows the participant to choose a vocal range.")
     )),
 
     present_voice_ranges_page(),
 
-    psychTestR::one_button_page(tags$div(
-      tags$p("Now this has been selected, the MAST21 trials will be presented according to this range.")
+    psychTestR::one_button_page(shiny::tags$div(
+      shiny::tags$p("Now this has been selected, the MAST21 trials will be presented according to this range.")
     )),
 
     MAST21_trials(),

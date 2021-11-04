@@ -185,12 +185,6 @@ function playTones (note_list) {
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
 
-  console.log('playSeq called');
-  console.log(sound);
-  console.log(page_type);
-  console.log(id);
-  console.log('note_list');
-
   // make sure not playing
   Tone.Transport.stop();
   pattern = null;
@@ -230,12 +224,8 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
 
-  console.log('freq_list');
-  console.log(freq_list);
-
   var last_note = freq_list.length;
   var count = 0;
-  console.log(pattern);
 
   if(dur_list === null) {
     var pattern = new Tone.Sequence(function(time, note){
@@ -453,35 +443,31 @@ function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose
 
     if (toneJS) {
       midiToToneJS(url, note_no, hidePlay, transpose, id, sound, bpm);
-    }
-
-    else {
+    } else {
     function display_message(mes) {
         console.log(mes);
     }
 
-    MIDIjs.message_callback = display_message;
-    MIDIjs.player_callback = display_time;
+      MIDIjs.message_callback = display_message;
+      MIDIjs.player_callback = display_time;
 
-    console.log(MIDIjs.get_audio_status());
+      console.log(MIDIjs.get_audio_status());
 
-    MIDIjs.play(url);
+      MIDIjs.play(url);
 
-    // Define a function to handle player events
-    function display_time(ev) {
+      // Define a function to handle player events
+      function display_time(ev) {
 
-    console.log(ev.time); // time in seconds, since start of playback
+      console.log(ev.time); // time in seconds, since start of playback
 
-    MIDIjs.get_duration(url,  function(seconds) { console.log("Duration: " + seconds);
+      MIDIjs.get_duration(url,  function(seconds) { console.log("Duration: " + seconds);
 
-    if (ev.time > seconds) {
-        console.log("file finished!");
-        MIDIjs.player_callback = null;
-    }
+      if (ev.time > seconds) {
+          console.log("file finished!");
+          MIDIjs.player_callback = null;
+      } });
 
-    });
-
-    }
+      }
     }
 
 }
@@ -587,7 +573,7 @@ function rangeTest(notes_list) {
 // UI functions
 
 function hidePlayButton(play_button_id = "playButton") {
-  console.log('now we real!');
+
   var x = document.getElementById(play_button_id);
   if (x.style.display === "none") {
   x.style.display = "block";
@@ -597,21 +583,25 @@ function hidePlayButton(play_button_id = "playButton") {
 
 }
 
+function hideAudioFilePlayer() {
+  console.log('hideAudioFilePlayer called');
+  var player = document.getElementById("player");
+  player.style.display = "none";
 
-//
+}
 
-function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_button_text = "Stop") {
+
+
+function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", stop_button_text = "Stop") {
+
     // start recording but then stop after x milliseconds
-    console.log('recordAndStop called');
     window.startTime = new Date().getTime();
 
     if (type === "aws_pyin") {
-      console.log('11');
       // aws record
       startRecording(updateUI = false);
     }
     else if(type === "crepe") {
-      console.log('22');
       // crepe record
       initAudio();crepeResume();
     }
@@ -621,7 +611,7 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_butt
     }
 
     else {
-      console.log('33');
+      console.log('type not recognised');
     }
 
 
@@ -631,8 +621,6 @@ function recordAndStop (ms, showStop, hidePlay, id, type = "aws_pyin", stop_butt
      }
 
      else {
-        console.log('ms not null');
-        console.log(ms);
         recordUpdateUI(showStop, hidePlay, type, stop_button_text);
         setTimeout(() => {  simpleStopRecording();hideRecordImage(); }, ms);
      }
@@ -647,7 +635,6 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
       // if hidePlay is true, then hide the play button
 
       if(hidePlay) {
-        console.log('hide play!');
         hidePlayButton();
       }
 
@@ -691,11 +678,9 @@ function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
         }
 
         else {
-          console.log('here we go1 1!');
-
           startRecording(updateUI = false);
-          if (recordButton !== undefined) {
-            recordButton.style.display = 'none';
+          if (typeof recordButton !== 'undefined') {
+            //recordButton.style.display = 'none';
           }
 
           var loading = document.getElementById("loading");

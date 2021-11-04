@@ -27,6 +27,9 @@ setup_pages <- function(input = c("microphone",
                         absolute_url,
                         select_instrument = FALSE) {
 
+  print('setup_pages')
+  print(input)
+
   if(!demo) {
 
   psychTestR::join(
@@ -44,11 +47,10 @@ setup_pages <- function(input = c("microphone",
       microphone_setup(input, SNR_test, absolute_url)
     } else if(!sjmisc::str_contains(input, "microphone")) {
       midi_setup()
+    } else if(input == "midi_keyboard_or_microphone") {
+      midi_vs_audio_select_page()
     } else {
-
       c(
-        midi_vs_audio_select_page(),
-
         psychTestR::conditional(function(state, ...) {
           psychTestR::get_global("response_type", state) == "Microphone"
         }, logic = microphone_setup(input, SNR_test, absolute_url)),

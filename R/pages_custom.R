@@ -36,13 +36,49 @@ midi_vs_audio_select_page <- function(prompt = "How will you input into the test
                 })
 }
 
+
+intervals_df <- tibble::tibble(
+  interval = c(names(itembankr::intervals), names(itembankr::intervals)),
+  interval_numeric = c(as.vector(unlist(itembankr::intervals)), as.vector(unlist(itembankr::intervals))),
+  direction = c(NA, rep("ascending", 12), NA, rep("descending", 12))
+)
+
+
+sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72) {
+
+  psychTestR::code_block(function(state, ...) {
+
+    abs_intervals <- intervals_df
+    start_notes <- sample(bottom_range:top_range, 26, replace = TRUE)
+    abs_intervals$start_note <- start_notes
+
+    abs_interval <- apply(abs_intervals, MARGIN = 1, function(row) {
+      if(row['direction'] == "ascending" | is.na(row['direction'])) {
+        abs <- c(row['start_note'], as.numeric(row['start_note']) + as.numeric(row['interval_numeric']))
+      } else {
+        abs <- c(row['start_note'], as.numeric(row['start_note']) - as.numeric(row['interval_numeric']))
+      }
+      paste0(abs, collapse = ",")
+    })
+    abs_intervals$abs_interval <- abs_interval
+    abs_intervals <- abs_intervals[sample(1:nrow(abs_intervals), nrow(abs_intervals)), ]
+    psychTestR::set_global("abs_intervals", abs_intervals, state)
+
+  })
+
+}
+
+
+
 play_interval_page <- function(interval = NULL,
                                page_title = "What is the interval?",
                                play_button_text = "Play",
                                example = FALSE,
                                label = "interval_",
                                save_answer = TRUE,
-                               get_answer = interval_page_get_answer) {
+                               get_answer = interval_page_get_answer,
+                               trial_no = NULL) {
+
 
   if(example) {
     save_answer <- FALSE
@@ -51,34 +87,16 @@ play_interval_page <- function(interval = NULL,
   }
 
   psychTestR::reactive_page(function(state, ...) {
-    print('in reactive interval page')
+
     if(is.null(interval)) {
-      start_note <- sample(48:72, 1)
-      direction <- sample(c("ascending", "descending"), 1)
-      interval <- sample(itembankr::intervals, 1)
-      print('sampled interval')
-      print(interval)
-      print('semitones:')
-      print(interval[[1]])
-      abs_interval <- c(start_note, start_note+interval[[1]])
-      #abs_interval <- ifelse(direction == "ascending", c(start_note, start_note+interval[[1]]), c(start_note, start_note-interval[[1]]))
-      print('abs_interval')
-      print(abs_interval)
-      print('setting correct answer tiwht:')
-      print(names(interval))
-      answer_meta_data <- list(correct_answer = names(interval),
-                              direction = direction,
-                              abs_interval = abs_interval)
-
-      print('answer_meta_data:')
-      print(answer_meta_data)
-
-      psychTestR::set_global("answer_meta_data", answer_meta_data, state)
+      abs_intervals <- psychTestR::get_global("abs_intervals", state)
+      abs_interval <- abs_intervals[trial_no, ]
+      psychTestR::set_global("answer_meta_data", abs_interval,  state)
     }
 
     psychTestR::page(ui = shiny::tags$div(
         shiny::tags$h2(page_title),
-      present_stimuli(stimuli = abs_interval,
+      present_stimuli(stimuli = itembankr::str_mel_to_vector(abs_interval$abs_interval),
                       stimuli_type = "midi_notes",
                       display_modality = "auditory",
                       page_label = "interval_",
@@ -89,27 +107,28 @@ play_interval_page <- function(interval = NULL,
                          choices = names(itembankr::intervals)),
       psychTestR::trigger_button("next", "Next")),
     label = label, get_answer = get_answer, save_answer = save_answer)
+
   })
 
 }
 
 interval_page_get_answer <- function(input, state, ...) {
-    print('interval_page_get_answer')
+
     answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
-    # print('dropdown said: ')
-    # print(input$dropdown)
-    # print('answerMeta correct answer is::')
-    # print(answer_meta_data$correct_answer)
-    msg <- ifelse(input$dropdown == answer_meta_data$correct_answer, "Correct Answer!", "Wrong Answer!")
+    msg <- ifelse(input$dropdown == answer_meta_data$interval, "Correct Answer!", "Wrong Answer!")
     shiny::showNotification(msg)
-    print('store the following list:')
-    print(list(user_choice = input$dropdown,
-         correct_answer = answer_meta_data$correct_answer,
-         direction = answer_meta_data$direction,
-         abs_interval = answer_meta_data$abs_interval))
-    list(user_choice = input$dropdown,
-         correct_answer = answer_meta_data$correct_answer,
-         direction = answer_meta_data$direction,
-         abs_interval = answer_meta_data$abs_interval)
+
+    c(
+      list(
+        user_choice = input$dropdown),
+        as.list(answer_meta_data)
+    )
 }
+
+multi_interval_page <- function(n_items = 26, page_title = "What is the interval?") {
+  lapply(1:n_items, function(trial_no) {
+    play_interval_page(trial_no = trial_no, page_title = page_title)
+  })
+}
+
 

@@ -10,11 +10,15 @@ arrhythmic_melody_trials(
   num_examples = FALSE,
   feedback = FALSE,
   get_answer = musicassessr::get_answer_pyin,
-  sound = "piano"
+  sound = "piano",
+  page_text = psychTestR::i18n("sing_melody_trial"),
+  page_title = "Sing the Melody",
+ 
+    instruction_text = "Now you will hear some melodies. Please try and sing the melodies."
 )
 }
 \arguments{
-\item{get_answer}{}
+\item{instruction_text}{}
 }
 \value{
 

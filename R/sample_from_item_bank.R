@@ -218,14 +218,13 @@ sample_from_user_range <- function(no_to_sample) {
 }
 
 
-sample_arrhythmic <- function(item_bank, num_items_arrhythmic) {
+sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
     # sample arrhythmic
-    arrythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank("main"), span_max = span)
-    arrhythmic_sample <- musicassessr::item_sampler(arrythmic_item_bank_subset, num_items_arrhythmic)
-    psychTestR::set_global("arrhythmic_melody", arrhythmic_sample, state)
-
+    arrhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
+    arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
+    psychTestR::set_global(id, arrhythmic_sample, state)
   })
 }
 
@@ -233,11 +232,12 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic) {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
     # sample rhythmic
-    rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank("phrases"), span_max = span)
+    rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
     psychTestR::set_global("rhythmic_melody", rhythmic_sample, state)
   })
 }
+
 
 #pra <- item_characteristics_sampler()
 

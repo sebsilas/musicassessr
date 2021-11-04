@@ -24,10 +24,10 @@ feedback_melodic_production <- function() {
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
       tab <- shiny::renderTable({
-
-
         # nb, duplicate code, make functions
         d <- lapply(1:length(answer), function(x) {
+          print(x)
+          print(answer[[x]])
           if(length(answer[[x]]) > 1) {
             paste0(answer[[x]], collapse = ",")
           } else {
@@ -40,13 +40,12 @@ feedback_melodic_production <- function() {
         d
       }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-      print(tab)
 
-      if(amd == 0) {
-        tab2 <- shiny::tags$div()
-      } else {
+      if(is.list(amd)) {
+
         tab2 <- shiny::renderTable({
           amd <- lapply(1:length(amd), function(x) {
+
             if(length(amd[[x]]) > 1) {
               paste0(amd[[x]], collapse = ",")
             } else {
@@ -57,6 +56,9 @@ feedback_melodic_production <- function() {
           row.names(amd) <- amd_names
           amd
         }, rownames = TRUE, colnames = FALSE, width = "50%")
+
+      } else {
+        tab2 <- shiny::tags$div()
       }
 
       # melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",

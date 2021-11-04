@@ -56,22 +56,31 @@ audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_fre
                                                              lowest_allowed_freq = lowest.allowed.freq,
                                                              min_confidence = min.confidence)
 
-present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE, button_text = "Record", record_duration = NULL) {
+present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE, button_text = "Record", record_duration = NULL, show_stop_button_after_record = TRUE) {
 
   if (present & type == "crepe" |
       present & type == "aws_pyin"  & is.null(record_duration)) {
 
     shiny::tags$div(id = "button_area",
         shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
+        if(show_stop_button_after_record) {
+          shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
+                           recordAndStop(null, true, false, this.id, \"',type,'\");
+                           hideRecordButton();
+                           showStopButton();
+                            });'))
+        } else {
         shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(null, true, false, this.id, \"',type,'\");
                            hideRecordButton();
                             });'))
+        }
     )
   }
 
-  else if (present& type == "crepe" |
+  else if (present & type == "crepe" |
            present & type == "aws_pyin" & !is.null(record_duration)) {
+    print('u1238')
     record_duration <- record_duration*1000
     shiny::tags$div(id = "button_area",
                     shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),

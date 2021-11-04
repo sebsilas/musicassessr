@@ -7,15 +7,15 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 page_type = 'null', play_button_text = "Play",
                                                 stop_button_text = "Stop",
                                                 record_audio_method = "aws_pyin",
-                                                asChord = FALSE, dur_list = 'null', auto_next_page = FALSE,
+                                                asChord = FALSE, durations = 'null', auto_next_page = FALSE,
                                                 play_button_id = "playButton", button_area_id = "button_area", ...) {
 
   if(page_type == "record_audio_page") {
     page_type <- record_audio_method
   }
 
-  if(dur_list != 'null') {
-    dur_list <- rjson::toJSON(dur_list)
+  if(durations != 'null') {
+    durations <- rjson::toJSON(durations)
   }
 
   if(sound == "tone") {
@@ -28,7 +28,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
     }
     else {
       melody.for.js <- rjson::toJSON(stimuli)
-      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", dur_list, ");")
+      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ");")
     }
   }
 
@@ -99,14 +99,14 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano
 }
 
 present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
-                                       record_audio_method = "aws_pyin",  dur_list = 'null', auto_next_page = FALSE,
+                                       record_audio_method = "aws_pyin",  durations = 'null', auto_next_page = FALSE,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                        button_area_id = "button_area", ...) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
-                                                          record_audio_method =  record_audio_method, dur_list = dur_list,
+                                                          record_audio_method =  record_audio_method, durations = durations,
                                                           auto_next_page = auto_next_page, play_button_id = play_button_id,
                                                           button_area_id = button_area_id, ...)
 

@@ -274,7 +274,7 @@ plot_mean_centred_to_range <- function(stimuli_centred_to_user_mean, user_mean_c
 #' @export
 #'
 #' @examples
-rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plot = FALSE) {
+rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plot = FALSE, range = NULL) {
   # produce a melody which is centered on the user's range.
   # NB: the "mean stimuli note" could/should be sampled from around the user's mean range i.e +/- 3 semitones
 
@@ -302,6 +302,13 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
   return(stimuli_centred_to_user_mean)
 
 }
+
+
+leave_arrhythmic <- function(rel_melody, bottom_range = NULL, top_range = NULL) {
+  rel_melody
+}
+
+
 
 ## tests
 

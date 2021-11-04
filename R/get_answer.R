@@ -183,80 +183,80 @@ pyin <- function(file_name, transform_file = NULL,
 
 
 
-# pyin <- function(file_name, transform_file = NULL,
-#                  normalise = FALSE, hidePrint = TRUE, type = "notes") {
-#
-#   file_name <- '/Users/sebsilas/true.wav'
-#   #file_name <- '/Users/sebsilas/Downloads/13-8-2021--17-8--18.wav'
-#
-#
-#   if(type == "pitch_track") {
-#     vamp_cmd <- "vamp:pyin:pyin:smoothedpitchtrack"
-#   } else if(type == "notes") {
-#     vamp_cmd <- "vamp:pyin:pyin:notes"
-#   } else {
-#     stop("Unknown type")
-#   }
-#
-#   if(is.null(transform_file)) {
-#     args <- c("-d",
-#               vamp_cmd,
-#               file_name,
-#               "-w",
-#               "csv --csv-stdout")
-#   } else {
-#     args <- c(paste0('-t ', transform_file),
-#               file_name,
-#               "-w",
-#               "csv --csv-stdout")
-#   }
-#
-#   if(normalise == 1) {
-#     args <- c(args, "--normalise")
-#   }
-#
-#   if(hidePrint) {
-#     sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
-#                       args = args,
-#                       stdout = TRUE, stderr = FALSE)
-#   } else {
-#     sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
-#                       args = args,
-#                       stdout = TRUE)
-#   }
-#
-#   if(length(sa_out) == 0) {
-#     if(type == "notes") {
-#       res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
-#     } else {
-#       res <- tibble::tibble(onset = NA, freq = NA, file_name = file_name)
-#     }
-#   } else {
-#     res <- read.csv(text = sa_out, header = FALSE)
-#
-#     if(type == "notes") {
-#       res <- res %>%
-#         dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
-#         dplyr::mutate(
-#           onset = round(onset, 2),
-#           dur = round(dur, 2),
-#           freq = round(freq, 2),
-#           note = round(hrep::freq_to_midi(freq)))
-#     } else {
-#       res <- res %>%
-#         dplyr::rename(onset = V2, freq = V3) %>%
-#         dplyr::mutate(
-#           onset = round(onset, 2),
-#           freq = round(freq, 2))
-#     }
-#
-#     file_name <- res$V1[[1]]
-#
-#     res <- res %>% dplyr::select(-V1)
-#
-#     res <- tibble::tibble(file_name, res)
-#   }
-# }
+pyin <- function(file_name, transform_file = NULL,
+                 normalise = FALSE, hidePrint = TRUE, type = "notes") {
+
+  #file_name <- '/Users/sebsilas/true.wav'
+  #file_name <- '/Users/sebsilas/Downloads/13-8-2021--17-8--18.wav'
+
+
+  if(type == "pitch_track") {
+    vamp_cmd <- "vamp:pyin:pyin:smoothedpitchtrack"
+  } else if(type == "notes") {
+    vamp_cmd <- "vamp:pyin:pyin:notes"
+  } else {
+    stop("Unknown type")
+  }
+
+  if(is.null(transform_file)) {
+    args <- c("-d",
+              vamp_cmd,
+              file_name,
+              "-w",
+              "csv --csv-stdout")
+  } else {
+    args <- c(paste0('-t ', transform_file),
+              file_name,
+              "-w",
+              "csv --csv-stdout")
+  }
+
+  if(normalise == 1) {
+    args <- c(args, "--normalise")
+  }
+
+  if(hidePrint) {
+    sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
+                      args = args,
+                      stdout = TRUE, stderr = FALSE)
+  } else {
+    sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
+                      args = args,
+                      stdout = TRUE)
+  }
+
+  if(length(sa_out) == 0) {
+    if(type == "notes") {
+      res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
+    } else {
+      res <- tibble::tibble(onset = NA, freq = NA, file_name = file_name)
+    }
+  } else {
+    res <- read.csv(text = sa_out, header = FALSE)
+
+    if(type == "notes") {
+      res <- res %>%
+        dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+        dplyr::mutate(
+          onset = round(onset, 2),
+          dur = round(dur, 2),
+          freq = round(freq, 2),
+          note = round(hrep::freq_to_midi(freq)))
+    } else {
+      res <- res %>%
+        dplyr::rename(onset = V2, freq = V3) %>%
+        dplyr::mutate(
+          onset = round(onset, 2),
+          freq = round(freq, 2))
+    }
+
+    file_name <- res$V1[[1]]
+
+    res <- res %>% dplyr::select(-V1)
+
+    res <- tibble::tibble(file_name, res)
+  }
+}
 
 
 #pyin('/Users/sebsilas/true.wav')
@@ -274,7 +274,8 @@ pyin <- function(file_name, transform_file = NULL,
 get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE,  ...) {
 
   pyin_pitch_track <- NULL
-  file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
+  #file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
+  file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
 
   if(type == "note") {
     pyin_res <- pyin(file)
@@ -292,7 +293,7 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
 
     stimuli_both <- psychTestR::get_global("melody", state)
     stimuli <- stimuli_both$melody
-    stimuli_durations <- stimuli_both$dur_list
+    stimuli_durations <- stimuli_both$durations
     stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
   }
 
@@ -322,12 +323,16 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
                                     pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
     )
   }
+
   res
 
 
 }
 
 
+get_answer_pyin_note_only <- function(input, type = "note", state, melconv = FALSE, ...) {
+  get_answer_pyin(input, type = "note", state, melconv = FALSE, ...)
+}
 
 #' get_answer pyin for long notes
 #'
@@ -341,7 +346,8 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
 get_answer_pyin_long_note <- function(input, ...) {
 
   print('get_answer_pyin_long_note')
-  file <- paste0('/srv/shiny-server/files/', input$key, '.wav')
+  file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
+  file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
   pyin_res <- pyin(file, type = "pitch_track")
   print(pyin_res)
 
@@ -462,9 +468,8 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 
 
-melody_scoring_from_user_input <- function(input, result, trial_type, user_melody_input = NULL, singing_measures, pyin_pitch_track = NULL, stimuli = NA, stimuli_durations = NA) {
+melody_scoring_from_user_input <- function(input, result, trial_type = "audio", user_melody_input = NULL, singing_measures = TRUE, pyin_pitch_track = NULL, stimuli = NA, stimuli_durations = NA) {
 
-  print('melody_scoring_from_user_input')
 
   # onset, dur, freq, note
 
@@ -499,19 +504,21 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     user_response_midi_note_off <- NA
   }
 
+  print('user_melody_input')
+  print(user_melody_input)
   if(length(user_melody_input) == 0) {
     if(trial_type == "midi") { shiny::showNotification(i18n("nothing_entered")) }
     return(list(user_melody_input = NA, reason = "nothing_entered"))
   }
 
   else {
-
+    print('d294')
+    print(input$answer_meta_data)
     if(length(input$answer_meta_data) > 1) {
       stimuli_length <- input$answer_meta_data$N
     } else {
       stimuli_length <- 1
     }
-
 
     if(is.null(result$dur)) {
       durations <- diff(onsets_noteon)
@@ -536,7 +543,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
 
     no_correct_octaves_allowed <- sum(correct_boolean_octaves_allowed)
     no_errors_octaves_allowed <- sum(errors_boolean_octaves_allowed)
-
+    print('before ac')
     # accuracy
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
@@ -544,14 +551,15 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
     # similarity
     similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations)
     no_note_events <- length(user_melody_input)
-    print('19dh')
+
     # by note events measures
     correct_by_note_events <- no_correct/no_note_events
     correct_by_note_events_log_normal <- correct_by_note_events * log_normal(no_note_events/stimuli_length)
 
     correct_by_note_events_octaves_allowed <- no_correct_octaves_allowed/no_note_events
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
-
+    print('singingma')
+    print(singing_measures)
     if(singing_measures) {
       # singing stuff
       # note precision
@@ -560,19 +568,25 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
         dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
                     dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE)) %>% dplyr::pull(note_precision_melody)
-      print('22')
+
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli, freq = result$freq)
-      print('33')
+
       # mean cents deviation
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
-      print('44')
+
       # melody dtw
       user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, result)
       stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
 
-      melody_dtw <- dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)
+      melody_dtw <- tryCatch({
+          dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)$distance
+        },
+        error = function(cond) {
+          print(cond)
+          return(NA)
+        })
 
 
     } else {
@@ -587,6 +601,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
          stimuli_durations = stimuli_durations,
          stimuli_length = stimuli_length,
          user_response_note = user_melody_input,
+         user_response_note_summary = as.list(round(summary(user_melody_input))),
          user_response_midi_note_off = user_response_midi_note_off,
          pyin_pitch_track = pyin_pitch_track,
          durations = durations,
@@ -610,7 +625,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
          accuracy_octaves_allowed = accuracy_octaves_allowed,
          similarity = similarity,
          note_precision = note_precision,
-         melody_dtw = melody_dtw$distance,
+         melody_dtw = ifelse(is.na(melody_dtw), NA, melody_dtw),
          mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
          mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
          answer_meta_data = input$answer_meta_data)
@@ -618,6 +633,16 @@ melody_scoring_from_user_input <- function(input, result, trial_type, user_melod
 }
 
 
+get_answer_simple_pyin_summary <- function(input, ...) {
+  print('get_answer_simple_pyin_summary')
+  file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+  pyin_res <- pyin(file)
+  print(pyin_res)
+  res <- as.list(round(summary(pyin_res$note)))
+  print(res)
+  res$file <- file
+  res
+}
 
 
 
@@ -709,6 +734,11 @@ get_answer_store_async_long_note <- function(...) {
 
 
 get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors) {
+  print('get_note_accuracy')
+  print(stimuli)
+  print(user_melody_input)
+  print(no_correct)
+  print(no_errors)
   # accuracy
   if (no_errors == 0 & no_correct == length(stimuli)) {
     accuracy <- 1
@@ -719,7 +749,10 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 }
 
 get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations = NA) {
-
+  print('get_similarity')
+  print(stimuli_durations)
+  print(user_melody_input)
+  print(stimuli_length)
   # similarity
   if(length(user_melody_input) < 3 | stimuli_length < 3) {
     similarity <- NA

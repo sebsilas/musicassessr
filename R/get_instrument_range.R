@@ -1,75 +1,4 @@
 
-#' A page builder for creating a specified number of play_melody_loops
-#'
-#' @param n_items
-#' @param var_name
-#' @param stimuli_type
-#' @param page_type
-#' @param max_goes
-#' @param page_title
-#' @param page_text
-#' @param get_answer
-#' @param rel_to_abs_mel_function
-#' @param start_from_trial_no
-#' @param clip_stimuli_length
-#' @param arrhythmic
-#' @param example
-#' @param feedback
-#'
-#' @return
-#' @export
-#'
-#' @examples
-multi_page_play_melody_loop <- function(n_items, var_name = "melody", stimuli_type = "midi_notes",
-                                        page_type = "record_audio_page", max_goes = 3,
-                                        page_title = psychTestR::i18n("copy_melody_title"),
-                                        page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                        get_answer = get_answer_save_aws_key, rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
-                                        start_from_trial_no = 1, clip_stimuli_length = FALSE,
-                                        arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano") {
-
-  # items should be a dataframe
-  # this will return a sequence of test items
-  items <- lapply(start_from_trial_no:n_items, function(melody_no) {
-    play_melody_loop(melody_no = melody_no,
-                     var_name = var_name,
-                     max_goes = max_goes,
-                     page_type = page_type,
-                     page_title = page_title,
-                     page_text = page_text,
-                     get_answer = get_answer,
-                     stimuli_type = stimuli_type,
-                     rel_to_abs_mel_function = rel_to_abs_mel_function,
-                     clip_stimuli_length = clip_stimuli_length,
-                     arrhythmic = arrhythmic,
-                     example = example,
-                     sound = sound)
-  })
-
-  items <- add_feedback(items, feedback, after = 2) # a play_melody_loop is 3 pages long
-  items
-
-}
-
-
-#' Build multiple play_long_tone_record_audio_pages based on a user's range
-#'
-#' @param no_items
-#' @param page_type
-#' @param example
-#' @param feedback
-#'
-#' @return
-#' @export
-#'
-#' @examples
-multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page", example = FALSE, feedback = FALSE, get_answer = get_answer_pyin_long_note) {
-  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type, example = example, get_answer = get_answer)))
-  items <- add_feedback(items, feedback)
-}
-
-
-
 get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type, button_text = "Record") {
 
   c(
@@ -225,7 +154,7 @@ midi_or_audio <- function(type, prompt_text, var_name) {
   }
   else {
     psychTestR::reactive_page(function(state, ...) {
-      print('midi reaapp ')
+
       midi_device <- psychTestR::get_global("midi_device", state)
 
       if(is.null(midi_device)) { shiny::showNotification(psychTestR::i18n("no_midi_device_selected")) }
@@ -240,3 +169,5 @@ midi_or_audio <- function(type, prompt_text, var_name) {
     })
   }
 }
+
+

@@ -9,13 +9,16 @@ rhythmic_melody_trials(
   num_items,
   num_examples = NULL,
   feedback = FALSE,
-  page_title = "Sing This Melody Plus Rhythm",
   get_answer = musicassessr::get_answer_pyin,
-  sound = "piano"
+  sound = "piano",
+  page_text = psychTestR::i18n("sing_melody_trial"),
+  page_title = "Sing This Melody Plus Rhythm",
+ 
+    instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm."
 )
 }
 \arguments{
-\item{get_answer}{}
+\item{instruction_text}{}
 }
 \value{
 

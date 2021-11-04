@@ -29,7 +29,7 @@ present_stimuli(
   ascending = TRUE,
   start_note = 0,
   end_note = "end",
-  dur_list = "null",
+  durations = "null",
   show_record_button = FALSE,
   auto_next_page = FALSE,
   choices = NULL,
@@ -40,6 +40,7 @@ present_stimuli(
   visual_music_notation_id = "sheet_music",
   play_button_id = "playButton",
   button_area_id = "button_area",
+  hideOnPlay = FALSE,
   ...
 )
 }

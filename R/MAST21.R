@@ -134,7 +134,13 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
   }
 }
 
-m <- function() {
+#' MAST
+#'
+#' @return
+#' @export
+#'
+#' @examples
+MAST <- function() {
 
   make_aws_credentials_global(list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                                    bucket_name = "shinny-app-source-41630",

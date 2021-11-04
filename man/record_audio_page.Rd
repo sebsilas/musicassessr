@@ -5,7 +5,7 @@
 \title{Record Audio Page}
 \usage{
 record_audio_page(
-  body = NULL,
+  body = " ",
   label = "record_audio_page",
   stimuli = " ",
   stimuli_reactive = FALSE,

@@ -4,7 +4,13 @@
 \alias{rel_to_abs_mel_mean_centred}
 \title{Convert a melody from relative to absolute form by centering the mean of the stimuli on mean of the user's range.}
 \usage{
-rel_to_abs_mel_mean_centred(rel_melody, bottom_range, top_range, plot = FALSE)
+rel_to_abs_mel_mean_centred(
+  rel_melody,
+  bottom_range,
+  top_range,
+  plot = FALSE,
+  range = NULL
+)
 }
 \arguments{
 \item{plot}{}

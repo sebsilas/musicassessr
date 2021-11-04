@@ -2,6 +2,7 @@
 
 export("%...>%")
 export("%>%")
+export(MAST)
 export(arrhythmic_melody_trials)
 export(deploy_demographics)
 export(dict)

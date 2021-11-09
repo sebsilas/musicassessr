@@ -1,6 +1,6 @@
-musicassessr_state <- function(state = c("production", "test")) {
+set_musicassessr_state <- function(state = c("production", "test")) {
   musicassessr_state <<- state
-      shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
+  shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
 }
 
 
@@ -161,46 +161,6 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 
 
 
-pitch_classes_into_3_or_4 <- function(rel_melody, range, bottom_range = NULL, top_range = NULL, transpose = NULL) {
-  # given some pitch classes and a vocal range, put the pitches in octave 3 or 4
-
-  if(is.character(range)) {
-    vocal_range <- vocal_ranges[[range]]
-  }
-
-  F3 <- 53
-  F4 <- 65
-
-  melody_start_in_3 <- itembankr::rel_to_abs_mel(rel_melody, start_note = F3)
-  melody_start_in_4 <- itembankr::rel_to_abs_mel(rel_melody, start_note = F4)
-
-  print(melody_start_in_3)
-  print(melody_start_in_4)
-
-  no_in_3 <- sum(as.numeric(melody_start_in_3 %in% vocal_range))
-  no_in_4 <- sum(as.numeric(melody_start_in_4 %in% vocal_range))
-
-  if(no_in_3 > no_in_4) {
-    melody_to_use <- melody_start_in_3
-  } else if (no_in_3 < no_in_4) {
-    melody_to_use <- melody_start_in_4
-  } else {
-    # otherwise choose randomly
-    flip <- sample(1:2, 1)
-    if(flip == 1) {
-      melody_to_use <- melody_start_in_4
-    } else {
-      melody_to_use <- melody_start_in_3
-    }
-  }
-
-  if(!is.null(transpose) & !is.na(transpose) & is.numeric(transpose)) {
-    melody_to_use <- melody_to_use + transpose
-  }
-  melody_to_use
-}
-
-
 sing_happy_birthday_page <- function(feedback = FALSE) {
 
   page <- record_audio_page(page_text = "Please sing Happy Birthday.",
@@ -250,7 +210,7 @@ MAST <- function(state = "production") {
                               bucket_region = "us-east-1",
                               identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                               destination_bucket = "shinny-app-destination-41630"),
-      musicassessr_state(state)
+      set_musicassessr_state(state)
       )),
 
     psychTestR::one_button_page(tags$div(

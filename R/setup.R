@@ -27,8 +27,6 @@ setup_pages <- function(input = c("microphone",
                         absolute_url,
                         select_instrument = FALSE) {
 
-  print('setup_pages')
-  print(input)
 
   if(!demo) {
 

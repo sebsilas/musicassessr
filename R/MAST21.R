@@ -1,3 +1,14 @@
+musicassessr_state <- function(state = c("production", "test")) {
+  musicassessr_state <<- state
+      shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
+}
+
+
+
+F3 <- 53
+F4 <- 65
+
+
 MAST_long_notes <- tibble::tibble(
   melody = c("F", "B", "E", "C"),
   octave_3 = c(53, 59, 52, 48),
@@ -7,23 +18,73 @@ MAST_long_notes <- tibble::tibble(
 MAST_octave_3_long_notes <- MAST_long_notes$octave_3
 MAST_octave_4_long_notes <- MAST_long_notes$octave_4
 
+MAST_melodies <- itembankr::MAST21("phrases")
+
+MAST_melodies$octave_3 <- apply(MAST_melodies, MARGIN = 1, function(row) {
+  transpose <- ifelse(is.na(row['transpose']), 0, as.integer(row['transpose']))
+  paste0(itembankr::rel_to_abs_mel(rel_mel = itembankr::str_mel_to_vector(row['melody']), start_note = F3) + transpose, collapse = ",")
+})
+
+MAST_melodies$octave_4 <- apply(MAST_melodies, MARGIN = 1, function(row) {
+  transpose <- ifelse(is.na(row['transpose']), 0, as.integer(row['transpose']))
+  paste0(itembankr::rel_to_abs_mel(rel_mel = itembankr::str_mel_to_vector(row['melody']), start_note = F4) + transpose, collapse = ",")
+})
 
 
 MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE,
-                                   get_answer = musicassessr::get_answer_pyin,
-                                   sound = "piano",
-                                   page_text = psychTestR::i18n("sing_melody_trial"),
-                                   page_title = "Sing This Melody Plus Rhythm",
-                                   instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
+                         get_answer = musicassessr::get_answer_pyin,
+                         sound = "piano",
+                         page_text = psychTestR::i18n("sing_melody_trial"),
+                         page_title_doo = "Sing this melody with a \"Dooo\" sound.",
+                         page_title_daa = "Sing this melody with a \"Daah\" sound.",
+                        long_tone_title = "Sing the note",
+                        long_tone_text = "Please sing the note after you hear it, then click Stop.",
+                         instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
+                        microphone_calibration_page = TRUE) {
 
 
   long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
-    play_long_tone_record_audio_page(note = melody)
+    present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
+                    display_modality = "auditory", sound = "tone",
+                    note_length = 4, page_type = "record_audio_page",
+                    page_title = long_tone_title, page_text = long_tone_text)
   })
 
   long_notes_4 <- purrr::map(MAST_octave_4_long_notes, function(melody) {
-    play_long_tone_record_audio_page(note = melody)
+    present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
+                    display_modality = "auditory", sound = "tone",
+                    note_length = 4, page_type = "record_audio_page",
+                    page_title = long_tone_title, page_text = long_tone_text)
   })
+
+  melodies_octave_3_daa <- apply(MAST_melodies, MARGIN = 1,  function(row) {
+    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
+                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_daa",
+                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
+  })
+
+  melodies_octave_4_daa <- apply(MAST_melodies, MARGIN = 1,  function(row) {
+    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
+                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_daa",
+                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
+  })
+
+  melodies_octave_3_doo <- apply(MAST_melodies, MARGIN = 1,  function(row) {
+    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
+                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_doo",
+                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_doo)
+  })
+
+  melodies_octave_4_doo <- apply(MAST_melodies, MARGIN = 1,  function(row) {
+    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
+                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_doo",
+                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_doo)
+  })
+
 
   if(feedback & !is.function(feedback)) {
     feedback <- feedback_melodic_production
@@ -32,6 +93,8 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
   psychTestR::module("MAST21",
                      c(
                        # instructions
+
+                       if(microphone_calibration_page) microphone_calibration_page(),
 
                       # long notes 1-4
 
@@ -51,21 +114,51 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                         logic = long_notes_4
                       ),
 
-                       ## melody trials
-                       musicassessr::multi_page_play_melody_loop(
-                         stimuli_type = "midi_notes",
-                         var_name = "MAST21",
-                         presampled_items = itembankr::MAST21("phrases"),
-                         page_title = page_title,
-                         page_text = page_text,
-                         get_answer = get_answer,
-                         rel_to_abs_mel_function = pitch_classes_into_3_or_4,
-                         feedback = feedback,
-                         sound = sound
-                       )
+                       ## melody trials: daa sound
+
+                      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+
+                      psychTestR::conditional(
+                        test = function(state, ...) {
+                          range <- psychTestR::get_global("range", state)
+                          range == "Baritone" | range == "Bass" | range == "Tenor"
+                        },
+                        logic = melodies_octave_3_daa
+                      ),
+
+                      psychTestR::conditional(
+                        test = function(state, ...) {
+                          range <- psychTestR::get_global("range", state)
+                          range == "Alto" | range == "Soprano"
+                        },
+                        logic = melodies_octave_4_daa
+                      ),
+
+                      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+
+
+                      ## melody trials: doo sound
+
+                      psychTestR::conditional(
+                        test = function(state, ...) {
+                          range <- psychTestR::get_global("range", state)
+                          range == "Baritone" | range == "Bass" | range == "Tenor"
+                        },
+                        logic = melodies_octave_3_doo
+                      ),
+
+                      psychTestR::conditional(
+                        test = function(state, ...) {
+                          range <- psychTestR::get_global("range", state)
+                          range == "Alto" | range == "Soprano"
+                        },
+                        logic = melodies_octave_4_doo
+                      )
+
                      )
   )
 }
+
 
 
 pitch_classes_into_3_or_4 <- function(rel_melody, range, bottom_range = NULL, top_range = NULL, transpose = NULL) {
@@ -156,7 +249,9 @@ MAST <- function() {
                               bucket_name = "shinny-app-source-41630",
                               bucket_region = "us-east-1",
                               identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                              destination_bucket = "shinny-app-destination-41630"))),
+                              destination_bucket = "shinny-app-destination-41630"),
+      musicassessr_state("local")
+      )),
 
     psychTestR::one_button_page(tags$div(
       shiny::tags$p("The next page will show an example of the Sing Happy Birthday page, followed by a summary page of the MIDI pitch range.")
@@ -168,7 +263,7 @@ MAST <- function() {
       shiny::tags$p("The next page will show an example of the page which allows the participant to choose a vocal range.")
     )),
 
-    present_voice_ranges_page(),
+    present_voice_ranges_page(with_examples = FALSE),
 
     psychTestR::one_button_page(shiny::tags$div(
       shiny::tags$p("Now this has been selected, the MAST21 trials will be presented according to this range.")
@@ -180,7 +275,6 @@ MAST <- function() {
   ), dict = psychTestR::i18n_dict$new(musicassessr_dict_df)), opt = psychTestR::test_options(title = "test", admin_password = "demo"))
 
 }
-
 
 # mel <- itembankr::str_mel_to_vector(itembankr::MAST21[12, "melody", drop = TRUE])
 #

@@ -299,7 +299,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             page_text_first = TRUE, happy_with_response = FALSE,
                             attempts_left = NULL, visual_music_notation_id = "sheet_music",
                             play_button_id = "playButton", button_area_id = "button_area",
-                            hideOnPlay = FALSE, ...) {
+                            hideOnPlay = FALSE, record_immediately = FALSE, ...) {
 
   if(is.null(page_type)) {
     page_type <- 'null'
@@ -357,7 +357,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               save_answer = save_answer,
                               auto_next_page = auto_next_page, user_rating = user_rating,
                               happy_with_response = happy_with_response,
-                              attempts_left = attempts_left, ...)
+                              attempts_left = attempts_left, record_immediately = record_immediately,...)
 
   } else if(page_type == "record_audio_page") {
 

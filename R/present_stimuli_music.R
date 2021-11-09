@@ -8,7 +8,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 stop_button_text = "Stop",
                                                 record_audio_method = "aws_pyin",
                                                 asChord = FALSE, durations = 'null', auto_next_page = FALSE,
-                                                play_button_id = "playButton", button_area_id = "button_area", ...) {
+                                                play_button_id = "playButton", button_area_id = "button_area",
+                                                record_immediately = FALSE, ...) {
 
   if(page_type == "record_audio_page") {
     page_type <- record_audio_method
@@ -19,16 +20,23 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
   }
 
   if(sound == "tone") {
-    js.script <- paste0('playTone(',stimuli,', ', note_length,', this.id, \'tone\');')
+    if(record_immediately) {
+      record_immediately <- "true"
+      hidePlay <- "false"
+    } else {
+      record_immediately <- "false"
+      hidePlay <- "true"
+    }
+    js.script <- paste0('playTone(',stimuli,', ', note_length,', this.id, \'tone\',', hidePlay,',\'', page_type,'\', \'',stop_button_text, '\', false, ', record_immediately,');')
   } else {
 
-    if (length(stimuli) == 1 & is.character(stimuli) == FALSE) {
+    if (length(stimuli) == 1 & !is.character(stimuli)) {
       melody.for.js <- hrep::midi_to_freq(stimuli-12) # there is a bug where the piano plays up an octave
       js.script <- sprintf("triggerNote(\"%s\", %s, %s);", sound, melody.for.js, note_length)
     }
     else {
       melody.for.js <- rjson::toJSON(stimuli)
-      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ");")
+      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ", true);")
     }
   }
 
@@ -37,6 +45,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
     # send stimuli to js
     shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
+                       var stimuli_durations = ', durations, ';
+                       Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
                        ')),
     shiny::tags$div(id=button_area_id,
                     shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default")
@@ -101,14 +111,14 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano
 present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
                                        record_audio_method = "aws_pyin",  durations = 'null', auto_next_page = FALSE,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
-                                       button_area_id = "button_area", ...) {
+                                       button_area_id = "button_area", record_immediately = FALSE, ...) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
                                                           record_audio_method =  record_audio_method, durations = durations,
                                                           auto_next_page = auto_next_page, play_button_id = play_button_id,
-                                                          button_area_id = button_area_id, ...)
+                                                          button_area_id = button_area_id, record_immediately = record_immediately, ...)
 
   }
   else if (display_modality == "visual") {

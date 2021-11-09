@@ -83,7 +83,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     show_record_button = show_record_button,
                     auto_next_page = auto_next_page,
                     save_answer = save_answer,
-                    get_answer = get_answer)
+                    get_answer = get_answer,
+                    record_immediately = TRUE)
   })
 
 }

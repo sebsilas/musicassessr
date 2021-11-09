@@ -95,6 +95,18 @@ function initVoiceDoo() {
 
 }
 
+function initVoiceDaa() {
+
+      // create a piano and connect to master output
+  window.voice_daa = SampleLibrary.load({
+    instruments: "voice_daa",
+    minify: true
+   });
+
+  window.voice_daa.toMaster();
+
+}
+
 function toneJSInit() {
 
   // sound: i.e "tone" or "piano"
@@ -106,6 +118,9 @@ function toneJSInit() {
   initSynth();
 
   initVoiceDoo();
+
+  initVoiceDaa();
+
 }
 
 
@@ -124,16 +139,21 @@ function triggerNote(sound, freq_tone, seconds, time) {
   	voice_doo.triggerAttackRelease(freq_tone, seconds, time);
   }
 
+    else if (sound === "voice_daa") {
+  	voice_daa.triggerAttackRelease(freq_tone, seconds, time);
+  }
+
   else {
     synth.triggerAttackRelease(freq_tone, seconds, time);
   }
 
 }
 
-function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_pyin", stop_button_text = "Stop", showStop = false) {
+function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_pyin", stop_button_text = "Stop", showStop = false, record_immediately = true) {
   // play a tone for x seconds
 
   console.log('playTone called');
+  console.log(hidePlay);
   rangeTest(tone);
 
   tone = Number(tone);
@@ -144,9 +164,16 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_py
 
   triggerNote(sound, freq_tone, seconds);
 
-  setTimeout(() => {  recordAndStop(ms = seconds*1000,
+
+  if(record_immediately) {
+     setTimeout(() => {  recordAndStop(ms = seconds*1000,
                                     showStop = showStop, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
 
+  } else {
+    auto_next_page = true;
+    var total_record_delay = record_delay + seconds*1000 ;
+    setTimeout(() => {  recordAndStop(ms = null, showStop = true, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, total_record_delay); // delay to avoid catching stimuli in recording
+  }
 
   updatePlaybackCount();
 
@@ -183,8 +210,12 @@ function playTones (note_list) {
 
 
 
-function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null) {
+function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null, auto_next_page) {
 
+  auto_next_page = auto_next_page;
+  console.log(auto_next_page);
+  console.log('playSeq called!');
+  console.log(sound);
   // make sure not playing
   Tone.Transport.stop();
   pattern = null;
@@ -196,6 +227,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   if(sound === "tone") {
     window.piano.disconnect();
     window.voice_doo.disconnect();
+    window.voice_daa.disconnect();
     //create a synth and connect it to the master output (your speakers)
     window.synth = new Tone.Synth(synthParameters).toMaster();
 
@@ -203,11 +235,20 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
     window.piano.disconnect();
     window.synth.disconnect();
+    window.voice_daa.disconnect();
     window.voice_doo.toMaster();
-    }
+
+  } else if(sound === "voice_daa") {
+
+    window.piano.disconnect();
+    window.synth.disconnect();
+    window.voice_doo.disconnect();
+    window.voice_daa.toMaster();
+  }
   else {
 
     window.synth.disconnect();
+    window.voice_daa.disconnect();
     window.voice_doo.disconnect();
     window.piano.toMaster();
 
@@ -218,7 +259,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   // seems to be a bug with the piano sound where it plays an octave higher
 
-  if (sound === "piano" | sound === "voice_doo") {
+  if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
     note_list = note_list.map(x => x-12);
   }
 
@@ -253,6 +294,9 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
                 if(sound === "voice_doo") {
                   console.log('voice_doo trigger!');
                   voice_doo.triggerAttackRelease(value.note, value.duration, time);
+                } else if(sound === "voice_daa") {
+                  console.log('voice_daa trigger!');
+                  voice_daa.triggerAttackRelease(value.note, value.duration, time);
                 } else {
                   console.log('piano trigger!');
                   piano.triggerAttackRelease(value.note, value.duration, time);
@@ -593,7 +637,11 @@ function hideAudioFilePlayer() {
 
 
 function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", stop_button_text = "Stop") {
-
+    console.log('recordAndStop')
+    console.log(ms);
+    console.log(hidePlay);
+    console.log(type);
+    console.log(showStop);
     // start recording but then stop after x milliseconds
     window.startTime = new Date().getTime();
 
@@ -655,6 +703,7 @@ function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
 
           var stopButton = document.createElement("button");
           stopButton.style.display = "block";
+          stopButton.style.textAlign = "center";
           stopButton.classList.add("btn", "btn-default", "action-button");
           stopButton.innerText = stop_button_text;
           stopButton.addEventListener("click", function () {

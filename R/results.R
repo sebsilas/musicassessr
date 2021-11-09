@@ -75,6 +75,16 @@ final_results <- function(test_name, url) {
 
       processed_results <- present_scores(res)
 
+      psychTestR::set_local("similarity",
+                             mean(processed_results$arrhythmic$similarity,
+                                  processed_results$arrhythmic$similarity, na.rm = TRUE)
+                             , state)
+
+      psychTestR::set_local("accuracy",
+                             mean(processed_results$rhythmic$accuracy_octaves_allowed,
+                                  processed_results$rhythmic$accuracy_octaves_allowed, na.rm = TRUE),
+                             state)
+
       final_score <- produce_naive_final_singing_score(res)
 
       psychTestR::set_local("final_score", final_score, state)

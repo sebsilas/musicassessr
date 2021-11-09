@@ -114,8 +114,11 @@ function stopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-
-	rec.exportWAV(upload_file_to_s3);
+  if(musicassessr_state === "production") {
+	  rec.exportWAV(upload_file_to_s3);
+  } else {
+    rec.exportWAV(upload_file_to_s3_local);
+  }
 }
 
 
@@ -136,7 +139,11 @@ function simpleStopRecording() {
 	gumStream.getAudioTracks()[0].stop();
 
 	//create the wav blob and pass it on to createDownloadLink
-	rec.exportWAV(upload_file_to_s3);
+	if(musicassessr_state === "production") {
+	  rec.exportWAV(upload_file_to_s3);
+  } else {
+    rec.exportWAV(upload_file_to_s3_local);
+  }
 }
 
 
@@ -146,12 +153,11 @@ function create_recordkey() {
   return(recordkey)
 }
 
-function upload_file_to_s3(blob){
+function upload_file_to_s3(blob) {
 
   var recordkey = create_recordkey();
 
   var file_url = "/files/" + recordkey + ".wav"; // remote / production
-  //var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // remote / production
   console.log(file_url);
 
 
@@ -160,7 +166,6 @@ function upload_file_to_s3(blob){
 	var fd=new FormData();
 	fd.append("audio_data",blob, recordkey);
 	xhr.open("POST","/api/store_audio",true); // production
-	//xhr.open("POST","http://localhost:3000/upload-audio",true); // local
 	xhr.send(fd);
 
 	Shiny.setInputValue("sourceBucket", bucketName);
@@ -177,8 +182,38 @@ function upload_file_to_s3(blob){
 			next_page();
 			}
 	};
+}
 
 
+function upload_file_to_s3_local(blob) {
+
+  var recordkey = create_recordkey();
+
+  var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // remote / production
+  console.log(file_url);
+
+
+	var xhr=new XMLHttpRequest();
+	var filename = new Date().toISOString();
+	var fd=new FormData();
+	fd.append("audio_data",blob, recordkey);
+	xhr.open("POST","http://localhost:3000/upload-audio",true); // local
+	xhr.send(fd);
+
+	Shiny.setInputValue("sourceBucket", bucketName);
+    Shiny.setInputValue("key", recordkey);
+    Shiny.setInputValue("file_url", file_url);
+    Shiny.setInputValue("destBucket", destBucket);
+
+	xhr.onload = () => { console.log(xhr.responseText)
+		// call next page after credentials saved
+		spinner=document.getElementsByClassName("hollow-dots-spinner");
+		spinner[0].style.display="none";
+		file_is_ready = true;
+		if(auto_next_page) {
+			next_page();
+			}
+	};
 }
 
 // async function getFile(recordkey) {

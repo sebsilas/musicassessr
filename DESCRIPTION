@@ -44,7 +44,9 @@ Imports:
     tibble,
     furrr,
     purrr,
-    jsonlite
+    jsonlite,
+    lubridate,
+    RPostgres
 Depends: 
     R (>= 2.10)
 Remotes: 

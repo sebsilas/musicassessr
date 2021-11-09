@@ -14,48 +14,63 @@ mean_vocal_ranges <- lapply(vocal_ranges, mean)
 
 
 
-present_voice_ranges_page <- function() {
+present_voice_ranges_page <- function(with_examples = TRUE) {
   # could/should remake in R functions
 
-  psychTestR::NAFC_page(
-    label = "voice_range",
-    prompt = shiny::tags$div(
-      shiny::tags$p("Listen to the audio examples of people singing. Select the example you think best matches your voice."),
-      htmltools::HTML(
-    '<p><strong>Soprano</strong></p>
-      <audio controls>
-      <source src="musicassessr-assets/audio/voice_ranges/soprano_voice_no_intro.m4a" type="audio/mp4">
-        Your browser does not support the audio element.
-      </audio>
-
-
-        <p><strong>Alto</strong></p>
+  if(with_examples) {
+    psychTestR::NAFC_page(
+      label = "voice_range",
+      prompt = shiny::tags$div(
+        shiny::tags$p("Listen to the audio examples of people singing. Select the example you think best matches your voice."),
+        htmltools::HTML(
+      '<p><strong>Soprano</strong></p>
         <audio controls>
-        <source src="musicassessr-assets/audio/voice_ranges/alto_voice_no_intro.m4a" type="audio/mp4">
+        <source src="musicassessr-assets/audio/voice_ranges/soprano_voice_no_intro.m4a" type="audio/mp4">
           Your browser does not support the audio element.
         </audio>
 
-          <p><strong>Tenor</strong></p>
+
+          <p><strong>Alto</strong></p>
           <audio controls>
-          <source src="musicassessr-assets/audio/voice_ranges/tenor_voice_no_intro.m4a" type="audio/mp4">
+          <source src="musicassessr-assets/audio/voice_ranges/alto_voice_no_intro.m4a" type="audio/mp4">
             Your browser does not support the audio element.
           </audio>
 
-            <p><strong>Baritone</strong></p>
+            <p><strong>Tenor</strong></p>
             <audio controls>
-            <source src="musicassessr-assets/audio/voice_ranges/baritone_voice_no_intro.m4a" type="audio/mp4">
+            <source src="musicassessr-assets/audio/voice_ranges/tenor_voice_no_intro.m4a" type="audio/mp4">
               Your browser does not support the audio element.
             </audio>
 
-              <p><strong>Bass</strong></p>
+              <p><strong>Baritone</strong></p>
               <audio controls>
-              <source src="musicassessr-assets/audio/voice_ranges/bass_voice_no_intro.m4a" type="audio/mp4">
+              <source src="musicassessr-assets/audio/voice_ranges/baritone_voice_no_intro.m4a" type="audio/mp4">
                 Your browser does not support the audio element.
-              </audio>')),
-    choices = names(vocal_ranges),
-    arrange_vertically = FALSE,
-    on_complete = function(state, answer, ...){
-      psychTestR::set_global("range", answer, state)
-    })
+              </audio>
+
+                <p><strong>Bass</strong></p>
+                <audio controls>
+                <source src="musicassessr-assets/audio/voice_ranges/bass_voice_no_intro.m4a" type="audio/mp4">
+                  Your browser does not support the audio element.
+                </audio>')),
+      choices = names(vocal_ranges),
+      arrange_vertically = FALSE,
+      on_complete = function(state, answer, ...){
+        psychTestR::set_global("range", answer, state)
+      })
+  } else {
+
+    psychTestR::NAFC_page(
+      label = "voice_range",
+      prompt = shiny::tags$div(
+        shiny::tags$p("If you know your voice type, please select one of the following, or click \"Not sure\"")),
+      choices = c(names(vocal_ranges), "Not sure"),
+      arrange_vertically = FALSE,
+      on_complete = function(state, answer, ...){
+        answer <- ifelse(answer == "Not sure", "Tenor", answer)
+        psychTestR::set_global("range", answer, state)
+      })
+
+  }
 }
 

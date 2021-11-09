@@ -34,36 +34,7 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
 }
 
 
-# melconv <- function(file_name, return_notes_and_durs = TRUE) {
-#
-#   # then use melconv
-#   melconv_res <- system2(command = '../melospy/bin/melconv',
-#                          args = c('-f midi',
-#                                   paste0('-i ', file_name)),
-#                          stdout = TRUE, stderr = FALSE)
-#
-#   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]
-#   res <- res[length(res)]
-#   res <- strsplit(res, ".", fixed = TRUE)[[1]][1]
-#   # res <- paste0('/Users/sebsilas/musicassessr/', res, '.mid')
-#   res <- paste0(res, '.mid')
-#   if(return_notes_and_durs) {
-#     itembankr::midi_file_to_notes_and_durations(res)
-#   } else {
-#     tuneR::readMidi(res)
-#   }
-#
-# }
 
-
-# melconv_res <- system2(command = '../melospy/bin/melconv',
-#                        args = c('-f midi',
-#                                 paste0('-i ', '/Users/sebsilas/musicassessr/6236558644498592.csv')),
-#                        stdout = TRUE, stderr = FALSE)
-#
-#
-#
-# melconv_res <- melconv('/Users/sebsilas/29-3-2021--8-19_vamp_pyin_pyin_notes.csv')
 
 #' Melconv from a pyin result
 #'
@@ -138,12 +109,14 @@ pyin <- function(file_name, transform_file = NULL,
     args <- c(args, "--normalise")
   }
 
+  cmd <- ifelse(musicassessr_state == "production", "/opt/sonic-annotator/sonic-annotator", "/Users/sebsilas/sonic-annotator")
+
   if(hidePrint) {
-    sa_out <- system2(command = "/opt/sonic-annotator/sonic-annotator",
+    sa_out <- system2(command = cmd,
                       args = args,
                       stdout = TRUE, stderr = FALSE)
   } else {
-    sa_out <- system2(command = "/opt/sonic-annotator/sonic-annotator",
+    sa_out <- system2(command = cmd,
                       args = args,
                       stdout = TRUE)
   }
@@ -183,82 +156,6 @@ pyin <- function(file_name, transform_file = NULL,
 
 
 
-# pyin <- function(file_name, transform_file = NULL,
-#                  normalise = FALSE, hidePrint = TRUE, type = "notes") {
-#
-#   #file_name <- '/Users/sebsilas/true.wav'
-#   #file_name <- '/Users/sebsilas/Downloads/13-8-2021--17-8--18.wav'
-#
-#
-#   if(type == "pitch_track") {
-#     vamp_cmd <- "vamp:pyin:pyin:smoothedpitchtrack"
-#   } else if(type == "notes") {
-#     vamp_cmd <- "vamp:pyin:pyin:notes"
-#   } else {
-#     stop("Unknown type")
-#   }
-#
-#   if(is.null(transform_file)) {
-#     args <- c("-d",
-#               vamp_cmd,
-#               file_name,
-#               "-w",
-#               "csv --csv-stdout")
-#   } else {
-#     args <- c(paste0('-t ', transform_file),
-#               file_name,
-#               "-w",
-#               "csv --csv-stdout")
-#   }
-#
-#   if(normalise == 1) {
-#     args <- c(args, "--normalise")
-#   }
-#
-#   if(hidePrint) {
-#     sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
-#                       args = args,
-#                       stdout = TRUE, stderr = FALSE)
-#   } else {
-#     sa_out <- system2(command = "/Users/sebsilas/sonic-annotator",
-#                       args = args,
-#                       stdout = TRUE)
-#   }
-#
-#   if(length(sa_out) == 0) {
-#     if(type == "notes") {
-#       res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
-#     } else {
-#       res <- tibble::tibble(onset = NA, freq = NA, file_name = file_name)
-#     }
-#   } else {
-#     res <- read.csv(text = sa_out, header = FALSE)
-#
-#     if(type == "notes") {
-#       res <- res %>%
-#         dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
-#         dplyr::mutate(
-#           onset = round(onset, 2),
-#           dur = round(dur, 2),
-#           freq = round(freq, 2),
-#           note = round(hrep::freq_to_midi(freq)))
-#     } else {
-#       res <- res %>%
-#         dplyr::rename(onset = V2, freq = V3) %>%
-#         dplyr::mutate(
-#           onset = round(onset, 2),
-#           freq = round(freq, 2))
-#     }
-#
-#     file_name <- res$V1[[1]]
-#
-#     res <- res %>% dplyr::select(-V1)
-#
-#     res <- tibble::tibble(file_name, res)
-#   }
-# }
-
-
 #pyin('/Users/sebsilas/true.wav')
 
 
@@ -271,11 +168,19 @@ pyin <- function(file_name, transform_file = NULL,
 #' @export
 #'
 #' @examples
-get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE,  ...) {
+get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE, ...) {
+
+  print('get_answerpyin')
+  print(input$stimuli)
+  print(input$stimuli_durations)
 
   pyin_pitch_track <- NULL
-  file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
-  #file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+
+  file_dir <- ifelse(musicassessr_state == "production",
+                     '/srv/shiny-server/files/',
+                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
+
+  file <- paste0(file_dir, input$key, '.wav')
 
   if(type == "note") {
     pyin_res <- pyin(file)
@@ -287,8 +192,8 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
   }
 
   if(is.null(psychTestR::get_global("melody", state))) {
-    stimuli <- as.numeric(input$stimuli)
-    stimuli_durations <- NA
+    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
+    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
   } else {
 
     stimuli_both <- psychTestR::get_global("melody", state)
@@ -324,6 +229,21 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
     )
   }
 
+  # store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
+  #
+  # if(store_results_in_db) {
+  #   session_info <- psychTestR::get_session_info(state, complete = FALSE)
+  #   add_trial_to_db(test_username = psychTestR::get_global("test_username", state),
+  #                   test = psychTestR::get_global("test", state),
+  #                   session_id = session_info$p_id,
+  #                   time_started = session_info$current_time - res$trial_length,
+  #                   time_completed = session_info$current_time,
+  #                   melody = res$stimuli,
+  #                   res$similarity,
+  #                   res$accuracy_octaves_allowed,
+  #                   pyin_res)
+  # }
+
   res
 
 
@@ -346,8 +266,13 @@ get_answer_pyin_note_only <- function(input, type = "note", state, melconv = FAL
 get_answer_pyin_long_note <- function(input, ...) {
 
   print('get_answer_pyin_long_note')
-  file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
-  #file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+
+  file_dir <- ifelse(musicassessr_state == "production",
+                     '/srv/shiny-server/files/',
+                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
+
+  file <- paste0(file_dir, input$key, '.wav')
+
   pyin_res <- pyin(file, type = "pitch_track")
   print(pyin_res)
 
@@ -560,6 +485,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
     print('singingma')
     print(singing_measures)
+    print(result)
     if(singing_measures) {
       # singing stuff
       # note precision
@@ -568,18 +494,22 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
         dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
                     dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE)) %>% dplyr::pull(note_precision_melody)
+      print(note_precision)
 
+      print('stimuli: ')
+      print(stimuli)
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli, freq = result$freq)
-
+      print(mean_cents_deviation_from_nearest_stimuli_pitch)
       # mean cents deviation
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
-
+      print(mean_cents_deviation_from_nearest_midi_pitch)
       # melody dtw
       user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, result)
       stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
-
+      print(user_prod_for_dtw)
+      print(stimuli_for_dtw)
       melody_dtw <- tryCatch({
           dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)$distance
         },
@@ -596,7 +526,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
       melody_dtw <- NA
     }
 
-
+    print('shit?')
     list(stimuli = stimuli,
          stimuli_durations = stimuli_durations,
          stimuli_length = stimuli_length,
@@ -635,8 +565,11 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
 
 get_answer_simple_pyin_summary <- function(input, ...) {
   print('get_answer_simple_pyin_summary')
-  file <- paste0('/srv/shiny-server/files/', input$key, '.wav') # production
-  #file <- paste0('/Users/sebsilas/aws-musicassessr-local-file-upload/files/', input$key, '.wav') # local/testing
+  file_dir <- ifelse(musicassessr_state == "production",
+                     '/srv/shiny-server/files/',
+                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
+
+  file <- paste0(file_dir, input$key, '.wav')
   pyin_res <- pyin(file)
   print(pyin_res)
   res <- as.list(round(summary(pyin_res$note)))

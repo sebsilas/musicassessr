@@ -143,10 +143,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                           range == "Alto" | range == "Soprano"
                         },
                         logic = melodies_octave_4
-                      ),
-
-                      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
-
+                      )
                      )
   )
 }
@@ -235,7 +232,6 @@ UPEI_2021_battery <- function(state = "production",
     sing_happy_birthday_page(feedback = TRUE),
 
     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
-
 
     MAST21_trials(sound = "voice_doo"),
 

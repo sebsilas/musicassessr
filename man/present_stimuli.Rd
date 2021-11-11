@@ -41,6 +41,7 @@ present_stimuli(
   play_button_id = "playButton",
   button_area_id = "button_area",
   hideOnPlay = FALSE,
+  record_immediately = FALSE,
   ...
 )
 }

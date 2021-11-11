@@ -175,8 +175,8 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 
 
 #library(PDCT)
-#library(MPT)
-#library(MDT)
+#library(mpt)
+#library(mdt)
 #library(psyquest)
 
 
@@ -227,11 +227,11 @@ UPEI_2021_battery <- function(state = "production",
           long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
         )),
 
-    PDCT::PDCT(),
+    PDT::PDT(),
 
-    MPT::MPT(),
+    mpt::mpt(),
 
-    MDT::MDT(),
+    mdt::mdt(),
 
     psyquest::GMS(),
 

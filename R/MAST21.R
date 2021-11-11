@@ -85,14 +85,14 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                     page_title = long_tone_title, page_text = long_tone_text)
   })
 
-  melodies_octave_3_daa <- apply(MAST_melodies, MARGIN = 1,  function(row) {
+  melodies_octave_3<- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
   })
 
-  melodies_octave_4_daa <- apply(MAST_melodies, MARGIN = 1,  function(row) {
+  melodies_octave_4 <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
@@ -128,16 +128,13 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                         logic = long_notes_4
                       ),
 
-                       ## melody trials: daa sound
-
-                      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
 
                       psychTestR::conditional(
                         test = function(state, ...) {
                           range <- psychTestR::get_global("range", state)
                           range == "Baritone" | range == "Bass" | range == "Tenor"
                         },
-                        logic = melodies_octave_3_daa
+                        logic = melodies_octave_3
                       ),
 
                       psychTestR::conditional(
@@ -145,29 +142,10 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                           range <- psychTestR::get_global("range", state)
                           range == "Alto" | range == "Soprano"
                         },
-                        logic = melodies_octave_4_daa
+                        logic = melodies_octave_4
                       ),
 
                       psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
-
-
-                      ## melody trials: doo sound
-
-                      psychTestR::conditional(
-                        test = function(state, ...) {
-                          range <- psychTestR::get_global("range", state)
-                          range == "Baritone" | range == "Bass" | range == "Tenor"
-                        },
-                        logic = melodies_octave_3_doo
-                      ),
-
-                      psychTestR::conditional(
-                        test = function(state, ...) {
-                          range <- psychTestR::get_global("range", state)
-                          range == "Alto" | range == "Soprano"
-                        },
-                        logic = melodies_octave_4_doo
-                      )
 
                      )
   )
@@ -250,9 +228,14 @@ UPEI_2021_battery <- function(state = "production",
 
     sing_happy_birthday_page(feedback = TRUE),
 
+    psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+
     MAST21_trials(sound = "voice_daa"),
 
     sing_happy_birthday_page(feedback = TRUE),
+
+    psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+
 
     MAST21_trials(sound = "voice_doo"),
 

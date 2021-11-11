@@ -59,30 +59,16 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 
   melodies_octave_3_daa <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_daa",
+                    display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
   })
 
   melodies_octave_4_daa <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_daa",
+                    display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
-  })
-
-  melodies_octave_3_doo <- apply(MAST_melodies, MARGIN = 1,  function(row) {
-    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_doo",
-                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_doo)
-  })
-
-  melodies_octave_4_doo <- apply(MAST_melodies, MARGIN = 1,  function(row) {
-    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = "voice_doo",
-                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_doo)
   })
 
 
@@ -187,58 +173,77 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
   }
 }
 
-#' MAST
-#'
-#' @return
-#' @export
-#'
-#' @examples
-MAST <- function(state = "production") {
 
-  make_aws_credentials_global(list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-                                   bucket_name = "shinny-app-source-41630",
-                                   bucket_region = "us-east-1",
-                                   identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                                   destination_bucket = "shinny-app-destination-41630"))
+#library(PDCT)
+#library(MPT)
+#library(MDT)
+#library(psyquest)
+
+
+UPEI_2021_battery <- function(state = "production",
+                              aws_credentials = list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
+                                                     bucket_name = "shinny-app-source-41630",
+                                                     bucket_region = "us-east-1",
+                                                     identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
+                                                     destination_bucket = "shinny-app-destination-41630")) {
+
+  make_aws_credentials_global(aws_credentials)
 
   psychTestR::make_test(psychTestR::new_timeline(psychTestR::join(
     psychTestR::one_button_page(shiny::tags$div(
       shiny::tags$h1("MAST-21 Test Battery"),
       shiny::tags$p("This is a test protocol for the new MAST-21 battery"),
-      musicassessr_js_scripts(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-                              bucket_name = "shinny-app-source-41630",
-                              bucket_region = "us-east-1",
-                              identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                              destination_bucket = "shinny-app-destination-41630"),
+      musicassessr_js_scripts(api_url = aws_credentials$api_url,
+                              bucket_name = aws_credentials$bucket_name,
+                              bucket_region = aws_credentials$bucket_region,
+                              identity_pool_id = aws_credentials$identity_pool_id,
+                              destination_bucket = aws_credentials$destination_bucket),
       set_musicassessr_state(state)
       )),
 
-    psychTestR::one_button_page(tags$div(
-      shiny::tags$p("The next page will show an example of the Sing Happy Birthday page, followed by a summary page of the MIDI pitch range.")
-    )),
+    psychTestR::get_p_id(prompt = shiny::tags$div(
+      shiny::tags$p("Please provide your participation identifier below created from:"),
+      shiny::tags$ul(
+      shiny::tags$li("1st 3 letters of the first name of your parent, guardian, or relative"),
+      shiny::tags$li("Day of your birthday (2 numbers – 01 to 31)"),
+      shiny::tags$li("1st 3 letters of the street you lived on growing up"),
+      shiny::tags$br(),
+      shiny::tags$p("For example: joh11tav")))),
+
+    get_voice_range_page(with_examples = FALSE),
 
     sing_happy_birthday_page(feedback = TRUE),
 
-    psychTestR::one_button_page(shiny::tags$div(
-      shiny::tags$p("The next page will show an example of the page which allows the participant to choose a vocal range.")
-    )),
+    MAST21_trials(sound = "voice_daa"),
 
-    present_voice_ranges_page(with_examples = FALSE),
+    sing_happy_birthday_page(feedback = TRUE),
 
-    psychTestR::one_button_page(shiny::tags$div(
-      shiny::tags$p("Now this has been selected, the MAST21 trials will be presented according to this range.")
-    )),
+    MAST21_trials(sound = "voice_doo"),
 
-    MAST21_trials(),
+    sing_happy_birthday_page(feedback = TRUE),
 
-    psychTestR::final_page("That's it for now!")
+    MST(aws_credentials = aws_credentials,
+        num_items = list(
+          long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
+        )),
+
+    PDCT::PDCT(),
+
+    MPT::MPT(),
+
+    MDT::MDT(),
+
+    psyquest::GMS(),
+
+    psyquest::SES(),
+
+    sing_happy_birthday_page(feedback = TRUE),
+
+    psychTestR::final_page("Thank you for participating!")
   ), dict = psychTestR::i18n_dict$new(musicassessr_dict_df)), opt = psychTestR::test_options(title = "test", admin_password = "demo"))
 
 }
 
-# mel <- itembankr::str_mel_to_vector(itembankr::MAST21[12, "melody", drop = TRUE])
-#
-# pitch_classes_into_3_or_4(melody = mel, vocal_range = "Bass")
-
+#UPEI_2021_battery()
 
 

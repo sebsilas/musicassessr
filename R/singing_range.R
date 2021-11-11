@@ -14,7 +14,7 @@ mean_vocal_ranges <- lapply(vocal_ranges, mean)
 
 
 
-present_voice_ranges_page <- function(with_examples = TRUE) {
+get_voice_range_page <- function(with_examples = TRUE) {
   # could/should remake in R functions
 
   if(with_examples) {

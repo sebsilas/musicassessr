@@ -39,6 +39,26 @@ MAST_melodies$octave_4 <- apply(MAST_melodies, MARGIN = 1, function(row) {
 })
 
 
+#' Deploy a block of the MAST21 stimuli
+#'
+#' @param item_bank
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param get_answer
+#' @param sound
+#' @param page_text
+#' @param page_title_doo
+#' @param page_title_daa
+#' @param long_tone_title
+#' @param long_tone_text
+#' @param instruction_text
+#' @param microphone_calibration_page
+#'
+#' @return
+#' @export
+#'
+#' @examples
 MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE,
                          get_answer = musicassessr::get_answer_pyin,
                          sound = "piano",

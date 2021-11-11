@@ -1,3 +1,11 @@
+#' Set whether a musicassessr test is running in production or locally (test)
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 set_musicassessr_state <- function(state = c("production", "test")) {
   musicassessr_state <<- state
   shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))

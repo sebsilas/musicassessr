@@ -15,6 +15,15 @@ t3 <- function() {
                             identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                             destination_bucket = "shinny-app-destination-41630"))),
 
+    # psychTestR::code_block(function(state, ...){
+    #   session <- psychTestR::get_session_info(state, complete = T)
+    #   print(session$time_started)
+    #
+    #   # session$current_time
+    #   # session$p_id
+    #   print(session)
+    # }),
+
     psychTestR::one_button_page("hi"),
 
 

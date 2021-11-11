@@ -155,6 +155,14 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 
 
 
+#' A page to identify a user's singing range by asking them to sing Happy Birthday
+#'
+#' @param feedback
+#'
+#' @return
+#' @export
+#'
+#' @examples
 sing_happy_birthday_page <- function(feedback = FALSE) {
 
   page <- record_audio_page(page_text = "Please sing Happy Birthday.",

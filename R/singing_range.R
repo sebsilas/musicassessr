@@ -14,6 +14,14 @@ mean_vocal_ranges <- lapply(vocal_ranges, mean)
 
 
 
+#' A page to select a voice range
+#'
+#' @param with_examples
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_voice_range_page <- function(with_examples = TRUE) {
   # could/should remake in R functions
 

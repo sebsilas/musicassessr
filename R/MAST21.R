@@ -105,6 +105,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
   }
 
   psychTestR::module("MAST21",
+        psychTestr::new_timeline(
                      c(
                        # instructions
 
@@ -145,9 +146,8 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                         logic = melodies_octave_4
                       )
                      )
-  )
+  ), dict = musicassessr::dict(NULL))
 }
-
 
 
 #' A page to identify a user's singing range by asking them to sing Happy Birthday
@@ -185,10 +185,13 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 }
 
 
-#library(PDCT)
-#library(mpt)
-#library(mdt)
-#library(psyquest)
+# library(PDT)
+# library(mpt)
+# library(mdt)
+# library(psyquest)
+# library(MST)
+# library(musicassessr)
+
 
 
 UPEI_2021_battery <- function(state = "production",
@@ -198,9 +201,9 @@ UPEI_2021_battery <- function(state = "production",
                                                      identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                                                      destination_bucket = "shinny-app-destination-41630")) {
 
-  make_aws_credentials_global(aws_credentials)
+  musicassessr::make_aws_credentials_global(aws_credentials)
 
-  psychTestR::make_test(psychTestR::new_timeline(psychTestR::join(
+  psychTestR::make_test(psychTestR::join(
     psychTestR::one_button_page(shiny::tags$div(
       shiny::tags$h1("MAST-21 Test Battery"),
       shiny::tags$p("This is a test protocol for the new MAST-21 battery"),
@@ -209,7 +212,7 @@ UPEI_2021_battery <- function(state = "production",
                               bucket_region = aws_credentials$bucket_region,
                               identity_pool_id = aws_credentials$identity_pool_id,
                               destination_bucket = aws_credentials$destination_bucket),
-      set_musicassessr_state(state)
+      musicassessr::set_musicassessr_state(state)
       )),
 
     psychTestR::get_p_id(prompt = shiny::tags$div(
@@ -221,25 +224,25 @@ UPEI_2021_battery <- function(state = "production",
       shiny::tags$br(),
       shiny::tags$p("For example: joh11tav")))),
 
-    get_voice_range_page(with_examples = FALSE),
+    musicassessr::get_voice_range_page(with_examples = FALSE),
 
-    sing_happy_birthday_page(feedback = TRUE),
+    musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
 
-    MAST21_trials(sound = "voice_daa"),
+    musicassessr::MAST21_trials(sound = "voice_daa"),
 
-    sing_happy_birthday_page(feedback = TRUE),
+    musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
 
-    MAST21_trials(sound = "voice_doo"),
+    musicassessr::MAST21_trials(sound = "voice_doo", microphone_calibration_page = FALSE),
 
-    sing_happy_birthday_page(feedback = TRUE),
+    musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
-    MST(aws_credentials = aws_credentials,
+    MST::MST(aws_credentials = aws_credentials,
         num_items = list(
-          long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
+          long_tones = 6L, arrhythmic = 12L, rhythmic = 1L
         )),
 
     PDT::PDT(),
@@ -252,13 +255,12 @@ UPEI_2021_battery <- function(state = "production",
 
     psyquest::SES(),
 
-    sing_happy_birthday_page(feedback = TRUE),
+    musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
     psychTestR::final_page("Thank you for participating!")
-  ), dict = psychTestR::i18n_dict$new(musicassessr_dict_df)), opt = psychTestR::test_options(title = "test", admin_password = "demo"))
+  ))
 
 }
 
 #UPEI_2021_battery()
-
 

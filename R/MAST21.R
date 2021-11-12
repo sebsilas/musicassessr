@@ -67,8 +67,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                          page_title_daa = "Sing this melody with a \"Daah\" sound.",
                         long_tone_title = "Sing the note",
                         long_tone_text = "Please sing the note after you hear it, then click Stop.",
-                         instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
-                        microphone_calibration_page = TRUE) {
+                         instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
 
 
   long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
@@ -104,12 +103,9 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
     feedback <- feedback_melodic_production
   }
 
-  psychTestR::module("MAST21",
-        psychTestr::new_timeline(
+    psychTestR::module("MAST21",
                      c(
                        # instructions
-
-                       if(microphone_calibration_page) microphone_calibration_page(),
 
                       # long notes 1-4
 
@@ -146,7 +142,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                         logic = melodies_octave_4
                       )
                      )
-  ), dict = musicassessr::dict(NULL))
+  )
 }
 
 
@@ -185,13 +181,13 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 }
 
 
-# library(PDT)
-# library(mpt)
-# library(mdt)
-# library(psyquest)
-# library(MST)
-# library(musicassessr)
 
+library(PDT)
+library(mpt)
+library(mdt)
+library(psyquest)
+library(MST)
+library(musicassessr)
 
 
 UPEI_2021_battery <- function(state = "production",
@@ -224,6 +220,9 @@ UPEI_2021_battery <- function(state = "production",
       shiny::tags$br(),
       shiny::tags$p("For example: joh11tav")))),
 
+    psychTestR::new_timeline(musicassessr::microphone_calibration_page(),
+                             , dict = musicassessr::dict(NULL)),
+
     musicassessr::get_voice_range_page(with_examples = FALSE),
 
     musicassessr::sing_happy_birthday_page(feedback = TRUE),
@@ -236,7 +235,7 @@ UPEI_2021_battery <- function(state = "production",
 
     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
 
-    musicassessr::MAST21_trials(sound = "voice_doo", microphone_calibration_page = FALSE),
+    musicassessr::MAST21_trials(sound = "voice_doo"),
 
     musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
@@ -262,5 +261,6 @@ UPEI_2021_battery <- function(state = "production",
 
 }
 
-#UPEI_2021_battery()
+
+UPEI_2021_battery()
 

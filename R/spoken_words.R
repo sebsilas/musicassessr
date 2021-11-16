@@ -16,7 +16,7 @@ select_voice_page <- function() {
   # set the selected voice
   psychTestR::page(
     label = "select_voice",
-    ui = div(
+    ui = shiny::tags$div(
       shiny::tags$h2('Voice Selection Page'),
       shiny::tags$p('Listen to some voices using the dropdown below and choose your preference.'),
       shiny::tags$br(),
@@ -50,7 +50,7 @@ play_text_page <- function(stimuli, underlying_page_type = "one_button_page", pa
 
       selected.voice <- get_global("selected_voice", state)
 
-      body_content <- div(
+      body_content <- shiny::tags$div(
         htmltools::HTML('<select id = "selectVoice" hidden></select>'),
         shiny::play_words(stimuli, selected.voice),
         shiny::tags$h2(page_title),

@@ -9,11 +9,12 @@ rel_to_abs_mel_mean_centred(
   bottom_range,
   top_range,
   plot = FALSE,
-  range = NULL
+  range = NULL,
+  transpose = NULL
 )
 }
 \arguments{
-\item{plot}{}
+\item{transpose}{}
 }
 \value{
 

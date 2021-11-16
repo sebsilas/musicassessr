@@ -263,18 +263,22 @@ plot_mean_centred_to_range <- function(stimuli_centred_to_user_mean, user_mean_c
     ggplot2::geom_hline(yintercept = max_range, color = "green"))
 }
 
+
+
 #' Convert a melody from relative to absolute form by centering the mean of the stimuli on mean of the user's range.
 #'
 #' @param rel_melody
 #' @param bottom_range
 #' @param top_range
 #' @param plot
+#' @param range
+#' @param transpose
 #'
 #' @return
 #' @export
 #'
 #' @examples
-rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plot = FALSE, range = NULL) {
+rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plot = FALSE, range = NULL, transpose = NULL) {
   # produce a melody which is centered on the user's range.
   # NB: the "mean stimuli note" could/should be sampled from around the user's mean range i.e +/- 3 semitones
 

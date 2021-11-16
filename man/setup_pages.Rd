@@ -18,7 +18,7 @@ setup_pages(
 )
 }
 \arguments{
-\item{get_instrument_range}{}
+\item{select_instrument}{}
 }
 \value{
 

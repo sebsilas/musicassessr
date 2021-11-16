@@ -53,8 +53,14 @@ xhr.send();
 #' @export
 #'
 #' @examples
-musicassessr_js_scripts <- function(destination_bucket, api_url, bucket_name, bucket_region, identity_pool_id) {
+musicassessr_js_scripts <- function(destination_bucket,
+                                    api_url,
+                                    bucket_name,
+                                    bucket_region,
+                                    identity_pool_id,
+                                    musicassessr_state = "production") {
   shiny::tags$div(
+    musicassessr::set_musicassessr_state(musicassessr_state),
     shiny::tags$script(htmltools::HTML(enable.cors)),
     shiny::tags$script(src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"),
     shiny::tags$script(src="https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js"),
@@ -67,6 +73,7 @@ musicassessr_js_scripts <- function(destination_bucket, api_url, bucket_name, bu
     shiny::tags$script(src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"),
     shiny::includeScript(path=system.file("crepe_html/crepe.js", package = "musicassessr")),
     shiny::includeCSS(path = system.file('crepe_html/crepe.css', package = "musicassessr")),
+    shiny::includeCSS(path = system.file('www/css/style.css', package = "musicassessr")),
     shiny::tags$script(src="https://www.midijs.net/lib/midi.js"),
     shiny::tags$script(src="https://unpkg.com/@tonejs/midi"),
     shiny::includeScript(system.file("www/js/modernizr-custom.js", package = "musicassessr")),

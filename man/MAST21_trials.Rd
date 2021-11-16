@@ -17,8 +17,7 @@ MAST21_trials(
   long_tone_title = "Sing the note",
   long_tone_text = "Please sing the note after you hear it, then click Stop.",
  
-    instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
-  microphone_calibration_page = TRUE
+    instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm."
 )
 }
 \arguments{

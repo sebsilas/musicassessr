@@ -1,18 +1,3 @@
-#' Set whether a musicassessr test is running in production or locally (test)
-#'
-#' @param state
-#'
-#' @return
-#' @export
-#'
-#' @examples
-set_musicassessr_state <- function(state = c("production", "test")) {
-  musicassessr_state <<- state
-  shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
-}
-
-
-
 F3 <- 53
 F4 <- 65
 
@@ -72,15 +57,15 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 
   long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
-                    display_modality = "auditory", sound = "tone",
-                    note_length = 4, page_type = "record_audio_page",
+                    display_modality = "auditory", sound = sound,
+                    note_length = 2, page_type = "record_audio_page",
                     page_title = long_tone_title, page_text = long_tone_text)
   })
 
   long_notes_4 <- purrr::map(MAST_octave_4_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
-                    display_modality = "auditory", sound = "tone",
-                    note_length = 4, page_type = "record_audio_page",
+                    display_modality = "auditory", sound = sound,
+                    note_length = 2, page_type = "record_audio_page",
                     page_title = long_tone_title, page_text = long_tone_text)
   })
 
@@ -201,14 +186,14 @@ UPEI_2021_battery <- function(state = "production",
 
   psychTestR::make_test(psychTestR::join(
     psychTestR::one_button_page(shiny::tags$div(
-      shiny::tags$h1("MAST-21 Test Battery"),
-      shiny::tags$p("This is a test protocol for the new MAST-21 battery"),
+      shiny::tags$h1("UPEI 2021 Testing"),
+      shiny::tags$p("This is a protocol for the UPEI 2021 singing study."),
       musicassessr_js_scripts(api_url = aws_credentials$api_url,
                               bucket_name = aws_credentials$bucket_name,
                               bucket_region = aws_credentials$bucket_region,
                               identity_pool_id = aws_credentials$identity_pool_id,
-                              destination_bucket = aws_credentials$destination_bucket),
-      musicassessr::set_musicassessr_state(state)
+                              destination_bucket = aws_credentials$destination_bucket,
+                              musicassessr_state = state),
       )),
 
     psychTestR::get_p_id(prompt = shiny::tags$div(
@@ -221,7 +206,7 @@ UPEI_2021_battery <- function(state = "production",
       shiny::tags$p("For example: joh11tav")))),
 
     psychTestR::new_timeline(musicassessr::microphone_calibration_page(),
-                             , dict = musicassessr::dict(NULL)),
+                             dict = musicassessr::dict(NULL)),
 
     musicassessr::get_voice_range_page(with_examples = FALSE),
 

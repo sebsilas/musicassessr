@@ -177,13 +177,13 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 }
 
 
-
-library(PDT)
-library(mpt)
-library(mdt)
-library(psyquest)
-library(MST)
-library(musicassessr)
+#
+# library(PDT)
+# library(mpt)
+# library(mdt)
+# library(psyquest)
+# library(MST)
+# library(musicassessr)
 
 
 UPEI_2021_battery <- function(state = "production",
@@ -278,7 +278,7 @@ UPEI_2021_battery <- function(state = "production",
 
 }
 
-UPEI_2021_battery("test")
+#UPEI_2021_battery("test")
 
 
 

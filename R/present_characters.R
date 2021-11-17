@@ -2,7 +2,7 @@ stimuli.carousel <- function(slide_length = 200) {
 
   # slide_length in ms
 
-  shiny::tags$script(HTML(paste0('var slideIndex = 0;
+  shiny::tags$script(htmltools::HTML(paste0('var slideIndex = 0;
   carousel(length);
 
   function carousel(slideLength) {

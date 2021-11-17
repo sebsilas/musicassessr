@@ -136,21 +136,24 @@ t3 <- function() {
 
 testApp2 <- function() {
 
-  MST::MST2(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
+  MST::MST_standalone(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                                    "bucket_name" = "shinny-app-source-41630",
                                    "bucket_region" = "us-east-1",
                                    "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                                    "destination_bucket" = "shinny-app-destination-41630"),
-            num_items = list("long_tones" = 1L,
+            num_items = list("long_tones" = 0,
                              "arrhythmic" = 1L,
                              "rhythmic" = 1L),
-            SNR_test = F,
+            SNR_test = FALSE,
             get_range = "test",
             demo = FALSE,
             feedback = TRUE,
             examples = 1L,
             absolute_url = "https://adaptiveeartraining.com",
-            final_results = TRUE)
+            final_results = TRUE,
+            state = "test",
+            store_results_in_db = TRUE,
+            test_username = "Seb")
 }
 
 

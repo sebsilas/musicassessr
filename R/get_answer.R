@@ -111,6 +111,8 @@ pyin <- function(file_name, transform_file = NULL,
 
   cmd <- ifelse(musicassessr_state == "production", "/opt/sonic-annotator/sonic-annotator", "/Users/sebsilas/sonic-annotator")
 
+  print(cmd)
+
   if(hidePrint) {
     sa_out <- system2(command = cmd,
                       args = args,
@@ -230,15 +232,18 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
   }
 
   # store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
-  #
+  # store_results_in_db <- ifelse(is.null(store_results_in_db), FALSE, TRUE)
+  # print('store_results_in_db?')
+  # print(store_results_in_db)
   # if(store_results_in_db) {
   #   session_info <- psychTestR::get_session_info(state, complete = FALSE)
+  #   print(session_info)
   #   add_trial_to_db(test_username = psychTestR::get_global("test_username", state),
   #                   test = psychTestR::get_global("test", state),
   #                   session_id = session_info$p_id,
   #                   time_started = session_info$current_time - res$trial_length,
   #                   time_completed = session_info$current_time,
-  #                   melody = res$stimuli,
+  #                   melody = paste0(res$stimuli, collapse = ","),
   #                   res$similarity,
   #                   res$accuracy_octaves_allowed,
   #                   pyin_res)
@@ -277,7 +282,6 @@ get_answer_pyin_long_note <- function(input, ...) {
   print(pyin_res)
 
   if(is.na(pyin_res$onset)) {
-
     long_note_pitch_measures <- list("note_accuracy" = NA,
                                      "note_precision" = NA,
                                      "dtw_distance" = NA)

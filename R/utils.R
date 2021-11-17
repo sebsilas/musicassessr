@@ -221,3 +221,23 @@ urlFileExist <- function(url){
   status <- hd$all_headers[[1]]$status
   list(exists = status == HTTP_STATUS_OK, status = status)
 }
+
+
+
+#' Should the end of the test present a final page or not?
+#'
+#' @param final
+#' @param task_name
+#'
+#' @return
+#' @export
+#'
+#' @examples
+final_page_or_continue_to_new_text <- function(final = TRUE, task_name) {
+  if(final) {
+    psychTestR::final_page(paste0("You have completed the ", task_name))
+  } else {
+    psychTestR::one_button_page("Click to proceed to the next test.")
+  }
+}
+

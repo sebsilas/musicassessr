@@ -10,7 +10,7 @@ musicassessr_js_scripts(
   bucket_name,
   bucket_region,
   identity_pool_id,
-  musicassessr_state = "production"
+  musicassessr_state = NULL
 )
 }
 \arguments{

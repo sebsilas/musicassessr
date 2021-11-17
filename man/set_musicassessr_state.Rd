@@ -4,7 +4,7 @@
 \alias{set_musicassessr_state}
 \title{Set whether a musicassessr test is running in production or locally (test)}
 \usage{
-set_musicassessr_state(state = c("production", "test"))
+set_musicassessr_state(state = c(NULL, "production", "test"))
 }
 \arguments{
 \item{state}{}

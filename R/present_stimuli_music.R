@@ -22,22 +22,15 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
   if(sound == "tone") {
     if(record_immediately) {
       record_immediately <- "true"
-      hidePlay <- "false"
+      hidePlay <- "true"
     } else {
       record_immediately <- "false"
       hidePlay <- "true"
     }
     js.script <- paste0('playTone(',stimuli,', ', note_length,', this.id, \'tone\',', hidePlay,',\'', page_type,'\', \'',stop_button_text, '\', false, ', record_immediately,');')
   } else {
-
-    if (length(stimuli) == 1 & !is.character(stimuli)) {
-      melody.for.js <- hrep::midi_to_freq(stimuli-12) # there is a bug where the piano plays up an octave
-      js.script <- sprintf("triggerNote(\"%s\", %s, %s);", sound, melody.for.js, note_length)
-    }
-    else {
       melody.for.js <- rjson::toJSON(stimuli)
       js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ", true);")
-    }
   }
 
 
@@ -125,7 +118,7 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
     return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
                                                         note_length = note_length,
                                                         asChord = asChord,
-                                                        ascending = ascending, auto_next_page = auto_next_page,
+                                                        ascending = ascending,
                                                         id = visual_music_notation_id)
   }
   else {
@@ -205,12 +198,9 @@ present_stimuli_pitch_classes_auditory <- function(stimuli, octave) {
 present_stimuli_pitch_classes <- function(stimuli, display_modality, octave = 4, ...) {
 
   if(display_modality == "visual") {
-    return_stimuli <- present_stimuli_pitch_classes_visual(stimuli = stimuli,
-                                                           octave = octave, ...)
-
+    return_stimuli <- present_stimuli_pitch_classes_visual(stimuli = stimuli, octave = octave, ...)
   } else {
-    return_stimuli <- present_stimuli_pitch_classes_auditory(stimuli = stimuli,
-                                                             octave = octave, ...)
+    return_stimuli <- present_stimuli_pitch_classes_auditory(stimuli = stimuli, octave = octave, ...)
   }
 }
 
@@ -224,7 +214,7 @@ present_stimuli_rhythms <- function(stimuli_rhythms) {
   stimuli_pitches <- rep("C4", length(stimuli_rhythms))
 
   # return page
-    div(
+    shiny::tags$div(
     # load scripts
     # wrap html
     play.notes.html.wrapper(stimuli_pitches, stimuli_rhythms)
@@ -279,11 +269,8 @@ present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "
 present_stimuli_music_xml_file <- function(stimuli, display_modality) {
 
   if(display_modality == "visual") {
-
     open.music.display.wrapper(stimuli)
-
-  }
-  else {
+  } else {
     stop('Only support for visual presentation of musicxml files currently')
   }
 
@@ -330,16 +317,14 @@ display_previous_answer_music_notation_pitch_class <- function() {
 
     if (no_errors == 0 & no_correct == length(stimuli)) {
       accuracy <- 1
-    }
-    else {
+    } else {
       accuracy <- no_errors/length(user_response)
     }
 
 
     if(!is.null(answer$plot)) {
       plot <- renderPlot({ answer$plot }, width = 500)
-    }
-    else {
+    }  else {
       plot <- " "
     }
 

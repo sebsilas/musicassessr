@@ -271,10 +271,10 @@ test_showcase <- function() {
 
 musicassessr_tl_code <- list(
 
-    'one_button_page(\ntags$div(
+    htmltools::HTML('one_button_page(\ntags$div(
     set_musicassessr_state("test"),
     musicassessr_js_scripts("A", "B", "C", "D", "E"),
-    shiny::tags$h2("musicassessr Test Showcase")))',
+    shiny::tags$h2("musicassessr Test Showcase")))'),
 
     'select_midi_device_page()',
 

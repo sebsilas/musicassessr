@@ -133,17 +133,11 @@ function triggerNote(sound, freq_tone, seconds, time) {
 
   if (sound === "piano") {
   	piano.triggerAttackRelease(freq_tone, seconds, time);
-  }
-
-  else if (sound === "voice_doo") {
+  } else if (sound === "voice_doo") {
   	voice_doo.triggerAttackRelease(freq_tone, seconds, time);
-  }
-
-    else if (sound === "voice_daa") {
+  } else if (sound === "voice_daa") {
   	voice_daa.triggerAttackRelease(freq_tone, seconds, time);
-  }
-
-  else {
+  } else {
     synth.triggerAttackRelease(freq_tone, seconds, time);
   }
 
@@ -154,6 +148,7 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_py
 
   console.log('playTone called');
   console.log(hidePlay);
+  console.log(record_immediately);
   rangeTest(tone);
 
   tone = Number(tone);
@@ -163,7 +158,6 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_py
   console.log(freq_tone);
 
   triggerNote(sound, freq_tone, seconds);
-
 
   if(record_immediately) {
      setTimeout(() => {  recordAndStop(ms = seconds*1000,
@@ -209,20 +203,76 @@ function playTones (note_list) {
 }
 
 
+function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound) {
+  if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
+    note_list = note_list-12;
+  }
 
-function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null, auto_next_page) {
+  var freq_list = Tone.Frequency(note_list, "midi").toNote();
+  var last_note = 1;
 
-  auto_next_page = auto_next_page;
-  console.log(auto_next_page);
-  console.log('playSeq called!');
-  console.log(sound);
-  // make sure not playing
-  Tone.Transport.stop();
-  pattern = null;
+  if(dur_list === null) {
+        auto_next_page = true;
+        triggerNote(sound, note_list, 0.50);
+        console.log('what is it now?');
+        console.log(auto_next_page);
+        setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay);
+      }
 
-  // reset Master
-  //Tone.Master.dispose();
+}
 
+
+function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
+   var pattern = new Tone.Sequence(function(time, note){
+        console.log(note);
+        triggerNote(sound, note, 0.50);
+        count = count + 1;
+        if (count === last_note) {
+          if(page_type == "aws_pyin" | page_type == "crepe" | page_type == "record_midi_page" | page_type == "record_audio_page") {
+            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
+          }
+          console.log('last note!');
+          pattern.stop();
+          Tone.Transport.stop();
+        }
+
+      }, freq_list);
+      console.log(pattern);
+}
+
+function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
+  var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+  console.log(notesAndDurations);
+  notesAndDurations = notesAndDurations.map(timeFromDurations);
+  console.log(notesAndDurations);
+  var pattern = new Tone.Part((time, value) => {
+              // the value is an object which contains both the note and the velocity
+              if(sound === "voice_doo") {
+                console.log('voice_doo trigger!');
+                voice_doo.triggerAttackRelease(value.note, value.duration, time);
+              } else if(sound === "voice_daa") {
+                console.log('voice_daa trigger!');
+                voice_daa.triggerAttackRelease(value.note, value.duration, time);
+              } else {
+                console.log('piano trigger!');
+                piano.triggerAttackRelease(value.note, value.duration, time);
+              }
+              count = count + 1;
+                if (count === last_note) {
+                console.log("last note2!");
+                if(page_type !== 'null') {
+                  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording
+                }
+
+                  pattern.stop();
+                  Tone.Transport.stop();
+                }
+              }, notesAndDurations);
+    pattern.start(0).loop = false;
+    Tone.Transport.start();
+}
+
+function connect_sound(sound) {
    //create a synth and connect it to the master output (your speakers)
   if(sound === "tone") {
     window.piano.disconnect();
@@ -246,76 +296,50 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
     window.voice_daa.toMaster();
   }
   else {
-
     window.synth.disconnect();
     window.voice_daa.disconnect();
     window.voice_doo.disconnect();
     window.piano.toMaster();
-
   }
+}
+
+function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null, auto_next_page) {
+
+  auto_next_page = auto_next_page;
+
+  console.log(auto_next_page);
+  console.log('playSeq called!');
+  console.log('dur_list!');
+  console.log(dur_list);
+  // make sure not playing
+  Tone.Transport.stop();
+  pattern = null;
+
+  connect_sound(sound);
 
   // this should go first before the piano editing:
   Shiny.setInputValue("stimuli_pitch", note_list);
 
   // seems to be a bug with the piano sound where it plays an octave higher
 
-  if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-    note_list = note_list.map(x => x-12);
-  }
-
-  var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
-
-  var last_note = freq_list.length;
-  var count = 0;
-
-  if(dur_list === null) {
-    var pattern = new Tone.Sequence(function(time, note){
-      console.log(note);
-      triggerNote(sound, note, 0.50);
-      count = count + 1;
-      if (count === last_note) {
-        if(page_type == "aws_pyin" | page_type == "crepe" | page_type == "record_midi_page" | page_type == "record_audio_page") {
-          setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
-        }
-        console.log('last note!');
-        pattern.stop();
-        Tone.Transport.stop();
-      }
-
-    }, freq_list);
-    console.log(pattern);
+  if(typeof note_list === 'number') {
+      playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound)
   } else {
-    var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
-    console.log(notesAndDurations);
-    notesAndDurations = notesAndDurations.map(timeFromDurations);
-    console.log(notesAndDurations);
-    var pattern = new Tone.Part((time, value) => {
-                // the value is an object which contains both the note and the velocity
-                if(sound === "voice_doo") {
-                  console.log('voice_doo trigger!');
-                  voice_doo.triggerAttackRelease(value.note, value.duration, time);
-                } else if(sound === "voice_daa") {
-                  console.log('voice_daa trigger!');
-                  voice_daa.triggerAttackRelease(value.note, value.duration, time);
-                } else {
-                  console.log('piano trigger!');
-                  piano.triggerAttackRelease(value.note, value.duration, time);
-                }
-                count = count + 1;
-                  if (count === last_note) {
-                  console.log("last note2!");
-                  if(page_type !== 'null') {
-                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording
-                  }
 
-                    pattern.stop();
-                    Tone.Transport.stop();
-                  }
-                }, notesAndDurations);
+    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
+        note_list = note_list.map(x => x-12);
+    }
+
+    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
+    var last_note = freq_list.length;
+    var count = 0;
+
+    if(dur_list === null) {
+      playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text)
+    } else {
+      playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text)
+    }
   }
-
-  pattern.start(0).loop = false;
-  Tone.Transport.start();
 
 }
 
@@ -642,6 +666,8 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", st
     console.log(hidePlay);
     console.log(type);
     console.log(showStop);
+    console.log('auto_next_page:');
+    console.log(auto_next_page);
     // start recording but then stop after x milliseconds
     window.startTime = new Date().getTime();
 

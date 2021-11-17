@@ -23,42 +23,47 @@ tidy_melodies <- function(melody_results) {
 
 
 
-present_scores <- function(res) {
+present_scores <- function(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic) {
 
-  # long tones
-  long_tones <- as.data.frame(lapply(res$MST.long_note_trials$long_tone_, paste0, collapse = ","))
+  if(num_items_long_tone > 0) {
+    # long tones
+    long_tones <- as.data.frame(lapply(res$MST.long_note_trials$long_tone_, paste0, collapse = ","))
 
-  long_tone_summary <- long_tones %>%
-    dplyr::select(note_accuracy, note_precision, dtw_distance) %>%
-      dplyr::mutate_if(is.character,as.numeric) %>%
-        dplyr::summarise(mean_note_accuracy = mean(note_accuracy, na.rm = TRUE),
-                         note_precision = mean(note_precision, na.rm = TRUE),
-                         mean_dtw_distance = mean(note_precision, na.rm = TRUE))
+    long_tone_summary <- long_tones %>%
+      dplyr::select(note_accuracy, note_precision, dtw_distance) %>%
+        dplyr::mutate_if(is.character,as.numeric) %>%
+          dplyr::summarise(mean_note_accuracy = mean(note_accuracy, na.rm = TRUE),
+                           note_precision = mean(note_precision, na.rm = TRUE),
+                           mean_dtw_distance = mean(note_precision, na.rm = TRUE))
+  }
 
-  # arrhythmic
-  arrhythmic_melodies <- tidy_melodies(res$MST.arrhythmic_melodies)
+  if(num_items_arrhythmic > 0) {
+    # arrhythmic
+    arrhythmic_melodies <- tidy_melodies(res$MST.arrhythmic_melodies)
 
-  arrhythmic_melody_summary <- arrhythmic_melodies %>% dplyr::select(
-  correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
-   correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
-    similarity, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
-      dplyr::mutate_if(is.character,as.numeric) %>%
-        dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
-
-  # rhythmic
-  rhythmic_melodies <- tidy_melodies(res$MST.rhythmic_melodies)
-
-  rhythmic_melody_summary <- rhythmic_melodies %>% dplyr::select(
+    arrhythmic_melody_summary <- arrhythmic_melodies %>% dplyr::select(
     correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
-    correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
-    similarity, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
-      dplyr::mutate_if(is.character,as.numeric) %>%
-        dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+     correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
+      similarity, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
+        dplyr::mutate_if(is.character,as.numeric) %>%
+          dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+  }
 
-  list("long_note" = long_tone_summary,
-       "arrhythmic" = arrhythmic_melody_summary,
-       "rhythmic" = rhythmic_melody_summary
-       )
+  if(num_items_rhythmic > 0) {
+    # rhythmic
+    rhythmic_melodies <- tidy_melodies(res$MST.rhythmic_melodies)
+
+    rhythmic_melody_summary <- rhythmic_melodies %>% dplyr::select(
+      correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
+      correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
+      similarity, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
+        dplyr::mutate_if(is.character,as.numeric) %>%
+          dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+  }
+
+  list("long_note" = ifelse(is.null(long_tone_summary), data.frame(mean_note_accuracy = 1, note_precision = 1, mean_dtw_distance = 1), long_tone_summary),
+       "arrhythmic" = ifelse(is.null(arrhythmic_melody_summary), data.frame(accuracy = 1, similarity = 1), arrhythmic_melody_summary),
+       "rhythmic" = ifelse(is.null(rhythmic_melody_summary), data.frame(accuracy = 1, similarity = 1), rhythmic_melody_summary))
 
 }
 
@@ -68,12 +73,12 @@ present_scores <- function(res) {
 #' @export
 #'
 #' @examples
-final_results <- function(test_name, url) {
+final_results <- function(test_name, url, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic) {
   c(
     psychTestR::reactive_page(function(state, ...) {
       res <- as.list(psychTestR::get_results(state, complete = FALSE))
 
-      processed_results <- present_scores(res)
+      processed_results <- present_scores(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic)
 
       psychTestR::set_local("similarity",
                              mean(processed_results$arrhythmic$similarity,

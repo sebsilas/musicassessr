@@ -58,7 +58,11 @@ musicassessr_js_scripts <- function(destination_bucket,
                                     bucket_name,
                                     bucket_region,
                                     identity_pool_id,
-                                    musicassessr_state = "production") {
+                                    musicassessr_state = NULL) {
+
+  print('musicassessr_js_scripts')
+  print(musicassessr_state)
+
   shiny::tags$div(
     musicassessr::set_musicassessr_state(musicassessr_state),
     shiny::tags$script(htmltools::HTML(enable.cors)),

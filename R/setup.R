@@ -6,14 +6,19 @@
 #' @export
 #'
 #' @examples
-set_musicassessr_state <- function(state = c("production", "test")) {
-  if(state == "test") {
-    system2(command = "node",
-            args = "/Users/sebsilas/aws-musicassessr-local-file-upload/app.js",
-            wait = FALSE)
+set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
+
+  if(!is.null(state)) {
+
+    if(state == "test") {
+      system2(command = "node",
+              args = "/Users/sebsilas/aws-musicassessr-local-file-upload/app.js",
+              wait = FALSE)
+    }
+
+    musicassessr_state <<- state
+    shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
   }
-  musicassessr_state <<- state
-  shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
 }
 
 
@@ -193,5 +198,6 @@ midi_setup <- function() {
     set_instrument_range_code_block("Piano")
   )
 }
+
 
 

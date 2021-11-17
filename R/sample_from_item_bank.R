@@ -168,8 +168,6 @@ item_sampler_simple <- function(item_bank, no_items) {
 
 
 item_sampler_rds <- function(item_bank, no_items) {
-  print('item_sampler_rds')
-  print(item_bank)
 
   if(is.list(no_items) == TRUE) {
 
@@ -220,10 +218,12 @@ sample_from_user_range <- function(no_to_sample) {
 
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
+
     span <- psychTestR::get_global("span", state)
     # sample arrhythmic
     arrhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
+
     psychTestR::set_global(id, arrhythmic_sample, state)
   })
 }

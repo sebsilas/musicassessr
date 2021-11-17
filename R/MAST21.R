@@ -50,10 +50,21 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                          page_text = psychTestR::i18n("sing_melody_trial"),
                          page_title_doo = "Sing this melody with a \"Dooo\" sound.",
                          page_title_daa = "Sing this melody with a \"Daah\" sound.",
-                        long_tone_title = "Sing the note",
+                        long_tone_title_doo = "Sing the note with a \"Dooo\" sound.",
+                        long_tone_title_daa = "Sing the note with a \"Daah\" sound.",
                         long_tone_text = "Please sing the note after you hear it, then click Stop.",
                          instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
 
+  if(sound == "voice_doo") {
+    page_title <- page_title_doo
+    long_tone_title <- long_tone_title_doo
+  } else if(sound == "voice_daa") {
+    page_title <- page_title_daa
+    long_tone_title <- long_tone_title_daa
+  } else {
+    page_title <- "Please sing the melody"
+    long_tone_title <- "Please sing the note"
+  }
 
   long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
@@ -73,14 +84,14 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title)
   })
 
   melodies_octave_4 <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_daa)
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title)
   })
 
 
@@ -167,12 +178,12 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 
 
 
-# library(PDT)
-# library(mpt)
-# library(mdt)
-# library(psyquest)
-# library(MST)
-# library(musicassessr)
+library(PDT)
+library(mpt)
+library(mdt)
+library(psyquest)
+library(MST)
+library(musicassessr)
 
 
 UPEI_2021_battery <- function(state = "production",
@@ -182,19 +193,22 @@ UPEI_2021_battery <- function(state = "production",
                                                      identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
                                                      destination_bucket = "shinny-app-destination-41630")) {
 
+
   musicassessr::make_aws_credentials_global(aws_credentials)
 
-  psychTestR::make_test(psychTestR::join(
-    psychTestR::one_button_page(shiny::tags$div(
-      shiny::tags$h1("UPEI 2021 Testing"),
-      shiny::tags$p("This is a protocol for the UPEI 2021 singing study."),
-      musicassessr_js_scripts(api_url = aws_credentials$api_url,
-                              bucket_name = aws_credentials$bucket_name,
-                              bucket_region = aws_credentials$bucket_region,
-                              identity_pool_id = aws_credentials$identity_pool_id,
-                              destination_bucket = aws_credentials$destination_bucket,
-                              musicassessr_state = state),
-      )),
+  psychTestR::make_test(
+    psychTestR::join(
+    psychTestR::new_timeline(psychTestR::join(
+      psychTestR::one_button_page(shiny::tags$div(
+        shiny::tags$h1("UPEI 2021 Testing"),
+        shiny::tags$p("This is a protocol for the UPEI 2021 singing study."),
+        musicassessr_js_scripts(api_url = aws_credentials$api_url,
+                                bucket_name = aws_credentials$bucket_name,
+                                bucket_region = aws_credentials$bucket_region,
+                                identity_pool_id = aws_credentials$identity_pool_id,
+                                destination_bucket = aws_credentials$destination_bucket,
+                                musicassessr_state = state),
+        )),
 
     psychTestR::get_p_id(prompt = shiny::tags$div(
       shiny::tags$p("Please provide your participation identifier below created from:"),
@@ -205,8 +219,7 @@ UPEI_2021_battery <- function(state = "production",
       shiny::tags$br(),
       shiny::tags$p("For example: joh11tav")))),
 
-    psychTestR::new_timeline(musicassessr::microphone_calibration_page(),
-                             dict = musicassessr::dict(NULL)),
+    musicassessr::microphone_calibration_page(),
 
     musicassessr::get_voice_range_page(with_examples = FALSE),
 
@@ -222,14 +235,24 @@ UPEI_2021_battery <- function(state = "production",
 
     musicassessr::MAST21_trials(sound = "voice_doo"),
 
-    musicassessr::sing_happy_birthday_page(feedback = TRUE),
+    musicassessr::sing_happy_birthday_page(feedback = TRUE)
+      ),dict = musicassessr::dict(NULL)),
 
     MST::MST(aws_credentials = aws_credentials,
         num_items = list(
-          long_tones = 6L, arrhythmic = 12L, rhythmic = 1L
-        )),
+          long_tones = 6L, arrhythmic = 10L, rhythmic = 0L
+        ),
+        examples = 2L,
+        final_results = FALSE,
+        state = state,
+        absolute_url = "https://adaptiveeartraining.com",
+        SNR_test = FALSE,
+        get_range = FALSE,
+        gold_msi = FALSE,
+        demographics = FALSE,
+        with_final_page = FALSE),
 
-    PDT::PDT(),
+    PDT::PDT(with_final_page = FALSE),
 
     mpt::mpt(),
 
@@ -242,10 +265,23 @@ UPEI_2021_battery <- function(state = "production",
     musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
     psychTestR::final_page("Thank you for participating!")
-  ))
+  ),
+  opt = psychTestR::test_options(title = "UPEI",
+                           admin_password = "test",
+                           display = psychTestR::display_options(
+                             left_margin = 1L,
+                             right_margin = 1L,
+                             css = system.file('www/css/style.css', package = "musicassessr")
+                           ),
+                           languages = c("en"))
+  )
 
 }
 
+UPEI_2021_battery("test")
 
-#UPEI_2021_battery()
+
+
+# https://stackoverflow.com/questions/39322089/node-js-port-3000-already-in-use-but-it-actually-isnt
+
 

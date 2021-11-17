@@ -14,17 +14,30 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url) {
     )),
     psychTestR::reactive_page(function(state, ...) {
 
-      signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
-      noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
+      if(musicassessr_state == "production") {
+        signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
+        noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
+
+        valid_url <- FALSE
+
+        while(!valid_url) {
+          valid_url <- urlFileExist(noise_file)$exists
+        }
+      } else {
+
+        signal_file <- psychTestR::get_global("SNR_signal", state)
+        noise_file <- psychTestR::get_global("SNR_noise", state)
+
+        valid_file <- FALSE
+
+        while(!valid_file) {
+          valid_file <- file.exists(noise_file)
+        }
+
+      }
       print('SNR...')
       print(signal_file)
       print(noise_file)
-
-      valid_url <- FALSE
-
-      while(!valid_url) {
-        valid_url <- urlFileExist(noise_file)$exists
-      }
 
       SNR <- compute_SNR(signal_file = signal_file,
                          noise_file = noise_file)

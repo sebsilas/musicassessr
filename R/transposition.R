@@ -55,8 +55,7 @@ sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range,
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
-  }
-  else {
+  } else {
     key <- sample_hard_key(inst)
   }
 
@@ -311,6 +310,10 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
 leave_arrhythmic <- function(rel_melody, bottom_range = NULL, top_range = NULL) {
   rel_melody
 }
+
+
+
+# sample_keys_by_difficulty("Piano", n_easy = 4, n_hard = 4)
 
 
 

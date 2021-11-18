@@ -32,11 +32,11 @@ test_showcase <- function() {
       shiny::tags$h3("Present Musical Stimuli")
     )),
 
-    psychTestR::one_button_page(body = tags$div(present_stimuli(stimuli = c(60, 61, 62, 63),
+    psychTestR::one_button_page(body = shiny::tags$div(present_stimuli(stimuli = c(60, 61, 62, 63),
                                                        stimuli_type = "midi_notes",
                                                        display_modality = "auditory",
                                                        page_title = "Simple Present MIDI notes"),
-                                                      shiny::tags$code(musicassessr_tl_code[[1]])
+                                                      shiny::tags$code(musicassessr_tl_code[[4]])
                                                 )),
 
 
@@ -45,7 +45,7 @@ test_showcase <- function() {
                                   stimuli_type = "rhythms",
                                   page_title = "Present Rhythms",
                                   page_type = "one_button_page",
-                                  page_text = shiny::tags$code(musicassessr_tl_code[[2]])),
+                                  page_text = shiny::tags$code(musicassessr_tl_code[[5]])),
 
     # sci notation with rhythms
     musicassessr::present_stimuli(stimuli = list(scientific_music_notation = list("Eb4", "A4", "Bb4", "Eb4", "A4", "Bb4", "C5", "A4", "Bb4", "C5", "A4", "Bb4", "Bb4", "A4", "G4", "F4", "Eb4", "F4", "Bb4", "Ab4", "G4", "F4", "Eb4", "F4", "Eb4", "G4", "Eb4", "A4", "Bb4", "Eb4", "A4", "Bb4", "C5", "A4", "Bb4", "C5", "D5", "Bb4", "D5", "Eb5", "D5", "C5", "Bb4", "D5", "D5", "Eb5", "D5", "C5", "Bb4", "D5", "Eb5", "F5"),
@@ -54,9 +54,8 @@ test_showcase <- function() {
     stimuli_type = "scientific_music_notation",
     display_modality = "auditory",
     page_title = "Present Notes (Sci Notation) + Rhythms Aurally",
-    page_type = "one_button_page"
-    #note_length = 1000
-    ),
+    page_type = "one_button_page",
+    page_text = shiny::tags$code(musicassessr_tl_code[[6]])),
 
 
     # midi notes (visual)
@@ -271,46 +270,34 @@ test_showcase <- function() {
 
 musicassessr_tl_code <- list(
 
-    htmltools::HTML('one_button_page(\ntags$div(
-    set_musicassessr_state("test"),
-    musicassessr_js_scripts("A", "B", "C", "D", "E"),
-    shiny::tags$h2("musicassessr Test Showcase")))'),
 
     'select_midi_device_page()',
 
     'record_midi_page()',
 
      # midi notes (auditory)
-     'record_audio_page()'
+     'record_audio_page()',
 
 
-  # psychTestR::one_button_page(shiny::tags$div(
-  #   shiny::tags$h3("Present Musical Stimuli")
-  # )),
-  #
-  # 'one_button_page(body = tags$div(present_stimuli(stimuli = c(60, 61, 62, 63),
-  #                                 stimuli_type = "midi_notes",
-  #                                 display_modality = "auditory",
-  #                                 page_title = "Simple Present MIDI notes")))',
-  #
+    htmltools::HTML('one_button_page(body = tags$div(<br />present_stimuli(stimuli = c(60, 61, 62, 63),<br />
+                                  stimuli_type = "midi_notes",<br />
+                                  display_modality = "auditory",<br />
+                                  page_title = "Simple Present MIDI notes")))'),
+
   #
   # # rhythms (need percussion sound)
-  # present_stimuli(stimuli = list('8n', '8n', list('2n', '4n'), '8n', '4t', '4t', '4t', '4t', '4t', '4t', '8n'),
-  #                               stimuli_type = "rhythms",
-  #                               page_title = "Present Rhythms",
-  #                               page_type = "one_button_page",
-  #                               page_text = shiny::tags$code(musicassessr_tl_code[[2]])),
-  #
+    htmltools::HTML('present_stimuli(stimuli = list("8n", "8n", list("2n", "4n"), "8n", "4t", "4t", "4t", "4t", "4t", "4t", "8n"),<br />
+                                stimuli_type = "rhythms",<br />
+                                page_title = "Present Rhythms",<br />
+                                page_type = "one_button_page")'),
+
   # # sci notation with rhythms
-  # present_stimuli(stimuli = list(scientific_music_notation = list("Eb4", "A4", "Bb4", "Eb4", "A4", "Bb4", "C5", "A4", "Bb4", "C5", "A4", "Bb4", "Bb4", "A4", "G4", "F4", "Eb4", "F4", "Bb4", "Ab4", "G4", "F4", "Eb4", "F4", "Eb4", "G4", "Eb4", "A4", "Bb4", "Eb4", "A4", "Bb4", "C5", "A4", "Bb4", "C5", "D5", "Bb4", "D5", "Eb5", "D5", "C5", "Bb4", "D5", "D5", "Eb5", "D5", "C5", "Bb4", "D5", "Eb5", "F5"),
-  #                                              rhythms = list('8n', '8n', list('2n', '4n'), '8n', '4t', '4t', '4t', '4t', '4t', '4t', '8n', list('2n', '4n'), '8n', '8n', '8n', '8n', '8n', list('4n', '8n'), '8n', '8n', '8n', '8n', '8n', '4n', '4n', list('2n', '4n', '8n'), '8n', '8n', list('2n', '4n'), '8n', '4t', '4t', '4t', '4t', '4t', '4t', '8n', list('2n', '4n'), '8n', '8n', '8n', '8n', '8n', list('4n', '8n'), '8n', '8n', '8n', '8n', '8n', '4n', '4n', list('2n', '4n', '8n'))
-  # ),
-  # stimuli_type = "scientific_music_notation",
-  # display_modality = "auditory",
-  # page_title = "Present Notes (Sci Notation) + Rhythms Aurally",
-  # page_type = "one_button_page"
-  # #note_length = 1000
-  # ),
+  htmltools::HTML('present_stimuli(stimuli = list(scientific_music_notation = list("Eb4", "A4", "Bb4", "Eb4", "A4", "Bb4", "C5", "A4", "Bb4", "C5", "A4", "Bb4", "Bb4", "A4", "G4", "F4", "Eb4", "F4", "Bb4", "Ab4", "G4", "F4", "Eb4", "F4", "Eb4", "G4", "Eb4", "A4", "Bb4", "Eb4", "A4", "Bb4", "C5", "A4", "Bb4", "C5", "D5", "Bb4", "D5", "Eb5", "D5", "C5", "Bb4", "D5", "D5", "Eb5", "D5", "C5", "Bb4", "D5", "Eb5", "F5"),<br />
+                                               rhythms = list("8n", "8n", list("2n", "4n"), "8n", "4t", "4t", "4t", "4t", "4t", "4t", "8n", list("2n", "4n"), "8n", "8n", "8n", "8n", "8n", list("4n", "8n"), "8n", "8n", "8n", "8n", "8n", "4n", "4n", list("2n", "4n", "8n"), "8n", "8n", list("2n", "4n"), "8n", "4t", "4t", "4t", "4t", "4t", "4t", "8n", list("2n", "4n"), "8n", "8n", "8n", "8n", "8n", list("4n", "8n"), "8n", "8n", "8n", "8n", "8n", "4n", "4n", list("2n", "4n", "8n"))),<br />
+    stimuli_type = "scientific_music_notation",<br />
+    display_modality = "auditory",<br />
+    page_title = "Present Notes (Sci Notation) + Rhythms Aurally",<br />
+    page_type = "one_button_page")')
   #
   #
   # # midi notes (visual)

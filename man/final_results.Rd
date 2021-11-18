@@ -4,7 +4,13 @@
 \alias{final_results}
 \title{Present Final Results}
 \usage{
-final_results(test_name, url)
+final_results(
+  test_name,
+  url,
+  num_items_long_tone,
+  num_items_arrhythmic,
+  num_items_rhythmic
+)
 }
 \value{
 

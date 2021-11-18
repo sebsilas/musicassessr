@@ -14,7 +14,8 @@ MAST21_trials(
   page_text = psychTestR::i18n("sing_melody_trial"),
   page_title_doo = "Sing this melody with a \\"Dooo\\" sound.",
   page_title_daa = "Sing this melody with a \\"Daah\\" sound.",
-  long_tone_title = "Sing the note",
+  long_tone_title_doo = "Sing the note with a \\"Dooo\\" sound.",
+  long_tone_title_daa = "Sing the note with a \\"Daah\\" sound.",
   long_tone_text = "Please sing the note after you hear it, then click Stop.",
  
     instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm."

@@ -469,3 +469,247 @@ display_previous_answer_music_notation_pitch_class_aws <- function() {
 
 
 
+wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4) {
+
+  mean_notes <- get_mean_of_notes(notes, type, octave)
+
+  notes <- format.notes(type = type, notes = notes, asChord = asChord, octave = octave)
+
+  if (clef == "treble") {
+    clef <- "<sign>G</sign><line>2</line>"
+  } else if (clef == "bass") {
+    clef <- "<sign>F</sign><line>4</line>"
+  } else {
+    clef <- choose_clef_from_mean(mean_notes)
+  }
+
+  res <- htmltools::HTML(paste0('<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <!DOCTYPE score-partwise PUBLIC
+      "-//Recordare//DTD MusicXML 3.0 Partwise//EN"
+      "http://www.musicxml.org/dtds/partwise.dtd">
+  <score-partwise version="3.0">
+    <part-list>
+      <score-part id="P1">
+        <part-name>Music</part-name>
+      </score-part>
+    </part-list>
+    <part id="P1">
+      <measure number="1">
+        <attributes>
+          <divisions>1</divisions>
+          <key>
+            <fifths>0</fifths>
+          </key>
+          <time>
+            <beats>4</beats>
+            <beat-type>4</beat-type>
+          </time>
+          <clef>',
+                                clef,
+                                '</clef>
+        </attributes>', notes, '</measure>
+    </part>
+  </score-partwise>'))
+}
+
+
+format.accidentals.for.music.xml <- function(pitch_class_string){
+  # take pitch class string, determine if sharp or flat
+  # if so, return appropriate <alter> music xml element (-1 for flat, 1 for sharp)
+  # if not, return empty string
+  # also return the pitch class with the flat removed
+
+  last_char <- itembankr::get_last_char_of_string(pitch_class_string)
+
+  if (last_char == "b") {
+    alter.text <- '<alter>-1</alter>'
+    pitch.class <- itembankr::remove_last_char_of_string(pitch_class_string)
+  }
+
+  else if (last_char == "#") {
+    alter.text <- '<alter>1</alter>'
+    pitch.class <- itembankr::remove_last_char_of_string(pitch_class_string)
+  }
+  else {
+    alter.text <- ''
+    pitch.class <- pitch_class_string
+  }
+
+  list(alter.text, pitch.class)
+}
+
+
+format.notes.scientific_music_notation <- function(notes, asChord = FALSE) {
+
+  res <- ""
+
+  for(i in seq_along(notes)) {
+
+    note <- itembankr::remove_last_char_of_string(notes[i])
+    octave <- itembankr::get_last_char_of_string(notes[i])
+    alter <- format.accidentals.for.music.xml(note)[[1]] # alters specifies if not sharp or flat
+    note.without.sharp.or.flat <- format.accidentals.for.music.xml(note)[[2]]
+
+    # https://www.musicxml.com/tutorial/the-midi-compatible-part/pitch/
+
+    if (i == 1) {
+      res <- paste0(res, '<note>
+        <pitch>
+        <step>', note.without.sharp.or.flat, '</step>',
+                    alter,
+                    '<octave>', octave, '</octave>
+        </pitch>
+        <duration>4</duration>
+        <type>whole</type>
+        </note>')
+
+    }
+
+
+    else {
+      res <- paste0(res, '<note>',
+                    ifelse(asChord, '<chord/>', ' '), # format as chord
+                    '<pitch>
+                <step>', note.without.sharp.or.flat, '</step>',
+                    alter,
+                    '<octave>', octave, '</octave>
+                </pitch>
+                <duration>4</duration>
+                <type>whole</type>
+                </note>')
+    }
+
+  }
+  res
+
+}
+
+
+format.notes.pitch.classes <- function(notes, octave = 4, asChord = FALSE) {
+
+  res <- ""
+
+  for(i in seq_along(notes)) {
+
+    alter <- format.accidentals.for.music.xml(notes[i])[[1]] # alters specifies if not sharp or flat
+
+    note.without.sharp.or.flat <- format.accidentals.for.music.xml(notes[i])[[2]]
+
+    if (i == 1) {
+      res <- paste0(res, '<note>
+        <pitch>
+        <step>', note.without.sharp.or.flat, '</step>',
+                    alter,
+                    '<octave>', octave, '</octave>
+        </pitch>
+        <duration>4</duration>
+        <type>whole</type>
+        </note>')
+
+    }
+
+
+    else {
+      res <- paste0(res, '<note>',
+                    ifelse(asChord, '<chord/>', ' '), # format as chord
+                    '<pitch>
+                <step>', note.without.sharp.or.flat, '</step>',
+                    alter,
+                    '<octave>', octave, '</octave>
+                </pitch>
+                <duration>4</duration>
+                <type>whole</type>
+                </note>')
+    }
+
+  }
+  res
+}
+
+
+
+format.notes.midi <- function(notes, asChord = FALSE) {
+  notes <- itembankr::midi_to_sci_notation(notes)
+  res <- format.notes.scientific_music_notation(notes = notes, asChord = asChord)
+}
+
+
+format.notes <- function(type, notes, octave = 4, asChord = FALSE) {
+  if (type == "pitch_classes") {
+    res <- format.notes.pitch.classes(notes, octave = octave, asChord = asChord)
+  }
+  else if (type == "scientific_music_notation") {
+    # check if in correct format
+    lapply(notes, itembankr::is_sci_notation)
+    res <- format.notes.scientific_music_notation(notes = notes, asChord = asChord)
+  }
+  else if (type == "midi_notes") {
+    res <- format.notes.midi(notes = notes, asChord = asChord)
+  }
+
+  else {
+    stop('Unrecognised notation format. Must be one of pitch_classes, scientific_music_notation or midi_notes')
+  }
+  res
+
+}
+
+
+play.notes.html.wrapper <- function(stimuli_pitches, stimuli_rhythms) {
+
+  # https://developer.aliyun.com/mirror/npm/package/tone-rhythm
+
+  shiny::tags$div(shiny::tags$button("Play", id = "playNotes"),
+                  shiny::tags$script(htmltools::HTML(paste0('
+
+        var synth = new Tone.Synth().toMaster();
+
+        var {
+      getBarsBeats,
+      addTimes,
+      getTransportTimes,
+      mergeMusicDataPart
+      } = toneRhythm.toneRhythm(Tone.Time); ',
+                                                            'var rhythms = ', rjson::toJSON(stimuli_rhythms), '; ',
+                                                            'var transportTimes = getTransportTimes(rhythms);
+                  var pitches = ', rjson::toJSON(stimuli_pitches), '; ',
+                                                            'var mergedData = mergeMusicDataPart({
+                rhythms: rhythms,
+                notes: pitches,
+                startTime: \'0:3:2\'
+              });
+
+              var melodyPart = new Tone.Part((time, value) => {
+          synth.triggerAttackRelease(value.note, value.duration, time);
+          }, mergedData).start(0);
+
+          var playButton = document.getElementById(\'playNotes\');
+          playButton.onclick = function() { Tone.Transport.start(); };
+
+                    '))))
+
+}
+
+open.music.display.wrapper <- function(xml, id = "sheet-music", return_div = TRUE) {
+
+  non_underscore_id <- stringr::str_remove(id, "_")
+
+  shiny::tags$div(
+    shiny::tags$br(),
+    if(return_div) shiny::tags$div(id=id),
+    shiny::tags$script(htmltools::HTML(paste0('
+                var ', id, '_osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(\"', id, '\", {drawingParameters: "compact",
+                drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false});
+                var loadPromise = ', id, '_osmd.load(`',xml,'`);
+                              loadPromise.then(function(){
+                              var ', non_underscore_id, ' = document.getElementById("', id, '");
+                              ', id, '_osmd.render();
+                              var scoreWidth = String(parseInt(', id, '_osmd.graphic.musicPages[0].musicSystems[0].PositionAndShape.size.width)*10);
+                              scoreWidth = scoreWidth.concat("px");
+                              ', non_underscore_id, '.style.width = scoreWidth;
+                              });'))))
+}
+
+
+
+

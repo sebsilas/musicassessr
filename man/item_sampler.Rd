@@ -7,7 +7,7 @@
 item_sampler(item_bank, no_items)
 }
 \arguments{
-\item{no_items}{}
+\item{item_bank}{}
 }
 \value{
 

@@ -1,7 +1,6 @@
 #' Item sampler
 #'
 #' @param item_bank
-#' @param no_items
 #'
 #' @return
 #' @export
@@ -56,7 +55,7 @@ item_characteristics_sampler <- function(length = 3:15, difficulty = list("easy"
   }
 
   data.frame(trial_no = 1:no_items,
-             melody_length = N_list[order(N_list)],
+             melody_length = N_list[base::order(N_list)],
              difficulty = c(rep("easy", difficulty$easy),
                             rep("hard", difficulty$hard))
   )
@@ -189,14 +188,6 @@ item_sampler_rds <- function(item_bank, no_items) {
 }
 
 
-
-get_trial_characteristics <- function(trial_df, trial_no) {
-  # given the trial number, return what info is needed for the sampler
-  list("melody_length" = trial_df[trial_df$trial_no == trial_no, "melody_length"],
-       "difficulty" = trial_df[trial_df$trial_no == trial_no, "difficulty"]
-  )
-}
-
 #' Sample from the user's range (determined at test time)
 #'
 #' @param no_to_sample
@@ -238,6 +229,14 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic) {
   })
 }
 
+sample_item_characteristics <- function(item_bank, num_items, var_name) {
+  psychTestR::code_block(function(state, ...) {
+    print('sample_item_characteristics')
+    print(num_items)
+    item_chars <- item_characteristics_sampler(difficulty = num_items)
+    psychTestR::set_global(var_name, item_chars, state)
+  })
+}
 
 #pra <- item_characteristics_sampler()
 

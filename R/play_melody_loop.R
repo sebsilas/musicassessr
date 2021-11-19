@@ -1,4 +1,5 @@
 
+
 #' A page builder for creating a specified number of play_melody_loops
 #'
 #' @param presampled_items
@@ -17,6 +18,7 @@
 #' @param example
 #' @param feedback
 #' @param sound
+#' @param trial_characteristics_function
 #'
 #' @return
 #' @export
@@ -28,7 +30,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                                         page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                         get_answer = get_answer_save_aws_key, rel_to_abs_mel_function = NULL,
                                         start_from_trial_no = 1, clip_stimuli_length = FALSE,
-                                        arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano") {
+                                        arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano",
+                                        trial_characteristics_function = NULL) {
 
   if(is.null(presampled_items)) {
     # items should be a dataframe
@@ -46,7 +49,9 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                        clip_stimuli_length = clip_stimuli_length,
                        arrhythmic = arrhythmic,
                        example = example,
-                       sound = sound)   })
+                       sound = sound,
+                       trial_characteristics_function = trial_characteristics_function
+                       )   })
 
       items
 
@@ -78,6 +83,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 
 
 
+
 #' Create a psychTestR test loop for having several attempts at playing back a melody.
 #'
 #' @param melody
@@ -101,6 +107,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 #' @param example
 #' @param sound
 #' @param reactive_stimuli
+#' @param trial_characteristics_function
 #'
 #' @return
 #' @export
@@ -112,7 +119,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,
                              start_note = 1, end_note = "end", durations = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE, sound = "piano",
-                             reactive_stimuli = NULL) {
+                             reactive_stimuli = NULL, trial_characteristics_function = NULL) {
 
   save_answer <- example_save(example)
 
@@ -125,9 +132,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
       psychTestR::set_global("number_attempts", 1, state)
       psychTestR::set_global("max_goes", max_goes, state)
       psychTestR::set_global("attempts_left", max_goes, state)
-
       # grab sampled melody for this trial (if one not specified)
-      grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = rel_to_abs_mel_function)
+      grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = rel_to_abs_mel_function, trial_characteristics_function = trial_characteristics_function)
     }),
 
     # keep in loop until the participant confirms they are happy with their entry
@@ -160,7 +166,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                      var_name = var_name,
                      sound = sound,
                      reactive_stimuli = reactive_stimuli,
-                     rel_to_abs_mel_function = rel_to_abs_mel_function),
+                     rel_to_abs_mel_function = rel_to_abs_mel_function,
+                     trial_characteristics_function = trial_characteristics_function),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -173,10 +180,10 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                            page_type, record_audio_method, answer_meta_data, get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note,
                            end_note, durations, state, melody_no, var_name, sound = "piano",
-                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, ...) {
+                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, ...) {
 
 
-  if(!is.null(rel_to_abs_mel_function)) {
+  if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
     # then this presumes that the melody was transposed at test time, and therefore, should be grabbed
     # via get_local/global
     stimuli <- NULL
@@ -190,19 +197,22 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
     attempts_left <- psychTestR::get_global("attempts_left", state) - 1
     answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
 
-
     # midi checks
     midi_device <- midi_device_check(page_type, state)
 
     if(stimuli_type == "audio_WJD") {
       stimuli <- present_stimuli_audio_WJD(stimuli)
+      stimuli_type <- "audio"
+      hideOnPlay <- TRUE
     }
 
     # grab vars
-    melody <- melody_checks(stimuli, state, stimuli_type)$melody
-    start_note <- melody_checks(stimuli, state, stimuli_type)$start_note
-    end_note <- melody_checks(stimuli, state, stimuli_type)$end_note
-    durations <- melody_checks(stimuli, state, stimuli_type)$durations
+    melody_checks <- melody_checks(stimuli, state, stimuli_type)
+
+    melody <- melody_checks$melody
+    start_note <- melody_checks$start_note
+    end_note <- melody_checks$end_note
+    durations <- melody_checks$durations
 
     present_stimuli(stimuli = melody,
                     stimuli_type = stimuli_type,
@@ -222,7 +232,8 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                     user_rating = TRUE,
                     happy_with_response = TRUE,
                     attempts_left = attempts_left,
-                    sound = sound)
+                    sound = sound,
+                    hideOnPlay = hideOnPlay)
 
   })
 }
@@ -232,7 +243,13 @@ example_save <- function(example) {
   ifelse(example, FALSE, TRUE)
 }
 
-grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = NULL, note_length = 0.5, ...) {
+grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = NULL, note_length = 0.5, trial_characteristics_function = NULL, ...) {
+  print(grab_sampled_melody)
+  # not all trials will need the range, inst. etc but grab it here anyway
+  bottom_range <- psychTestR::get_global("bottom_range", state)
+  top_range <- psychTestR::get_global("top_range", state)
+  range <- psychTestR::get_global("range", state)
+  inst <- psychTestR::get_global("inst", state)
 
   if(stimuli_type == "midi_file") {
     sort_sampled_midi_file(trials, melody_no, clip_stimuli_length, state)
@@ -240,44 +257,49 @@ grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melod
     # has melody been specified directly, or sampled at test time?
     if(is.null(melody_row)) {
       # assume melodies sampled at test time and stored in global object
-      rel_melody <- grab_melody_from_state(melody_row, var_name, melody_no, state)$rel_melody
-      melody_row <- grab_melody_from_state(melody_row, var_name, melody_no, state)$melody_row
+      if(is.null(trial_characteristics_function)) {
+        rel_melody <- grab_melody_from_state(melody_row, var_name, melody_no, state)$rel_melody
+        melody_row <- grab_melody_from_state(melody_row, var_name, melody_no, state)$melody_row
+      } else {
+        trials <- psychTestR::get_global(var_name, state)
+        print('trials:')
+        print(trials)
+        trial_char <- trial_characteristics_function(trial_df = trials, trial_no = melody_no)
+        print('trial:char')
+        print(trial_char)
+        melody_row <- sample_melody_in_key(inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$difficulty, length = trial_char$melody_length)
+        print('melody_row: ')
+        print(melody_row)
+        rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
+        print('rely_mloeyd:')
+        print(rel_melody)
+      }
+
     } else {
-      rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
-      durations <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(durations))
-      transpose <- transposition_check(melody_row)
+        transpose <- transposition_check(melody_row)
+        rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
+      }
     }
+
+    durations <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(durations))
 
     # does the melody need to be rhythmic or arrhythmic?
     melody <- sort_arrhythmic(arrhythmic, rel_melody, durations, note_length)$melody
     durations <- sort_arrhythmic(arrhythmic, rel_melody, durations, note_length)$durations
-    print('daah')
-    print(melody)
-    print(durations)
+
     # does the melody need putting into a certain pitch range?
-    if(is.null(rel_to_abs_mel_function)) {
-      print('taka dal')
-      abs_melody <- melody %>% dplyr::pull(abs_melody)
-      print(abs_melody)
-    } else {
-      # then assume that the melody is in relative format and fit it into a key, based on a rel_to_abs_mel_function
-      bottom_range <- psychTestR::get_global("bottom_range", state)
-      top_range <- psychTestR::get_global("top_range", state)
-      range <- psychTestR::get_global("range", state)
-      abs_melody <- rel_to_abs_mel_function(rel_melody = rel_melody, bottom_range = bottom_range, top_range = top_range, range = range, transpose = transpose)
-      print(abs_melody)
-      print('bingband')
-    }
+  if(is.null(rel_to_abs_mel_function)) {
+    abs_melody <- melody %>% dplyr::pull(abs_melody)
+  } else {
+    # then assume that the melody is in relative format and fit it into a key, based on a rel_to_abs_mel_functio
+    abs_melody <- rel_to_abs_mel_function(rel_melody = rel_melody, bottom_range = bottom_range, top_range = top_range, range = range, transpose = transpose)
   }
 
-  print('ansm')
-  print(melody_row)
-  print(abs_melody)
+
   # attach generated absolute melody to meta data
   answer_meta_data <- cbind(melody_row,
                             tibble::tibble(abs_melody = paste0(abs_melody, collapse = ",")))
 
-  print(answer_meta_data)
   # set the melody to be used
   psychTestR::set_global("melody", list("melody" = abs_melody,
                                         "durations" = durations), state)
@@ -337,16 +359,17 @@ update_play_melody_loop_and_save <- function(state, max_goes) {
 
 
 melody_checks <- function(melody, state, stimuli_type = "midi_notes") {
-  print('inside melody_checks')
+
+
   if(is.null(melody)) {
     melody <- psychTestR::get_global("melody", state)
   }
-  print(melody)
+
   if(length(melody) == 1 & is.character(melody) &
-     stimuli_type != "midi_file" & stimuli_type != "audio_WJD") {
+     stimuli_type != "midi_file" & stimuli_type != "audio") {
     melody <- itembankr::str_mel_to_vector(melody, ",")
   }
-  print(melody)
+
   if(stimuli_type == "midi_file") {
     start_note <- melody$start_note
     end_note <- melody$end_note
@@ -362,7 +385,6 @@ melody_checks <- function(melody, state, stimuli_type = "midi_notes") {
   } else {
     durations <- NA
   }
-  print(durations)
 
   list("melody" = melody,
        "start_note" = start_note,

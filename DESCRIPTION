@@ -35,7 +35,7 @@ Imports:
     tuneR,
     seewave,
     warbleR,
-    psyquest,
+    psyquest (>= 1.3.0),
     RCurl,
     DT,
     stringr,
@@ -49,8 +49,9 @@ Imports:
     RPostgres
 Depends: 
     R (>= 2.10)
-Remotes: 
+Remotes:  
     pmcharrison/psychTestR,
     syntheso/itembankr,
     gaborcsardi/async,
-    pmcharrison/hrep
+    pmcharrison/hrep,
+    fmhoeger/psyquest

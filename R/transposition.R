@@ -51,7 +51,7 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
   res$difficulty <- rep("hard", no_to_sample)
 }
 
-sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range, difficulty, length = NULL) {
+sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range, difficulty, length = NULL) {
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -65,7 +65,7 @@ sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range,
 
   # sample melody
 
-  item_bank_subset <- subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
+  item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
 
   found_melody <- FALSE
 
@@ -75,17 +75,17 @@ sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range,
     rel_mel <- meta_data$melody
 
     # now put it in a key
-    key_centres <- pitch.class.to.midi.notes(key_centre)
+    key_centres <- itembankr::pitch_class_to_midi_notes(key_centre)
 
     key_centres_in_range <- key_centres[key_centres > bottom_range & key_centres < top_range]
 
     # first try it with the first note as being the key centre
-    abs_mel <- itembankr::rel_to_abs_mel(str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
+    abs_mel <- itembankr::rel_to_abs_mel(itembankr::str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
     # check key
-    mel_key <- get_implicit_harmonies(abs_mel)
+    mel_key <- itembankr::get_implicit_harmonies(abs_mel)
     mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
     # how far away is it from being the correct tonal centre?
-    dist <- pitch.class.to.numeric.pitch.class(key_centre) - pitch.class.to.numeric.pitch.class(mel_key_centre)
+    dist <- itembankr::pitch_class_to_numeric_pitch_class(key_centre) - itembankr::pitch_class_to_numeric_pitch_class(mel_key_centre)
 
     if (dist != 0) {
       # then must transpose
@@ -138,11 +138,11 @@ sample_melody_in_key <- function(item_bank = WJD, inst, bottom_range, top_range,
 
 
 
-sample_melody_in_easy_key <- function(item_bank = WJD, inst, bottom_range, top_range) {
+sample_melody_in_easy_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "easy")
 }
 
-sample_melody_in_hard_key <- function(item_bank = WJD, inst, bottom_range, top_range) {
+sample_melody_in_hard_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "hard")
 }
 
@@ -175,8 +175,8 @@ given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, to
 
   res <- res %>%
           dplyr::rowwise() %>%
-          dplyr::mutate(abs_melody = paste0(itembankr::rel_to_abs_mel(rel_mel = str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
-                 in_range = all(str_mel_to_vector(abs_melody, ",") %in% range)
+          dplyr::mutate(abs_melody = paste0(itembankr::rel_to_abs_mel(rel_mel = itembankr::str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
+                 in_range = all(itembankr::str_mel_to_vector(abs_melody, ",") %in% range)
                  ) %>%
                 dplyr::filter(in_range == TRUE)
 
@@ -184,10 +184,10 @@ given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, to
 
   for (i in idxes) {
     abs_melody <- res[i, "melody"]
-    key <- get_implicit_harmonies(str_mel_to_vector(abs_melody, ","))$key
+    key <- itembankr::get_implicit_harmonies(itembankr::str_mel_to_vector(abs_melody, ","))$key
   }
 
-  # mutate(key = get_implicit_harmonies(str_mel_to_vector(abs_melody, ","))$key) %>%
+  # mutate(key = itembankr::get_implicit_harmonies(itembankr::str_mel_to_vector(abs_melody, ","))$key) %>%
   #   rowwise %>%
   #     mutate(difficulty = key_difficulty(key, inst))
 
@@ -197,7 +197,7 @@ given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, to
 
 produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_range = 108, key) {
   # given some melodies in relative format, and a user range, produce random transpositions which fit in that range
-  rel_melody <- str_mel_to_vector(rel_melody, sep = ",")
+  rel_melody <- itembankr::str_mel_to_vector(rel_melody, sep = ",")
   dummy_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = 1)
   mel_range <- range(dummy_abs_mel)
   span <- sum(abs(mel_range))
@@ -215,7 +215,7 @@ produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_
     # and is the correct tonality
     random_abs_mel_start_note <- sample(gamut, 1)
     random_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = random_abs_mel_start_note)
-    current_key <- get_implicit_harmonies(random_abs_mel)$key
+    current_key <- itembankr::get_implicit_harmonies(random_abs_mel)$key
     count <- count + 1
 
     if(span > top_range - bottom_range) {
@@ -307,7 +307,7 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
 }
 
 
-leave_arrhythmic <- function(rel_melody, bottom_range = NULL, top_range = NULL) {
+leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_range = NULL, transpose = NULL) {
   rel_melody
 }
 
@@ -398,7 +398,7 @@ leave_arrhythmic <- function(rel_melody, bottom_range = NULL, top_range = NULL) 
 
 
 
-#test_sub <- subset_item_bank(WJD, N_range = c(3, NULL))
+#test_sub <- itembankr::subset_item_bank(itembankr::WJD("phrases"), N_range = c(3, NULL))
 #test_sub[1000, "melody"]
 
 

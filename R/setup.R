@@ -7,6 +7,8 @@
 #'
 #' @examples
 set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
+  print('set_musicassessr_state')
+  print(state)
 
   if(!is.null(state)) {
 
@@ -67,16 +69,22 @@ setup_pages <- function(input = c("microphone",
 
 
     if(!sjmisc::str_contains(input, "midi_keyboard")) {
-      microphone_setup(input, SNR_test, absolute_url)
+      microphone_setup(SNR_test, absolute_url)
     } else if(!sjmisc::str_contains(input, "microphone")) {
       midi_setup()
-    } else if(input == "midi_keyboard_or_microphone") {
-      midi_vs_audio_select_page()
+    } else if(input == "midi_keyboard_and_microphone") {
+      c(
+        microphone_setup(SNR_test, absolute_url),
+        midi_setup()
+      )
+
     } else {
       c(
+        midi_vs_audio_select_page(),
+
         psychTestR::conditional(function(state, ...) {
           psychTestR::get_global("response_type", state) == "Microphone"
-        }, logic = microphone_setup(input, SNR_test, absolute_url)),
+        }, logic = microphone_setup(SNR_test, absolute_url)),
 
         psychTestR::conditional(function(state, ...) {
           psychTestR::get_global("response_type", state) == "MIDI"
@@ -155,7 +163,7 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(input, SNR_test, absolute_url) {
+microphone_setup <- function(SNR_test, absolute_url) {
   c(
 
     microphone_type_page(),

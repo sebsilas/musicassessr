@@ -21,11 +21,12 @@ multi_page_play_melody_loop(
   arrhythmic = FALSE,
   example = FALSE,
   feedback = FALSE,
-  sound = "piano"
+  sound = "piano",
+  trial_characteristics_function = NULL
 )
 }
 \arguments{
-\item{sound}{}
+\item{trial_characteristics_function}{}
 }
 \value{
 

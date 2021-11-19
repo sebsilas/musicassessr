@@ -3,8 +3,9 @@
 #asdw <- itembankr::WJD("ngram") %>% dplyr::slice(100) %>% dplyr::pull(melody)
 
 present_stimuli_audio_WJD <- function(pattern, ...) {
+
   # pattern should be a relative pattern
-  search_res <- DTL_similarity_search_results(search_patterns = pattern)
+  search_res <- DTL_similarity_search_results(search_patterns = pattern$melody)
   random_sample <- sample(1:nrow(search_res), 1)
   res <- search_res %>% dplyr::slice(random_sample)
   audio_url <- get_wjd_mp3_url(res)

@@ -14,11 +14,13 @@ rhythmic_melody_trials(
   page_text = psychTestR::i18n("sing_melody_trial"),
   page_title = "Sing This Melody Plus Rhythm",
  
-    instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm."
+    instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
+  trial_characteristics_function = NULL,
+  rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred
 )
 }
 \arguments{
-\item{instruction_text}{}
+\item{rel_to_abs_mel_function}{}
 }
 \value{
 

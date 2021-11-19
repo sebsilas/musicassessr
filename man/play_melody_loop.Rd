@@ -26,11 +26,12 @@ play_melody_loop(
   play_button_text = psychTestR::i18n("Play"),
   example = FALSE,
   sound = "piano",
-  reactive_stimuli = NULL
+  reactive_stimuli = NULL,
+  trial_characteristics_function = NULL
 )
 }
 \arguments{
-\item{reactive_stimuli}{}
+\item{trial_characteristics_function}{}
 }
 \value{
 

@@ -131,8 +131,7 @@ item_sampler_simple <- function(item_bank, no_items) {
   # get length of item bank
   if (is.data.frame(item_bank)) {
     item_bank_length <- nrow(item_bank)
-  }
-  else {
+  } else {
     item_bank_length <- length(item_bank)
   }
 
@@ -142,7 +141,7 @@ item_sampler_simple <- function(item_bank, no_items) {
   }
 
 
-  if(class(no_items) == "list") {
+  if(is.list(no_items)) {
 
     vectorNs <- list_of_Ns_to_vector(no_items)
 

@@ -8,6 +8,7 @@ MAST_long_notes <- tibble::tibble(
   octave_4 = c(65, 71, 64, 60)
 )
 
+
 MAST_octave_3_long_notes <- MAST_long_notes$octave_3
 MAST_octave_4_long_notes <- MAST_long_notes$octave_4
 
@@ -185,6 +186,115 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 # library(MST)
 # library(musicassessr)
 
+get_dob_page <- function(text = "When is your date of birth?") {
+  psychTestR::page(
+    ui = shiny::tags$div(
+      shiny::tags$p(text),
+      shiny::selectInput(inputId = "day", label = "Day", choices = as.character(1:31), width = "40%"),
+      shiny::selectInput(inputId = "month", label = "Month", choices = month.name, width = "40%"),
+      shiny::selectInput(inputId = "year", label = "Year", choices = as.character(1900:2021), width = "40%"),
+      psychTestR::trigger_button("next", "Next")
+    ),
+    get_answer = function(input, ...) {
+      list(day = input$day,
+           month = input$month,
+           year = input$year)
+    })
+}
+
+UPEI_extra_questions <- function() {
+  psychTestR::join(
+
+    get_dob_page(),
+
+    psychTestR::NAFC_page(label = "father_education",
+                          prompt = "Please indicate your father or male guardian’s highest level of education: ",
+                          choices = c("some high school", "completed high school", "enrolled in first year university",
+                                      "enrolled in 2nd , 3rd, or 4th year university", "completed a community college diploma or degree",
+                                      "completed a University Bachelor’s degree or other University Undergraduate Degree",
+                                      "enrolled in or completed a Master’s Degree",
+                                      "enrolled in or completed a Doctoral Degree",
+                                      "other (please specify)",
+                                      "do not know",
+                                      "prefer not to say")),
+
+
+    psychTestR::NAFC_page(label = "mother_education",
+                          prompt = "Please indicate your mother or female guardian’s highest level of education: ",
+                          choices = c("some high school", "completed high school",
+                                      "enrolled in first year university",
+                                        "enrolled in 2nd , 3rd, or 4th year university",
+                                        "completed a community college diploma or degree",
+                                        "completed a University Bachelor’s degree or other University Undergraduate Degree",
+                                        "enrolled in or completed a Master’s Degree",
+                                        "enrolled in or completed a Doctoral Degree",
+                                        "other (please specify)",
+                                        "do not know",
+                                        "prefer not to say")),
+
+    psychTestR::one_button_page("Finally, here are several questions about music-theory knowledge."),
+
+    psychTestR::NAFC_page(label = "music_theory_1",
+                          prompt = "Musicians refer to do mi sol as a particular structure. What is the name of that structure?",
+                          choices = c("major", "minor", "diminished", "augmented", "not sure")),
+
+    psychTestR::NAFC_page(label = "music_theory_2",
+                          prompt = "What triad appears once in the major scale?",
+                          choices = c("major", "minor", "diminished", "augmented", "not sure")),
+
+    psychTestR::NAFC_page(label = "music_theory_3",
+                          prompt = "What triad has two major thirds?",
+                          choices = c("major", "minor", "diminished", "augmented", "not sure")),
+
+    psychTestR::NAFC_page(label = "music_theory_4",
+                          prompt = "What triad has two major thirds?",
+                          choices = c("major", "minor", "diminished", "augmented", "not sure")),
+
+    psychTestR::NAFC_page(label = "music_theory_5",
+                          prompt = "Which chord progression represents a typical ending of a piece of music?",
+                          choices = c("I - V", "II - VI", "VI - V", "V - I", "not sure")),
+
+    psychTestR::NAFC_page(label = "music_theory_6",
+                          prompt = "Would you like to receive the results of Session 2.",
+                          choices = c("yes", "no")),
+
+    psychTestR::text_input_page(label = "music_theory_7",
+                                prompt = "If there is any other information you feel is important regarding your knowledge of popular music or any aspect of this questionnaire, please feel free to give a brief description below: "),
+
+    psychTestR::NAFC_page(label = "prize_draw",
+                          prompt = "Would you like to enter the draw (1 of 25 chances to win $50)?",
+                          choices = c("yes", "no")),
+
+    psychTestR::NAFC_page(label = "bonus_credits",
+                          prompt = "For students currently enrolled in Psychology 1010 Introductory Psychology:  Would you like to receive a bonus point toward your Psychology 1010 lab grade?",
+                          choices = c("yes", "no")),
+
+    psychTestR::conditional(test = function(state, answer, ...) {
+      psychTestR::answer(state) == "yes" },
+                          logic = psychTestR::NAFC_page(label = "upei_professor",,
+                                     prompt = "Please indicate which is your professor: ",
+                                     choices = c("Dr. Stacey MacKinnon",
+                                                 "Dr. Philip Smith",
+                                                 "Prof. Cheryl Wartman",
+                                                 "Dr.  Elizabeth Williams"))),
+
+   psychTestR::final_page(body = shiny::tags$div(
+     shiny::tags$p("You have now completed all the questions in this survey.  If you are interested in knowing more about the study, relevant information is provided in the following debriefing statement: "),
+     shiny::tags$h1("Learning and Memory for Popular Music and Imitation of Brief Melodies"),
+     shiny::tags$h2("Debriefing Statement: Session 2"),
+     shiny::tags$p("We would like to express our thanks and appreciation for your participation in Session 2 of this research project. Your contribution helps to advance our understanding of the knowledge acquired about popular music over the lifetime, and to specifically address the question of whether there is a time of life when such knowledge is easier to obtain than at other times. "),
+     shiny::tags$p("Session 2 focused on imitation of tones and brief melodies.  The study consisted of the presentation of long notes and short melodies that you were asked to imitate."),
+     shiny::tags$p("This research is part of a larger study looking into the relationship between adolescence and musical knowledge acquisition.  Part of musical knowledge is singing.  Singing is a musical behavior acquired naturally early in life, just like language is acquired.  In comparison to language acquisition, relatively little attention has been paid to singing development.  The study in which you participated aimed to obtain some basic data regarding singing accuracy (expecting performance to become less accurate with increasing numbers of notes to remember) and comparing males and females (where males have greater challenges to singing, due to issues of voice change in adolescence). "),
+     shiny::tags$p("This study is the first in which information on singing (from Session 2) will be related to information on knowledge and memory for popular music (from Session 1).  The overall interest of the study is whether there is a time during adolescence when it is easiest to acquire musical information.  The specific question that can be answered by the vocal imitation study is whether better vocal accuracy is associated with better memory for music. Also, for the first time, this experiment was conducted using the participant’s own computer in the participant’s own quiet environment.  In the past the study has been conducted in a laboratory environment.  We are interested in determining the extent to which the individual differences in equipment and setting will affect the variability of the data."),
+     shiny::tags$p("Your participation has helped students in the laboratory gain experience relevant to their honours degrees, and it has contributed to the exploration of important new research questions about how the developmental period of adolescence is related to musical knowledge. It also will add to our understanding of basic vocal abilities in older adolescents and early adulthood, for which very little information has been available."),
+     shiny::tags$p("If you have any further questions regarding this research study please feel free to contact  Kristen Gallant, at kbgallant5470@upei.ca (902-566-6023 – laboratory phone); Dr. Amy Simon, 902-566-6023; Dr. Annabel Cohen at acohen@upei.ca, 902-628-4325  (office phone)."),
+     shiny::tags$p("If you have indicated your interest in receiving a summary of the results of the study, you will be provided a link to this information by April 30, 2022."),
+     shiny::tags$p("Thank you for all your help!  Your contribution to this research is very much appreciated.")))
+
+    )
+}
+
+# psychTestR::make_test(UPEI_extra_questions())
 
 UPEI_2021_battery <- function(state = "production",
                               aws_credentials = list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
@@ -199,6 +309,7 @@ UPEI_2021_battery <- function(state = "production",
   psychTestR::make_test(
     psychTestR::join(
     psychTestR::new_timeline(psychTestR::join(
+
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$h1("UPEI 2021 Testing"),
         shiny::tags$p("This is a protocol for the UPEI 2021 singing study."),
@@ -207,7 +318,7 @@ UPEI_2021_battery <- function(state = "production",
                                 bucket_region = aws_credentials$bucket_region,
                                 identity_pool_id = aws_credentials$identity_pool_id,
                                 destination_bucket = aws_credentials$destination_bucket,
-                                musicassessr_state = state),
+                                musicassessr_state = state)
         )),
 
     psychTestR::get_p_id(prompt = shiny::tags$div(
@@ -217,40 +328,44 @@ UPEI_2021_battery <- function(state = "production",
       shiny::tags$li("Day of your birthday (2 numbers – 01 to 31)"),
       shiny::tags$li("1st 3 letters of the street you lived on growing up"),
       shiny::tags$br(),
-      shiny::tags$p("For example: joh11tav")))),
+      shiny::tags$p("For example: joh11tav"))))
 
-    musicassessr::microphone_calibration_page(),
-
-    musicassessr::get_voice_range_page(with_examples = FALSE),
-
-    musicassessr::sing_happy_birthday_page(feedback = TRUE),
-
-    psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
-
-    musicassessr::MAST21_trials(sound = "voice_daa"),
-
-    musicassessr::sing_happy_birthday_page(feedback = TRUE),
-
-    psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
-
-    musicassessr::MAST21_trials(sound = "voice_doo"),
-
-    musicassessr::sing_happy_birthday_page(feedback = TRUE)
       ),dict = musicassessr::dict(NULL)),
 
+
     MST::MST(aws_credentials = aws_credentials,
-        num_items = list(
-          long_tones = 6L, arrhythmic = 10L, rhythmic = 0L
-        ),
-        examples = 2L,
-        final_results = FALSE,
-        state = state,
-        absolute_url = "https://adaptiveeartraining.com",
-        SNR_test = FALSE,
-        get_range = FALSE,
-        gold_msi = FALSE,
-        demographics = FALSE,
-        with_final_page = FALSE),
+             num_items = list(
+               long_tones = 6L, arrhythmic = 10L, rhythmic = 0L
+             ),
+             examples = 2L,
+             final_results = FALSE,
+             state = state,
+             absolute_url = "https://adaptiveeartraining.com",
+             SNR_test = TRUE,
+             get_range = FALSE,
+             gold_msi = FALSE,
+             demographics = FALSE,
+             with_final_page = FALSE,
+             melody_sound = "piano"),
+
+    psychTestR::new_timeline(psychTestR::join(
+      musicassessr::get_voice_range_page(with_examples = FALSE),
+
+      musicassessr::sing_happy_birthday_page(feedback = TRUE),
+
+      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+
+      musicassessr::MAST21_trials(sound = "piano"),
+
+      musicassessr::sing_happy_birthday_page(feedback = TRUE),
+
+      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+
+      musicassessr::MAST21_trials(sound = "piano"),
+
+      musicassessr::sing_happy_birthday_page(feedback = TRUE))
+    ,dict = musicassessr::dict(NULL)),
+
 
     PDT::PDT(with_final_page = FALSE),
 
@@ -264,7 +379,8 @@ UPEI_2021_battery <- function(state = "production",
 
     musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
-    psychTestR::final_page("Thank you for participating!")
+    UPEI_extra_questions()
+
   ),
   opt = psychTestR::test_options(title = "UPEI",
                            admin_password = "test",

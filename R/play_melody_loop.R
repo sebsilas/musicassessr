@@ -267,12 +267,18 @@ grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melod
         trial_char <- trial_characteristics_function(trial_df = trials, trial_no = melody_no)
         print('trial:char')
         print(trial_char)
+        print(inst)
+        print(bottom_range)
+        print(top_range)
+        print(trial_char$difficulty)
+        print(trial_char$melody_length)
         melody_row <- sample_melody_in_key(inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$difficulty, length = trial_char$melody_length)
         print('melody_row: ')
         print(melody_row)
+        abs_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(abs_melody))
         rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
-        print('rely_mloeyd:')
-        print(rel_melody)
+        print(abs_melody)
+        rel_to_abs_mel_function <- NULL
       }
 
     } else {
@@ -289,7 +295,9 @@ grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melod
 
     # does the melody need putting into a certain pitch range?
   if(is.null(rel_to_abs_mel_function)) {
-    abs_melody <- melody %>% dplyr::pull(abs_melody)
+    if(is.data.frame(abs_melody)) {
+      abs_melody <- melody %>% dplyr::pull(abs_melody)
+    }
   } else {
     # then assume that the melody is in relative format and fit it into a key, based on a rel_to_abs_mel_functio
     abs_melody <- rel_to_abs_mel_function(rel_melody = rel_melody, bottom_range = bottom_range, top_range = top_range, range = range, transpose = transpose)

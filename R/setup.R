@@ -7,8 +7,8 @@
 #'
 #' @examples
 set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
-  print('set_musicassessr_state')
-  print(state)
+
+  res <- shiny::tags$script()
 
   if(!is.null(state)) {
 
@@ -19,8 +19,9 @@ set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
     }
 
     musicassessr_state <<- state
-    shiny::tags$script(paste0("const musicassessr_state = \'", musicassessr_state, "\';"))
+    res <- shiny::tags$script(paste0("console.log('set musicassessr state'); const musicassessr_state = \'", musicassessr_state, "\';"))
   }
+  res
 }
 
 
@@ -55,50 +56,65 @@ setup_pages <- function(input = c("microphone",
                         select_instrument = FALSE) {
 
 
-  if(!demo) {
+  if(demo) {
 
-  psychTestR::join(
+    psychTestR::join(
+      if(select_instrument) select_musical_instrument_page(),
 
-    requirements_page(headphones = headphones, input = input),
+      correct_setup(input, SNR_test, absolute_url),
 
-    if(get_user_info) musicassessr::get_user_info_page(),
+      fake_range()
+    )
 
-    if(headphones) musicassessr::test_headphones_page(),
+  } else {
 
-    if(select_instrument) select_musical_instrument_page(),
+    psychTestR::join(
 
+      requirements_page(headphones = headphones, input = input),
 
-    if(!sjmisc::str_contains(input, "midi_keyboard")) {
-      microphone_setup(SNR_test, absolute_url)
-    } else if(!sjmisc::str_contains(input, "microphone")) {
-      midi_setup()
-    } else if(input == "midi_keyboard_and_microphone") {
-      c(
-        microphone_setup(SNR_test, absolute_url),
-        midi_setup()
-      )
+      if(get_user_info) musicassessr::get_user_info_page(),
 
-    } else {
-      c(
-        midi_vs_audio_select_page(),
+      if(headphones) musicassessr::test_headphones_page(),
 
-        psychTestR::conditional(function(state, ...) {
-          psychTestR::get_global("response_type", state) == "Microphone"
-        }, logic = microphone_setup(SNR_test, absolute_url)),
+      if(select_instrument) select_musical_instrument_page(),
 
-        psychTestR::conditional(function(state, ...) {
-          psychTestR::get_global("response_type", state) == "MIDI"
-        }, logic = midi_setup())
-      )
+      correct_setup(input, SNR_test, absolute_url),
 
-    },
-
-    record_instructions(),
+      record_instructions(),
 
 
-    get_instrument_range_pages(input, get_instrument_range)
+      get_instrument_range_pages(input, get_instrument_range)
 
     )
+
+  }
+}
+
+
+correct_setup <- function(input, SNR_test, absolute_url) {
+  if(!sjmisc::str_contains(input, "midi_keyboard")) {
+    microphone_setup(SNR_test, absolute_url)
+  } else if(!sjmisc::str_contains(input, "microphone")) {
+    midi_setup()
+  } else if(input == "midi_keyboard_and_microphone") {
+    c(
+      microphone_setup(SNR_test, absolute_url),
+      midi_setup()
+    )
+
+  } else {
+    c(
+      midi_vs_audio_select_page(),
+
+      psychTestR::conditional(function(state, ...) {
+        psychTestR::get_global("response_type", state) == "Microphone"
+      }, logic = microphone_setup(SNR_test, absolute_url)),
+
+      psychTestR::conditional(function(state, ...) {
+        psychTestR::get_global("response_type", state) == "MIDI"
+      }, logic = midi_setup())
+    )
+
   }
 }
 

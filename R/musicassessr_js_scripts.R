@@ -41,6 +41,7 @@ xhr.send();
 }
 '
 
+
 #' musicassessr_js_scripts
 #'
 #' @param destination_bucket
@@ -48,6 +49,7 @@ xhr.send();
 #' @param bucket_name
 #' @param bucket_region
 #' @param identity_pool_id
+#' @param musicassessr_state
 #'
 #' @return
 #' @export

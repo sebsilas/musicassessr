@@ -49,9 +49,10 @@ sample_easy_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
 sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
   res <- sample_from_df(hard_keys_for_inst(inst_name), no_to_sample, replace = replacement)
   res$difficulty <- rep("hard", no_to_sample)
+  res
 }
 
-sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range, difficulty, length = NULL) {
+sample_melody_in_key <- function(item_bank = itembankr::WJD("main"), inst, bottom_range, top_range, difficulty, length = NULL) {
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -64,27 +65,33 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
   user_span <- top_range - bottom_range
 
   # sample melody
-
+  print('jut before itbs')
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
-
+  print('after')
   found_melody <- FALSE
 
   while(found_melody == FALSE) {
+    print('while')
     i <- sample(1:nrow(item_bank_subset), 1)
     meta_data <- item_bank_subset[i, ]
+    print(meta_data)
     rel_mel <- meta_data$melody
-
+    print(rel_mel)
     # now put it in a key
     key_centres <- itembankr::pitch_class_to_midi_notes(key_centre)
-
-    key_centres_in_range <- key_centres[key_centres > bottom_range & key_centres < top_range]
-
+    print(key_centres)
+    print(bottom_range)
+    print(top_range)
+    key_centres_in_range <- key_centres[key_centres >= bottom_range & key_centres <= top_range]
+    print(key_centres_in_range)
     # first try it with the first note as being the key centre
     abs_mel <- itembankr::rel_to_abs_mel(itembankr::str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
+    print(abs_mel)
     # check key
     mel_key <- itembankr::get_implicit_harmonies(abs_mel)
     mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
     # how far away is it from being the correct tonal centre?
+
     dist <- itembankr::pitch_class_to_numeric_pitch_class(key_centre) - itembankr::pitch_class_to_numeric_pitch_class(mel_key_centre)
 
     if (dist != 0) {
@@ -92,11 +99,14 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
       abs_mel <- abs_mel + dist
     }
 
+    print('current mel: ')
+    print(abs_mel)
+
     # check all notes in range
     if(check_all_notes_in_range(abs_mel, bottom_range, top_range)) {
       # in range
       found_melody <- TRUE
-      return(list(abs_mel, meta_data))
+      return(cbind(tibble::tibble(abs_melody = paste0(abs_mel, collapse = ","), meta_data)))
     }
     else {
       # not in range!
@@ -109,22 +119,22 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
         snap <- sample(1:2, 1)
         if(snap == 1) {
           found_melody <- TRUE
-          return(list(abs_mel_down, meta_data))
+          return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_down, collapse = ","), meta_data)))
         }
         else {
           found_melody <- TRUE
-          return(list(abs_mel_up, meta_data))
+          return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_up, collapse = ","), meta_data)))
         }
       }
       else if (check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & !check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
         # only octave up in range, return that')
-        return(list(abs_mel_up, meta_data))
+        return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_up, collapse = ","), meta_data)))
       }
       else if (!check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
         # only octave down in range, return that
-        return(list(abs_mel_down, meta_data))
+        return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_down, collapse = ","), meta_data)))
       }
       else {
         found_melody <- FALSE
@@ -135,6 +145,14 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
   } # end while
 
 }
+
+
+# dd <- sample_melody_in_key(item_bank = itembankr::WJD("phrases"),
+#                      inst = "Piano",
+#                      bottom_range = 48, top_range = 72,
+#                      difficulty =  "easy", length = 3)
+
+
 
 
 

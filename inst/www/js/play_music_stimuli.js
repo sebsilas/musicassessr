@@ -204,16 +204,22 @@ function playTones (note_list) {
 
 
 function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound) {
+  console.log('playSingleNote');
+
   if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
     note_list = note_list-12;
   }
 
+  console.log('new note list:');
+  console.log(note_list);
+
   var freq_list = Tone.Frequency(note_list, "midi").toNote();
-  var last_note = 1;
+  console.log('freq_list');
+  console.log(freq_list);
 
   if(dur_list === null) {
         auto_next_page = true;
-        triggerNote(sound, note_list, 0.50);
+        triggerNote(sound, freq_list, 0.50);
         console.log('what is it now?');
         console.log(auto_next_page);
         setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay);
@@ -309,6 +315,7 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   console.log(auto_next_page);
   console.log('playSeq called!');
+  console.log(note_list);
   console.log('dur_list!');
   console.log(dur_list);
   // make sure not playing
@@ -672,10 +679,12 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", st
     window.startTime = new Date().getTime();
 
     if (type === "aws_pyin") {
+      console.log("if 1");
       // aws record
       startRecording(updateUI = false);
     }
     else if(type === "crepe") {
+      console.log("if 2");
       // crepe record
       initAudio();crepeResume();
     }
@@ -692,9 +701,7 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", st
      if (ms === null) {
         console.log('ms null');
         recordUpdateUI(showStop, hidePlay, type);
-     }
-
-     else {
+     } else {
         recordUpdateUI(showStop, hidePlay, type, stop_button_text);
         setTimeout(() => {  simpleStopRecording();hideRecordImage(); }, ms);
      }
@@ -703,17 +710,21 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", st
 
 function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text = "Stop") {
 
+    console.log('recordUpdateUI');
+    console.log(type);
+
     if(['aws_pyin', 'crepe', 'record_audio_page', 'record_midi_page'].includes(type)) {
       // update the recording UI
       // if showStop is true, then give the user the option to press the stop button
       // if hidePlay is true, then hide the play button
-
+      console.log('here in this if');
       if(hidePlay) {
         hidePlayButton();
       }
 
       setTimeout(() => {  showRecordingIcon(); }, 500); // a little lag
 
+      console.log(type);
 
       if (showStop) {
           setTimeout(() => {  showStopButton(type, stop_button_text = stop_button_text); }, 500); // a little more lag
@@ -724,7 +735,8 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
 
 
 function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
-
+        console.log('showStop');
+        console.log(type);
         if(type === "crepe" | type === "record_midi_page") {
 
           var stopButton = document.createElement("button");

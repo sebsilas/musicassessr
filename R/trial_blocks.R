@@ -332,6 +332,22 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
 
 
 
+#' A trial block which plays back real audio from the Weimar Jazz Database
+#'
+#' @param item_bank
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param get_answer
+#' @param sound
+#' @param page_text
+#' @param page_title
+#' @param instruction_text
+#'
+#' @return
+#' @export
+#'
+#' @examples
 wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = FALSE, feedback = FALSE,
                                      get_answer = musicassessr::get_answer_pyin, sound = "piano",
                                     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",

@@ -179,13 +179,6 @@ sing_happy_birthday_page <- function(feedback = FALSE) {
 
 
 
-# library(PDT)
-# library(mpt)
-# library(mdt)
-# library(psyquest)
-# library(MST)
-# library(musicassessr)
-
 get_dob_page <- function(text = "When is your date of birth?") {
   psychTestR::page(
     ui = shiny::tags$div(
@@ -296,6 +289,15 @@ UPEI_extra_questions <- function() {
 
 # psychTestR::make_test(UPEI_extra_questions())
 
+#' UPEI Battery
+#'
+#' @param state
+#' @param aws_credentials
+#'
+#' @return
+#' @export
+#'
+#' @examples
 UPEI_2021_battery <- function(state = "production",
                               aws_credentials = list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
                                                      bucket_name = "shinny-app-source-41630",
@@ -394,7 +396,15 @@ UPEI_2021_battery <- function(state = "production",
 
 }
 
-#UPEI_2021_battery("test")
+
+# library(PDT)
+# library(mpt)
+# library(mdt)
+# library(psyquest)
+# library(MST)
+# library(musicassessr)
+
+# UPEI_2021_battery("test")
 
 
 

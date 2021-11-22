@@ -371,9 +371,9 @@ UPEI_2021_battery <- function(state = "production",
 
     PDT::PDT(with_final_page = FALSE),
 
-    mpt::mpt(),
+    mpt::mpt(num_items = 10L),
 
-    mdt::mdt(),
+    mdt::mdt(num_items = 10L),
 
     psyquest::GMS(),
 

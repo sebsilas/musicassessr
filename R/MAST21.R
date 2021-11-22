@@ -379,6 +379,15 @@ UPEI_2021_battery <- function(state = "production",
 
     psyquest::SES(),
 
+    psychTestR::one_button_page(shiny::tags$div(
+      musicassessr_js_scripts(api_url = aws_credentials$api_url,
+                              bucket_name = aws_credentials$bucket_name,
+                              bucket_region = aws_credentials$bucket_region,
+                              identity_pool_id = aws_credentials$identity_pool_id,
+                              destination_bucket = aws_credentials$destination_bucket,
+                              musicassessr_state = state),
+      shiny::tags$p("On the next page you will sing Happy Birthday again."))),
+
     musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
     UPEI_extra_questions()

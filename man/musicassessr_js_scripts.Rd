@@ -14,7 +14,7 @@ musicassessr_js_scripts(
 )
 }
 \arguments{
-\item{identity_pool_id}{}
+\item{musicassessr_state}{}
 }
 \value{
 

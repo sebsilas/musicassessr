@@ -49,50 +49,38 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                          get_answer = musicassessr::get_answer_pyin,
                          sound = "piano",
                          page_text = psychTestR::i18n("sing_melody_trial"),
-                         page_title_doo = "Sing this melody with a \"Dooo\" sound.",
-                         page_title_daa = "Sing this melody with a \"Daah\" sound.",
-                        long_tone_title_doo = "Sing the note with a \"Dooo\" sound.",
-                        long_tone_title_daa = "Sing the note with a \"Daah\" sound.",
-                        long_tone_text = "Please sing the note after you hear it, then click Stop.",
+                         page_title_melody = "Please sing the melody",
+                        page_title_long_note = "Sing the note with a \"Dooo\" sound.",
+                        page_text_long_note = "Please sing the note after you hear it, then click Stop.",
                          instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
 
-  if(sound == "voice_doo") {
-    page_title <- page_title_doo
-    long_tone_title <- long_tone_title_doo
-  } else if(sound == "voice_daa") {
-    page_title <- page_title_daa
-    long_tone_title <- long_tone_title_daa
-  } else {
-    page_title <- "Please sing the melody"
-    long_tone_title <- "Please sing the note"
-  }
 
   long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
                     note_length = 2, page_type = "record_audio_page",
-                    page_title = long_tone_title, page_text = long_tone_text)
+                    page_title = page_title_long_note, page_text = page_text_long_note)
   })
 
   long_notes_4 <- purrr::map(MAST_octave_4_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
                     note_length = 2, page_type = "record_audio_page",
-                    page_title = long_tone_title, page_text = long_tone_text)
+                    page_title = page_title_long_note, page_text = page_text_long_note)
   })
 
   melodies_octave_3<- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title)
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
   })
 
   melodies_octave_4 <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title)
+                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
   })
 
 
@@ -344,7 +332,7 @@ UPEI_2021_battery <- function(state = "production",
              state = state,
              absolute_url = "https://adaptiveeartraining.com",
              SNR_test = TRUE,
-             get_range = FALSE,
+             get_range = TRUE,
              gold_msi = FALSE,
              demographics = FALSE,
              with_final_page = FALSE,
@@ -353,21 +341,60 @@ UPEI_2021_battery <- function(state = "production",
     psychTestR::new_timeline(psychTestR::join(
       musicassessr::get_voice_range_page(with_examples = FALSE),
 
+      psychTestR::code_block(function(state, ...) {
+        snap <- sample(1:2, 1)
+        psychTestR::set_global("snap", snap, state)
+      }),
+
       musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
-      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+      psychTestR::conditional(test = function(state, ...) {
+        psychTestR::get_global("snap", state) == 1
+      }, logic = psychTestR::join (
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
 
-      musicassessr::MAST21_trials(sound = "piano"),
+        psychTestR::module(label = "MAST21_daah",
+          musicassessr::MAST21_trials(sound = "piano",
+                                    page_title_long_note = "Please sing back the note with a \"Daah\" sound.",
+                                    page_title_melody = "Please sing back the melody with a \"Daah\" sound.")
+        ),
 
-      musicassessr::sing_happy_birthday_page(feedback = TRUE),
+        musicassessr::sing_happy_birthday_page(feedback = TRUE),
 
-      psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
 
-      musicassessr::MAST21_trials(sound = "piano"),
+        psychTestR::module(label = "MAST21_dooo",
+          musicassessr::MAST21_trials(sound = "piano",
+                                      page_title_long_note = "Please sing back the note with a \"Dooo\" sound.",
+                                      page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")
+        )
 
-      musicassessr::sing_happy_birthday_page(feedback = TRUE))
-    ,dict = musicassessr::dict(NULL)),
+       )),
 
+      psychTestR::conditional(test = function(state, ...) {
+        psychTestR::get_global("snap", state) == 2
+      }, logic = psychTestR::join(
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+
+        psychTestR::module(label = "MAST21_dooo",
+          musicassessr::MAST21_trials(sound = "piano",
+                                      page_title_long_note = "Please sing back the note with a \"Dooo\" sound.",
+                                      page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")),
+
+        musicassessr::sing_happy_birthday_page(feedback = TRUE),
+
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+
+        psychTestR::module(label = "MAST21_daah",
+          musicassessr::MAST21_trials(sound = "piano",
+                                      page_title_long_note = "Please sing back the note with a \"Daah\" sound.",
+                                      page_title_melody = "Please sing back the melody with a \"Daah\" sound."))
+
+
+      )),
+
+      musicassessr::sing_happy_birthday_page(feedback = TRUE)
+      ) ,dict = musicassessr::dict(NULL)),
 
     PDT::PDT(with_final_page = FALSE),
 

@@ -130,6 +130,9 @@ function triggerNote(sound, freq_tone, seconds, time) {
   console.log('triggerNote called');
   console.log('sound is...');
   console.log(sound);
+  console.log(freq_tone);
+  console.log(seconds);
+  console.log(time);
 
   if (sound === "piano") {
   	piano.triggerAttackRelease(freq_tone, seconds, time);
@@ -217,13 +220,11 @@ function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_butto
   console.log('freq_list');
   console.log(freq_list);
 
-  if(dur_list === null) {
-        auto_next_page = true;
-        triggerNote(sound, freq_list, 0.50);
-        console.log('what is it now?');
-        console.log(auto_next_page);
-        setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay);
-      }
+  auto_next_page = true;
+  triggerNote(sound, freq_list, dur_list);
+  console.log('what is it now?');
+  console.log(auto_next_page);
+  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, (dur_list*1000) + record_delay);
 
 }
 
@@ -727,14 +728,16 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
       console.log(type);
 
       if (showStop) {
-          setTimeout(() => {  showStopButton(type, stop_button_text = stop_button_text); }, 500); // a little more lag
+        setTimeout(function() {
+        showStopButton(type, stop_button_text);
+            }, 500); // a little more lag
       }
     }
 
 }
 
 
-function showStopButton(type = "aws_pyin", stop_button_text = "Stop") {
+function showStopButton(type = 'aws_pyin', stop_button_text = "Stop") {
         console.log('showStop');
         console.log(type);
         if(type === "crepe" | type === "record_midi_page") {

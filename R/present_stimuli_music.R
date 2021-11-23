@@ -7,7 +7,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 page_type = 'null', play_button_text = "Play",
                                                 stop_button_text = "Stop",
                                                 record_audio_method = "aws_pyin",
-                                                asChord = FALSE, durations = 'null', auto_next_page = FALSE,
+                                                asChord = FALSE, durations = NULL, auto_next_page = FALSE,
                                                 play_button_id = "playButton", button_area_id = "button_area",
                                                 record_immediately = FALSE, ...) {
 
@@ -15,7 +15,9 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
     page_type <- record_audio_method
   }
 
-  if(durations != 'null') {
+  if(is.null(durations)) {
+    durations <- rjson::toJSON(rep(note_length, length(stimuli)))
+  } else {
     durations <- rjson::toJSON(durations)
   }
 
@@ -102,7 +104,7 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano
 }
 
 present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
-                                       record_audio_method = "aws_pyin",  durations = 'null', auto_next_page = FALSE,
+                                       record_audio_method = "aws_pyin",  durations = NULL, auto_next_page = FALSE,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                        button_area_id = "button_area", record_immediately = FALSE, ...) {
 

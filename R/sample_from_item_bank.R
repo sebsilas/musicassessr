@@ -8,13 +8,15 @@
 #' @examples
 item_sampler <- function(item_bank, no_items) {
 
+
+  item_bank <- item_bank %>% dplyr::arrange(N)
+
   # what values are there?
   N_values <- unique(item_bank$N)
   no_of_Ns <- length(N_values)
   # given the no. of items, how many of each N will we need? let's count
 
   idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-
   count <- 1
   N_list <- c()
 
@@ -32,9 +34,11 @@ item_sampler <- function(item_bank, no_items) {
   })
 
   res <- dplyr::bind_rows(sample_dat)
+
   res$trial_no <- 1:nrow(res)
   res
 }
+
 
 item_characteristics_sampler <- function(length = 3:15, difficulty = list("easy" = 10, "hard" = 10)) {
   # given a range of stimuli lengths and a number of difficulties, produce the test parameters
@@ -208,25 +212,27 @@ sample_from_user_range <- function(no_to_sample) {
 
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
-
     span <- psychTestR::get_global("span", state)
     # sample arrhythmic
     arrhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
-
     psychTestR::set_global(id, arrhythmic_sample, state)
   })
 }
 
-sample_rhythmic <- function(item_bank, num_items_rhythmic) {
+sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
     # sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
-    psychTestR::set_global("rhythmic_melody", rhythmic_sample, state)
+    psychTestR::set_global(id, rhythmic_sample, state)
   })
 }
+
+#rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = itembankr::Berkowitz("main"), item_length = c(3,7))
+#rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, 6)
+
 
 sample_item_characteristics <- function(item_bank, num_items, var_name) {
   psychTestR::code_block(function(state, ...) {

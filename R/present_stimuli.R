@@ -35,7 +35,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             show_aws_controls = FALSE, page_label = "x",
                             button_text = "Next", play_button_text = "Play",
                             note_length = 0.5, sound = "piano", asChord = FALSE, ascending = TRUE,
-                            start_note = 0, end_note = "end", durations = 'null', show_record_button = FALSE,
+                            start_note = 0, end_note = "end", durations = NULL, show_record_button = FALSE,
                             auto_next_page = FALSE, choices = NULL, user_rating = FALSE,
                             page_text_first = TRUE, happy_with_response = FALSE,
                             attempts_left = NULL, visual_music_notation_id = "sheet_music",

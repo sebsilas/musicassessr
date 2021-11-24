@@ -415,7 +415,7 @@ UPEI_2021_battery <- function(state = "production",
                               musicassessr_state = state),
       shiny::tags$p("On the next page you will sing Happy Birthday again."))),
 
-    musicassessr::sing_happy_birthday_page(feedback = TRUE),
+    musicassessr::sing_happy_birthday_page(feedback = FALSE),
 
     UPEI_extra_questions()
 

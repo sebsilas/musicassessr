@@ -149,7 +149,7 @@ function simpleStopRecording() {
 
 function create_recordkey() {
   var currentDate = new Date();
-  var recordkey = currentDate.getDate().toString() + '-' + currentDate.getMonth().toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
+  var recordkey = currentDate.getDate().toString() + '-' + (currentDate.getMonth() + 1 ).toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
   return(recordkey)
 }
 

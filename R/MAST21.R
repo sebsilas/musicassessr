@@ -346,7 +346,7 @@ UPEI_2021_battery <- function(state = "production",
         psychTestR::set_global("snap", snap, state)
       }),
 
-      musicassessr::sing_happy_birthday_page(feedback = TRUE),
+      musicassessr::sing_happy_birthday_page(feedback = FALSE),
 
       psychTestR::conditional(test = function(state, ...) {
         psychTestR::get_global("snap", state) == 1
@@ -359,7 +359,7 @@ UPEI_2021_battery <- function(state = "production",
                                     page_title_melody = "Please sing back the melody with a \"Daah\" sound.")
         ),
 
-        musicassessr::sing_happy_birthday_page(feedback = TRUE),
+        musicassessr::sing_happy_birthday_page(feedback = FALSE),
 
         psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
 
@@ -381,7 +381,7 @@ UPEI_2021_battery <- function(state = "production",
                                       page_title_long_note = "Please sing back the note with a \"Dooo\" sound.",
                                       page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")),
 
-        musicassessr::sing_happy_birthday_page(feedback = TRUE),
+        musicassessr::sing_happy_birthday_page(feedback = FALSE),
 
         psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
 
@@ -393,7 +393,7 @@ UPEI_2021_battery <- function(state = "production",
 
       )),
 
-      musicassessr::sing_happy_birthday_page(feedback = TRUE)
+      musicassessr::sing_happy_birthday_page(feedback = FALSE)
       ) ,dict = musicassessr::dict(NULL)),
 
     PDT::PDT(with_final_page = FALSE),

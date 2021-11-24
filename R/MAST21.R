@@ -141,7 +141,8 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 #' @examples
 sing_happy_birthday_page <- function(feedback = FALSE) {
 
-  page <- record_audio_page(page_text = "Please sing Happy Birthday.",
+  page <- record_audio_page(label = "sing_hbd",
+                            page_text = "Please sing Happy Birthday.",
                             get_answer = get_answer_simple_pyin_summary,
                             auto_next_page = TRUE)
 

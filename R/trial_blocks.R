@@ -36,8 +36,10 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
-    if(feedback & !is.function(feedback)) {
-      feedback <- feedback_melodic_production
+    if(!is.function(feedback)) {
+      if(feedback) {
+        feedback <- feedback_melodic_production
+      }
     }
 
     psychTestR::module("arrhythmic_melodies",
@@ -145,9 +147,11 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
-    if(feedback & !is.function(feedback)) {
+  if(!is.function(feedback)) {
+    if(feedback) {
       feedback <- feedback_melodic_production
     }
+  }
 
     psychTestR::module("rhythmic_melodies",
         c(
@@ -236,10 +240,11 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
-    if(feedback & !is.function(feedback)) {
+  if(!is.function(feedback)) {
+    if(feedback) {
       feedback <- feedback_long_tone
     }
-
+  }
     # sample melodies based on range
     psychTestR::module("long_note_trials",
       c(
@@ -308,9 +313,11 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
-    if(feedback & !is.function(feedback)) {
+  if(!is.function(feedback)) {
+    if(feedback) {
       feedback <- feedback_melodic_production
     }
+  }
 
     # sample melodies based on range
     psychTestR::module("long_note_trials",
@@ -376,8 +383,10 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = FALSE, 
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
-  if(feedback & !is.function(feedback)) {
-    feedback <- feedback_melodic_production
+  if(!is.function(feedback)) {
+    if(feedback) {
+      feedback <- feedback_melodic_production
+    }
   }
 
   psychTestR::module("wjd_audio_melodies",

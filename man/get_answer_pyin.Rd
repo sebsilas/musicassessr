@@ -2,13 +2,14 @@
 % Please edit documentation in R/get_answer.R
 \name{get_answer_pyin}
 \alias{get_answer_pyin}
-\title{Use pyin on a file}
+\title{Get answer by running pyin on a recorded audio file}
 \usage{
 get_answer_pyin(
   input,
   type = c("both", "note", "pitch_track"),
   state,
   melconv = FALSE,
+  singing_measures = TRUE,
   ...
 )
 }
@@ -19,5 +20,5 @@ get_answer_pyin(
 
 }
 \description{
-Use pyin on a file
+Get answer by running pyin on a recorded audio file
 }

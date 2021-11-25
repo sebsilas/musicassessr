@@ -160,21 +160,38 @@ pyin <- function(file_name, transform_file = NULL,
 
 #pyin('/Users/sebsilas/true.wav')
 
-
-#' Use pyin on a file
+#' Get mel production scores, but without singing/pitch accuracy measures
 #'
 #' @param input
+#' @param type
+#' @param state
+#' @param melconv
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE, ...) {
+get_answer_pyin_mel_prod_only <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE, ...) {
+  get_answer_pyin(input, type, state, melconv = FALSE, singing_measures = FALSE, ...)
+}
 
-  print('get_answerpyin')
-  print(input$stimuli)
-  print(input$stimuli_durations)
+
+#' Get answer by running pyin on a recorded audio file
+#'
+#' @param input
+#' @param type
+#' @param state
+#' @param melconv
+#' @param singing_measures
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE, singing_measures = TRUE, ...) {
+
 
   pyin_pitch_track <- NULL
 
@@ -226,7 +243,7 @@ get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), stat
            melconv_dur = melconv_dur
            ),
 
-      melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = TRUE,
+      melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = singing_measures,
                                     pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
     )
   }

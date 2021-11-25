@@ -10,21 +10,17 @@ feedback_melodic_production_simple <- function() {
   feedback_melodic_production(melody_dtw = FALSE, answer_meta_data = FALSE)
 }
 
+
 feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TRUE) {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
 
     if(is.null(answer$error)) {
 
-      # plot
+      # plots
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
-      if(melody_dtw) {
-        melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
-        #d_names <- names(answer)[!names(answer) == "melody_dtw_plot"]
-      } else {
-        melody_dtw_plot <- " "
-      }
+      melody_dtw_plot <- ifelse(melody_dtw, plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track), " ")
 
       # get then remove necessary vars
       amd <- answer$answer_meta_data
@@ -35,35 +31,23 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       scores_tab <- list_to_shiny_table(answer)
 
       # make meta data table
-      if(answer_meta_data & is.list(amd)) {
-        answer_meta_data_tab <- list_to_shiny_table(amd)
+      answer_meta_data_tab <- ifelse(answer_meta_data & is.list(amd), list_to_shiny_table(amd), " ")
 
-      } else {
-        answer_meta_data_tab <- shiny::tags$div()
-      }
-
-      # melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
-      #                                visual_music_notation_id = "melconv", play_button_id = "playButtonMelConv",
-      #                                button_area_id = "buttonArea2")
-
-
-        present_stimuli(answer$user_response_note,
-                        stimuli_type = "midi_notes",
-                        display_modality = "both",
-                        page_title = "Your Response",
-                        page_type = 'one_button_page',
-                        page_text = shiny::tags$div(#shiny::tags$h3('Melconv Output'),
-                                                    #melconv_out,
-                                                    shiny::tags$p(plot),
-                                                    shiny::tags$h3('Melody DTW Plot'),
-                                                    shiny::tags$p(melody_dtw_plot),
-                                                    shiny::tags$h3('Response Data'),
-                                                    scores_tab,
-                                                    shiny::tags$h3('Stimuli Info'),
-                                                    answer_meta_data_tab),
-                        page_text_first = FALSE,
-                        play_button_id = "playButtonFeedback",
-                        button_area_id = "buttonArea3")
+      present_stimuli(answer$user_response_note,
+                      stimuli_type = "midi_notes",
+                      display_modality = "both",
+                      page_title = "Your Response",
+                      page_type = 'one_button_page',
+                      page_text = shiny::tags$div(shiny::tags$p(plot),
+                                                  shiny::tags$h3(ifelse(melody_dtw, 'Melody DTW Plot', " ")),
+                                                  shiny::tags$p(melody_dtw_plot),
+                                                  shiny::tags$h3('Response Data'),
+                                                  scores_tab,
+                                                  shiny::tags$h3(ifelse(answer_meta_data, 'Stimuli Info', " ")),
+                                                  answer_meta_data_tab),
+                      page_text_first = FALSE,
+                      play_button_id = "playButtonFeedback",
+                      button_area_id = "buttonArea3")
 
     } else {
       psychTestR::one_button_page("Unfortunately a valid response was not recorded.")
@@ -72,6 +56,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 }
 
 list_to_shiny_table <- function(l) {
+  l <- l[!is.na(l)]
   l_names <- names(l)
   shiny::renderTable({
     l <- lapply(1:length(l), function(x) {
@@ -115,9 +100,7 @@ feedback_mel_plot <- function(onsets, pitch_plot, error_plot, stimuli) {
   # create df
   prod.df <- tibble::tibble("onset" = c(0, onsets),
                             "pitch" = c(NA, pitch_plot),
-                            "error" = c(NA, as.numeric(error_plot)))
-
-  prod.df$error <- as.factor(prod.df$error)
+                            "error" = factor(c(NA, as.numeric(error_plot))))
 
   target.notes.other.octaves <- unlist(lapply(stimuli, function(x) get_all_octaves_in_gamut (x, midi.gamut.min, midi.gamut.max)))
 

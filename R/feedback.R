@@ -1,11 +1,23 @@
 
-# feedback
 
-feedback_melodic_production <- function(melody_dtw = TRUE) {
+#' Simple melodic production feedback
+#'
+#' @return
+#' @export
+#'
+#' @examples
+feedback_melodic_production_simple <- function() {
+  feedback_melodic_production(melody_dtw = FALSE, answer_meta_data = FALSE)
+}
+
+feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TRUE) {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
 
     if(is.null(answer$error)) {
+
+      # plot
+      plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
       if(melody_dtw) {
         melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
@@ -13,9 +25,6 @@ feedback_melodic_production <- function(melody_dtw = TRUE) {
       } else {
         melody_dtw_plot <- " "
       }
-
-      # plot
-      plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
       # get then remove necessary vars
       amd <- answer$answer_meta_data
@@ -26,7 +35,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE) {
       scores_tab <- list_to_shiny_table(answer)
 
       # make meta data table
-      if(is.list(amd)) {
+      if(answer_meta_data & is.list(amd)) {
         answer_meta_data_tab <- list_to_shiny_table(amd)
 
       } else {

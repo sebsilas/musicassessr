@@ -4,13 +4,17 @@ wjd_meta <- read.csv2('data-raw/wjd_meta.csv')
 # standardise namings
 wjd_meta$key[wjd_meta$key=="D#-maj"] <- "Eb-maj"
 wjd_meta$key[wjd_meta$key=="C#-maj"] <- "Db-maj"
+wjd_meta$key[wjd_meta$key=="F#-min"] <- "Gb-min"
+wjd_meta$key[wjd_meta$key=="F#-chrom"] <- "Gb-chrom"
+
+
 
 # produce tables of all possible keys
-keys_maj <- paste0(itembankr::pc_labels, '-maj')
-keys_min <- paste0(itembankr::pc_labels, '-min')
+keys_maj <- paste0(itembankr::pc_labels_flat, '-maj')
+keys_min <- paste0(itembankr::pc_labels_flat, '-min')
 keys_list <- c(keys_maj, keys_min)
 keys_table <- tibble::tibble(key = keys_list,
-                     key_centre = c(itembankr::pc_labels, itembankr::pc_labels),
+                     key_centre = c(itembankr::pc_labels_flat, itembankr::pc_labels_flat),
                      key_tonality = c(rep("major", 12), rep("minor", 12))
 )
 

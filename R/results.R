@@ -266,3 +266,44 @@ create_share_button <- function(img, url) {
 # processed_results$rhythmic
 
 
+
+######
+
+
+
+collapse_results <- function(res) {
+
+  results <- lapply(res, function(x) {
+    lapply(x, function(y) {
+      if(is.list(y)) {
+        lapply(y, as.character)
+      } else {
+        if(length(y) > 1) {
+          paste0(y, collapse = ",")
+        } else {
+          as.character(y)
+        }
+      }
+    })
+  })
+
+  results <- lapply(results, unlist, recursive = FALSE)
+
+  #dplyr::bind_rows(results)
+
+}
+
+
+#
+# l <- list.files('/Users/sebsilas/Downloads/results 3/', full.names = TRUE)
+#
+# r <- lapply(l, function(x) as.list(readRDS(x)))
+#
+#
+# r2 <- lapply(r, collapse_results)
+#
+# test <- data.frame(r2[[1]])
+# test2 <- as.data.frame(r2[[2]])
+
+
+

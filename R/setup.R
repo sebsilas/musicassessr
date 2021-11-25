@@ -196,7 +196,7 @@ record_instructions <- function() {
 
 
 get_instrument_range <- function(inst) {
-  insts_table[insts_table$Instruments == inst, c("low_note", "high_note")]
+  insts_table[insts_table$en == inst, c("low_note", "high_note")]
 }
 
 set_instrument_range_code_block <- function(inst = NULL) {

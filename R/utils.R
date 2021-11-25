@@ -56,13 +56,18 @@ audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_fre
                                                              lowest_allowed_freq = lowest.allowed.freq,
                                                              min_confidence = min.confidence)
 
-present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL, interactive = FALSE, button_text = "Record", record_duration = NULL, show_stop_button_after_record = FALSE) {
+present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL,
+                                  interactive = FALSE, button_text = "Record",
+                                  record_duration = NULL, show_stop_button_after_record = FALSE,
+                                  stop_button_text = "Stop") {
 
   if (present & type == "crepe" |
       present & type == "aws_pyin"  & is.null(record_duration)) {
 
     shiny::tags$div(id = "button_area",
         shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
+        htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" disabled>',stop_button_text, '</button>')),
+
         if(show_stop_button_after_record) {
           shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(null, true, false, this.id, \"',type,'\");
@@ -84,6 +89,7 @@ present_record_button <- function(present = FALSE, type = "aws_pyin", midi_devic
     record_duration <- record_duration*1000
     shiny::tags$div(id = "button_area",
                     shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
+                    htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" disabled>',stop_button_text, '</button>')),
                     shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(', record_duration, ', false, false, this.id, \"',type,'\");
                             hideRecordButton();
@@ -94,6 +100,7 @@ present_record_button <- function(present = FALSE, type = "aws_pyin", midi_devic
   else if (present & type == "record_midi_page") {
     shiny::tags$div(id = "button_area",
         shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
+        htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" disabled>',stop_button_text, '</button>')),
         shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(null, true, false, this.id, \"record_midi_page\");
                             hideRecordButton();
@@ -102,7 +109,9 @@ present_record_button <- function(present = FALSE, type = "aws_pyin", midi_devic
   }
 
   else {
-    shiny::tags$div(id = "button_area")
+    shiny::tags$div(id = "button_area",
+                    htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" style = "visibility: hidden;">',stop_button_text, '</button>'))
+                    )
   }
 }
 

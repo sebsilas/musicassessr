@@ -52,7 +52,7 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
   res
 }
 
-sample_melody_in_key <- function(item_bank = itembankr::WJD("main"), inst, bottom_range, top_range, difficulty, length = NULL) {
+sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range, difficulty, length = NULL) {
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -65,28 +65,23 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("main"), inst, botto
   user_span <- top_range - bottom_range
 
   # sample melody
-  print('jut before itbs')
+
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
-  print('after')
+
   found_melody <- FALSE
 
   while(found_melody == FALSE) {
-    print('while')
     i <- sample(1:nrow(item_bank_subset), 1)
     meta_data <- item_bank_subset[i, ]
-    print(meta_data)
     rel_mel <- meta_data$melody
-    print(rel_mel)
     # now put it in a key
     key_centres <- itembankr::pitch_class_to_midi_notes(key_centre)
-    print(key_centres)
-    print(bottom_range)
-    print(top_range)
+
     key_centres_in_range <- key_centres[key_centres >= bottom_range & key_centres <= top_range]
-    print(key_centres_in_range)
+
     # first try it with the first note as being the key centre
     abs_mel <- itembankr::rel_to_abs_mel(itembankr::str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
-    print(abs_mel)
+
     # check key
     mel_key <- itembankr::get_implicit_harmonies(abs_mel)
     mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
@@ -98,9 +93,6 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("main"), inst, botto
       # then must transpose
       abs_mel <- abs_mel + dist
     }
-
-    print('current mel: ')
-    print(abs_mel)
 
     # check all notes in range
     if(check_all_notes_in_range(abs_mel, bottom_range, top_range)) {
@@ -146,6 +138,10 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("main"), inst, botto
 
 }
 
+d <- itembankr::WJD("main")
+item_bank_subset <- itembankr::subset_item_bank(itembankr::WJD("main"),
+                                                tonality = "major",
+                                                span_max = 24, item_length = 11L)
 
 # dd <- sample_melody_in_key(item_bank = itembankr::WJD("phrases"),
 #                      inst = "Piano",

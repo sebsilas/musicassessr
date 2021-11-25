@@ -29,7 +29,7 @@ present_stimuli(
   ascending = TRUE,
   start_note = 0,
   end_note = "end",
-  durations = "null",
+  durations = NULL,
   show_record_button = FALSE,
   auto_next_page = FALSE,
   choices = NULL,

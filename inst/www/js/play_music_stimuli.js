@@ -740,45 +740,32 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
 function showStopButton(type = 'aws_pyin', stop_button_text = "Stop") {
         console.log('showStop');
         console.log(type);
-        if(type === "crepe" | type === "record_midi_page") {
-
+        if(type === "crepe") {
           var stopButton = document.createElement("button");
           stopButton.style.display = "block";
           stopButton.style.textAlign = "center";
           stopButton.classList.add("btn", "btn-default", "action-button");
           stopButton.innerText = stop_button_text;
           stopButton.addEventListener("click", function () {
-              if(type === "crepe") {
-                 // crepe
                 crepeStop();
-              }
-
-              else if (type === "record_midi_page") {
-                 WebMidi.disable();
-                 var button_area = document.getElementById("button_area");
-                 button_area.appendChild(stopButton);
-              }
-              else {
-                //
-              }
-              next_page();
+                next_page();
               });
           var button_area = document.getElementById("button_area");
           button_area.appendChild(stopButton);
-        }
-
-        else {
-          startRecording(updateUI = false);
-          if (typeof recordButton !== 'undefined') {
-            //recordButton.style.display = 'none';
+        } else {
+          if(type === "aws_pyin") {
+            startRecording(updateUI = false);
+             var loading = document.getElementById("loading");
+              console.log('in the elees23');
+              console.log(loading);
+              if (loading !== undefined) {
+                loading.style.visibility = 'hidden';
+              }
           }
 
-          var loading = document.getElementById("loading");
-          if (loading !== undefined) {
-            loading.style.visibility = 'hidden';
-          }
 
           var stopButton = document.getElementById("stopButton");
+          console.log(stopButton);
 
           if(stopButton !== undefined) {
             stopButton.disabled = false;
@@ -786,7 +773,20 @@ function showStopButton(type = 'aws_pyin', stop_button_text = "Stop") {
 
             stopButton.onclick = function () {
               //next_page();
-              simpleStopRecording();
+              if(type === "aws_pyin") {
+                simpleStopRecording();
+              } else if(type === "record_midi_page") {
+                console.log("end midi !");
+                WebMidi.disable();
+                button_area=document.getElementById("button_area")
+              	button_area.style.display="none"
+              	stop_button=document.getElementById("stopButton")
+              	stop_button.style.display="none"
+              	user_rating=document.getElementById("user_rating")
+              	user_rating.style.display="block"
+              } else {
+                //
+              }
             };
           }
         }

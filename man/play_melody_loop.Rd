@@ -27,11 +27,11 @@ play_melody_loop(
   example = FALSE,
   sound = "piano",
   reactive_stimuli = NULL,
-  trial_characteristics_function = NULL
+  get_trial_characteristics_function = NULL
 )
 }
 \arguments{
-\item{trial_characteristics_function}{}
+\item{get_trial_characteristics_function}{}
 }
 \value{
 

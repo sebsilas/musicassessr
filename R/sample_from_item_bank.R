@@ -40,30 +40,16 @@ item_sampler <- function(item_bank, no_items) {
 }
 
 
-item_characteristics_sampler <- function(length = 3:15, difficulty = list("easy" = 10, "hard" = 10)) {
-  # given a range of stimuli lengths and a number of difficulties, produce the test parameters
-  no_items <- sum(unlist(difficulty))
-
-  # what values are there?
-  no_of_Ns <- length(length)
-  # given the no. of items, how many of each N will we need? let's count
-
-  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-
-  count <- 1
-  N_list <- c()
-
-  while(count < no_items+1) {
-    N_list <- c(N_list, length[idxes[count]])
-    count <- count + 1
-  }
-
-  data.frame(trial_no = 1:no_items,
-             melody_length = N_list[base::order(N_list)],
-             difficulty = c(rep("easy", difficulty$easy),
-                            rep("hard", difficulty$hard))
-  )
-
+sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
+  psychTestR::code_block(function(state, ...) {
+    print('sample_item_characteristics!')
+    print(item_characteristics_pars)
+    item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
+    print(item_chars)
+    print('set::')
+    print(var_name)
+    psychTestR::set_global(var_name, item_chars, state)
+  })
 }
 
 remove_duplicates_and_resample <- function(df, item_bank) {
@@ -234,14 +220,7 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
 #rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, 6)
 
 
-sample_item_characteristics <- function(item_bank, num_items, var_name) {
-  psychTestR::code_block(function(state, ...) {
-    print('sample_item_characteristics')
-    print(num_items)
-    item_chars <- item_characteristics_sampler(difficulty = num_items)
-    psychTestR::set_global(var_name, item_chars, state)
-  })
-}
+
 
 #pra <- item_characteristics_sampler()
 

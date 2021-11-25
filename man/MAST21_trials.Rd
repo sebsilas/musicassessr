@@ -12,11 +12,9 @@ MAST21_trials(
   get_answer = musicassessr::get_answer_pyin,
   sound = "piano",
   page_text = psychTestR::i18n("sing_melody_trial"),
-  page_title_doo = "Sing this melody with a \\"Dooo\\" sound.",
-  page_title_daa = "Sing this melody with a \\"Daah\\" sound.",
-  long_tone_title_doo = "Sing the note with a \\"Dooo\\" sound.",
-  long_tone_title_daa = "Sing the note with a \\"Daah\\" sound.",
-  long_tone_text = "Please sing the note after you hear it, then click Stop.",
+  page_title_melody = "Please sing the melody",
+  page_title_long_note = "Sing the note with a \\"Dooo\\" sound.",
+  page_text_long_note = "Please sing the note after you hear it, then click Stop.",
  
     instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm."
 )

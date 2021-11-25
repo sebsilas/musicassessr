@@ -53,8 +53,10 @@ autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive) {
 
 
 record_midi_page <- function(body = NULL, label = "record_midi", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ", interactive = FALSE,
-                              note_no = "max", show_record_button = FALSE, get_answer = get_answer_midi, transpose = 0, answer_meta_data = 0,
-                             autoInstantiate = FALSE, midi_device, button_text = "Record", ...) {
+                              note_no = "max", show_record_button = TRUE, get_answer = get_answer_midi, transpose = 0,
+                             answer_meta_data = 0, autoInstantiate = FALSE, midi_device, button_text = "Record",
+                             auto_next_page = FALSE, user_rating = FALSE, page_text_first = TRUE,
+                             happy_with_response =  FALSE, attempts_left = NULL, stop_button_text = "Stop", ...) {
 
   #note_no_js_script <- set.note.no(stimuli, note_no)
     if (interactive) { interactive <- "true" } else  { interactive <- "false" }
@@ -62,10 +64,10 @@ record_midi_page <- function(body = NULL, label = "record_midi", stimuli = " ", 
     psychTestR::page(ui = shiny::tags$div(
 
       shiny::tags$head(
-
+        auto_next_page(auto_next_page),
         shiny::tags$script('console.log(\"this is an midi page\");'),
         autoInstantiateMidi(instantiate = autoInstantiate, midi_device, interactive),
-        shiny::tags$script(set_answer_meta_data(answer_meta_data)),
+        shiny::tags$script(set_answer_meta_data(answer_meta_data))
 
       ),
       shiny::tags$body(
@@ -78,7 +80,6 @@ record_midi_page <- function(body = NULL, label = "record_midi", stimuli = " ", 
                     Shiny.setInputValue("onsets_noteon", JSON.stringify(onsets_noteon));
                     Shiny.setInputValue("user_response_midi_note_off", JSON.stringify(user_response_midi_note_off));
                     Shiny.setInputValue("onsets_noteoff", JSON.stringify(onsets_noteoff));
-                    Shiny.setInputValue("answer_meta_data", JSON.stringify(answer_meta_data));
                     '),
         shiny::tags$h2(page_title),
         shiny::tags$p(page_text),
@@ -87,7 +88,13 @@ record_midi_page <- function(body = NULL, label = "record_midi", stimuli = " ", 
                          stimuli_reactive = stimuli_reactive,
                          prepared_stimuli = abs_mel),
 
-        present_record_button(show_record_button, type = "record_midi_page", button_text = button_text),
+        present_record_button(show_record_button, type = "record_midi_page",
+                              button_text = button_text, stop_button_text = stop_button_text),
+
+
+        user_rating(user_rating),
+
+        happy_with_response_message(happy_with_response, attempts_left)
 
       )
     ),

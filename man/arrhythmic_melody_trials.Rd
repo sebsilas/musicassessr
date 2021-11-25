@@ -13,9 +13,12 @@ arrhythmic_melody_trials(
   sound = "piano",
   page_text = psychTestR::i18n("sing_melody_trial"),
   page_title = "Sing the Melody",
+  page_type = "record_audio_page",
  
     instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
-  trial_characteristics_function = NULL,
+  get_trial_characteristics_function = NULL,
+  item_characteristics_sampler_function = NULL,
+  item_characteristics_pars = NULL,
   rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred
 )
 }

@@ -1,64 +1,36 @@
 
 # feedback
 
-feedback_melodic_production <- function() {
+feedback_melodic_production <- function(melody_dtw = TRUE) {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
-    print('feedback_melodic_production')
 
     if(is.null(answer$error)) {
-      amd <- answer$answer_meta_data
 
-      melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
-
-      answer$answer_meta_data <- NULL
-      answer$pyin_pitch_track <- NULL
-
-      d_names <- names(answer)[!names(answer) == "answer_meta_data"]
-      d_names <- names(answer)[!names(answer) == "melody_dtw_plot"]
-      d_names <- names(answer)[!names(answer) == "pyin_pitch_track"]
-
-      amd_names <- names(amd)
+      if(melody_dtw) {
+        melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
+        #d_names <- names(answer)[!names(answer) == "melody_dtw_plot"]
+      } else {
+        melody_dtw_plot <- " "
+      }
 
       # plot
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
-      tab <- shiny::renderTable({
-        # nb, duplicate code, make functions
-        d <- lapply(1:length(answer), function(x) {
-          print(x)
-          print(answer[[x]])
-          if(length(answer[[x]]) > 1) {
-            paste0(answer[[x]], collapse = ",")
-          } else {
-            answer[[x]]
-          }
-        })
+      # get then remove necessary vars
+      amd <- answer$answer_meta_data
+      answer$answer_meta_data <- NULL
+      answer$pyin_pitch_track <- NULL
 
-        d <- base::t(as.data.frame(d))
-        row.names(d) <- d_names
-        d
-      }, rownames = TRUE, colnames = FALSE, width = "50%")
+      # produce scores table
+      scores_tab <- list_to_shiny_table(answer)
 
-
+      # make meta data table
       if(is.list(amd)) {
-
-        tab2 <- shiny::renderTable({
-          amd <- lapply(1:length(amd), function(x) {
-
-            if(length(amd[[x]]) > 1) {
-              paste0(amd[[x]], collapse = ",")
-            } else {
-              amd[[x]]
-            }
-          })
-          amd <- base::t(as.data.frame(amd))
-          row.names(amd) <- amd_names
-          amd
-        }, rownames = TRUE, colnames = FALSE, width = "50%")
+        answer_meta_data_tab <- list_to_shiny_table(amd)
 
       } else {
-        tab2 <- shiny::tags$div()
+        answer_meta_data_tab <- shiny::tags$div()
       }
 
       # melconv_out <- present_stimuli_midi_notes_both(answer$melconv_notes, stimuli_type = "midi_notes", display_modality = "both",
@@ -77,9 +49,9 @@ feedback_melodic_production <- function() {
                                                     shiny::tags$h3('Melody DTW Plot'),
                                                     shiny::tags$p(melody_dtw_plot),
                                                     shiny::tags$h3('Response Data'),
-                                                    tab,
+                                                    scores_tab,
                                                     shiny::tags$h3('Stimuli Info'),
-                                                    tab2),
+                                                    answer_meta_data_tab),
                         page_text_first = FALSE,
                         play_button_id = "playButtonFeedback",
                         button_area_id = "buttonArea3")
@@ -88,6 +60,23 @@ feedback_melodic_production <- function() {
       psychTestR::one_button_page("Unfortunately a valid response was not recorded.")
     }
   })
+}
+
+list_to_shiny_table <- function(l) {
+  l_names <- names(l)
+  shiny::renderTable({
+    l <- lapply(1:length(l), function(x) {
+
+      if(length(l[[x]]) > 1) {
+        paste0(l[[x]], collapse = ",")
+      } else {
+        l[[x]]
+      }
+    })
+    r <- base::t(as.data.frame(l))
+    row.names(r) <- l_names
+    r
+  }, rownames = TRUE, colnames = FALSE, width = "50%")
 }
 
 feedback_long_tone <- function() {
@@ -101,15 +90,14 @@ feedback_long_tone <- function() {
     answer$onset <- NULL
     answer$freq <- NULL
 
-    tab <- shiny::renderTable({
-      d_names <- names(answer)
-      d <- base::t(as.data.frame(answer))
-      row.names(d) <- d_names
-      d }, rownames = TRUE, colnames = FALSE, width = "50%")
+    tab <- list_to_shiny_table(answer)
+
 
     psychTestR::one_button_page(
-      shiny::tags$div(shiny::tags$p(plot), tags$h3('Response Data'), tab)
-    )
+      shiny::tags$div(shiny::tags$p(plot),
+                      tags$h3('Response Data'),
+                      tab))
+
   })
 }
 
@@ -160,8 +148,6 @@ add_feedback <- function(items, feedback, after = 2) {
       if(is.list(x)) {
         unlist(x)
       } else { x } })
-    print('added_feedback')
-    print(res)
     unlist(res)
   }
 }

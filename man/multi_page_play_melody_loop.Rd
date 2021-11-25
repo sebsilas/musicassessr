@@ -22,11 +22,11 @@ multi_page_play_melody_loop(
   example = FALSE,
   feedback = FALSE,
   sound = "piano",
-  trial_characteristics_function = NULL
+  get_trial_characteristics_function = NULL
 )
 }
 \arguments{
-\item{trial_characteristics_function}{}
+\item{get_trial_characteristics_function}{}
 }
 \value{
 

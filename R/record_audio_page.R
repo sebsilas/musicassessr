@@ -59,7 +59,9 @@ record_audio_page <- function(body = " ", label = "record_audio_page", stimuli =
                        stimuli_reactive = stimuli_reactive,
                        prepared_stimuli = abs_mel),
 
-      present_record_button(present = show_record_button, type = method, button_text = button_text, record_duration = record_duration),
+      present_record_button(present = show_record_button, type = method,
+                            button_text = button_text, record_duration = record_duration,
+                            stop_button_text = stop_button_text),
 
       loading(),
 
@@ -128,12 +130,10 @@ deploy_aws_pyin <- function(method, crepe_stats = FALSE, show_aws_controls = TRU
 
   	 <button id="recordButton" class="btn btn-default action-button">Record</button>
   	 <button id="pauseButton" class="btn btn-default action-button" disabled style="display: none;">Pause</button>
-  	 <button id="stopButton" class="btn btn-default action-button" disabled>',stop_button_text, '</button>
     </div>
     <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
   	<p style="display: none;"><strong>Recordings:</strong></p>
   	<ol id="recordingsList" style="display: none;"></ol>
-        <div id="loading" style="display: none;"></div>
         <div id="csv_file" style="display: none;"></div>')), show_aws_buttons(show_aws_controls))
   }
   else {
@@ -188,7 +188,9 @@ user_rating <- function(user_rating) {
 	                                user_rating.style.display = "none";
 	                                if (!file_is_ready){
                                   	spinner = document.getElementsByClassName("hollow-dots-spinner");
-                                  	spinner[0].style.display = "block";
+                                  	if(typeof spinner[0] !== "undefined") {
+                                  	  spinner[0].style.display = "block";
+                                  	}
 	                                 }
                                 }
                          </script>
@@ -244,7 +246,9 @@ loading <- function() {
     <div class="dot"></div>
       <div class="dot"></div>
         <div class="dot"></div>
-          </div>')
+          </div>
+    <div id="loading" style="display: none;"></div>
+    ')
 }
 
 

@@ -397,30 +397,10 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 
 
-melody_scoring_from_user_input <- function(input, result, trial_type = "audio", user_melody_input = NULL, singing_measures = TRUE, pyin_pitch_track = NULL, stimuli = NA, stimuli_durations = NA) {
+melody_scoring_from_user_input <- function(input, result = NULL, trial_type = "audio",
+                                           user_melody_input = NULL, singing_measures = TRUE, pyin_pitch_track = NULL,
+                                           stimuli = NA, stimuli_durations = NA) {
 
-
-  # onset, dur, freq, note
-
-  if(is.numeric(result$freq)) {
-
-    result <- result %>% dplyr::mutate(cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
-                                 # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
-                                 pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
-                                 pitch_class_numeric = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
-                                 sci_notation = itembankr::midi_to_sci_notation(note),
-                                 interval = c(NA, diff(note)),
-                                 ioi = c(NA, diff(onset)),
-                                 ioi_class = itembankr::classify_duration(ioi))
-
-    user_melody_input <- result$note
-    onsets_noteon <- result$onset
-
-  }
-  else {
-    print("the result wasn't good")
-    return(NA)
-  }
 
   # grab midi related stuff
   if(trial_type == "midi") {
@@ -429,20 +409,34 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
     onsets_noteoff <- rjson::fromJSON(input$onsets_noteoff)
   }
   else {
+    if(is.numeric(result$freq)) {
+
+      result <- result %>% dplyr::mutate(cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
+                                         # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
+                                         pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+                                         pitch_class_numeric = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+                                         sci_notation = itembankr::midi_to_sci_notation(note),
+                                         interval = c(NA, diff(note)),
+                                         ioi = c(NA, diff(onset)),
+                                         ioi_class = itembankr::classify_duration(ioi))
+
+      user_melody_input <- result$note
+      onsets_noteon <- result$onset
+
+    } else {
+      print("the result wasn't good")
+      return(NA)
+    }
     onsets_noteoff <- NA
     user_response_midi_note_off <- NA
   }
 
-  print('user_melody_input')
-  print(user_melody_input)
   if(length(user_melody_input) == 0) {
-    if(trial_type == "midi") { shiny::showNotification(i18n("nothing_entered")) }
+    if(trial_type == "midi") { shiny::showNotification(psychTestR::i18n("nothing_entered")) }
     return(list(user_melody_input = NA, reason = "nothing_entered"))
   }
 
   else {
-    print('d294')
-    print(input$answer_meta_data)
     if(length(input$answer_meta_data) > 1) {
       stimuli_length <- input$answer_meta_data$N
     } else {
@@ -457,22 +451,17 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
 
     # calculate measures
     trial_length <- onsets_noteon[length(onsets_noteon)]
-
     # octave dependent
     no_correct <- sum(as.numeric(user_melody_input %in% stimuli))
     no_errors <- length(user_melody_input) - no_correct
     errors_boolean <- as.vector(!user_melody_input %in% stimuli)
-
     # octaves independent (i.e octave errors allowed)
     user_pitch_classes <- itembankr::midi_to_pitch_class(user_melody_input) # pitch_class allows octave errors
     stimuli_pitch_classes <- itembankr::midi_to_pitch_class(stimuli)
-
     correct_boolean_octaves_allowed <- as.vector(user_pitch_classes %in% stimuli_pitch_classes)
     errors_boolean_octaves_allowed <- as.vector(!user_pitch_classes %in% stimuli_pitch_classes)
-
     no_correct_octaves_allowed <- sum(correct_boolean_octaves_allowed)
     no_errors_octaves_allowed <- sum(errors_boolean_octaves_allowed)
-    print('before ac')
     # accuracy
     accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
     accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
@@ -487,9 +476,7 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
 
     correct_by_note_events_octaves_allowed <- no_correct_octaves_allowed/no_note_events
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
-    print('singingma')
-    print(singing_measures)
-    print(result)
+
     if(singing_measures) {
       # singing stuff
       # note precision
@@ -498,22 +485,18 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
         dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
                   participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
                     dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE)) %>% dplyr::pull(note_precision_melody)
-      print(note_precision)
 
-      print('stimuli: ')
-      print(stimuli)
       # cents_deviation_from_nearest_stimuli_pitch
       mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = result$note,
                                                        stimuli = stimuli, freq = result$freq)
-      print(mean_cents_deviation_from_nearest_stimuli_pitch)
+
       # mean cents deviation
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
-      print(mean_cents_deviation_from_nearest_midi_pitch)
+
       # melody dtw
       user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, result)
       stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
-      print(user_prod_for_dtw)
-      print(stimuli_for_dtw)
+
       melody_dtw <- tryCatch({
           dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)$distance
         },
@@ -530,7 +513,6 @@ melody_scoring_from_user_input <- function(input, result, trial_type = "audio", 
       melody_dtw <- NA
     }
 
-    print('shit?')
     list(stimuli = stimuli,
          stimuli_durations = stimuli_durations,
          stimuli_length = stimuli_length,
@@ -584,12 +566,38 @@ get_answer_simple_pyin_summary <- function(input, ...) {
 
 
 
+#' Get answer for a MIDI page
+#'
+#' @param input
+#' @param state
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_answer_midi <- function(input, state, ...) {
   print('get_answer_midi')
 
   user_response_midi_note_on <- rjson::fromJSON(input$user_response_midi_note_on)
 
-  melody_scoring_from_user_input(input = input, user_melody_input = user_response_midi_note_on, trial_type = "midi", singing_measures = FALSE)
+  if(is.null(psychTestR::get_global("melody", state))) {
+    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
+    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
+  } else {
+
+    stimuli_both <- psychTestR::get_global("melody", state)
+    stimuli <- stimuli_both$melody
+    stimuli_durations <- stimuli_both$durations
+    stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
+  }
+
+  c(melody_scoring_from_user_input(input = input,
+                                 user_melody_input = user_response_midi_note_on,
+                                 trial_type = "midi", singing_measures = FALSE,
+                                 stimuli = stimuli, stimuli_durations = stimuli_durations),
+    user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
+    user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating))
 }
 
 

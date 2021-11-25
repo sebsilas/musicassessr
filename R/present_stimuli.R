@@ -98,9 +98,11 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               page_label = page_label, button_text = button_text, play_button_text = play_button_text,
                               show_record_button = show_record_button,
                               save_answer = save_answer,
-                              auto_next_page = auto_next_page, user_rating = user_rating,
+                              user_rating = user_rating,
                               happy_with_response = happy_with_response,
-                              attempts_left = attempts_left, ...)
+                              attempts_left = attempts_left,
+                              auto_next_page = auto_next_page,
+                              page_text_first = page_text_first, ...)
 
   } else if(page_type == "record_audio_page") {
 

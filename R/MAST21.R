@@ -287,15 +287,7 @@ UPEI_extra_questions <- function() {
 #' @export
 #'
 #' @examples
-UPEI_2021_battery <- function(state = "production",
-                              aws_credentials = list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-                                                     bucket_name = "shinny-app-source-41630",
-                                                     bucket_region = "us-east-1",
-                                                     identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                                                     destination_bucket = "shinny-app-destination-41630")) {
-
-
-  musicassessr::make_aws_credentials_global(aws_credentials)
+UPEI_2021_battery <- function(state = "production") {
 
   psychTestR::make_test(
     psychTestR::join(
@@ -408,12 +400,7 @@ UPEI_2021_battery <- function(state = "production",
     psyquest::SES(),
 
     psychTestR::one_button_page(shiny::tags$div(
-      musicassessr_js_scripts(api_url = aws_credentials$api_url,
-                              bucket_name = aws_credentials$bucket_name,
-                              bucket_region = aws_credentials$bucket_region,
-                              identity_pool_id = aws_credentials$identity_pool_id,
-                              destination_bucket = aws_credentials$destination_bucket,
-                              musicassessr_state = state),
+      musicassessr_js_scripts(musicassessr_state = state),
       shiny::tags$p("On the next page you will sing Happy Birthday again."))),
 
     musicassessr::sing_happy_birthday_page(feedback = FALSE),

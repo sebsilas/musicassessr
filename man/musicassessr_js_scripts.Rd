@@ -2,16 +2,9 @@
 % Please edit documentation in R/musicassessr_js_scripts.R
 \name{musicassessr_js_scripts}
 \alias{musicassessr_js_scripts}
-\title{musicassessr_js_scripts}
+\title{Import the required musicassessr dependencies into a webpage}
 \usage{
-musicassessr_js_scripts(
-  destination_bucket,
-  api_url,
-  bucket_name,
-  bucket_region,
-  identity_pool_id,
-  musicassessr_state = NULL
-)
+musicassessr_js_scripts(musicassessr_state = NULL)
 }
 \arguments{
 \item{musicassessr_state}{}
@@ -20,5 +13,5 @@ musicassessr_js_scripts(
 
 }
 \description{
-musicassessr_js_scripts
+Import the required musicassessr dependencies into a webpage
 }

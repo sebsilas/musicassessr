@@ -82,7 +82,6 @@ setup_pages <- function(input = c("microphone",
 
       record_instructions(),
 
-
       get_instrument_range_pages(input, get_instrument_range)
 
     )

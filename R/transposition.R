@@ -17,7 +17,7 @@ easy_keys_for_inst <- function(instrument_name) {
   warning('Manually adding easy keys for Piano: C, F,  G, D')
   if(instrument_name == "Piano") {
     easy_keys <- rbind(easy_keys,
-                  data.frame(instrument = rep("p", 4),
+                  tibble::tibble(instrument = rep("p", 4),
                             key = c("C-maj", "F-maj", "G-maj", "D-maj"),
                             n = rep(0, 4),
                             key_centre = c("C", "F", "G", "D"),
@@ -70,7 +70,7 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
 
   found_melody <- FALSE
 
-  while(found_melody == FALSE) {
+  while(!found_melody) {
     i <- sample(1:nrow(item_bank_subset), 1)
     meta_data <- item_bank_subset[i, ]
     rel_mel <- meta_data$melody
@@ -138,20 +138,6 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
 
 }
 
-d <- itembankr::WJD("main")
-item_bank_subset <- itembankr::subset_item_bank(itembankr::WJD("main"),
-                                                tonality = "major",
-                                                span_max = 24, item_length = 11L)
-
-# dd <- sample_melody_in_key(item_bank = itembankr::WJD("phrases"),
-#                      inst = "Piano",
-#                      bottom_range = 48, top_range = 72,
-#                      difficulty =  "easy", length = 3)
-
-
-
-
-
 sample_melody_in_easy_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "easy")
 }
@@ -175,78 +161,6 @@ check_all_notes_in_range <- function(abs_mel, bottom_range, top_range) {
   range <- bottom_range:top_range
   all(abs_mel %in% range)
 }
-
-
-given_range_what_keys_can_melody_go_in <- function(melody, bottom_range = 48, top_range = 79, inst) {
-  # check, starting from every note in the range, if the whole melody fits in the range,
-  # if it fits, then list the key it is possible in, and give the starting note
-
-  range <- bottom_range:top_range
-
-  res <- data.frame(start_note = bottom_range:top_range,
-                    melody = melody
-                    )
-
-  res <- res %>%
-          dplyr::rowwise() %>%
-          dplyr::mutate(abs_melody = paste0(itembankr::rel_to_abs_mel(rel_mel = itembankr::str_mel_to_vector(melody, ","), start_note = start_note), collapse = ","),
-                 in_range = all(itembankr::str_mel_to_vector(abs_melody, ",") %in% range)
-                 ) %>%
-                dplyr::filter(in_range == TRUE)
-
-  idxes <- sample(1:nrow(res), 10)
-
-  for (i in idxes) {
-    abs_melody <- res[i, "melody"]
-    key <- itembankr::get_implicit_harmonies(itembankr::str_mel_to_vector(abs_melody, ","))$key
-  }
-
-  # mutate(key = itembankr::get_implicit_harmonies(itembankr::str_mel_to_vector(abs_melody, ","))$key) %>%
-  #   rowwise %>%
-  #     mutate(difficulty = key_difficulty(key, inst))
-
-  res
-}
-
-
-produce_stimuli_in_range_and_key <- function(rel_melody, bottom_range = 21, top_range = 108, key) {
-  # given some melodies in relative format, and a user range, produce random transpositions which fit in that range
-  rel_melody <- itembankr::str_mel_to_vector(rel_melody, sep = ",")
-  dummy_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = 1)
-  mel_range <- range(dummy_abs_mel)
-  span <- sum(abs(mel_range))
-
-  gamut <- bottom_range:top_range
-  gamut_clipped <- (bottom_range+span):(top_range-span)
-  random_abs_mel <- 200:210  # just instantiate something out of range
-  current_key <- "fail" # and same for the current key
-
-  # some melodies aren't transposable into a given key, given the user's range, so we need a way out
-  count <- 0
-
-  while(any(!random_abs_mel %in% gamut) | current_key != key) {
-    # resample until a melody is found that sits in the range
-    # and is the correct tonality
-    random_abs_mel_start_note <- sample(gamut, 1)
-    random_abs_mel <- itembankr::rel_to_abs_mel(rel_melody, start_note = random_abs_mel_start_note)
-    current_key <- itembankr::get_implicit_harmonies(random_abs_mel)$key
-    count <- count + 1
-
-    if(span > top_range - bottom_range) {
-      print('The span of the stimuli is greater than the range of the instrument. It is not possible to play on this instrument.')
-      break
-    }
-
-    if (count == 144) {
-      random_abs_mel <- "error"
-      print("error!")
-      break
-    }
-  }
-
-  random_abs_mel
-}
-
 
 sample_keys_by_difficulty <- function(inst, n_easy, n_hard) {
   easy <- sample_easy_key(inst, no_to_sample = n_easy)
@@ -315,7 +229,6 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
     plot_mean_centred_to_range(stimuli_centred_to_user_mean, user_mean_corrected_to_stimuli, user_mean_note, bottom_range, top_range)
   }
 
-
   return(stimuli_centred_to_user_mean)
 
 }
@@ -327,47 +240,32 @@ leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_ra
 
 
 
-# sample_keys_by_difficulty("Piano", n_easy = 4, n_hard = 4)
 
 
 
 ## tests
 
+
+# d <- itembankr::WJD("main")
+# item_bank_subset <- itembankr::subset_item_bank(itembankr::WJD("main"),
+#                                                 tonality = "major",
+#                                                 span_max = 24, item_length = 11L)
+# dd <- sample_melody_in_key(item_bank = itembankr::WJD("phrases"),
+#                      inst = "Piano",
+#                      bottom_range = 48, top_range = 72,
+#                      difficulty =  "easy", length = 3)
+
+
+# sample_keys_by_difficulty("Piano", n_easy = 4, n_hard = 4)
+
 #rel_to_abs_mel_mean_centred(itembankr::Berkowitz[1000, "melody"], 40, 65, TRUE)
-
-
-# ra.2 <- given_range_what_keys_can_melody_go_in(melody = test_sub[1000, "melody"],
-#                                              bottom_range = 48, top_range = 79, "Piano")
-#
 
 # sampled_keys <- sample_keys_by_difficulty("Alto Saxophone", 10, 10)
 
-# rra3.2 <- given_range_what_keys_can_melody_go_in(melody = test_sub[1001, "melody"],
-#                                               bottom_range = 48, top_range = 79, "Tenor Saxophone")
-#
-#
-# ra4.2 <- given_range_what_keys_can_melody_go_in(melody = test_sub[1002, "melody"],
-#                                               bottom_range = 48, top_range = 79, "Alto Saxophone")
-#
-#
-# ra5.2 <- given_range_what_keys_can_melody_go_in(melody = test_sub[1102, "melody"],
-#                                               bottom_range = 48, top_range = 79, "Piano")
-#
-#
-# ra6.2 <- given_range_what_keys_can_melody_go_in(melody = test_sub[100, "melody"],
-#                                               bottom_range = 48, top_range = 79, "Tenor Saxophone")
-#
-#
-# ra7.2 <- given_range_what_keys_can_melody_go_in(melody = "4,5,-5,-5,3,7,-7,7,-6,6,-2,-1,1",
-#                                               bottom_range = 48, top_range = 79, "Piano")
-#
-
-#
 #
 # sample_melody_in_hard_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
 # sample_melody_in_easy_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
 #
-
 
 
 # sample_easy_key("Piano")
@@ -427,20 +325,11 @@ leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_ra
 
 # sample_melody_in_easy_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
 # sample_melody_in_hard_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
-#
 
-
-
-
-
-############
-
-
-#
-# da1 <- sample_melody_in_key2(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15)
-# da2 <- sample_melody_in_key2(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "hard", length = 15)
+# da1 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15)
+# da2 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "hard", length = 15)
 #
 # trial_char <- get_trial_characteristics(trial_df = pra, trial_no = 20)
 #
-# da3 <- sample_melody_in_key2(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
-# da4 <- sample_melody_in_key2(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
+# da3 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
+# da4 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)

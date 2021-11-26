@@ -5,16 +5,11 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 
   nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli,
                                                                            user_production_pitches = user_prod_pitches,
-                                                                           allOctaves = TRUE
-  )
+                                                                           allOctaves = TRUE)
 
   res <- vector_cents_between_two_vectors(freq, hrep::midi_to_freq(nearest_pitches))
 
   res <- mean(abs(res), na.rm = TRUE)
-  if(is.na(res)) {
-    print('na!')
-  }
-
   res
 
 }
@@ -44,13 +39,18 @@ long_note_pitch_metrics <- function(target_pitch, pyin_res) {
   # note that note precision has no reference to target pitch and therefore thus independent of accuracy
   note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(pyin_res$freq) )
 
-  print(list("note_accuracy" = note.accuracy,
-               "note_precision" = note.precision,
-               "dtw_distance" = dtw.distance))
-
   list("note_accuracy" = note.accuracy,
        "note_precision" = note.precision,
        "dtw_distance" = dtw.distance)
+}
+
+get_note_precision <- function(result) {
+  note_precision <- result %>%
+    dplyr::group_by(sci_notation) %>%
+    dplyr::summarise(sd_for_pitch_class = sd(freq, na.rm = TRUE),
+                     participant_precision = mean(sd_for_pitch_class, na.rm = TRUE)) %>%
+    dplyr::summarise(note_precision_melody = mean(participant_precision, na.rm = TRUE)) %>%
+    dplyr::pull(note_precision_melody)
 }
 
 
@@ -68,10 +68,7 @@ find_closest_value <- function(x, vector, return_value) {
 #find_closest_value(14, c(1, 6, 12, 28, 33), TRUE)
 
 get_all_octaves_in_gamut <- function(note, gamut_min = midi.gamut.min, gamut_max = midi.gamut.max) {
-  print('get_all_octaves_in_gamut')
-  print(note)
-  print(gamut_min)
-  print(gamut_max)
+
   # given a note and a range/gamut, find all midi octaves of that note within the specified range/gamut
   res <- c(note)
 
@@ -92,8 +89,7 @@ get_all_octaves_in_gamut <- function(note, gamut_min = midi.gamut.min, gamut_max
 
 
 find_closest_stimuli_pitch_to_user_production_pitches <- function(stimuli_pitches, user_production_pitches, allOctaves = TRUE) {
-  print('find_closest_stimuli_pitch_to_user_production_pitches')
-  print(stimuli_pitches)
+
   # if allOctaves is true, get the possible pitches in all other octaves. this should therefore resolve issues
   # where someone was presented stimuli out of their range and is penalised for it
   if (allOctaves == TRUE) {

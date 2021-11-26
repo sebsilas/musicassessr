@@ -76,7 +76,7 @@ play_interval_page <- function(interval = NULL,
                                example = FALSE,
                                label = "interval_",
                                save_answer = TRUE,
-                               get_answer = interval_page_get_answer,
+                               get_answer = get_answer_interval_page,
                                trial_no = NULL) {
 
 
@@ -112,18 +112,6 @@ play_interval_page <- function(interval = NULL,
 
 }
 
-interval_page_get_answer <- function(input, state, ...) {
-
-    answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
-    msg <- ifelse(input$dropdown == answer_meta_data$interval, "Correct Answer!", "Wrong Answer!")
-    shiny::showNotification(msg)
-
-    c(
-      list(
-        user_choice = input$dropdown),
-        as.list(answer_meta_data)
-    )
-}
 
 multi_interval_page <- function(n_items = 26, page_title = "What is the interval?") {
   lapply(1:n_items, function(trial_no) {

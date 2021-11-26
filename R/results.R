@@ -22,7 +22,6 @@ tidy_melodies <- function(melody_results) {
 }
 
 
-
 present_scores <- function(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic) {
 
   if(num_items_long_tone > 0) {
@@ -256,21 +255,6 @@ create_share_button <- function(img, url) {
 }
 
 
-
-# # dummy data for testing
-# t_res <- readRDS('/Users/sebsilas/Downloads/results.rds')
-#
-#
-# processed_results$long_tone
-# processed_results$arrhythmic
-# processed_results$rhythmic
-
-
-
-######
-
-
-
 collapse_results <- function(res) {
 
   results <- lapply(res, function(x) {
@@ -294,7 +278,15 @@ collapse_results <- function(res) {
 }
 
 
+
+# # dummy data for testing
+# t_res <- readRDS('/Users/sebsilas/Downloads/results.rds')
 #
+#
+# processed_results$long_tone
+# processed_results$arrhythmic
+# processed_results$rhythmic
+
 # l <- list.files('/Users/sebsilas/Downloads/results 3/', full.names = TRUE)
 #
 # r <- lapply(l, function(x) as.list(readRDS(x)))

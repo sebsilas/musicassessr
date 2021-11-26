@@ -167,34 +167,8 @@ user_rating <- function(user_rating) {
     <button id="Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Good</button>
     <button id="Very Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Very Good</button>
   </div>
-  <script>
-                          myMain();
-                            function myMain() {
-                              document.getElementById("response_ui").onclick = buton;
-                            }
-                            function buton(e) {
-                              console.log("butt2");
-                              console.log(e);
-                              if (e.target.tagName == \'BUTTON\') {
-                                    console.log("rating: ");
-                                    console.log(e.target.id);
-                                    Shiny.onInputChange("user_rating", e.target.id);
-                              }
-                            }
-                            function show_happy_with_response() {
-                                	happy_with_response=document.getElementById("happy_with_response");
-                                	happy_with_response.style.display="block";
-                                	user_rating=document.getElementById("user_rating");
-	                                user_rating.style.display = "none";
-	                                if (!file_is_ready){
-                                  	spinner = document.getElementsByClassName("hollow-dots-spinner");
-                                  	if(typeof spinner[0] !== "undefined") {
-                                  	  spinner[0].style.display = "block";
-                                  	}
-	                                 }
-                                }
-                         </script>
-                </div>')
+  </div>
+  <script> myMain();</script>')
   } else {
     shiny::HTML('<div id="user_rating" style="display:none;"></div>')
   }
@@ -281,9 +255,14 @@ return_correct_attempts_left <- function(attempts_left) {
 
 happy_with_response_message <- function(happy_with_response_message, attempts_left) {
   if(happy_with_response_message) {
-    return_correct_attempts_left(attempts_left)
+    shiny::tags$div(
+      return_correct_attempts_left(attempts_left),
+      shiny::tags$script('var show_happy_with_response = true;')
+    )
   } else {
-    shiny::tags$div()
+    shiny::tags$div(
+      shiny::tags$script('var show_happy_with_response = false;')
+    )
   }
 }
 

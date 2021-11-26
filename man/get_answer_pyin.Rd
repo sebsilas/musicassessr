@@ -10,6 +10,7 @@ get_answer_pyin(
   state,
   melconv = FALSE,
   singing_measures = TRUE,
+  pyin_pitch_track = NULL,
   ...
 )
 }

@@ -278,10 +278,10 @@ UPEI_extra_questions <- function() {
 
 # psychTestR::make_test(UPEI_extra_questions())
 
+
 #' UPEI Battery
 #'
 #' @param state
-#' @param aws_credentials
 #'
 #' @return
 #' @export
@@ -311,8 +311,7 @@ UPEI_2021_battery <- function(state = "production") {
       ),dict = musicassessr::dict(NULL)),
 
 
-    MST::MST(aws_credentials = aws_credentials,
-             num_items = list(
+    MST::MST(num_items = list(
                long_tones = 6L, arrhythmic = 10L, rhythmic = 0L
              ),
              examples = 2L,

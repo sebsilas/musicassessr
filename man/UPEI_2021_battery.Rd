@@ -7,7 +7,7 @@
 UPEI_2021_battery(state = "production")
 }
 \arguments{
-\item{aws_credentials}{}
+\item{state}{}
 }
 \value{
 

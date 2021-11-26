@@ -296,12 +296,7 @@ UPEI_2021_battery <- function(state = "production") {
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$h1("UPEI 2021 Testing"),
         shiny::tags$p("This is a protocol for the UPEI 2021 singing study."),
-        musicassessr_js_scripts(api_url = aws_credentials$api_url,
-                                bucket_name = aws_credentials$bucket_name,
-                                bucket_region = aws_credentials$bucket_region,
-                                identity_pool_id = aws_credentials$identity_pool_id,
-                                destination_bucket = aws_credentials$destination_bucket,
-                                musicassessr_state = state)
+        musicassessr_js_scripts(musicassessr_state = state)
         )),
 
     psychTestR::get_p_id(prompt = shiny::tags$div(

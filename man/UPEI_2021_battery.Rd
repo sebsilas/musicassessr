@@ -4,14 +4,7 @@
 \alias{UPEI_2021_battery}
 \title{UPEI Battery}
 \usage{
-UPEI_2021_battery(
-  state = "production",
-  aws_credentials = list(api_url =
-    "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api", bucket_name =
-    "shinny-app-source-41630", bucket_region = "us-east-1", identity_pool_id =
-    "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b", destination_bucket =
-    "shinny-app-destination-41630")
-)
+UPEI_2021_battery(state = "production")
 }
 \arguments{
 \item{aws_credentials}{}

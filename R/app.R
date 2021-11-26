@@ -1,19 +1,10 @@
 
 t3 <- function() {
 
-  make_aws_credentials_global(list(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-                                   bucket_name = "shinny-app-source-41630",
-                                   bucket_region = "us-east-1",
-                                   identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                                   destination_bucket = "shinny-app-destination-41630"))
 
   psychTestR::make_test(psychTestR::new_timeline(psychTestR::join(
     psychTestR::one_button_page(shiny::tags$div(
-                            musicassessr_js_scripts(api_url = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-                            bucket_name = "shinny-app-source-41630",
-                            bucket_region = "us-east-1",
-                            identity_pool_id = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                            destination_bucket = "shinny-app-destination-41630"))),
+                            musicassessr_js_scripts("test"))),
 
     # psychTestR::code_block(function(state, ...){
     #   session <- psychTestR::get_session_info(state, complete = T)
@@ -174,24 +165,45 @@ t2 <- function() {
 # da <- readRDS('/Users/sebsilas/Downloads/results (1).rds')
 
 
-p <- function() {
-  library(PBET)
+pp <- function() {
 
-  PBET(aws_credentials = list("api_url" = "https://255uxe6ajl.execute-api.us-east-1.amazonaws.com/api",
-                              "bucket_name" = "shinny-app-source-41630",
-                              "bucket_region" = "us-east-1",
-                              "identity_pool_id" = "us-east-1:feecdf7e-cdf6-416f-94d0-a6de428c8c6b",
-                              "destination_bucket" = "shinny-app-destination-41630"),
-       num_items = list("find_the_note" = 1L,
-                        "arrhythmic" = 2L,
-                        "rhythmic" = 5L,
-                        "wjd_audio" = 5L),
+  PBET::PBET(num_items = list("find_the_note" = 0L,
+                        "arrhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
+                        "rhythmic" = list("key_easy" = 5L, "key_hard" = 5L),
+                        "wjd_audio" = 0L),
        feedback = T,
        SNR_test = F,
        get_range = F,
-       demo = FALSE)
+       demo = TRUE,
+       examples = 0L,
+       musicassessr_state = "test")
 }
 #p()
 
+da <- function() {
+  psychTestR::make_test(
+    psychTestR::join(
+      psychTestR::one_button_page(shiny::tags$div(
+        musicassessr_js_scripts("test")
+      )),
+      psychTestR::final_page("End")
+    )
+  )
+}
+
+mc <- function() {
+  MST::MST_standalone(aws_credentials = list("A","B","C","D","E"),
+                      item_length = c(3,7),
+                      absolute_url = "https://adaptiveeartraining.com",
+                      num_items = list(
+                        long_tones = 6L, arrhythmic = 6L, rhythmic = 6L
+                      ),
+                      get_range = TRUE,
+                      SNR_test = TRUE)
+
+
+}
 #testApp2()
+
+
 

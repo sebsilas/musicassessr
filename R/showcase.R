@@ -7,7 +7,7 @@ test_showcase <- function() {
     psychTestR::one_button_page(
       shiny::tags$div(
         set_musicassessr_state("test"),
-        musicassessr_js_scripts("A", "B", "C", "D", "E"),
+        musicassessr_js_scripts("test"),
         shiny::tags$h2("musicassessr Test Showcase"))
     ),
 

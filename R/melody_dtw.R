@@ -40,5 +40,5 @@ prepare_mel_stimuli_for_dtw <- function(melody, durations) {
     dplyr::arrange(dur) %>%
     tidyr::fill(note, .direction = "up")
 
-  df2$note
+  df$note
 }

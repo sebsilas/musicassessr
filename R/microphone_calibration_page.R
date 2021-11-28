@@ -26,7 +26,7 @@ microphone_calibration_page <- function(admin_ui = NULL, on_complete = NULL, lab
     audio_parameters_js_script,
     shiny::tags$script(src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"),
     shiny::includeScript(path=system.file("musicassessr.js", package = "musicassessr")),
-    shiny::includeCSS(path=system.file('css/crepe.css', package = "musicassessr")),
+    shiny::includeCSS(path=system.file('www/css/crepe.css', package = "musicassessr")),
 
     shiny::tags$script("var trigButton = document.getElementById('next');
               trigButton.onclick = crepeStop;"),

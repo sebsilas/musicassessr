@@ -623,7 +623,7 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
 }
 
 
-function createCrepeStopButton () {
+function createCrepeStopButton (stop_button_text) {
   var stopButton = document.createElement("button");
   stopButton.style.display = "block";
   stopButton.style.textAlign = "center";
@@ -668,7 +668,7 @@ function createCorrectStopButton(type) {
 function showStopButton(type = 'aws_pyin', stop_button_text = "Stop") {
 
         if(type === "crepe") {
-          createCrepeStopButton();
+          createCrepeStopButton(stop_button_text);
         } else {
           if(type === "aws_pyin") {
             startRecording(updateUI = false);
@@ -980,6 +980,7 @@ function upload_file_to_s3_local(blob) {
 
 
 function crepe() {
+  console.log('crepe run');
   function error(message) {
     var status = document.getElementById("status");
     if(status) {
@@ -1163,7 +1164,7 @@ function volumeAudioProcess_SJS(buf) {
 }
 
 function process_microphone_buffer(event) {
-
+  console.log('process_microphone_buffer');
   resample(event.inputBuffer, function(resampled) {
 
     tf.tidy(() => {
@@ -1215,6 +1216,7 @@ function process_microphone_buffer(event) {
       }
 
       if(updateActivation) {
+        console.log('updateActivation');
         updateActivation(activation.dataSync());
       }
 
@@ -1253,6 +1255,7 @@ function process_microphone_buffer(event) {
 }
 
 function initAudio() {
+  console.log('initAudio called');
   if (navigator.mediaDevices === undefined) {
     navigator.mediaDevices = {};
   }
@@ -1317,6 +1320,7 @@ function initAudio() {
 
 
 async function initTF() {
+  console.log('initTF run');
   try {
     status('Loading Keras model...');
     window.model = await tf.loadLayersModel('https://adaptiveeartraining.com/files/model/model.json');
@@ -1340,6 +1344,7 @@ function status(message) {
 }
 
 function crepeResume() {
+  console.log('crepeResume');
   audioContext.resume();
   status('Running ...');
 }

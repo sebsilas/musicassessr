@@ -167,6 +167,9 @@ function triggerNote(sound, freq_tone, seconds, time) {
 
 function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_pyin", stop_button_text = "Stop", showStop = false, record_immediately = true) {
   // play a tone for x seconds
+  console.log('playTone!');
+
+  connect_sound('tone');
 
   tone = Number(tone);
 

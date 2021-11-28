@@ -24,6 +24,7 @@ musicassessr_js_scripts <- function(musicassessr_state = NULL) {
     shiny::includeScript(system.file("www/js/opensheetmusicdisplay.min.js", package = "musicassessr")),
     shiny::includeScript('https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js'),
     shiny::includeScript(system.file("www/spinner/spin.js", package = "musicassessr")),
+    shiny::includeScript(system.file("www/js/crepe.js", package = "musicassessr")),
     shiny::includeScript(system.file("www/js/musicassessr.js", package = "musicassessr"))
     )
 }

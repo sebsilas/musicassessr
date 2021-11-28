@@ -383,7 +383,9 @@ UPEI_2021_battery <- function(state = "production") {
       musicassessr::sing_happy_birthday_page(feedback = FALSE)
       ) ,dict = musicassessr::dict(NULL)),
 
-    PDT::PDT(with_final_page = FALSE),
+    PDT::PDT(with_final_page = FALSE,
+             headphones_page = FALSE,
+             import_musicassessr_js_scripts = FALSE),
 
     mpt::mpt(num_items = 10L),
 

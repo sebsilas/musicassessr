@@ -262,7 +262,7 @@ UPEI_extra_questions <- function() {
                                                  "Prof. Cheryl Wartman",
                                                  "Dr.  Elizabeth Williams"))),
 
-   psychTestR::final_page(body = shiny::tags$div(style = "text-align: center;",
+   psychTestR::final_page(body = shiny::tags$div(style = "text-align: left;",
      shiny::tags$p("You have now completed all the questions in this survey.  If you are interested in knowing more about the study, relevant information is provided in the following debriefing statement: "),
      shiny::tags$h1("Learning and Memory for Popular Music and Imitation of Brief Melodies"),
      shiny::tags$h2("Debriefing Statement: Session 2"),

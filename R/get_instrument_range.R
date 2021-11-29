@@ -95,7 +95,7 @@ get_note_until_satisfied_loop_midi <- function() {
 }
 
 
-check_note_ok <- function(answer, state, var_name, page_type) {
+check_note_ok <- function(answer, state, var_name, page_type, show_musical_notation = FALSE) {
   psychTestR::reactive_page(function(answer, state, ...) {
     if(page_type == "record_audio_page") {
       note <- answer$user_response
@@ -105,12 +105,17 @@ check_note_ok <- function(answer, state, var_name, page_type) {
 
 
     if(is.na(note)) {
-      psychTestR::one_button_page(psychTestR::i18n("nothing_entered"))
+      psychTestR::one_button_page(shiny::tags$div(
+        shiny::tags$p(psychTestR::i18n("nothing_entered")),
+        shiny::tags$p("Perhaps you are too quiet, or you have a noisy computer fan.")))
     } else {
+
+      stimuli_type <- ifelse(show_musical_notation, "both", "auditory")
+
       psychTestR::set_global(var_name, note, state)
       present_stimuli(stimuli = note,
                       stimuli_type = "midi_notes",
-                      display_modality = "both",
+                      display_modality = stimuli_type,
                       page_text = psychTestR::i18n("correct_note_message"),
                       page_type = "NAFC_page",
                       choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No")),
@@ -121,20 +126,46 @@ check_note_ok <- function(answer, state, var_name, page_type) {
   })
 }
 
-present_range <- function(state) {
+determine_span <- function(highest_user_note, lowest_user_note) {
+  # ideally we want to have a span of at least an octave
+  # if the user performs the range test properly the span is simply highest_user_note - lowest_user_note
+  # however, if they don't perform the range test well, try and determine a sensible range
+  span <- highest_user_note - lowest_user_note
+
+  if(span < 12) {
+    highest_user_note <- highest_user_note + (6 - span)
+    lowest_user_note <- lowest_user_note - (6 - span)
+    span <- highest_user_note - lowest_user_note
+  }
+
+  list("span" = span,
+      "highest_user_note" = highest_user_note,
+      "lowest_user_note" = lowest_user_note)
+
+}
+
+present_range <- function(state, show_musical_notation = FALSE) {
   psychTestR::reactive_page(function(state, ...) {
     lowest_user_note <- psychTestR::get_global("bottom_range", state)
     highest_user_note <- psychTestR::get_global("top_range", state)
-    span <- highest_user_note - lowest_user_note
-    psychTestR::set_global("span", span, state)
-    range <- c(lowest_user_note, highest_user_note)
+
+    span_result <- determine_span(highest_user_note, lowest_user_note)
+
+    psychTestR::set_global("span", span_result$span, state)
+
+    range <- c(span_result$lowest_user_note-3, span_result$highest_user_note+3)
+
+    stimuli_type <- ifelse(show_musical_notation, "both", "auditory")
+
     present_stimuli(stimuli = range,
                     stimuli_type = "midi_notes",
-                    display_modality = "both",
-                    page_text = psychTestR::i18n("your_range_message"),
+                    display_modality = stimuli_type,
+                    page_text = shiny::tags$div(
+                      shiny::tags$p("You can click below to hear your range."),
+                      shiny::tags$p("Please note, we may have corrected your range if it seemed problematic.")
+                      ),
                     page_type = "one_button_page",
-                    button_text = psychTestR::i18n("Next")
-    )
+                    button_text = psychTestR::i18n("Next"))
   })
 }
 

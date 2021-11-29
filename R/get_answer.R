@@ -158,6 +158,18 @@ get_answer_pyin_long_note <- function(input, ...) {
   } else {
     long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
   }
+  print('do one..')
+  print(
+    c(
+      list(file = file,
+           stimuli = as.numeric(input$stimuli),
+           onset = pyin_res$onset,
+           freq = pyin_res$freq
+      ),
+
+      long_note_pitch_measures
+    )
+  )
 
   c(
     list(file = file,
@@ -209,7 +221,16 @@ get_answer_simple_pyin_summary <- function(input, ...) {
 
   file <- paste0(file_dir, input$key, '.wav')
   pyin_res <- pyin(file)
-  res <- as.list(round(summary(pyin_res$note)))
+
+  res <- ifelse(is.na(pyin_res$note),
+                yes = list("Min." = NA,
+                     "1st Qu." = NA,
+                     "Median" = NA,
+                     "Mean" = NA,
+                     "3rd Qu." = NA,
+                     "Max." = NA),
+                no = as.list(round(summary(pyin_res$note))))
+
   res$file <- file
   res
 }

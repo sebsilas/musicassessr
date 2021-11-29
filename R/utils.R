@@ -207,7 +207,7 @@ check.response.type.midi<- function(state, ...) {
 have_requirements <- function(answer, ...) {
   res <- suppressWarnings(answer)
   if (!is.na(res) && res %in% dict_key_to_translations("Yes")) TRUE
-  else psychTestR::display_error(psychTestR::i18n("requirements_error"))
+  else psychTestR::display_error("Sorry, but you do not have the correct requirements to run this test")
 }
 
 

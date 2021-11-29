@@ -16,11 +16,6 @@ var user_response_frequencies = [];
 var timecodes = [];
 var rmses = [];
 
-// get amplitude info
-
-var mediaStreamSource = null
-var meter = null
-
 // functions
 
 
@@ -549,6 +544,11 @@ function show_happy_with_response_message() {
    }
 }
 
+function hide_happy_with_response_message() {
+  happy_with_response = document.getElementById("happy_with_response");
+  happy_with_response.style.display = "none";
+}
+
 function myMain() {
   // NB: Give better name
   document.getElementById("response_ui").onclick = buton;
@@ -677,7 +677,6 @@ function showStopButton(type = 'aws_pyin', stop_button_text = "Stop") {
             startRecording(updateUI = false);
             hideLoading();
           }
-
           var stopButton = document.getElementById("stopButton");
 
           if(stopButton !== undefined) {

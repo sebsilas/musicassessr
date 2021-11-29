@@ -9,9 +9,12 @@ microphone_calibration_page(
   on_complete = NULL,
   label = NULL,
  
-    body = shiny::tags$div(shiny::tags$p(psychTestR::i18n("microphone_calibration_message_1")),
-    shiny::tags$p(psychTestR::i18n("microphone_calibration_message_2")),
-    shiny::tags$p(psychTestR::i18n("microphone_calibration_message_3"))),
+    body = shiny::tags$div(shiny::tags$p("Please make sure your microphone is plugged in (if using an external microphone)."),
+    shiny::tags$p("If you see a popup message that says 'Allow',  click 'Allow'"),
+    shiny::tags$p("Wait a few seconds. You should see a black box appear. Make a sound (e.g., hum, clap, sing).  If you see activity  (moving coloured lines) inside the box when you make a sound, then the microphone is working. Otherwise, it is not."),
+    shiny::tags$p("If the mic is not working, see if you can adjust your microphone set up in order to get a response on the screen. If you cannot get the mic to work, please end the program and send a note to ",
+         shiny::tags$strong("silass@stud.hmtm-hannover.de"),
+    "with the subject header “Mic not working”.  You will be contacted within the next 24 hours to troubleshoot the problem.\\n                                                                             If you wish to be contacted at a different email address,  leave that information in the body of the email.  You may also try another computer that is available to you and try again.")),
   button_text = psychTestR::i18n("microphone_calibration_button"),
   save_answer = FALSE,
   deploy_crepe_stats = FALSE

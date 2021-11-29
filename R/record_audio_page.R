@@ -231,22 +231,22 @@ return_correct_attempts_left <- function(attempts_left) {
     #label = paste0(var_name,"_attempt_", number_attempts, "_choice"),
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
                     shiny::tags$p(psychTestR::i18n("attempts_remaining_0")),
-                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
+                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
                     )
   } else if (attempts_left == 1) {
     # label = paste0(var_name,"_attempt_", number_attempts, "_choice")
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
                     shiny::tags$p(psychTestR::i18n("happy_with_response_message")), shiny::tags$p(psychTestR::i18n("attempts_remaining_1")),
-                    shiny::tags$button(psychTestR::i18n("Try_Again"), id = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
-                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
+                    shiny::tags$button(psychTestR::i18n("Try_Again"), id = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
+                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )
   } else {
     # label = paste0(var_name,"_attempt_", number_attempts, "_choice")
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
                     shiny::tags$p(psychTestR::i18n("happy_with_response_message")),
                     shiny::tags$p(paste0(psychTestR::i18n("attempts_remaining_several.1"), " ", attempts_left, " ", psychTestR::i18n("attempts_remaining_several.2"))),
-                    shiny::tags$button(psychTestR::i18n("Try_Again"), id = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
-                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
+                    shiny::tags$button(psychTestR::i18n("Try_Again"), id = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
+                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )
   }
 }

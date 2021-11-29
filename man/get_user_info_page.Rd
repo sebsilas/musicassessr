@@ -4,7 +4,10 @@
 \alias{get_user_info_page}
 \title{Check a user has the requirements to run our test and record their browser information}
 \usage{
-get_user_info_page()
+get_user_info_page(chrome_only = TRUE)
+}
+\arguments{
+\item{chrome_only}{}
 }
 \value{
 

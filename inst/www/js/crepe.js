@@ -1,3 +1,9 @@
+// get amplitude info
+
+var mediaStreamSource = null
+var meter = null
+
+
 function crepe() {
   function error(message) {
     var status = document.getElementById("status");

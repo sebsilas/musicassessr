@@ -189,35 +189,36 @@ UPEI_extra_questions <- function() {
 
     get_dob_page(),
 
-    psychTestR::NAFC_page(label = "father_education",
-                          prompt = "Please indicate your father or male guardian’s highest level of education: ",
-                          choices = c("some high school", "completed high school", "enrolled in first year university",
-                                      "enrolled in 2nd , 3rd, or 4th year university", "completed a community college diploma or degree",
-                                      "completed a University Bachelor’s degree or other University Undergraduate Degree",
-                                      "enrolled in or completed a Master’s Degree",
-                                      "enrolled in or completed a Doctoral Degree",
-                                      "other (please specify)",
-                                      "do not know",
-                                      "prefer not to say")),
-
-
-    psychTestR::NAFC_page(label = "mother_education",
-                          prompt = "Please indicate your mother or female guardian’s highest level of education: ",
-                          choices = c("some high school", "completed high school",
-                                      "enrolled in first year university",
-                                        "enrolled in 2nd , 3rd, or 4th year university",
-                                        "completed a community college diploma or degree",
-                                        "completed a University Bachelor’s degree or other University Undergraduate Degree",
-                                        "enrolled in or completed a Master’s Degree",
-                                        "enrolled in or completed a Doctoral Degree",
-                                        "other (please specify)",
-                                        "do not know",
-                                        "prefer not to say")),
+    # psychTestR::NAFC_page(label = "father_education",
+    #                       prompt = "Please indicate your father or male guardian’s highest level of education: ",
+    #                       choices = c("some high school", "completed high school", "enrolled in first year university",
+    #                                   "enrolled in 2nd , 3rd, or 4th year university", "completed a community college diploma or degree",
+    #                                   "completed a University Bachelor’s degree or other University Undergraduate Degree",
+    #                                   "enrolled in or completed a Master’s Degree",
+    #                                   "enrolled in or completed a Doctoral Degree",
+    #                                   "other (please specify)",
+    #                                   "do not know",
+    #                                   "prefer not to say")),
+    #
+    #
+    # psychTestR::NAFC_page(label = "mother_education",
+    #                       prompt = "Please indicate your mother or female guardian’s highest level of education: ",
+    #                       choices = c("some high school", "completed high school",
+    #                                   "enrolled in first year university",
+    #                                     "enrolled in 2nd , 3rd, or 4th year university",
+    #                                     "completed a community college diploma or degree",
+    #                                     "completed a University Bachelor’s degree or other University Undergraduate Degree",
+    #                                     "enrolled in or completed a Master’s Degree",
+    #                                     "enrolled in or completed a Doctoral Degree",
+    #                                     "other (please specify)",
+    #                                     "do not know",
+    #                                     "prefer not to say")),
 
     psychTestR::one_button_page("Finally, here are several questions about music-theory knowledge."),
 
     psychTestR::NAFC_page(label = "music_theory_1",
-                          prompt = "Musicians refer to do mi sol as a particular structure. What is the name of that structure?",
+                          prompt = shiny::p("Musicians refer to ",
+                                  shiny::em("do mi sol "), "as a particular structure. What is the name of that structure?"),
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
 
     psychTestR::NAFC_page(label = "music_theory_2",
@@ -229,7 +230,7 @@ UPEI_extra_questions <- function() {
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
 
     psychTestR::NAFC_page(label = "music_theory_4",
-                          prompt = "What triad has two major thirds?",
+                          prompt = "What triad has two minor thirds?",
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
 
     psychTestR::NAFC_page(label = "music_theory_5",
@@ -241,7 +242,8 @@ UPEI_extra_questions <- function() {
                           choices = c("yes", "no")),
 
     psychTestR::text_input_page(label = "music_theory_7",
-                                prompt = "If there is any other information you feel is important regarding your knowledge of popular music or any aspect of this questionnaire, please feel free to give a brief description below: "),
+                                prompt = "If there is any other information you feel is important regarding your knowledge of popular music or any aspect of this questionnaire, please feel free to give a brief description below: ",
+                                one_line = FALSE),
 
     psychTestR::NAFC_page(label = "prize_draw",
                           prompt = "Would you like to enter the draw (1 of 25 chances to win $50)?",
@@ -260,7 +262,7 @@ UPEI_extra_questions <- function() {
                                                  "Prof. Cheryl Wartman",
                                                  "Dr.  Elizabeth Williams"))),
 
-   psychTestR::final_page(body = shiny::tags$div(
+   psychTestR::final_page(body = shiny::tags$div(style = "text-align: center;",
      shiny::tags$p("You have now completed all the questions in this survey.  If you are interested in knowing more about the study, relevant information is provided in the following debriefing statement: "),
      shiny::tags$h1("Learning and Memory for Popular Music and Imitation of Brief Melodies"),
      shiny::tags$h2("Debriefing Statement: Session 2"),
@@ -299,6 +301,48 @@ UPEI_2021_battery <- function(state = "production") {
         musicassessr_js_scripts(musicassessr_state = state)
         )),
 
+      psychTestR::one_button_page(shiny::tags$div(
+        shiny::tags$p("Please use the latest version of Google Chrome to run these tests.
+                      It can be downloaded", shiny::tags$a("here",
+                                                           href = "https://www.google.com/intl/en_uk/chrome/", target = "_blank"), " and takes a couple of minutes to install."),
+        shiny::tags$p("After downloading and installing, reopen the URL in Chrome and proceed there.")
+
+      )),
+
+      psychTestR::NAFC_page(label = "chrome",
+                            choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No")),
+                            prompt = "Are you running this page in the latest version of Google Chrome?",
+                            on_complete = musicassessr::have_requirements),
+
+      psychTestR::one_button_page(shiny::tags$p("This group of music tests has been recently developed, and the researchers have not been able to test is out on every computer.
+        It is possible that the program will stop working on your computer.  If this happens you may see “Aw Snap” and a “Reload” button.  Press the “Reload” button, and in most cases, the program will start up where it left off. You may be asked to enter your number-letter code again.
+        When it says 'Resuming ongoing testing session. Please click OK to confirm.' click OK, and the page should reload where you were.
+        If however the “Reload” option is not available,  please e-mail ", shiny::tags$strong("silass@stud.hmtm-hannover.de"), " and state that Session 2 could  not be completed.  You will be contacted and provided the opportunity to do the test in the research lab space.
+                                    Whether or not you complete the entire set of test, you will receive a credit point for going as far as the program would allow, provided you screenshot and document the error."))
+      ,
+
+
+      psychTestR::NAFC_page(label = "computer_type",
+                            prompt = "Please check  below which type of computer you are using:",
+                            choices = c("Laptop", "Desktop", "Mac",
+                            "PC  (e.g., Dell, Hewlitt Packard, Lenova, Asus… any non-Mac computer).")),
+
+
+
+      psychTestR::text_input_page(
+        label = "computer_make_model",
+        prompt = "If you know the exact name, and model number of your computer please provide the information."),
+
+      psychTestR::NAFC_page(label = "headphone_type",
+                            prompt = "Please identify which kind of headphones you are using",
+                            choices = c("Over the ear", "Inserted in the ear")),
+
+
+      psychTestR::text_input_page(
+        label = "headphone_make_model",
+        prompt = "If you know the exact name, and model number of your headphones please provide the information."),
+
+
     psychTestR::get_p_id(prompt = shiny::tags$div(
       shiny::tags$p("Please provide your participation identifier below created from:"),
       shiny::tags$ul(
@@ -326,6 +370,15 @@ UPEI_2021_battery <- function(state = "production") {
              melody_sound = "piano"),
 
     psychTestR::new_timeline(psychTestR::join(
+
+      psychTestR::one_button_page(shiny::tags$div(
+        musicassessr::musicassessr_js_scripts(),
+        shiny::tags$p("You will now have another test of short singing examples.
+                      There are 2 sets of 21 questions.
+                      The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test,there is only one chance with each imitation.
+                      You will be asked to sing the two sets of questions on two different syllables /da/ and /du/. ")
+      )),
+
       musicassessr::get_voice_range_page(with_examples = FALSE),
 
       psychTestR::code_block(function(state, ...) {
@@ -348,7 +401,9 @@ UPEI_2021_battery <- function(state = "production") {
 
         musicassessr::sing_happy_birthday_page(feedback = FALSE),
 
-        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+        psychTestR::one_button_page(shiny::tags$div(
+          musicassessr::musicassessr_js_scripts(),
+          shiny::tags$p("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."))),
 
         psychTestR::module(label = "MAST21_dooo",
           musicassessr::MAST21_trials(sound = "piano",

@@ -278,22 +278,7 @@ UPEI_extra_questions <- function() {
                                        choices = c("Dr. Stacey MacKinnon",
                                                    "Dr. Philip Smith",
                                                    "Prof. Cheryl Wartman",
-                                                   "Dr.  Elizabeth Williams"))),
-
-      psychTestR::elt_save_results_to_disk(complete = TRUE),
-
-     psychTestR::final_page(body = shiny::tags$div(style = "text-align: left;",
-       shiny::tags$p("You have now completed all the questions in this survey.  If you are interested in knowing more about the study, relevant information is provided in the following debriefing statement: "),
-       shiny::tags$h1("Learning and Memory for Popular Music and Imitation of Brief Melodies"),
-       shiny::tags$h2("Debriefing Statement: Session 2"),
-       shiny::tags$p("We would like to express our thanks and appreciation for your participation in Session 2 of this research project. Your contribution helps to advance our understanding of the knowledge acquired about popular music over the lifetime, and to specifically address the question of whether there is a time of life when such knowledge is easier to obtain than at other times. "),
-       shiny::tags$p("Session 2 focused on imitation of tones and brief melodies.  The study consisted of the presentation of long notes and short melodies that you were asked to imitate."),
-       shiny::tags$p("This research is part of a larger study looking into the relationship between adolescence and musical knowledge acquisition.  Part of musical knowledge is singing.  Singing is a musical behavior acquired naturally early in life, just like language is acquired.  In comparison to language acquisition, relatively little attention has been paid to singing development.  The study in which you participated aimed to obtain some basic data regarding singing accuracy (expecting performance to become less accurate with increasing numbers of notes to remember) and comparing males and females (where males have greater challenges to singing, due to issues of voice change in adolescence). "),
-       shiny::tags$p("This study is the first in which information on singing (from Session 2) will be related to information on knowledge and memory for popular music (from Session 1).  The overall interest of the study is whether there is a time during adolescence when it is easiest to acquire musical information.  The specific question that can be answered by the vocal imitation study is whether better vocal accuracy is associated with better memory for music. Also, for the first time, this experiment was conducted using the participant’s own computer in the participant’s own quiet environment.  In the past the study has been conducted in a laboratory environment.  We are interested in determining the extent to which the individual differences in equipment and setting will affect the variability of the data."),
-       shiny::tags$p("Your participation has helped students in the laboratory gain experience relevant to their honours degrees, and it has contributed to the exploration of important new research questions about how the developmental period of adolescence is related to musical knowledge. It also will add to our understanding of basic vocal abilities in older adolescents and early adulthood, for which very little information has been available."),
-       shiny::tags$p("If you have any further questions regarding this research study please feel free to contact  Kristen Gallant, at kbgallant5470@upei.ca (902-566-6023 – laboratory phone); Dr. Amy Simon, 902-566-6023; Dr. Annabel Cohen at acohen@upei.ca, 902-628-4325  (office phone)."),
-       shiny::tags$p("If you have indicated your interest in receiving a summary of the results of the study, you will be provided a link to this information by April 30, 2022."),
-       shiny::tags$p("Thank you for all your help!  Your contribution to this research is very much appreciated.")))
+                                                   "Dr.  Elizabeth Williams")))
 
       ))
 }
@@ -528,7 +513,22 @@ UPEI_2021_battery <- function(state = "production") {
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    UPEI_extra_questions()
+    UPEI_extra_questions(),
+
+    psychTestR::elt_save_results_to_disk(complete = TRUE),
+
+    psychTestR::final_page(body = shiny::tags$div(style = "text-align: left;",
+                                                  shiny::tags$p("You have now completed all the questions in this survey.  If you are interested in knowing more about the study, relevant information is provided in the following debriefing statement: "),
+                                                  shiny::tags$h1("Learning and Memory for Popular Music and Imitation of Brief Melodies"),
+                                                  shiny::tags$h2("Debriefing Statement: Session 2"),
+                                                  shiny::tags$p("We would like to express our thanks and appreciation for your participation in Session 2 of this research project. Your contribution helps to advance our understanding of the knowledge acquired about popular music over the lifetime, and to specifically address the question of whether there is a time of life when such knowledge is easier to obtain than at other times. "),
+                                                  shiny::tags$p("Session 2 focused on imitation of tones and brief melodies.  The study consisted of the presentation of long notes and short melodies that you were asked to imitate."),
+                                                  shiny::tags$p("This research is part of a larger study looking into the relationship between adolescence and musical knowledge acquisition.  Part of musical knowledge is singing.  Singing is a musical behavior acquired naturally early in life, just like language is acquired.  In comparison to language acquisition, relatively little attention has been paid to singing development.  The study in which you participated aimed to obtain some basic data regarding singing accuracy (expecting performance to become less accurate with increasing numbers of notes to remember) and comparing males and females (where males have greater challenges to singing, due to issues of voice change in adolescence). "),
+                                                  shiny::tags$p("This study is the first in which information on singing (from Session 2) will be related to information on knowledge and memory for popular music (from Session 1).  The overall interest of the study is whether there is a time during adolescence when it is easiest to acquire musical information.  The specific question that can be answered by the vocal imitation study is whether better vocal accuracy is associated with better memory for music. Also, for the first time, this experiment was conducted using the participant’s own computer in the participant’s own quiet environment.  In the past the study has been conducted in a laboratory environment.  We are interested in determining the extent to which the individual differences in equipment and setting will affect the variability of the data."),
+                                                  shiny::tags$p("Your participation has helped students in the laboratory gain experience relevant to their honours degrees, and it has contributed to the exploration of important new research questions about how the developmental period of adolescence is related to musical knowledge. It also will add to our understanding of basic vocal abilities in older adolescents and early adulthood, for which very little information has been available."),
+                                                  shiny::tags$p("If you have any further questions regarding this research study please feel free to contact  Kristen Gallant, at kbgallant5470@upei.ca (902-566-6023 – laboratory phone); Dr. Amy Simon, 902-566-6023; Dr. Annabel Cohen at acohen@upei.ca, 902-628-4325  (office phone)."),
+                                                  shiny::tags$p("If you have indicated your interest in receiving a summary of the results of the study, you will be provided a link to this information by April 30, 2022."),
+                                                  shiny::tags$p("Thank you for all your help!  Your contribution to this research is very much appreciated.")))
 
   ),
   opt = psychTestR::test_options(title = "UPEI",

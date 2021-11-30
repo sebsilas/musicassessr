@@ -25,6 +25,8 @@ MAST_melodies$octave_4 <- apply(MAST_melodies, MARGIN = 1, function(row) {
 })
 
 
+
+
 #' Deploy a block of the MAST21 stimuli
 #'
 #' @param item_bank
@@ -51,7 +53,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                          page_text = psychTestR::i18n("sing_melody_trial"),
                          page_title_melody = "Please sing the melody",
                         page_title_long_note = "Sing the note with a \"Dooo\" sound.",
-                        page_text_long_note = "Please sing the note after you hear it, then click Stop.",
+                        page_text_long_note = shiny::tags$p("Please sing the note ", shiny::tags$strong("after"), "you hear it, then click Stop."),
                          instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
 
 
@@ -62,12 +64,18 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                     page_title = page_title_long_note, page_text = page_text_long_note)
   })
 
+  long_notes_3 <- insert.every.other.pos.in.list(long_notes_3, psychTestR::elt_save_results_to_disk(complete = FALSE))
+
+
   long_notes_4 <- purrr::map(MAST_octave_4_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
                     note_length = 2, page_type = "record_audio_page",
                     page_title = page_title_long_note, page_text = page_text_long_note)
   })
+
+  long_notes_4 <- insert.every.other.pos.in.list(long_notes_4, psychTestR::elt_save_results_to_disk(complete = FALSE))
+
 
   melodies_octave_3<- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
@@ -76,12 +84,18 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
   })
 
+  melodies_octave_3 <- insert.every.other.pos.in.list(melodies_octave_3, psychTestR::elt_save_results_to_disk(complete = FALSE))
+
+
   melodies_octave_4 <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
   })
+
+  melodies_octave_4 <- insert.every.other.pos.in.list(melodies_octave_4, psychTestR::elt_save_results_to_disk(complete = FALSE))
+
 
 
   if(feedback & !is.function(feedback)) {
@@ -189,69 +203,66 @@ UPEI_extra_questions <- function() {
 
     get_dob_page(),
 
-    # psychTestR::NAFC_page(label = "father_education",
-    #                       prompt = "Please indicate your father or male guardian’s highest level of education: ",
-    #                       choices = c("some high school", "completed high school", "enrolled in first year university",
-    #                                   "enrolled in 2nd , 3rd, or 4th year university", "completed a community college diploma or degree",
-    #                                   "completed a University Bachelor’s degree or other University Undergraduate Degree",
-    #                                   "enrolled in or completed a Master’s Degree",
-    #                                   "enrolled in or completed a Doctoral Degree",
-    #                                   "other (please specify)",
-    #                                   "do not know",
-    #                                   "prefer not to say")),
-    #
-    #
-    # psychTestR::NAFC_page(label = "mother_education",
-    #                       prompt = "Please indicate your mother or female guardian’s highest level of education: ",
-    #                       choices = c("some high school", "completed high school",
-    #                                   "enrolled in first year university",
-    #                                     "enrolled in 2nd , 3rd, or 4th year university",
-    #                                     "completed a community college diploma or degree",
-    #                                     "completed a University Bachelor’s degree or other University Undergraduate Degree",
-    #                                     "enrolled in or completed a Master’s Degree",
-    #                                     "enrolled in or completed a Doctoral Degree",
-    #                                     "other (please specify)",
-    #                                     "do not know",
-    #                                     "prefer not to say")),
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::one_button_page("Finally, here are several questions about music-theory knowledge."),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::NAFC_page(label = "music_theory_1",
                           prompt = shiny::p("Musicians refer to ",
                                   shiny::em("do mi sol "), "as a particular structure. What is the name of that structure?"),
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psychTestR::NAFC_page(label = "music_theory_2",
                           prompt = "What triad appears once in the major scale?",
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::NAFC_page(label = "music_theory_3",
                           prompt = "What triad has two major thirds?",
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psychTestR::NAFC_page(label = "music_theory_4",
                           prompt = "What triad has two minor thirds?",
                           choices = c("major", "minor", "diminished", "augmented", "not sure")),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::NAFC_page(label = "music_theory_5",
                           prompt = "Which chord progression represents a typical ending of a piece of music?",
                           choices = c("I - V", "II - VI", "VI - V", "V - I", "not sure")),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psychTestR::NAFC_page(label = "music_theory_6",
                           prompt = "Would you like to receive the results of Session 2.",
                           choices = c("yes", "no")),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::text_input_page(label = "music_theory_7",
                                 prompt = "If there is any other information you feel is important regarding your knowledge of popular music or any aspect of this questionnaire, please feel free to give a brief description below: ",
                                 one_line = FALSE),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psychTestR::NAFC_page(label = "prize_draw",
                           prompt = "Would you like to enter the draw (1 of 25 chances to win $50)?",
                           choices = c("yes", "no")),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psychTestR::NAFC_page(label = "bonus_credits",
-                          prompt = "For students currently enrolled in Psychology 1010 Introductory Psychology:  Would you like to receive a bonus point toward your Psychology 1010 lab grade?",
+                          prompt = "For students currently enrolled in Psychology 1010 Introductory Psychology:  Would you like to receive a bonus point toward your Psychology 1010 grade?",
                           choices = c("yes", "no")),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::conditional(test = function(state, answer, ...) {
       psychTestR::answer(state) == "yes" },
@@ -261,6 +272,8 @@ UPEI_extra_questions <- function() {
                                                  "Dr. Philip Smith",
                                                  "Prof. Cheryl Wartman",
                                                  "Dr.  Elizabeth Williams"))),
+
+    psychTestR::elt_save_results_to_disk(complete = TRUE),
 
    psychTestR::final_page(body = shiny::tags$div(style = "text-align: left;",
      shiny::tags$p("You have now completed all the questions in this survey.  If you are interested in knowing more about the study, relevant information is provided in the following debriefing statement: "),
@@ -314,33 +327,48 @@ UPEI_2021_battery <- function(state = "production") {
                             prompt = "Are you running this page in the latest version of Google Chrome?",
                             on_complete = musicassessr::have_requirements),
 
-      psychTestR::one_button_page(shiny::tags$p("This group of music tests has been recently developed, and the researchers have not been able to test is out on every computer.
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+      psychTestR::one_button_page(shiny::tags$p(style = "text-align: left;", "This group of music tests has been recently developed, and the researchers have not been able to test is out on every computer.
         It is possible that the program will stop working on your computer.  If this happens you may see “Aw Snap” and a “Reload” button.  Press the “Reload” button, and in most cases, the program will start up where it left off. You may be asked to enter your number-letter code again.
         When it says 'Resuming ongoing testing session. Please click OK to confirm.' click OK, and the page should reload where you were.
-        If however the “Reload” option is not available,  please e-mail ", shiny::tags$strong("silass@stud.hmtm-hannover.de"), " and state that Session 2 could  not be completed.  You will be contacted and provided the opportunity to do the test in the research lab space.
-                                    Whether or not you complete the entire set of test, you will receive a credit point for going as far as the program would allow, provided you screenshot and document the error."))
-      ,
+        If however the “Reload” option is not available,  please e-mail ", shiny::tags$strong("silass@stud.hmtm-hannover.de"), "with a copy to ", shiny::tags$strong("airs@upei.ca"), " and state that Session 2 could  not be completed.  You will be contacted and provided the opportunity to do the test in the research lab space.
+                                    Whether or not you complete the entire set of test, you will receive a credit point for going as far as the program would allow, provided you screenshot and document the error.")),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
 
 
       psychTestR::NAFC_page(label = "computer_type",
+                            prompt = "Please say below which type of computer you are using",
+                            choices = c("Laptop", "Desktop")),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
+      psychTestR::NAFC_page(label = "computer_type2",
                             prompt = "Please check  below which type of computer you are using:",
-                            choices = c("Laptop", "Desktop", "Mac",
-                            "PC  (e.g., Dell, Hewlitt Packard, Lenova, Asus… any non-Mac computer).")),
+                            choices = c("Mac",
+                                        "PC  (e.g., Dell, Hewlitt Packard, Lenova, Asus… any non-Mac computer).")),
 
-
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
 
       psychTestR::text_input_page(
         label = "computer_make_model",
         prompt = "If you know the exact name, and model number of your computer please provide the information."),
 
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
       psychTestR::NAFC_page(label = "headphone_type",
                             prompt = "Please identify which kind of headphones you are using",
                             choices = c("Over the ear", "Inserted in the ear")),
 
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
 
       psychTestR::text_input_page(
         label = "headphone_make_model",
         prompt = "If you know the exact name, and model number of your headphones please provide the information."),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
 
     psychTestR::get_p_id(prompt = shiny::tags$div(
@@ -350,9 +378,11 @@ UPEI_2021_battery <- function(state = "production") {
       shiny::tags$li("Day of your birthday (2 numbers – 01 to 31)"),
       shiny::tags$li("1st 3 letters of the street you lived on growing up"),
       shiny::tags$br(),
-      shiny::tags$p("For example: joh11tav"))))
+      shiny::tags$p("For example: joh11tav")))),
 
-      ),dict = musicassessr::dict(NULL)),
+    psychTestR::elt_save_results_to_disk(complete = FALSE)
+
+      ), dict = musicassessr::dict(NULL)),
 
 
     MST::MST(num_items = list(
@@ -369,17 +399,22 @@ UPEI_2021_battery <- function(state = "production") {
              with_final_page = FALSE,
              melody_sound = "piano"),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psychTestR::new_timeline(psychTestR::join(
 
       psychTestR::one_button_page(shiny::tags$div(
         musicassessr::musicassessr_js_scripts(),
         shiny::tags$p("You will now have another test of short singing examples.
                       There are 2 sets of 21 questions.
-                      The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test,there is only one chance with each imitation.
+                      The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test, there is only one chance with each imitation.
                       You will be asked to sing the two sets of questions on two different syllables /da/ and /du/. ")
       )),
 
       musicassessr::get_voice_range_page(with_examples = FALSE),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
 
       psychTestR::code_block(function(state, ...) {
         snap <- sample(1:2, 1)
@@ -387,6 +422,9 @@ UPEI_2021_battery <- function(state = "production") {
       }),
 
       musicassessr::sing_happy_birthday_page(feedback = FALSE),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
 
       psychTestR::conditional(test = function(state, ...) {
         psychTestR::get_global("snap", state) == 1
@@ -399,7 +437,13 @@ UPEI_2021_battery <- function(state = "production") {
                                     page_title_melody = "Please sing back the melody with a \"Daah\" sound.")
         ),
 
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
         musicassessr::sing_happy_birthday_page(feedback = FALSE),
+
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
 
         psychTestR::one_button_page(shiny::tags$div(
           musicassessr::musicassessr_js_scripts(),
@@ -423,7 +467,12 @@ UPEI_2021_battery <- function(state = "production") {
                                       page_title_long_note = "Please sing back the note with a \"Dooo\" sound.",
                                       page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")),
 
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
         musicassessr::sing_happy_birthday_page(feedback = FALSE),
+
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
 
         psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
 
@@ -435,20 +484,35 @@ UPEI_2021_battery <- function(state = "production") {
 
       )),
 
-      musicassessr::sing_happy_birthday_page(feedback = FALSE)
-      ) ,dict = musicassessr::dict(NULL)),
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+      musicassessr::sing_happy_birthday_page(feedback = FALSE),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE)
+
+      ), dict = musicassessr::dict(NULL)),
 
     PDT::PDT(with_final_page = FALSE,
              headphones_page = FALSE,
              import_musicassessr_js_scripts = FALSE),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     mpt::mpt(num_items = 10L),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     mdt::mdt(num_items = 10L),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psyquest::GMS(),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     psyquest::SES(),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psychTestR::one_button_page(shiny::tags$div(
       musicassessr_js_scripts(musicassessr_state = state),
@@ -456,11 +520,14 @@ UPEI_2021_battery <- function(state = "production") {
 
     musicassessr::sing_happy_birthday_page(feedback = FALSE),
 
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
     UPEI_extra_questions()
 
   ),
   opt = psychTestR::test_options(title = "UPEI",
-                           admin_password = "test",
+                           admin_password = "@irs@irs2021#",
+                           enable_admin_panel = FALSE,
                            display = psychTestR::display_options(
                              left_margin = 1L,
                              right_margin = 1L,

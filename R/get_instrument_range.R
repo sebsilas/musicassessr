@@ -38,8 +38,7 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type, butt
 #' @examples
 get_instrument_range_pages <- function(type, get_range) {
   # a short multi-page protocol to get the user's frequency range
-  print('get_instrument_range_pages')
-  print(get_range)
+
   if(get_range == "test" | get_range == FALSE) {
     fake_range()
   } else {
@@ -78,8 +77,17 @@ midi_or_audio_reactive <- function() {
   )
 }
 
+range_explanation_page <- function() {
+  psychTestR::one_button_page(shiny::tags$p(style = "text-align: left;", "We will not find your approximate voice range.
+                              You will be asked first to sing your lowest comfortable note.
+                              The computer will then analyse this note and it will be played back to you.
+                              You will be asked to decide if this is a good match to your lowest note.
+                              Sometimes the computer can make a large error, and you will know when that happens, and you will have an opportunity to sing your lowest note again, and give the computer another chance."))
+}
+
 get_note_until_satisfied_loop_audio <- function() {
   c(
+    range_explanation_page(),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_low_note")), var_name = "bottom_range", page_type = "record_audio_page"),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_high_note")), var_name = "top_range", page_type = "record_audio_page"),
     present_range(state)
@@ -162,7 +170,7 @@ present_range <- function(state, show_musical_notation = FALSE) {
                     display_modality = stimuli_type,
                     page_text = shiny::tags$div(
                       shiny::tags$p("You can click below to hear your range."),
-                      shiny::tags$p("Please note, we may have corrected your range if it seemed problematic.")
+                      shiny::tags$p("Please note, we may have changed the range to be slightly higher or lower than you actually sang.")
                       ),
                     page_type = "one_button_page",
                     button_text = psychTestR::i18n("Next"))

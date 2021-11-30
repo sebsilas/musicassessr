@@ -114,7 +114,7 @@ SNR_conclusion <- function(SNR, min_SNR, report_SNR = FALSE) {
   } else {
     SNR_message <- ifelse(report_SNR,
                           yes = paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")),
-                          no = "Your background noise level is acceptable.")
+                          no = "Your background noise level is good")
 
     psychTestR::page(ui = shiny::tags$div(shiny::tags$h2("Check of background noise level"),
                                           shiny::tags$p(SNR_message),

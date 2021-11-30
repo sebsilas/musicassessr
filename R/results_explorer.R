@@ -88,7 +88,7 @@ results_explorer <- function(results_df = PBET_calibration_results,
 
   ui <- shiny::basicPage(
 
-    musicassessr_js_scripts("A", "B", "C", "D", "E"),
+    musicassessr_js_scripts(),
 
     shiny::tags$h2("Trials Explorer"),
 

@@ -386,7 +386,7 @@ UPEI_2021_battery <- function(state = "production") {
 
 
     MST::MST(num_items = list(
-               long_tones = 6L, arrhythmic = 10L, rhythmic = 0L
+               long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
              ),
              examples = 2L,
              final_results = FALSE,

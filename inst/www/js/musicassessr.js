@@ -905,8 +905,12 @@ function stopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
+  if(typeof musicassessr_state !== 'undefined') { // if it's undefined, assume in production
+    musicassessr_state = "production";
+  }
+
 	//create the wav blob and pass it on to createDownloadLink
-	if(musicassessr_state === "production" | typeof musicassessr_state !== 'undefined') { // if it's undefined, assume in production
+	if(musicassessr_state === "production") {
 	  rec.exportWAV(upload_file_to_s3);
   } else {
     rec.exportWAV(upload_file_to_s3_local);

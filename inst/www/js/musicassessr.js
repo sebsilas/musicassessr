@@ -905,7 +905,7 @@ function stopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-  if(typeof musicassessr_state !== 'undefined') { // if it's undefined, assume in production
+  if(typeof musicassessr_state === 'undefined') { // if it's undefined, assume in production
     var musicassessr_state = "production";
   }
 

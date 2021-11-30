@@ -260,7 +260,7 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
               count = count + 1;
                 if (count === last_note) {
                   if(page_type !== 'null') {
-                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000); // delay to avoid catching stimuli in recording
+                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000);
                   }
 
                   pattern.stop();
@@ -616,12 +616,10 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
         hidePlayButton();
       }
 
-      setTimeout(() => {  showRecordingIcon(); }, 500); // a little lag
+      showRecordingIcon();
 
       if (showStop) {
-        setTimeout(function() {
         showStopButton(type, stop_button_text);
-            }, 500); // a little more lag
       }
     }
 

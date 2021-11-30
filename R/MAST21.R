@@ -323,6 +323,11 @@ UPEI_2021_battery <- function(state = "production") {
 
         psychTestR::elt_save_results_to_disk(complete = FALSE),
 
+        psychTestR::one_button_page(shiny::tags$div(tags$p("For best results please: "),
+                                                    tags$ul(
+                                                    tags$li("Close all tabs and windows other than this one."),
+                                                    tags$li("Quit other apps that are running, and pause any app or file downloads.")))),
+
         psychTestR::one_button_page(shiny::tags$p(style = "text-align: left;", "This group of music tests has been recently developed, and the researchers have not been able to test is out on every computer.
           It is possible that the program will stop working on your computer.  If this happens you may see “Aw Snap” and a “Reload” button.  Press the “Reload” button, and in most cases, the program will start up where it left off. You may be asked to enter your number-letter code again.
           When it says 'Resuming ongoing testing session. Please click OK to confirm.' click OK, and the page should reload where you were.

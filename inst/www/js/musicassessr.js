@@ -906,7 +906,7 @@ function stopRecording() {
 	gumStream.getAudioTracks()[0].stop();
 
   if(typeof musicassessr_state !== 'undefined') { // if it's undefined, assume in production
-    musicassessr_state = "production";
+    var musicassessr_state = "production";
   }
 
 	//create the wav blob and pass it on to createDownloadLink

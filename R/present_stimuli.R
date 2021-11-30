@@ -30,7 +30,7 @@
 present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type = NULL,
                             page_text = " ", page_title = " ",  slide_length,
                             special_page_underlying_page_type = "one_button_page", record_audio_method = "aws_pyin",
-                            answer_meta_data = NULL, get_answer = get_answer_null, save_answer = FALSE,
+                            answer_meta_data = NULL, get_answer = get_answer_null, save_answer = TRUE,
                             stimuli_reactive = FALSE, midi_device = " ",
                             show_aws_controls = FALSE, page_label = "x",
                             button_text = "Next", play_button_text = "Play",

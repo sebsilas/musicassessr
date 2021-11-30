@@ -60,7 +60,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
   long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
-                    note_length = 2, page_type = "record_audio_page",
+                    note_length = 2, page_type = "record_audio_page", save_answer = TRUE,
                     page_title = page_title_long_note, page_text = page_text_long_note)
   })
 
@@ -70,7 +70,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
   long_notes_4 <- purrr::map(MAST_octave_4_long_notes, function(melody) {
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
-                    note_length = 2, page_type = "record_audio_page",
+                    note_length = 2, page_type = "record_audio_page", save_answer = TRUE,
                     page_title = page_title_long_note, page_text = page_text_long_note)
   })
 
@@ -79,7 +79,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 
   melodies_octave_3<- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = sound,
+                    display_modality = "auditory", auto_next_page = TRUE, sound = sound, save_answer = TRUE,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
   })
@@ -89,7 +89,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 
   melodies_octave_4 <- apply(MAST_melodies, MARGIN = 1,  function(row) {
     present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = sound,
+                    display_modality = "auditory", auto_next_page = TRUE, sound = sound, save_answer = TRUE,
                     page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
                     get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
   })

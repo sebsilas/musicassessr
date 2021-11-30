@@ -78,7 +78,7 @@ midi_or_audio_reactive <- function() {
 }
 
 range_explanation_page <- function() {
-  psychTestR::one_button_page(shiny::tags$p(style = "text-align: left;", "We will not find your approximate voice range.
+  psychTestR::one_button_page(shiny::tags$p(style = "text-align: left;", "We will now find your approximate voice range.
                               You will be asked first to sing your lowest comfortable note.
                               The computer will then analyse this note and it will be played back to you.
                               You will be asked to decide if this is a good match to your lowest note.

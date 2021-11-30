@@ -339,14 +339,14 @@ UPEI_2021_battery <- function(state = "production") {
 
 
       psychTestR::NAFC_page(label = "computer_type",
-                            prompt = "Please say below which type of computer you are using",
+                            prompt = "Which type of computer you are using?",
                             choices = c("Laptop", "Desktop")),
 
       psychTestR::elt_save_results_to_disk(complete = FALSE),
 
 
       psychTestR::NAFC_page(label = "computer_type2",
-                            prompt = "Please check  below which type of computer you are using:",
+                            prompt = "Which type of computer you are using?",
                             choices = c("Mac",
                                         "PC  (e.g., Dell, Hewlitt Packard, Lenova, Asus… any non-Mac computer).")),
 

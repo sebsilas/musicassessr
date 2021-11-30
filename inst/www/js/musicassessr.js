@@ -161,6 +161,11 @@ function triggerNote(sound, freq_tone, seconds, time) {
 }
 
 function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_pyin", stop_button_text = "Stop", showStop = false, record_immediately = true) {
+
+  if(hidePlay) {
+    hidePlayButton();
+  }
+
   // play a tone for x seconds
   console.log('playTone!');
 
@@ -214,6 +219,9 @@ function playTones (note_list) {
 
 function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound) {
 
+  if(hidePlay) {
+    hidePlayButton();
+  }
   if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
     note_list = note_list-12;
   }
@@ -229,6 +237,10 @@ function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_butto
 
 
 function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
+
+  if(hidePlay) {
+    hidePlayButton();
+  }
    var pattern = new Tone.Sequence(function(time, note){
 
         triggerNote(sound, note, 0.50);
@@ -246,6 +258,9 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
 
 function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
 
+  if(hidePlay) {
+    hidePlayButton();
+  }
   var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
   notesAndDurations = notesAndDurations.map(timeFromDurations);
   var pattern = new Tone.Part((time, value) => {
@@ -273,6 +288,10 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
 
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null, auto_next_page) {
+
+  if(hidePlay) {
+    hidePlayButton();
+  }
 
   auto_next_page = auto_next_page;
 
@@ -352,6 +371,9 @@ function metronome () {
 
 function toneJSPlay (midi, start_note, end_note, hidePlay, transpose, id, sound, bpm = 90) {
 
+  if(hidePlay) {
+    hidePlayButton();
+     }
     // start timer
 
     window.startTime = new Date().getTime();
@@ -560,7 +582,7 @@ function buton(e) {
 }
 
 function hidePlayButton(play_button_id = "playButton") {
-
+  // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var x = document.getElementById(play_button_id);
   if (x.style.display === "none") {
     x.style.display = "block";
@@ -577,6 +599,7 @@ function hideAudioFilePlayer() {
 
 
 function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", stop_button_text = "Stop") {
+
   if(hidePlay) {
     hidePlayButton();
   }

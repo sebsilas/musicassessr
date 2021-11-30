@@ -577,6 +577,10 @@ function hideAudioFilePlayer() {
 
 
 function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", stop_button_text = "Stop") {
+  if(hidePlay) {
+    hidePlayButton();
+  }
+
   setTimeout(() => {
       // start recording but then stop after x milliseconds
       window.startTime = new Date().getTime();
@@ -611,11 +615,6 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
 
     if(['aws_pyin', 'crepe', 'record_audio_page', 'record_midi_page'].includes(type)) {
       // update the recording UI
-
-      if(hidePlay) {
-        hidePlayButton();
-      }
-
       showRecordingIcon();
 
       if (showStop) {

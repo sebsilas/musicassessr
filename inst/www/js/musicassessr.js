@@ -173,13 +173,13 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_py
   triggerNote(sound, freq_tone, seconds);
 
   if(record_immediately) {
-     setTimeout(() => {  recordAndStop(ms = seconds*1000,
-                                    showStop = showStop, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, record_delay); // delay to avoid catching stimuli in recording
+     recordAndStop(ms = seconds*1000, showStop = showStop, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text);
 
   } else {
     auto_next_page = true;
-    var total_record_delay = record_delay + seconds*1000 ;
-    setTimeout(() => {  recordAndStop(ms = null, showStop = true, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, total_record_delay); // delay to avoid catching stimuli in recording
+    var delay = seconds*1000 ;
+    setTimeout(() => { recordAndStop(ms = null, showStop = true, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, delay);
+
   }
 
   updatePlaybackCount();
@@ -223,7 +223,7 @@ function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_butto
 
   auto_next_page = true;
   triggerNote(sound, freq_list, dur_list);
-  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, (dur_list*1000) + record_delay);
+  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, dur_list*1000);
 
 }
 
@@ -235,7 +235,7 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
         count = count + 1;
         if (count === last_note) {
           if(page_type == "aws_pyin" | page_type == "crepe" | page_type == "record_midi_page" | page_type == "record_audio_page") {
-            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50 + record_delay); // delay to avoid catching stimuli in recording
+            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50); // delay to avoid catching stimuli in recording
           }
           pattern.stop();
           Tone.Transport.stop();
@@ -260,7 +260,7 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
               count = count + 1;
                 if (count === last_note) {
                   if(page_type !== 'null') {
-                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000 + record_delay); // delay to avoid catching stimuli in recording
+                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000); // delay to avoid catching stimuli in recording
                   }
 
                   pattern.stop();
@@ -389,7 +389,7 @@ function toneJSPlay (midi, start_note, end_note, hidePlay, transpose, id, sound,
         }
 
         setTimeout(() => {
-          recordAndStop(null, true, hidePlay, id); }, dur + record_delay); // plus a little delay
+          recordAndStop(null, true, hidePlay, id); }, dur);
 
         //create a synth for each track
         const synth = new Tone.PolySynth(2, Tone.Synth, synthParameters).toMaster();
@@ -577,22 +577,24 @@ function hideAudioFilePlayer() {
 
 
 function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", stop_button_text = "Stop") {
+  setTimeout(() => {
+      // start recording but then stop after x milliseconds
+      window.startTime = new Date().getTime();
 
-    // start recording but then stop after x milliseconds
-    window.startTime = new Date().getTime();
+      if (type === "aws_pyin") {
+        // aws record
+        startRecording(updateUI = false);
+      } else if(type === "crepe") {
+        // crepe record
+        initAudio();
+        crepeResume();
+      } else if(type === "record_midi_page") {
+        instantiateMIDI(midi_device);
+      }  else {
+        console.log('type not recognised');
+      }
 
-    if (type === "aws_pyin") {
-      // aws record
-      startRecording(updateUI = false);
-    } else if(type === "crepe") {
-      // crepe record
-      initAudio();
-      crepeResume();
-    } else if(type === "record_midi_page") {
-      instantiateMIDI(midi_device);
-    }  else {
-      console.log('type not recognised');
-    }
+  }, record_delay);
 
      if (ms === null) {
         console.log('ms null');
@@ -897,7 +899,7 @@ function stopRecording() {
 
   hideButtonAreaShowUserRating();
 
-	console.log("simpleStopButton clicked");
+	console.log("stopRecording clicked");
 
 	//tell the recorder to stop the recording
 	rec.stop();

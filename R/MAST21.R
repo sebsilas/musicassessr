@@ -158,7 +158,7 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
 #' @export
 #'
 #' @examples
-sing_happy_birthday_page <- function(feedback = FALSE) {
+sing_happy_birthday_page <- function(feedback = FALSE, label = "sing_hbd") {
 
   page <- record_audio_page(label = "sing_hbd",
                             page_text = "Please sing Happy Birthday.",
@@ -416,7 +416,7 @@ UPEI_2021_battery <- function(state = "production") {
         psychTestR::set_global("snap", snap, state)
       }),
 
-      musicassessr::sing_happy_birthday_page(feedback = FALSE),
+      musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd1"),
 
       psychTestR::elt_save_results_to_disk(complete = FALSE),
 
@@ -435,7 +435,7 @@ UPEI_2021_battery <- function(state = "production") {
         psychTestR::elt_save_results_to_disk(complete = FALSE),
 
 
-        musicassessr::sing_happy_birthday_page(feedback = FALSE),
+        musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd2"),
 
         psychTestR::elt_save_results_to_disk(complete = FALSE),
 
@@ -464,7 +464,7 @@ UPEI_2021_battery <- function(state = "production") {
 
         psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-        musicassessr::sing_happy_birthday_page(feedback = FALSE),
+        musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd3"),
 
         psychTestR::elt_save_results_to_disk(complete = FALSE),
 
@@ -481,7 +481,7 @@ UPEI_2021_battery <- function(state = "production") {
 
       psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-      musicassessr::sing_happy_birthday_page(feedback = FALSE),
+      musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4"),
 
       psychTestR::elt_save_results_to_disk(complete = FALSE)
 

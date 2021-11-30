@@ -498,19 +498,15 @@ UPEI_2021_battery <- function(state = "production") {
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    mpt::mpt(num_items = 10L),
+    mpt::mpt(num_items = 20L),
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    mdt::mdt(num_items = 10L),
+    mdt::mdt(num_items = 18L),
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
     psyquest::GMS(),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-    psyquest::SES(),
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 

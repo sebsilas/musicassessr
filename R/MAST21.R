@@ -9,9 +9,6 @@ MAST_long_notes <- tibble::tibble(
 )
 
 
-MAST_octave_3_long_notes <- MAST_long_notes$octave_3
-MAST_octave_4_long_notes <- MAST_long_notes$octave_4
-
 MAST_melodies <- itembankr::MAST21("phrases")
 
 MAST_melodies$octave_3 <- apply(MAST_melodies, MARGIN = 1, function(row) {
@@ -57,41 +54,49 @@ MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = 
                          instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
 
 
-  long_notes_3 <- purrr::map(MAST_octave_3_long_notes, function(melody) {
+  long_notes_3 <- purrr::map(1:nrow(MAST_long_notes), function(x) {
+    melody <- MAST_long_notes %>% dplyr::slice(x) %>% dplyr::pull(octave_3)
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
                     note_length = 2, page_type = "record_audio_page", save_answer = TRUE,
-                    page_title = page_title_long_note, page_text = page_text_long_note)
+                    page_title = page_title_long_note, page_text = page_text_long_note,
+                    get_answer = get_answer_pyin_long_note, page_label = paste0("MAST21_", x))
   })
 
   long_notes_3 <- insert.every.other.pos.in.list(long_notes_3, psychTestR::elt_save_results_to_disk(complete = FALSE))
 
 
-  long_notes_4 <- purrr::map(MAST_octave_4_long_notes, function(melody) {
+  long_notes_4 <- purrr::map(1:nrow(MAST_long_notes), function(x) {
+    melody <- MAST_long_notes %>% dplyr::slice(x) %>% dplyr::pull(octave_4)
     present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
                     display_modality = "auditory", sound = sound,
                     note_length = 2, page_type = "record_audio_page", save_answer = TRUE,
-                    page_title = page_title_long_note, page_text = page_text_long_note)
+                    page_title = page_title_long_note, page_text = page_text_long_note,
+                    get_answer = get_answer_pyin_long_note, page_label = paste0("MAST21_", x))
   })
 
   long_notes_4 <- insert.every.other.pos.in.list(long_notes_4, psychTestR::elt_save_results_to_disk(complete = FALSE))
 
 
-  melodies_octave_3<- apply(MAST_melodies, MARGIN = 1,  function(row) {
-    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_3']), stimuli_type = "midi_notes",
+  melodies_octave_3 <- lapply(1:nrow(MAST_melodies), function(x) {
+    row <- MAST_melodies %>% dplyr::slice(x)
+    present_stimuli(stimuli = itembankr::str_mel_to_vector(row$octave_3), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound, save_answer = TRUE,
-                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
+                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row$durations),
+                    page_text = page_text, page_title = page_title_melody,
+                    get_answer = get_answer_pyin, page_label = paste0("MAST21_", x+4))
   })
 
   melodies_octave_3 <- insert.every.other.pos.in.list(melodies_octave_3, psychTestR::elt_save_results_to_disk(complete = FALSE))
 
 
-  melodies_octave_4 <- apply(MAST_melodies, MARGIN = 1,  function(row) {
-    present_stimuli(stimuli = itembankr::str_mel_to_vector(row['octave_4']), stimuli_type = "midi_notes",
+  melodies_octave_4 <- lapply(1:nrow(MAST_melodies), function(x) {
+    row <- MAST_melodies %>% dplyr::slice(x)
+    present_stimuli(stimuli = itembankr::str_mel_to_vector(row$octave_4), stimuli_type = "midi_notes",
                     display_modality = "auditory", auto_next_page = TRUE, sound = sound, save_answer = TRUE,
-                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row['durations']),
-                    get_answer = musicassessr::get_answer_pyin, page_text = page_text, page_title = page_title_melody)
+                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row$durations),
+                    page_text = page_text, page_title = page_title_melody,
+                    get_answer = get_answer_pyin, page_label = paste0("MAST21_", x+4))
   })
 
   melodies_octave_4 <- insert.every.other.pos.in.list(melodies_octave_4, psychTestR::elt_save_results_to_disk(complete = FALSE))

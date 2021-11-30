@@ -584,11 +584,7 @@ function buton(e) {
 function hidePlayButton(play_button_id = "playButton") {
   // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var x = document.getElementById(play_button_id);
-  if (x.style.display === "none") {
-    x.style.display = "block";
-  } else {
-    x.style.display = "none";
-  }
+  x.style.display = "none";
 
 }
 

@@ -430,6 +430,14 @@ upei_test_options <- function() {
 }
 
 
+#' Title
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 MST_only <- function(state = "production") {
   upei_intro(state,
     MST::MST(num_items = list(
@@ -449,6 +457,14 @@ MST_only <- function(state = "production") {
 }
 
 
+#' Title
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 MAST21_only <- function(state = "production") {
   upei_intro(state,
              MAST21(include_microphone_calibration_page = TRUE,
@@ -456,6 +472,14 @@ MAST21_only <- function(state = "production") {
 }
 
 
+#' Title
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 PDT_only <- function(state = "production") {
   upei_intro(state,
              PDT::PDT(with_final_page = FALSE,
@@ -464,17 +488,41 @@ PDT_only <- function(state = "production") {
 }
 
 
+#' Title
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 MPT_only <- function(state = "production") {
   upei_intro(state,
              mpt::mpt(num_items = 20L))
 }
 
 
+#' Title
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 MDT_only <- function(state = "production") {
   upei_intro(state, mdt::mdt(num_items = 18L))
 }
 
 
+#' Title
+#'
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
 end_only <- function(state = "production") {
 
   end <- psychTestR::join(

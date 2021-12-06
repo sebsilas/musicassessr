@@ -373,7 +373,7 @@ UPEI_2021_battery <- function(state = "production") {
                              right_margin = 1L,
                              css = system.file('www/css/style.css', package = "musicassessr")
                            ),
-                           additional_scripts = musicassessr_js,
+                           additional_scripts = musicassessr_js(),
                            languages = c("en"))
   )
 

@@ -29,7 +29,8 @@ musicassessr_js_scripts <- function(musicassessr_state = NULL) {
     )
 }
 
-musicassessr_js <- c(
+musicassessr_js <- function() {
+  c(
   "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
   "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js",
   "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js",
@@ -43,7 +44,8 @@ musicassessr_js <- c(
   system.file("www/spinner/spin.js", package = "musicassessr"),
   system.file("www/js/crepe.js", package = "musicassessr"),
   system.file("www/js/musicassessr.js", package = "musicassessr")
-)
+  )
+}
 
 enable.cors <- '
 // Create the XHR object.

@@ -527,6 +527,7 @@ end_only <- function(state = "production") {
 # MPT_only()
 # MDT_only()
 # end_only()
+# devtools::install_github('syntheso/musicassessr', ref = 'script-import')
 
 # library(PDT)
 # library(mpt)

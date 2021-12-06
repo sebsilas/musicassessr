@@ -1,154 +1,3 @@
-F3 <- 53
-F4 <- 65
-
-
-MAST_long_notes <- tibble::tibble(
-  melody = c("F", "B", "E", "C"),
-  octave_3 = c(53, 59, 52, 48),
-  octave_4 = c(65, 71, 64, 60)
-)
-
-
-MAST_melodies <- itembankr::MAST21("phrases")
-
-MAST_melodies$octave_3 <- apply(MAST_melodies, MARGIN = 1, function(row) {
-  transpose <- ifelse(is.na(row['transpose']), 0, as.integer(row['transpose']))
-  paste0(itembankr::rel_to_abs_mel(rel_mel = itembankr::str_mel_to_vector(row['melody']), start_note = F3) + transpose, collapse = ",")
-})
-
-MAST_melodies$octave_4 <- apply(MAST_melodies, MARGIN = 1, function(row) {
-  transpose <- ifelse(is.na(row['transpose']), 0, as.integer(row['transpose']))
-  paste0(itembankr::rel_to_abs_mel(rel_mel = itembankr::str_mel_to_vector(row['melody']), start_note = F4) + transpose, collapse = ",")
-})
-
-
-
-
-#' Deploy a block of the MAST21 stimuli
-#'
-#' @param item_bank
-#' @param num_items
-#' @param num_examples
-#' @param feedback
-#' @param get_answer
-#' @param sound
-#' @param page_text
-#' @param page_title_doo
-#' @param page_title_daa
-#' @param long_tone_title
-#' @param long_tone_text
-#' @param instruction_text
-#' @param microphone_calibration_page
-#'
-#' @return
-#' @export
-#'
-#' @examples
-MAST21_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE,
-                         get_answer = musicassessr::get_answer_pyin,
-                         sound = "piano",
-                         page_text = psychTestR::i18n("sing_melody_trial"),
-                         page_title_melody = "Please sing the melody",
-                        page_title_long_note = "Sing the note with a \"Dooo\" sound.",
-                        page_text_long_note = shiny::tags$p("Please sing the note ", shiny::tags$strong("after"), "you hear it, then click Stop."),
-                         instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.") {
-
-
-  long_notes_3 <- purrr::map(1:nrow(MAST_long_notes), function(x) {
-    melody <- MAST_long_notes %>% dplyr::slice(x) %>% dplyr::pull(octave_3)
-    present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
-                    display_modality = "auditory", sound = sound,
-                    note_length = 2, page_type = "record_audio_page", save_answer = TRUE,
-                    page_title = page_title_long_note, page_text = page_text_long_note,
-                    get_answer = get_answer_pyin_long_note, page_label = paste0("MAST21_", x))
-  })
-
-  long_notes_3 <- insert.every.other.pos.in.list(long_notes_3, psychTestR::elt_save_results_to_disk(complete = FALSE))
-
-
-  long_notes_4 <- purrr::map(1:nrow(MAST_long_notes), function(x) {
-    melody <- MAST_long_notes %>% dplyr::slice(x) %>% dplyr::pull(octave_4)
-    present_stimuli(stimuli = melody, stimuli_type = "midi_notes",
-                    display_modality = "auditory", sound = sound,
-                    note_length = 2, page_type = "record_audio_page", save_answer = TRUE,
-                    page_title = page_title_long_note, page_text = page_text_long_note,
-                    get_answer = get_answer_pyin_long_note, page_label = paste0("MAST21_", x))
-  })
-
-  long_notes_4 <- insert.every.other.pos.in.list(long_notes_4, psychTestR::elt_save_results_to_disk(complete = FALSE))
-
-
-  melodies_octave_3 <- lapply(1:nrow(MAST_melodies), function(x) {
-    row <- MAST_melodies %>% dplyr::slice(x)
-    present_stimuli(stimuli = itembankr::str_mel_to_vector(row$octave_3), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = sound, save_answer = TRUE,
-                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row$durations),
-                    page_text = page_text, page_title = page_title_melody,
-                    get_answer = get_answer_pyin, page_label = paste0("MAST21_", x+4))
-  })
-
-  melodies_octave_3 <- insert.every.other.pos.in.list(melodies_octave_3, psychTestR::elt_save_results_to_disk(complete = FALSE))
-
-
-  melodies_octave_4 <- lapply(1:nrow(MAST_melodies), function(x) {
-    row <- MAST_melodies %>% dplyr::slice(x)
-    present_stimuli(stimuli = itembankr::str_mel_to_vector(row$octave_4), stimuli_type = "midi_notes",
-                    display_modality = "auditory", auto_next_page = TRUE, sound = sound, save_answer = TRUE,
-                    page_type = "record_audio_page", durations = itembankr::str_mel_to_vector(row$durations),
-                    page_text = page_text, page_title = page_title_melody,
-                    get_answer = get_answer_pyin, page_label = paste0("MAST21_", x+4))
-  })
-
-  melodies_octave_4 <- insert.every.other.pos.in.list(melodies_octave_4, psychTestR::elt_save_results_to_disk(complete = FALSE))
-
-
-
-  if(feedback & !is.function(feedback)) {
-    feedback <- feedback_melodic_production
-  }
-
-    psychTestR::module("MAST21",
-                     c(
-                       # instructions
-
-                      # long notes 1-4
-
-                      psychTestR::conditional(
-                        test = function(state, ...) {
-                          range <- psychTestR::get_global("range", state)
-                          range == "Baritone" | range == "Bass" | range == "Tenor"
-                        },
-                        logic = long_notes_3
-                      ),
-
-                      psychTestR::conditional(
-                        test = function(state, ...) {
-                          range <- psychTestR::get_global("range", state)
-                          range == "Alto" | range == "Soprano"
-                        },
-                        logic = long_notes_4
-                      ),
-
-
-                      psychTestR::conditional(
-                        test = function(state, ...) {
-                          range <- psychTestR::get_global("range", state)
-                          range == "Baritone" | range == "Bass" | range == "Tenor"
-                        },
-                        logic = melodies_octave_3
-                      ),
-
-                      psychTestR::conditional(
-                        test = function(state, ...) {
-                          range <- psychTestR::get_global("range", state)
-                          range == "Alto" | range == "Soprano"
-                        },
-                        logic = melodies_octave_4
-                      )
-                     )
-  )
-}
-
 
 #' A page to identify a user's singing range by asking them to sing Happy Birthday
 #'
@@ -301,9 +150,9 @@ UPEI_2021_battery <- function(state = "production") {
     psychTestR::new_timeline(psychTestR::join(
 
       psychTestR::one_button_page(shiny::tags$div(
+        musicassessr::set_musicassessr_state(state = state),
         shiny::tags$h1("UPEI 2021 Testing"),
-        shiny::tags$p("This is a protocol for the UPEI 2021 singing study."),
-        musicassessr_js_scripts(musicassessr_state = state)
+        shiny::tags$p("This is a protocol for the UPEI 2021 singing study.")
         )),
 
       psychTestR::one_button_page(shiny::tags$div(
@@ -323,10 +172,10 @@ UPEI_2021_battery <- function(state = "production") {
 
         psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-        psychTestR::one_button_page(shiny::tags$div(tags$p("For best results please: "),
-                                                    tags$ul(
-                                                    tags$li("Close all tabs and windows other than this one."),
-                                                    tags$li("Quit other apps that are running, and pause any app or file downloads.")))),
+        psychTestR::one_button_page(shiny::tags$div(shiny::tags$p("For best results please: "),
+                                                    shiny::tags$ul(
+                                                    shiny::tags$li("Close all tabs and windows other than this one."),
+                                                    shiny::tags$li("Quit other apps that are running, and pause any app or file downloads.")))),
 
         psychTestR::one_button_page(shiny::tags$p(style = "text-align: left;", "This group of music tests has been recently developed, and the researchers have not been able to test is out on every computer.
           It is possible that the program will stop working on your computer.  If this happens you may see “Aw Snap” and a “Reload” button.  Press the “Reload” button, and in most cases, the program will start up where it left off. You may be asked to enter your number-letter code again.
@@ -385,140 +234,122 @@ UPEI_2021_battery <- function(state = "production") {
       ), dict = musicassessr::dict(NULL)),
 
 
-    MST::MST(num_items = list(
-               long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
-             ),
-             examples = 2L,
-             final_results = FALSE,
-             state = NULL,
-             absolute_url = "https://musicog.ca",
-             SNR_test = TRUE,
-             get_range = TRUE,
-             gold_msi = FALSE,
-             demographics = FALSE,
-             with_final_page = FALSE,
-             melody_sound = "piano"),
+    # MST::MST(num_items = list(
+    #            long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
+    #          ),
+    #          examples = 2L,
+    #          final_results = FALSE,
+    #          state = NULL,
+    #          absolute_url = "https://musicog.ca",
+    #          SNR_test = TRUE,
+    #          get_range = TRUE,
+    #          gold_msi = FALSE,
+    #          demographics = FALSE,
+    #          with_final_page = FALSE,
+    #          melody_sound = "piano"),
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    psychTestR::new_timeline(psychTestR::join(
-
-      psychTestR::one_button_page(shiny::tags$div(
-        musicassessr::musicassessr_js_scripts(),
-        shiny::tags$p("You will now have another test of short singing examples.
-                      There are 2 sets of 21 questions.
-                      The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test, there is only one chance with each imitation.
-                      You will be asked to sing the two sets of questions on two different syllables /da/ and /du/. ")
-      )),
-
-      musicassessr::get_voice_range_page(with_examples = FALSE),
-
-      psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-
-      psychTestR::code_block(function(state, ...) {
-        snap <- sample(1:2, 1)
-        psychTestR::set_global("snap", snap, state)
-      }),
-
-      musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd1"),
-
-      psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-
-      psychTestR::conditional(test = function(state, ...) {
-        psychTestR::get_global("snap", state) == 1
-      }, logic = psychTestR::join (
-        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
-
-        psychTestR::module(label = "MAST21_daah",
-          musicassessr::MAST21_trials(sound = "piano",
-                                    page_title_long_note = "Please sing back the note with a \"Daah\" sound.",
-                                    page_title_melody = "Please sing back the melody with a \"Daah\" sound.")
-        ),
-
-        psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-
-        musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd2"),
-
-        psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-
-        psychTestR::one_button_page(shiny::tags$div(
-          musicassessr::musicassessr_js_scripts(),
-          shiny::tags$p("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."))),
-
-        psychTestR::module(label = "MAST21_dooo",
-          musicassessr::MAST21_trials(sound = "piano",
-                                      page_title_long_note = "Please sing back the note with a \"Dooo\" sound.",
-                                      page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")
-        )
-
-       )),
-
-      psychTestR::conditional(test = function(state, ...) {
-        psychTestR::get_global("snap", state) == 2
-      }, logic = psychTestR::join(
-        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
-
-        psychTestR::module(label = "MAST21_dooo",
-          musicassessr::MAST21_trials(sound = "piano",
-                                      page_title_long_note = "Please sing back the note with a \"Dooo\" sound.",
-                                      page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")),
-
-        psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-        musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd3"),
-
-        psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-
-        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
-
-        psychTestR::module(label = "MAST21_daah",
-          musicassessr::MAST21_trials(sound = "piano",
-                                      page_title_long_note = "Please sing back the note with a \"Daah\" sound.",
-                                      page_title_melody = "Please sing back the melody with a \"Daah\" sound."))
-
-
-      )),
-
-      psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-      musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4"),
-
-      psychTestR::elt_save_results_to_disk(complete = FALSE)
-
-      ), dict = musicassessr::dict(NULL)),
-
-    PDT::PDT(with_final_page = FALSE,
-             headphones_page = FALSE,
-             import_musicassessr_js_scripts = FALSE),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-    mpt::mpt(num_items = 20L),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-    mdt::mdt(num_items = 18L),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-    psyquest::GMS(),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-    psychTestR::one_button_page(shiny::tags$div(
-      musicassessr_js_scripts(musicassessr_state = state),
-      shiny::tags$p("On the next page you will sing Happy Birthday again."))),
-
-    musicassessr::sing_happy_birthday_page(feedback = FALSE),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE),
-
-    UPEI_extra_questions(),
+    # psychTestR::new_timeline(psychTestR::join(
+    #
+    #   psychTestR::one_button_page(shiny::tags$div(
+    #     shiny::tags$p("You will now have another test of short singing examples.
+    #                   There are 2 sets of 21 questions.
+    #                   The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test, there is only one chance with each imitation.
+    #                   You will be asked to sing the two sets of questions on two different syllables /da/ and /du/. ")
+    #   )),
+    #
+    #   musicassessr::get_voice_range_page(with_examples = FALSE),
+    #
+    #   psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #
+    #   psychTestR::code_block(function(state, ...) {
+    #     snap <- sample(1:2, 1)
+    #     psychTestR::set_global("snap", snap, state)
+    #   }),
+    #
+    #   musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd1"),
+    #
+    #   psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #
+    #   psychTestR::conditional(test = function(state, ...) {
+    #     psychTestR::get_global("snap", state) == 1
+    #   }, logic = psychTestR::join (
+    #     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+    #
+    #     MAST21_daah,
+    #
+    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #
+    #     musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd2"),
+    #
+    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #
+    #     psychTestR::one_button_page(shiny::tags$div(
+    #       shiny::tags$p("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."))),
+    #
+    #     MAST21_dooo
+    #
+    #    )),
+    #
+    #   psychTestR::conditional(test = function(state, ...) {
+    #     psychTestR::get_global("snap", state) == 2
+    #   }, logic = psychTestR::join(
+    #     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+    #
+    #     MAST21_dooo,
+    #
+    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #     musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd3"),
+    #
+    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #
+    #     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+    #
+    #     MAST21_daah
+    #
+    #   )),
+    #
+    #   psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    #   musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4"),
+    #
+    #   psychTestR::elt_save_results_to_disk(complete = FALSE)
+    #
+    #   ), dict = musicassessr::dict(NULL)),
+    #
+    # # PDT::PDT(with_final_page = FALSE,
+    # #          headphones_page = FALSE,
+    # #          import_musicassessr_js_scripts = FALSE),
+    #
+    # psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    # mpt::mpt(num_items = 20L),
+    #
+    # psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    # mdt::mdt(num_items = 18L),
+    #
+    # psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    # psyquest::GMS(),
+    #
+    # psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    # psychTestR::one_button_page(shiny::tags$div(
+    #   shiny::tags$p("On the next page you will sing Happy Birthday again."))),
+    #
+    # musicassessr::sing_happy_birthday_page(feedback = FALSE),
+    #
+    # psychTestR::elt_save_results_to_disk(complete = FALSE),
+    #
+    # UPEI_extra_questions(),
 
     psychTestR::elt_save_results_to_disk(complete = TRUE),
 
@@ -544,6 +375,7 @@ UPEI_2021_battery <- function(state = "production") {
                              right_margin = 1L,
                              css = system.file('www/css/style.css', package = "musicassessr")
                            ),
+                           additional_scripts = musicassessr_js,
                            languages = c("en"))
   )
 
@@ -556,9 +388,6 @@ UPEI_2021_battery <- function(state = "production") {
 # library(psyquest)
 # library(MST)
 # library(musicassessr)
-
-# UPEI_2021_battery("test")
-
 
 
 # https://stackoverflow.com/questions/39322089/node-js-port-3000-already-in-use-but-it-actually-isnt

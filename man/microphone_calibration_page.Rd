@@ -10,7 +10,7 @@ microphone_calibration_page(
   label = NULL,
  
     body = shiny::tags$div(shiny::tags$p("Please make sure your microphone is plugged in (if using an external microphone)."),
-    shiny::tags$p("If you see a popup message that says 'Allow',  click 'Allow'"),
+    shiny::tags$p("Click on the microphone image so it turns red. If you see a popup message that says 'Allow',  click 'Allow'"),
     shiny::tags$p("Wait a few seconds. You should see a black box appear. Make a sound (e.g., hum, clap, sing).  If you see activity  (moving coloured lines) inside the box when you make a sound, then the microphone is working. Otherwise, it is not."),
     shiny::tags$p("If the mic is not working, see if you can adjust your microphone set up in order to get a response on the screen. If you cannot get the mic to work, please end the program and send a note to ",
          shiny::tags$strong("silass@stud.hmtm-hannover.de"),

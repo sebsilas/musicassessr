@@ -2,7 +2,6 @@
 
 export("%...>%")
 export("%>%")
-export(MAST21_trials)
 export(UPEI_2021_battery)
 export(arrhythmic_melody_trials)
 export(deploy_demographics)

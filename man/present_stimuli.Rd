@@ -16,7 +16,7 @@ present_stimuli(
   record_audio_method = "aws_pyin",
   answer_meta_data = NULL,
   get_answer = get_answer_null,
-  save_answer = FALSE,
+  save_answer = TRUE,
   stimuli_reactive = FALSE,
   midi_device = " ",
   show_aws_controls = FALSE,

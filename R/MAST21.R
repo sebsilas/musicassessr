@@ -132,8 +132,6 @@ UPEI_extra_questions <- function() {
       ))
 }
 
-# psychTestR::make_test(UPEI_extra_questions())
-
 
 #' UPEI Battery
 #'
@@ -234,122 +232,122 @@ UPEI_2021_battery <- function(state = "production") {
       ), dict = musicassessr::dict(NULL)),
 
 
-    # MST::MST(num_items = list(
-    #            long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
-    #          ),
-    #          examples = 2L,
-    #          final_results = FALSE,
-    #          state = NULL,
-    #          absolute_url = "https://musicog.ca",
-    #          SNR_test = TRUE,
-    #          get_range = TRUE,
-    #          gold_msi = FALSE,
-    #          demographics = FALSE,
-    #          with_final_page = FALSE,
-    #          melody_sound = "piano"),
+    MST::MST(num_items = list(
+               long_tones = 6L, arrhythmic = 12L, rhythmic = 0L
+             ),
+             examples = 2L,
+             final_results = FALSE,
+             state = NULL,
+             absolute_url = "https://musicog.ca",
+             SNR_test = TRUE,
+             get_range = TRUE,
+             gold_msi = FALSE,
+             demographics = FALSE,
+             with_final_page = FALSE,
+             melody_sound = "piano"),
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    # psychTestR::new_timeline(psychTestR::join(
-    #
-    #   psychTestR::one_button_page(shiny::tags$div(
-    #     shiny::tags$p("You will now have another test of short singing examples.
-    #                   There are 2 sets of 21 questions.
-    #                   The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test, there is only one chance with each imitation.
-    #                   You will be asked to sing the two sets of questions on two different syllables /da/ and /du/. ")
-    #   )),
-    #
-    #   musicassessr::get_voice_range_page(with_examples = FALSE),
-    #
-    #   psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #
-    #   psychTestR::code_block(function(state, ...) {
-    #     snap <- sample(1:2, 1)
-    #     psychTestR::set_global("snap", snap, state)
-    #   }),
-    #
-    #   musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd1"),
-    #
-    #   psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #
-    #   psychTestR::conditional(test = function(state, ...) {
-    #     psychTestR::get_global("snap", state) == 1
-    #   }, logic = psychTestR::join (
-    #     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
-    #
-    #     MAST21_daah,
-    #
-    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #
-    #     musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd2"),
-    #
-    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #
-    #     psychTestR::one_button_page(shiny::tags$div(
-    #       shiny::tags$p("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."))),
-    #
-    #     MAST21_dooo
-    #
-    #    )),
-    #
-    #   psychTestR::conditional(test = function(state, ...) {
-    #     psychTestR::get_global("snap", state) == 2
-    #   }, logic = psychTestR::join(
-    #     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
-    #
-    #     MAST21_dooo,
-    #
-    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #     musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd3"),
-    #
-    #     psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #
-    #     psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
-    #
-    #     MAST21_daah
-    #
-    #   )),
-    #
-    #   psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    #   musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4"),
-    #
-    #   psychTestR::elt_save_results_to_disk(complete = FALSE)
-    #
-    #   ), dict = musicassessr::dict(NULL)),
-    #
-    # # PDT::PDT(with_final_page = FALSE,
-    # #          headphones_page = FALSE,
-    # #          import_musicassessr_js_scripts = FALSE),
-    #
-    # psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    # mpt::mpt(num_items = 20L),
-    #
-    # psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    # mdt::mdt(num_items = 18L),
-    #
-    # psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    # psyquest::GMS(),
-    #
-    # psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    # psychTestR::one_button_page(shiny::tags$div(
-    #   shiny::tags$p("On the next page you will sing Happy Birthday again."))),
-    #
-    # musicassessr::sing_happy_birthday_page(feedback = FALSE),
-    #
-    # psychTestR::elt_save_results_to_disk(complete = FALSE),
-    #
-    # UPEI_extra_questions(),
+    psychTestR::new_timeline(psychTestR::join(
+
+      psychTestR::one_button_page(shiny::tags$div(
+        shiny::tags$p("You will now have another test of short singing examples.
+                      There are 2 sets of 21 questions.
+                      The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test, there is only one chance with each imitation.
+                      You will be asked to sing the two sets of questions on two different syllables /da/ and /du/. ")
+      )),
+
+      musicassessr::get_voice_range_page(with_examples = FALSE),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
+      psychTestR::code_block(function(state, ...) {
+        snap <- sample(1:2, 1)
+        psychTestR::set_global("snap", snap, state)
+      }),
+
+      musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd1"),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
+      psychTestR::conditional(test = function(state, ...) {
+        psychTestR::get_global("snap", state) == 1
+      }, logic = psychTestR::join (
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+
+        MAST21_daah,
+
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
+        musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd2"),
+
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
+        psychTestR::one_button_page(shiny::tags$div(
+          shiny::tags$p("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."))),
+
+        MAST21_dooo
+
+       )),
+
+      psychTestR::conditional(test = function(state, ...) {
+        psychTestR::get_global("snap", state) == 2
+      }, logic = psychTestR::join(
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Dooo\" sound."),
+
+        MAST21_dooo,
+
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+        musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd3"),
+
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+
+        psychTestR::one_button_page("In the following trials, you will sing back melodies. Please sing with a \"Daah\" sound."),
+
+        MAST21_daah
+
+      )),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+      musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4"),
+
+      psychTestR::elt_save_results_to_disk(complete = FALSE)
+
+      ), dict = musicassessr::dict(NULL)),
+
+    # PDT::PDT(with_final_page = FALSE,
+    #          headphones_page = FALSE,
+    #          import_musicassessr_js_scripts = FALSE),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+    mpt::mpt(num_items = 20L),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+    mdt::mdt(num_items = 18L),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+    psyquest::GMS(),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+    psychTestR::one_button_page(shiny::tags$div(
+      shiny::tags$p("On the next page you will sing Happy Birthday again."))),
+
+    musicassessr::sing_happy_birthday_page(feedback = FALSE),
+
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+    UPEI_extra_questions(),
 
     psychTestR::elt_save_results_to_disk(complete = TRUE),
 

@@ -15,7 +15,7 @@ microphone_calibration_page(
     shiny::tags$p("If the mic is not working, see if you can adjust your microphone set up in order to get a response on the screen. If you cannot get the mic to work, please end the program and send a note to ",
          shiny::tags$strong("silass@stud.hmtm-hannover.de"),
     "with the subject header “Mic not working”.  You will be contacted within the next 24 hours to troubleshoot the problem.\\n                                                                             If you wish to be contacted at a different email address,  leave that information in the body of the email.  You may also try another computer that is available to you and try again.")),
-  button_text = psychTestR::i18n("microphone_calibration_button"),
+  button_text = "I can see activity in the box.",
   save_answer = FALSE,
   deploy_crepe_stats = FALSE
 )

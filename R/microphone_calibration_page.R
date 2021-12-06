@@ -21,7 +21,7 @@ microphone_calibration_page <- function(admin_ui = NULL, on_complete = NULL, lab
                                                                              If you wish to be contacted at a different email address,  leave that information in the body of the email.  You may also try another computer that is available to you and try again.")
 
                                         ),
-                                        button_text = psychTestR::i18n("microphone_calibration_button"), save_answer = FALSE, deploy_crepe_stats = FALSE) {
+                                        button_text = "I can see activity in the box.", save_answer = FALSE, deploy_crepe_stats = FALSE) {
 
   ui <- shiny::tags$div(
     shiny::tags$style('._hidden { display: none;}'), # to hide textInputs
@@ -34,7 +34,7 @@ microphone_calibration_page <- function(admin_ui = NULL, on_complete = NULL, lab
     shiny::tags$script("var trigButton = document.getElementById('next');
               trigButton.onclick = crepeStop;"),
 
-    shiny::tags$h2(psychTestR::i18n("Microphone_Test")),
+    shiny::tags$h2("Microphone Test"),
 
     shiny::tags$img(id = "record",
         src = "musicassessr-assets/img/mic128.png",

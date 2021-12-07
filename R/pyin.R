@@ -39,9 +39,12 @@ pyin <- function(file_name, transform_file = NULL,
     args <- c(args, "--normalise")
   }
 
-  cmd <- ifelse(musicassessr_state == "production", "/opt/sonic-annotator/sonic-annotator", "/Users/sebsilas/sonic-annotator")
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
 
-  print(cmd)
+  cmd <- ifelse(musicassessr_state == "production",
+                "/opt/sonic-annotator/sonic-annotator",
+                "/Users/sebsilas/sonic-annotator")
+
 
   if(hidePrint) {
     sa_out <- system2(command = cmd,

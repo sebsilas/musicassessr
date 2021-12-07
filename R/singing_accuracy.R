@@ -16,6 +16,15 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 
 ### long tone scoring
 
+#' Get pitch metrics for long tone trials
+#'
+#' @param target_pitch
+#' @param pyin_res
+#'
+#' @return
+#' @export
+#'
+#' @examples
 long_note_pitch_metrics <- function(target_pitch, pyin_res) {
 
   ## dtw scoring

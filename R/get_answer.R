@@ -169,7 +169,7 @@ get_answer_pyin_long_note <- function(input, ...) {
                                      "dtw_distance" = NA)
 
   } else {
-    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
+    long_note_pitch_measures <- musicassessr::long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
   }
 
   c(

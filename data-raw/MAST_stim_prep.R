@@ -165,12 +165,6 @@ MAST21_dooo <- MAST21_trials(label = "MAST21_dooo", sound = "piano",
                              page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")
 
 
-
-usethis::use_data(MAST21_daah,
-                  MAST21_dooo,
-                  overwrite = TRUE)
-
-
 usethis::use_data(MAST21_daah,
                   MAST21_dooo,
                   overwrite = TRUE, internal = TRUE)

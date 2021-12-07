@@ -142,11 +142,21 @@ get_answer_pyin_long_note <- function(input, ...) {
 
   print('get_answer_pyin_long_note')
 
+  cat(file=stderr(), 'get_answer_pyin_long_note', "\n")
+  cat(file=stderr(), musicassessr_state, "\n")
+
+
   musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+
+  cat(file=stderr(), musicassessr_state, "\n")
+
 
   file_dir <- ifelse(musicassessr_state == "production",
                      '/srv/shiny-server/files/',
                      '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
+
+  cat(file=stderr(), file_dir, "\n")
+
 
   file <- paste0(file_dir, input$key, '.wav')
 
@@ -161,18 +171,6 @@ get_answer_pyin_long_note <- function(input, ...) {
   } else {
     long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res)
   }
-  print('do one..')
-  print(
-    c(
-      list(file = file,
-           stimuli = as.numeric(input$stimuli),
-           onset = pyin_res$onset,
-           freq = pyin_res$freq
-      ),
-
-      long_note_pitch_measures
-    )
-  )
 
   c(
     list(file = file,

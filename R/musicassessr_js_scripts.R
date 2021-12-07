@@ -48,6 +48,7 @@ get_musicassessr_state_js_script <- function(state = "production") {
 }
 
 musicassessr_js <- function(state = "production") {
+  musicassessr_state <<- state
   c(
   get_musicassessr_state_js_script(state),
   "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",

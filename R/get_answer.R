@@ -14,8 +14,9 @@
 get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE,
                             singing_measures = TRUE, pyin_pitch_track = NULL, ...) {
 
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
 
-  file_dir <- ifelse(musicassessr_state == "production" | !exists("musicassessr_state"),
+  file_dir <- ifelse(musicassessr_state == "production",
                      '/srv/shiny-server/files/',
                      '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
 
@@ -141,7 +142,9 @@ get_answer_pyin_long_note <- function(input, ...) {
 
   print('get_answer_pyin_long_note')
 
-  file_dir <- ifelse(musicassessr_state == "production" | !exists("musicassessr_state"),
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+
+  file_dir <- ifelse(musicassessr_state == "production",
                      '/srv/shiny-server/files/',
                      '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
 
@@ -215,7 +218,10 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 
 get_answer_simple_pyin_summary <- function(input, ...) {
   print('get_answer_simple_pyin_summary')
-  file_dir <- ifelse(musicassessr_state == "production" | !exists("musicassessr_state"),
+
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+
+  file_dir <- ifelse(musicassessr_state == "production",
                      '/srv/shiny-server/files/',
                      '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
 

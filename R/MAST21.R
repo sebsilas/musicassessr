@@ -5,7 +5,6 @@ MAST21 <- function(state = "production",
   psychTestR::new_timeline(psychTestR::join(
 
     psychTestR::one_button_page(shiny::tags$div(
-      if(set_musicassessr_state) set_musicassessr_state(state),
       shiny::tags$p("You will now have another test of short singing examples.
                       There are 2 sets of 21 questions.
                       The first 20 are very short. Like the previous test, you will hear a melody and be asked to imitate. Unlike the previous test, there is only one chance with each imitation.
@@ -73,10 +72,7 @@ MAST21 <- function(state = "production",
 
     psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4"),
-
-    psychTestR::elt_save_results_to_disk(complete = FALSE)
-
+    musicassessr::sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd4")
   ), dict = musicassessr::dict(NULL))
 }
 
@@ -267,9 +263,8 @@ setup_questions <- function() {
 
                      psychTestR::text_input_page(
                        label = "headphone_make_model",
-                       prompt = "If you know the exact name, and model number of your headphones please provide the information."),
+                       prompt = "If you know the exact name, and model number of your headphones please provide the information.")
 
-                     psychTestR::elt_save_results_to_disk(complete = FALSE)
   ) # end setup_questions module
 }
 
@@ -297,10 +292,12 @@ return_questions <- function(append = NULL) {
 
 upei_intro <- function(state, append = NULL) {
 
+  print('upei_intro')
+  print(state)
+
   t <- psychTestR::join(
 
     psychTestR::one_button_page(shiny::tags$div(
-      musicassessr::set_musicassessr_state(state = state),
       shiny::tags$h1("UPEI 2021 Testing"),
       shiny::tags$p("This is a protocol for the UPEI 2021 singing study.")
     )),
@@ -315,14 +312,15 @@ upei_intro <- function(state, append = NULL) {
 
     get_upei_id(),
 
-    return_questions(append),
+    psychTestR::elt_save_results_to_disk(complete = FALSE),
 
-    psychTestR::elt_save_results_to_disk(complete = FALSE)
+    return_questions(append)
 
   )
 
+
   if(is.null(append)) {
-    psychTestR::make_test(t, opt = upei_test_options())
+    t
   } else {
     psychTestR::make_test(
       psychTestR::join(
@@ -330,7 +328,7 @@ upei_intro <- function(state, append = NULL) {
         append,
         psychTestR::elt_save_results_to_disk(complete = TRUE),
         psychTestR::final_page("You have finished this section.")
-      ), opt = upei_test_options())
+      ), opt = upei_test_options(state))
   }
 }
 
@@ -410,13 +408,13 @@ UPEI_2021_battery <- function(state = "production") {
                                                   shiny::tags$p("Thank you for all your help!  Your contribution to this research is very much appreciated.")))
 
   ),
-  opt = upei_test_options()
+  opt = upei_test_options(state)
   )
 
 }
 
 
-upei_test_options <- function() {
+upei_test_options <- function(state) {
   psychTestR::test_options(title = "UPEI",
                            admin_password = "@irs@irs2021#",
                            enable_admin_panel = FALSE,
@@ -425,7 +423,7 @@ upei_test_options <- function() {
                              right_margin = 1L,
                              css = system.file('www/css/style.css', package = "musicassessr")
                            ),
-                           additional_scripts = musicassessr_js(),
+                           additional_scripts = musicassessr_js(state),
                            languages = c("en"))
 }
 
@@ -445,7 +443,7 @@ MST_only <- function(state = "production") {
     ),
     examples = 2L,
     final_results = FALSE,
-    state = state,
+    state = NULL,
     absolute_url = "https://musicog.ca",
     SNR_test = TRUE,
     get_range = TRUE,
@@ -586,5 +584,6 @@ end_only <- function(state = "production") {
 
 
 # https://stackoverflow.com/questions/39322089/node-js-port-3000-already-in-use-but-it-actually-isnt
+
 
 

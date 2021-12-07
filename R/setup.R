@@ -8,15 +8,14 @@
 #' @examples
 set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
   print('set_musicassessr_state')
-  print(state)
   res <- shiny::tags$script()
 
   if(!is.null(state)) {
 
     if(state == "test") {
 
-      system2(command = "npx",
-              args = "kill-port 3000")
+      # system2(command = "npx",
+      #         args = "kill-port 3000")
 
       system2(command = "node",
               args = "/Users/sebsilas/aws-musicassessr-local-file-upload/app.js",

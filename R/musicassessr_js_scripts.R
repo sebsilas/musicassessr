@@ -29,8 +29,27 @@ musicassessr_js_scripts <- function(musicassessr_state = NULL) {
     )
 }
 
-musicassessr_js <- function() {
+get_musicassessr_state_js_script <- function(state = "production") {
+
+  musicassessr_state <<- state
+
+  if(state == "production") {
+    system.file("www/js/musicassessr_production.js", package = "musicassessr")
+  } else {
+    system2(command = "npx",
+            args = "kill-port 3000")
+
+    system2(command = "node",
+            args = "/Users/sebsilas/aws-musicassessr-local-file-upload/app.js",
+            wait = FALSE)
+    system.file("www/js/musicassessr_test.js", package = "musicassessr")
+  }
+
+}
+
+musicassessr_js <- function(state = "production") {
   c(
+  get_musicassessr_state_js_script(state),
   "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
   "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js",
   "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js",

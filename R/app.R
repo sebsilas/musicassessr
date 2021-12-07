@@ -203,7 +203,6 @@ mc <- function() {
 
 
 }
-#testApp2()
 
 
-
+#UPEI_2021_battery("test")

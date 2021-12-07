@@ -923,14 +923,11 @@ function stopRecording() {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-  if(typeof musicassessr_state === 'undefined') { // if it's undefined, assume in production
-    var musicassessr_state = "production";
-  }
-
 	//create the wav blob and pass it on to createDownloadLink
-	if(musicassessr_state === "production") {
+	if(this.musicassessr_state === "production") {
 	  rec.exportWAV(upload_file_to_s3);
   } else {
+    console.log('upload local...');
     rec.exportWAV(upload_file_to_s3_local);
   }
 }
@@ -943,6 +940,8 @@ function create_recordkey() {
 }
 
 function upload_file_to_s3(blob) {
+
+  console.log('upload_file_to_s3');
 
   var recordkey = create_recordkey();
 
@@ -973,6 +972,8 @@ function upload_file_to_s3(blob) {
 
 
 function upload_file_to_s3_local(blob) {
+
+  console.log('upload_file_to_s3_local');
 
   var recordkey = create_recordkey();
 

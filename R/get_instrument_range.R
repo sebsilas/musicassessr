@@ -185,10 +185,9 @@ midi_or_audio <- function(type, prompt_text, var_name) {
                                     get_answer = get_answer_average_frequency_ff("round"),
                                     show_record_button = TRUE,
                                     show_aws_controls = FALSE,
-                                    method = "crepe",
+                                    auto_next_page = TRUE,
                                     button_text = psychTestR::i18n("Record"),
-                                    stop_button_text = psychTestR::i18n("Stop")
-    )
+                                    stop_button_text = psychTestR::i18n("Stop"))
 
   }
   else {

@@ -113,10 +113,22 @@ play_interval_page <- function(interval = NULL,
 }
 
 
-multi_interval_page <- function(n_items = 26, page_title = "What is the interval?") {
-  lapply(1:n_items, function(trial_no) {
-    play_interval_page(trial_no = trial_no, page_title = page_title)
-  })
+#' Deploy a block of n trials which play back intervals
+#'
+#' @param n_items
+#' @param page_title
+#'
+#' @return
+#' @export
+#'
+#' @examples
+multi_interval_page <- function(n_items = 26,
+                                page_title = "What is the interval?") {
+  psychTestR::module(label = "interval_perception",
+    lapply(1:n_items, function(trial_no) {
+      play_interval_page(trial_no = trial_no, page_title = page_title)
+    })
+  )
 }
 
 

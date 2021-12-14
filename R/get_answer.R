@@ -276,6 +276,17 @@ get_answer_midi <- function(input, state, ...) {
 }
 
 
+get_audio_file <- function(input, ...) {
+
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+
+  file_dir <- ifelse(musicassessr_state == "production",
+                     '/srv/shiny-server/files/',
+                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
+
+  file <- paste0(file_dir, input$key, '.wav')
+}
+
 get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
   # function factory
@@ -284,36 +295,41 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
   if (floor_or_ceiling == "floor") {
 
     function(input, ...) {
-      if(is.null(input$user_response_frequencies)) {
+      file <- get_audio_file(input)
+      pyin_pitch_track <- pyin(file, type = "pitch_track")
+      if(is.null(pyin_pitch_track$freq)) {
         list(user_response = NA)
       } else {
-        freqs <- rjson::fromJSON(input$user_response_frequencies)
-        notes <- tidy_freqs(freqs)
-        list(user_response = floor(mean(notes)))
+        freqs <- pyin_pitch_track$freq
+        list(user_response = floor(mean(hrep::freq_to_midi(freqs))))
       }
     }
 
   } else if (floor_or_ceiling == "ceiling") {
 
     function(input, ...) {
-      if(is.null(input$user_response_frequencies)) {
+      file <- get_audio_file(input)
+      pyin_pitch_track <- pyin(file, type = "pitch_track")
+      if(is.null(pyin_pitch_track$freq)) {
         list(user_response = NA)
       } else {
-        freqs <- rjson::fromJSON(input$user_response_frequencies)
-        notes <- tidy_freqs(freqs)
-        list(user_response = ceiling(mean(notes)))
+        file <- get_audio_file(input)
+        pyin_pitch_track <- pyin(file, type = "pitch_track")
+        freqs <- pyin_pitch_track$freq
+        list(user_response = ceiling(mean(hrep::freq_to_midi(freqs))))
       }
     }
 
   } else {
 
     function(input, ...) {
-      if(is.null(input$user_response_frequencies)) {
+      file <- get_audio_file(input)
+      pyin_pitch_track <- pyin(file, type = "pitch_track")
+      if(is.null(pyin_pitch_track$freq)) {
         list(user_response = NA)
       } else {
-        freqs <- rjson::fromJSON(input$user_response_frequencies)
-        notes <- tidy_freqs(freqs)
-        list(user_response = round(mean(notes)))
+        freqs <- pyin_pitch_track$freq
+        list(user_response = round(mean(hrep::freq_to_midi(freqs))))
       }
     }
   }

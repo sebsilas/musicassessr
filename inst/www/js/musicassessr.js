@@ -10,11 +10,17 @@ preloadImage("https://adaptiveeartraining.com/magmaGold/img/record.gif");
 // constants
 // a little delay after playback finishes before hitting record
 var record_delay = 400;
+
+// vars
 var playback_count = 0; // number of times user presses play in a trial
 var confidences = [];
 var user_response_frequencies = [];
 var timecodes = [];
 var rmses = [];
+var user_response_midi_note_on = [];
+var user_response_midi_note_off = [];
+var onsets_noteon = [];
+var onsets_noteoff = [];
 
 // functions
 
@@ -160,7 +166,7 @@ function triggerNote(sound, freq_tone, seconds, time) {
 
 }
 
-function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "aws_pyin", stop_button_text = "Stop", showStop = false, record_immediately = true) {
+function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "record_audio_page", stop_button_text = "Stop", showStop = false, record_immediately = true) {
 
   if(hidePlay) {
     hidePlayButton();
@@ -246,7 +252,7 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
         triggerNote(sound, note, 0.50);
         count = count + 1;
         if (count === last_note) {
-          if(page_type == "aws_pyin" | page_type == "crepe" | page_type == "record_midi_page" | page_type == "record_audio_page") {
+          if(page_type === "record_audio_page" | page_type === "record_midi_page") {
             setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50); // delay to avoid catching stimuli in recording
           }
           pattern.stop();
@@ -594,7 +600,10 @@ function hideAudioFilePlayer() {
 }
 
 
-function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", stop_button_text = "Stop") {
+function recordAndStop (ms, showStop, hidePlay, id = null, type = "record_audio_page", stop_button_text = "Stop") {
+
+  console.log('recordAndStop');
+  console.log(type);
 
   if(hidePlay) {
     hidePlayButton();
@@ -604,13 +613,9 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", st
       // start recording but then stop after x milliseconds
       window.startTime = new Date().getTime();
 
-      if (type === "aws_pyin") {
+      if (type === "record_audio_page") {
         // aws record
         startRecording(updateUI = false);
-      } else if(type === "crepe") {
-        // crepe record
-        initAudio();
-        crepeResume();
       } else if(type === "record_midi_page") {
         instantiateMIDI(midi_device);
       }  else {
@@ -624,15 +629,15 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "aws_pyin", st
         recordUpdateUI(showStop, hidePlay, type);
      } else {
         recordUpdateUI(showStop, hidePlay, type, stop_button_text);
-        setTimeout(() => {  stopRecording();
+        setTimeout(() => { stopRecording();
         hideRecordImage(); }, ms);
      }
 
 }
 
-function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text = "Stop") {
+function recordUpdateUI(showStop, hidePlay, type = "record_audio_page", stop_button_text = "Stop") {
 
-    if(['aws_pyin', 'crepe', 'record_audio_page', 'record_midi_page'].includes(type)) {
+    if(['record_audio_page', 'record_midi_page'].includes(type)) {
       // update the recording UI
       showRecordingIcon();
 
@@ -644,19 +649,6 @@ function recordUpdateUI(showStop, hidePlay, type = "aws_pyin", stop_button_text 
 }
 
 
-function createCrepeStopButton (stop_button_text) {
-  var stopButton = document.createElement("button");
-  stopButton.style.display = "block";
-  stopButton.style.textAlign = "center";
-  stopButton.classList.add("btn", "btn-default", "action-button");
-  stopButton.innerText = stop_button_text;
-  stopButton.addEventListener("click", function () {
-        crepeStop();
-        next_page();
-      });
-  var button_area = document.getElementById("button_area");
-  button_area.appendChild(stopButton);
-}
 
 function hideLoading() {
   var loading = document.getElementById("loading");
@@ -675,7 +667,7 @@ function createCorrectStopButton(type) {
     if(show_happy_with_response) {
       show_happy_with_response_message();
     }
-    if(type === "aws_pyin") {
+    if(type === "record_audio_page") {
       stopRecording();
     } else if(type === "record_midi_page") {
       WebMidi.disable();
@@ -686,21 +678,17 @@ function createCorrectStopButton(type) {
   };
 }
 
-function showStopButton(type = 'aws_pyin', stop_button_text = "Stop") {
+function showStopButton(type = 'record_audio_page', stop_button_text = "Stop") {
 
-        if(type === "crepe") {
-          createCrepeStopButton(stop_button_text);
-        } else {
-          if(type === "aws_pyin") {
-            startRecording(updateUI = false);
-            hideLoading();
-          }
-          var stopButton = document.getElementById("stopButton");
+  if(type === "record_audio_page") {
+    startRecording(updateUI = false);
+    hideLoading();
+  }
+  var stopButton = document.getElementById("stopButton");
 
-          if(stopButton !== undefined) {
-            createCorrectStopButton(type);
-          }
-        }
+  if(stopButton !== undefined) {
+    createCorrectStopButton(type);
+  }
 
 }
 
@@ -907,8 +895,6 @@ function hideButtonAreaShowUserRating() {
 	button_area.style.display = "none";
 	stop_button = document.getElementById("stopButton");
 	stop_button.style.display = "none";
-	user_rating = document.getElementById("user_rating");
-	user_rating.style.display = "block";
 }
 
 function stopRecording() {
@@ -961,12 +947,12 @@ function upload_file_to_s3(blob) {
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
-		spinner=document.getElementsByClassName("hollow-dots-spinner");
+		spinner = document.getElementsByClassName("hollow-dots-spinner");
 		spinner[0].style.display="none";
 		file_is_ready = true;
 		if(auto_next_page) {
 			next_page();
-			}
+		}
 	};
 }
 

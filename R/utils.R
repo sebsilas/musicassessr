@@ -61,8 +61,7 @@ present_record_button <- function(present = FALSE, type = "aws_pyin", midi_devic
                                   record_duration = NULL, show_stop_button_after_record = FALSE,
                                   stop_button_text = "Stop") {
 
-  if (present & type == "crepe" |
-      present & type == "aws_pyin"  & is.null(record_duration)) {
+  if (present & type == "record_audio_page" & is.null(record_duration)) {
 
     shiny::tags$div(id = "button_area",
         shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
@@ -83,8 +82,7 @@ present_record_button <- function(present = FALSE, type = "aws_pyin", midi_devic
     )
   }
 
-  else if (present & type == "crepe" |
-           present & type == "aws_pyin" & !is.null(record_duration)) {
+  else if (present & type == "record_audio_page" & !is.null(record_duration)) {
 
     record_duration <- record_duration*1000
     shiny::tags$div(id = "button_area",

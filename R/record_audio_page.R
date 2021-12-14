@@ -1,3 +1,4 @@
+
 #' Record Audio Page
 #'
 #' @param body
@@ -7,32 +8,31 @@
 #' @param page_text
 #' @param page_title
 #' @param interactive
-#' @param note_no
 #' @param show_record_button
 #' @param get_answer
-#' @param transpose
 #' @param answer_meta_data
-#' @param method
 #' @param show_aws_controls
-#' @param crepe_stats
 #' @param button_text
 #' @param stop_button_text
+#' @param record_duration
+#' @param on_complete
+#' @param auto_next_page
+#' @param save_answer
+#' @param page_text_first
+#' @param happy_with_response
+#' @param attempts_left
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-record_audio_page <- function(body = " ", label = "record_audio_page", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ", interactive = FALSE,
-                              note_no = "max", show_record_button = TRUE, get_answer = get_answer_store_async, transpose = 0, answer_meta_data = 0,
-                              method = c("aws_pyin", "crepe"), show_aws_controls = FALSE, crepe_stats = FALSE,
-                              button_text = "Record", stop_button_text = "Stop", record_duration = NULL, on_complete = NULL,
-                              auto_next_page = FALSE, save_answer = TRUE, user_rating = FALSE, page_text_first = TRUE,
+record_audio_page <- function(body = " ", label = "record_audio_page", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ",
+                              interactive = FALSE, show_record_button = TRUE, get_answer = get_answer_store_async, answer_meta_data = " ",
+                              show_aws_controls = FALSE, button_text = "Record", stop_button_text = "Stop", record_duration = NULL, on_complete = NULL,
+                              auto_next_page = FALSE, save_answer = TRUE, page_text_first = TRUE,
                               happy_with_response =  FALSE, attempts_left = NULL, ...) {
 
-  if(length(method) > 1) {
-    method <- method[1]
-  }
 
   psychTestR::page(ui = shiny::tags$div(
 
@@ -42,16 +42,9 @@ record_audio_page <- function(body = " ", label = "record_audio_page", stimuli =
 
       shiny::tags$script(set_answer_meta_data(answer_meta_data))
 
-        #htmltools::HTML('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">')
-        #shiny::includeCSS(system.file("inst/static-website-s3/spinner/style.css", package = "musicassessr"))
-
     ),
     shiny::tags$body(
-      shiny::tags$script('var confidences = [];
-                    var user_response_frequencies = [];
-                    var timecodes = [];
-                    var answer_meta_data;
-                    '),
+
       shiny::tags$h2(page_title),
       if(page_text_first) shiny::tags$p(page_text),
 
@@ -60,20 +53,14 @@ record_audio_page <- function(body = " ", label = "record_audio_page", stimuli =
                        stimuli_reactive = stimuli_reactive,
                        prepared_stimuli = abs_mel),
 
-      present_record_button(present = show_record_button, type = method,
+      present_record_button(present = show_record_button, type = "record_audio_page",
                             button_text = button_text, record_duration = record_duration,
                             stop_button_text = stop_button_text),
 
       loading(),
 
-      user_rating(user_rating),
-
       happy_with_response_message(happy_with_response, attempts_left),
-
-      shiny::tags$div(id ="container",
-                      deploy_aws_pyin(method = method, show_aws_controls = show_aws_controls, stop_button_text),
-                      deploy_crepe(method),
-      ),
+      deploy_aws_pyin(show_aws_controls = show_aws_controls, stop_button_text),
 
       if(!page_text_first) shiny::tags$p(page_text)
     )
@@ -120,26 +107,21 @@ deploy_crepe <- function(method, crepe_stats = FALSE) {
   }
 }
 
-deploy_aws_pyin <- function(method, crepe_stats = FALSE, show_aws_controls = TRUE, stop_button_text = "Stop") {
+deploy_aws_pyin <- function(show_aws_controls = TRUE, stop_button_text = "Stop") {
 
-  if (method == "aws_pyin") {
-    # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
-    shiny::tags$div(htmltools::HTML(paste0('
-    <div id="spinnerContainer" class="spinner"></div>
+  # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
+  shiny::tags$div(htmltools::HTML(paste0('
+  <div id="spinnerContainer" class="spinner"></div>
 
-    <div id="controls">
+  <div id="controls">
 
-  	 <button id="recordButton" class="btn btn-default action-button">Record</button>
-  	 <button id="pauseButton" class="btn btn-default action-button" disabled style="display: none;">Pause</button>
-    </div>
-    <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
-  	<p style="display: none;"><strong>Recordings:</strong></p>
-  	<ol id="recordingsList" style="display: none;"></ol>
-        <div id="csv_file" style="display: none;"></div>')), show_aws_buttons(show_aws_controls))
-  }
-  else {
-    shiny::tags$div()
-  }
+   <button id="recordButton" class="btn btn-default action-button">Record</button>
+   <button id="pauseButton" class="btn btn-default action-button" disabled style="display: none;">Pause</button>
+  </div>
+  <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
+  <p style="display: none;"><strong>Recordings:</strong></p>
+  <ol id="recordingsList" style="display: none;"></ol>
+      <div id="csv_file" style="display: none;"></div>')), show_aws_buttons(show_aws_controls))
 }
 
 
@@ -154,25 +136,6 @@ show_aws_buttons <- function(show_aws_controls) {
     aws_controls <- shiny::tags$script('')
   }
   aws_controls
-}
-
-
-user_rating <- function(user_rating) {
-  if(user_rating) {
-    shiny::HTML('<div id="user_rating" style="display:none;">
-  <p>How do you feel you performed that melody?</p>
-  <div id="response_ui" style="visibility: inherit">
-    <button id="Very Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Very Bad</button>
-    <button id="Bad" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Bad</button>
-    <button id="Okay" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Okay</button>
-    <button id="Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Good</button>
-    <button id="Very Good" type="button" class="btn btn-default action-button" onclick="show_happy_with_response();" style="">Very Good</button>
-  </div>
-  </div>
-  <script> myMain();</script>')
-  } else {
-    shiny::HTML('<div id="user_rating" style="display:none;"></div>')
-  }
 }
 
 

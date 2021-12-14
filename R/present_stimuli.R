@@ -1,5 +1,6 @@
 
 
+
 #' Present Stimuli
 #'
 #' @param stimuli
@@ -13,6 +14,7 @@
 #' @param record_audio_method
 #' @param answer_meta_data
 #' @param get_answer
+#' @param save_answer
 #' @param stimuli_reactive
 #' @param midi_device
 #' @param show_aws_controls
@@ -21,6 +23,23 @@
 #' @param play_button_text
 #' @param note_length
 #' @param sound
+#' @param asChord
+#' @param ascending
+#' @param start_note
+#' @param end_note
+#' @param durations
+#' @param show_record_button
+#' @param auto_next_page
+#' @param choices
+#' @param user_rating
+#' @param page_text_first
+#' @param happy_with_response
+#' @param attempts_left
+#' @param visual_music_notation_id
+#' @param play_button_id
+#' @param button_area_id
+#' @param hideOnPlay
+#' @param record_immediately
 #' @param ...
 #'
 #' @return
@@ -41,6 +60,22 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             attempts_left = NULL, visual_music_notation_id = "sheet_music",
                             play_button_id = "playButton", button_area_id = "button_area",
                             hideOnPlay = FALSE, record_immediately = FALSE, ...) {
+
+  # stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
+  #           is.character(page_text), is.character(page_title),  is.numeric(slide_length),
+  #           is.character(special_page_underlying_page_type), is.character(record_audio_method),
+  #           answer_meta_data = NULL, get_answer = get_answer_null, is.logical(save_answer),
+  #           is.logical(stimuli_reactive), is.character(midi_device),
+  #           is.logical(show_aws_controls), is.character(page_label),
+  #           is.character(button_text), is.character(play_button_text),
+  #           is.numeric(note_length), is.character(sound), is.logical(asChord), is.logical(ascending),
+  #           is.integer(start_note), is.integer(end_note) | is.character(end_note),
+  #           is.vector(durations) & is.numeric(durations), is.logical(show_record_button),
+  #           is.logical(auto_next_page), is.character(choices) & is.vector(choices), is.logical(user_rating),
+  #           is.logical(page_text_first), is.logical(happy_with_response),
+  #           is.integer(attempts_left), is.character(visual_music_notation_id),
+  #           is.character(play_button_id), is.character(button_area_id),
+  #           is.logical(hideOnPlay), is.logical(record_immediately))
 
   if(is.null(page_type)) {
     page_type <- 'null'

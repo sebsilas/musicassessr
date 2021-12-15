@@ -8,15 +8,8 @@ present_stimuli_video <- function(video_url, ...) {
 
 
 present_stimuli_audio <- function(audio_url, hideOnPlay = FALSE, page_type = 'null',
-                                  record_audio_method = 'aws_pyin', stop_button_text = "Stop",
-                                  answer_meta_data = 0, ...) {
-
-  print('present_stimuli_audio!')
-  print(audio_url)
-
-  if(page_type == "record_audio_page") {
-    page_type <- record_audio_method
-  }
+                                  stop_button_text = "Stop",
+                                  answer_meta_data = data.frame(), ...) {
 
 
   shiny::tags$div(
@@ -39,7 +32,7 @@ present_stimuli_audio <- function(audio_url, hideOnPlay = FALSE, page_type = 'nu
             player.addEventListener("play", function () {
             hideAudioFilePlayer();
             var audio_duration = player.duration * 1000; // to ms
-            setTimeout(function(){  recordAndStop(ms = null, showStop = true, hidePlay = false, id = null, type = \"', record_audio_method, '\", stop_button_text = \"', stop_button_text, '\") }, audio_duration);
+            setTimeout(function(){  recordAndStop(ms = null, showStop = true, hidePlay = false, id = null, type = \"record_audio_page\", stop_button_text = \"', stop_button_text, '\") }, audio_duration);
         }); }'))
     }
   )

@@ -1,6 +1,10 @@
 
 
 plot_dtw_melody <- function(stimuli, stimuli_durations, pyin_smoothed_pitchtrack) {
+  print('plot_dtw_melody')
+  print(stimuli)
+  print(stimuli_durations)
+  print(pyin_smoothed_pitchtrack)
 
   stimuli <- tibble::tibble(freq = c(hrep::midi_to_freq(stimuli), NA), dur = c(stimuli_durations, NA), onset = c(0, cumsum(stimuli_durations)))
 
@@ -25,6 +29,9 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
 
 
 prepare_mel_stimuli_for_dtw <- function(melody, durations) {
+  print('prepare_mel_stimuli_for_dtw')
+  print(melody)
+  print(durations)
 
   if(is.na(durations)) {
     durations <- 5

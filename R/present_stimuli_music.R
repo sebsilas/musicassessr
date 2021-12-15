@@ -6,16 +6,11 @@
 present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, sound = "piano",
                                                 page_type = 'null', play_button_text = "Play",
                                                 stop_button_text = "Stop",
-                                                record_audio_method = "aws_pyin",
-                                                asChord = FALSE, durations = NULL, auto_next_page = FALSE,
+                                                asChord = FALSE, durations = numeric(), auto_next_page = FALSE,
                                                 play_button_id = "playButton", button_area_id = "button_area",
                                                 record_immediately = FALSE, ...) {
 
-  if(page_type == "record_audio_page") {
-    page_type <- record_audio_method
-  }
-
-  if(is.null(durations)) {
+  if(length(durations) == 0) {
     durations <- rjson::toJSON(rep(note_length, length(stimuli)))
   } else {
     durations <- rjson::toJSON(durations)
@@ -43,9 +38,9 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                        var stimuli_durations = ', durations, ';
                        Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
                        ')),
-    shiny::tags$div(id=button_area_id,
-                    shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default")
-    ))
+    shiny::tags$div(id = button_area_id,
+                    shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default")),
+    shiny::tags$br())
 
 }
 
@@ -104,14 +99,14 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length, sound = "piano
 }
 
 present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
-                                       record_audio_method = "aws_pyin",  durations = NULL, auto_next_page = FALSE,
+                                       durations = NULL, auto_next_page = FALSE,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                        button_area_id = "button_area", record_immediately = FALSE, ...) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
-                                                          record_audio_method =  record_audio_method, durations = durations,
+                                                          durations = durations,
                                                           auto_next_page = auto_next_page, play_button_id = play_button_id,
                                                           button_area_id = button_area_id, record_immediately = record_immediately, ...)
 
@@ -126,9 +121,7 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
   else {
     return_stimuli <- present_stimuli_midi_notes_both(stimuli = stimuli, note_length = note_length, sound = sound,
                                                       asChord = asChord, ascending = ascending,
-                                                      play_button_text = play_button_text,
-                                                      record_audio_method = record_audio_method,
-                                                      visual_music_notation_id = visual_music_notation_id,
+                                                      play_button_text = play_button_text, visual_music_notation_id = visual_music_notation_id,
                                                       play_button_id = play_button_id, button_area_id = button_area_id, ...)
   }
 

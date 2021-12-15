@@ -56,7 +56,7 @@ audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_fre
                                                              lowest_allowed_freq = lowest.allowed.freq,
                                                              min_confidence = min.confidence)
 
-present_record_button <- function(present = FALSE, type = "aws_pyin", midi_device = NULL,
+present_record_button <- function(present = FALSE, type = "record_audio_page", midi_device = " ",
                                   interactive = FALSE, button_text = "Record",
                                   record_duration = NULL, show_stop_button_after_record = FALSE,
                                   stop_button_text = "Stop") {

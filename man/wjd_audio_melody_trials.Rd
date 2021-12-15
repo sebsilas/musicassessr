@@ -9,6 +9,7 @@ wjd_audio_melody_trials(
   num_items,
   num_examples = FALSE,
   feedback = FALSE,
+  item_length = c(3, 15),
   get_answer = musicassessr::get_answer_pyin,
   sound = "piano",
  

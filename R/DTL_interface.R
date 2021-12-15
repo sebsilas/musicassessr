@@ -129,8 +129,6 @@ DTL_similarity_search_results_fast <- function(search_patterns = "1,2,1,2,1,2,1,
                                                max_edit_distance = NA,
                                                max_length_difference = 0) {
 
-  print('DTL_similarity_search_results_fast')
-
   if(is.na(max_edit_distance)){
     max_edit_distance <- purrr::map_int(pattern_to_vec(search_patterns, keep_list = TRUE), length) %>% min()
   }
@@ -167,7 +165,7 @@ DTL_similarity_search_results_fast <- function(search_patterns = "1,2,1,2,1,2,1,
 
 get_wjd_mp3_url <- function(res) {
 
-  mp3_url <- paste0('http://staging-dtl-pattern-api.hfm-weimar.de/static/audio/n_grams/',
+  mp3_url <- paste0('https://staging-dtl-pattern-api.hfm-weimar.de/static/audio/n_grams/',
                     res$database_name,'/',
                     res$melid, '/',
                     res$melid, '_',

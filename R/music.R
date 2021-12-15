@@ -96,7 +96,6 @@ get_mean_of_notes <- function(notes, type, octave = NULL) {
   }
 }
 
-
 # range functions
 
 produce_stimuli_in_range <- function(rel_melody, bottom_range = 21, top_range = 108) {

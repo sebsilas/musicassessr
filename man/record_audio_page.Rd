@@ -14,7 +14,7 @@ record_audio_page(
   interactive = FALSE,
   show_record_button = TRUE,
   get_answer = get_answer_store_async,
-  answer_meta_data = " ",
+  answer_meta_data = data.frame(),
   show_aws_controls = FALSE,
   button_text = "Record",
   stop_button_text = "Stop",
@@ -24,7 +24,7 @@ record_audio_page(
   save_answer = TRUE,
   page_text_first = TRUE,
   happy_with_response = FALSE,
-  attempts_left = NULL,
+  attempts_left = integer(),
   ...
 )
 }

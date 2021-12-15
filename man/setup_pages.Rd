@@ -14,11 +14,12 @@ setup_pages(
   demo = FALSE,
   get_instrument_range = FALSE,
   absolute_url,
-  select_instrument = FALSE
+  select_instrument = FALSE,
+  get_instrument_range_musical_notation = FALSE
 )
 }
 \arguments{
-\item{select_instrument}{}
+\item{get_instrument_range_musical_notation}{}
 }
 \value{
 

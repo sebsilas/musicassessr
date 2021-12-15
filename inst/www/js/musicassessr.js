@@ -562,8 +562,6 @@ function playMidiFileAndRecordAfter(url, toneJS, start_note, end_note, hidePlay,
 function show_happy_with_response_message() {
   happy_with_response = document.getElementById("happy_with_response");
   happy_with_response.style.display = "block";
-  user_rating = document.getElementById("user_rating");
-  user_rating.style.display = "none";
   if (!file_is_ready){
   	spinner = document.getElementsByClassName("hollow-dots-spinner");
   	if(typeof spinner[0] !== "undefined") {
@@ -577,20 +575,15 @@ function hide_happy_with_response_message() {
   happy_with_response.style.display = "none";
 }
 
-function myMain() {
-  // NB: Give better name
-  document.getElementById("response_ui").onclick = buton;
-}
-function buton(e) {
-  if (e.target.tagName == 'BUTTON') {
-        Shiny.onInputChange("user_rating", e.target.id);
-  }
-}
 
 function hidePlayButton(play_button_id = "playButton") {
   // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var x = document.getElementById(play_button_id);
-  x.style.display = "none";
+  console.log('what is x?');
+  console.log(x);
+  if (x !== null) {
+    x.style.display = "none";
+  }
 
 }
 
@@ -601,9 +594,6 @@ function hideAudioFilePlayer() {
 
 
 function recordAndStop (ms, showStop, hidePlay, id = null, type = "record_audio_page", stop_button_text = "Stop") {
-
-  console.log('recordAndStop');
-  console.log(type);
 
   if(hidePlay) {
     hidePlayButton();

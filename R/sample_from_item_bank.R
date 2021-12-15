@@ -8,7 +8,6 @@
 #' @examples
 item_sampler <- function(item_bank, no_items) {
 
-
   item_bank <- item_bank %>% dplyr::arrange(N)
 
   # what values are there?

@@ -30,8 +30,6 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
                                      item_characteristics_pars = NULL,
                                      rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred) {
 
-
-
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
@@ -147,6 +145,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
+
   if(!is.function(feedback)) {
     if(feedback) {
       feedback <- feedback_melodic_production
@@ -168,7 +167,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
               shiny::tags$p(paste0("First try ", num_examples, " example trials."))
               )),
             if(is.null(item_characteristics_sampler_function)) {
-              sample_rhythmic(item_bank, num_items)
+              sample_rhythmic(item_bank, num_examples)
             } else {
               sample_item_characteristics(var_name = "rhythmic_melody",
                                           item_characteristics_sampler_function,
@@ -356,13 +355,13 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
 
 
 
-
 #' A trial block which plays back real audio from the Weimar Jazz Database
 #'
 #' @param item_bank
 #' @param num_items
 #' @param num_examples
 #' @param feedback
+#' @param item_length
 #' @param get_answer
 #' @param sound
 #' @param page_text
@@ -374,10 +373,11 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
 #'
 #' @examples
 wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = FALSE, feedback = FALSE,
-                                     get_answer = musicassessr::get_answer_pyin, sound = "piano",
+                                    item_length = c(3,15), get_answer = musicassessr::get_answer_pyin, sound = "piano",
                                     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                     page_title = "Play the Melody And Rhythm from Audio",
                                     instruction_text = "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can.") {
+
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -389,76 +389,92 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = FALSE, 
     }
   }
 
-  psychTestR::module("wjd_audio_melodies",
-                     c(
-                       # instructions
-                       psychTestR::one_button_page(shiny::tags$div(
-                         shiny::tags$h2(page_title),
-                         shiny::tags$p(instruction_text)
-                       )),
-                       # examples
-                       if(is.numeric(num_examples) & num_examples > 0L) {
+  intro <- c(
+   # instructions
+   psychTestR::one_button_page(shiny::tags$div(
+     shiny::tags$h2(page_title),
+     shiny::tags$p(instruction_text)
+   )))
 
-                         examples <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = c(3,15)), num_examples)
-                         trials <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = c(3,15)), num_items)
+   # examples
+   if(is.numeric(num_examples) & num_examples > 0L) {
 
-                         ## sample
-                         c(
-                           psychTestR::one_button_page(shiny::tags$div(
-                             shiny::tags$h2(page_title),
-                             shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+     examples <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = item_length), num_examples)
 
-                           # trials
-                           musicassessr::multi_page_play_melody_loop(
-                             presampled_items = examples,
-                             var_name = "wjd_audio_melody",
-                             page_type = "record_audio_page",
-                             stimuli_type = "audio_WJD",
-                             page_title = page_title,
-                             page_text = page_text,
-                             get_answer = get_answer,
-                             rel_to_abs_mel_function = leave_relative,
-                             arrhythmic = TRUE,
-                             example = TRUE,
-                             feedback = feedback,
-                             sound = sound),
-                           ## sample
-                           psychTestR::one_button_page(shiny::tags$div(
-                             shiny::tags$h2(page_title),
-                             shiny::tags$p("Now you're ready for the real thing!")))
-                         )},
-                       sample_arrhythmic(item_bank, num_items, id = "wjd_audio_melody"),
-                       ## trials
-                       musicassessr::multi_page_play_melody_loop(
-                         presampled_items = trials,
-                         var_name = "wjd_audio_melody",
-                         stimuli_type = "audio_WJD",
-                         page_type = "record_audio_page",
-                         page_title = page_title,
-                         page_text = page_text,
-                         get_answer = get_answer,
-                         rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
-                         arrhythmic = TRUE,
-                         feedback = feedback,
-                         sound = sound)
-                     )
-  )
+     ## sample
+     example_tl <- psychTestR::join(
+       psychTestR::one_button_page(shiny::tags$div(
+         shiny::tags$h2(page_title),
+         shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+
+       # trials
+       musicassessr::multi_page_play_melody_loop(
+         presampled_items = examples,
+         var_name = "wjd_audio_melody",
+         page_type = "record_audio_page",
+         stimuli_type = "audio_WJD",
+         page_title = page_title,
+         page_text = page_text,
+         get_answer = get_answer,
+         rel_to_abs_mel_function = leave_relative,
+         arrhythmic = TRUE,
+         example = TRUE,
+         feedback = feedback,
+         sound = sound),
+       ## sample
+       psychTestR::one_button_page(shiny::tags$div(
+         shiny::tags$h2(page_title),
+         shiny::tags$p("Now you're ready for the real thing!"))))
+     } else {
+       example_tl <- c()
+     }
+
+
+   ## trials
+  trials <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = item_length), sum(unlist(num_items)))
+
+   trials_tl <- musicassessr::multi_page_play_melody_loop(
+     presampled_items = trials,
+     var_name = "wjd_audio_melody",
+     stimuli_type = "audio_WJD",
+     page_type = "record_audio_page",
+     page_title = page_title,
+     page_text = page_text,
+     get_answer = get_answer,
+     rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
+     arrhythmic = TRUE,
+     feedback = feedback,
+     sound = sound)
+
+   psychTestR::module("wjd_audio_melodies",
+                      psychTestR::join(intro, example_tl, trials_tl))
   }
 }
 
 
-interval_perception_trials <- function(n_items = 26, sound = "piano",
+#' A block which test a participant's perception of intervals
+#'
+#' @param n_items
+#' @param sound
+#' @param page_title
+#' @param instruction_text
+#'
+#' @return
+#' @export
+#'
+#' @examples
+interval_perception_trials <- function(n_items = 26L, sound = "piano",
                                        page_title = "What's that interval?",
                                        instruction_text = "In the next set of trials, you will hear a musical interval. You must try and say what the interval is. There are no practice rounds, you will begin immediately.") {
-  c(
     psychTestR::module("interval_perception",
                        # no examples (too self explanatory/easy.. too few examples)
-                       psychTestR::one_button_page(shiny::tags$div(
+                       psychTestR::join(
+                         psychTestR::one_button_page(shiny::tags$div(
                          shiny::tags$h2(page_title),
                          shiny::tags$p(instruction_text)
                        )),
-  sample_intervals(),
-  multi_interval_page(n_items)))
+                        sample_intervals(num_items = n_items),
+                        multi_interval_page(n_items)))
 }
 
 

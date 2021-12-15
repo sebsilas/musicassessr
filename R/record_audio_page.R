@@ -28,10 +28,10 @@
 #'
 #' @examples
 record_audio_page <- function(body = " ", label = "record_audio_page", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ",
-                              interactive = FALSE, show_record_button = TRUE, get_answer = get_answer_store_async, answer_meta_data = " ",
+                              interactive = FALSE, show_record_button = TRUE, get_answer = get_answer_store_async, answer_meta_data = data.frame(),
                               show_aws_controls = FALSE, button_text = "Record", stop_button_text = "Stop", record_duration = NULL, on_complete = NULL,
                               auto_next_page = FALSE, save_answer = TRUE, page_text_first = TRUE,
-                              happy_with_response =  FALSE, attempts_left = NULL, ...) {
+                              happy_with_response =  FALSE, attempts_left = integer(), ...) {
 
 
   psychTestR::page(ui = shiny::tags$div(
@@ -191,13 +191,13 @@ loading <- function() {
 
 
 return_correct_attempts_left <- function(attempts_left) {
-  if(attempts_left == 0) {
+  if(attempts_left == 0L) {
     #label = paste0(var_name,"_attempt_", number_attempts, "_choice"),
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
                     shiny::tags$p(psychTestR::i18n("attempts_remaining_0")),
                     shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
                     )
-  } else if (attempts_left == 1) {
+  } else if (attempts_left == 1L) {
     # label = paste0(var_name,"_attempt_", number_attempts, "_choice")
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
                     shiny::tags$p(psychTestR::i18n("happy_with_response_message")), shiny::tags$p(psychTestR::i18n("attempts_remaining_1")),

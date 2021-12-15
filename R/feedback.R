@@ -20,7 +20,20 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       # plots
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
 
-      melody_dtw_plot <- ifelse(melody_dtw, plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track), " ")
+
+      if(melody_dtw) {
+        melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
+        melody_dtw_head <- "Melody DTW Plot"
+      } else {
+        melody_dtw_plot <- " "
+        melody_dtw_head <- " "
+      }
+
+      if(answer_meta_data) {
+        stimuli_info <- 'Stimuli Info'
+      } else {
+        stimuli_info <- ' '
+      }
 
       # get then remove necessary vars
       amd <- answer$answer_meta_data
@@ -31,7 +44,11 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       scores_tab <- list_to_shiny_table(answer)
 
       # make meta data table
-      answer_meta_data_tab <- ifelse(answer_meta_data & is.list(amd), list_to_shiny_table(amd), " ")
+      if(answer_meta_data & is.list(amd)) {
+        answer_meta_data_tab <- list_to_shiny_table(amd)
+      } else {
+        answer_meta_data_tab <- " "
+      }
 
       present_stimuli(answer$user_response_note,
                       stimuli_type = "midi_notes",
@@ -39,11 +56,11 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
                       page_title = "Your Response",
                       page_type = 'one_button_page',
                       page_text = shiny::tags$div(shiny::tags$p(plot),
-                                                  shiny::tags$h3(ifelse(melody_dtw, 'Melody DTW Plot', " ")),
+                                                  shiny::tags$h3(melody_dtw_head),
                                                   shiny::tags$p(melody_dtw_plot),
                                                   shiny::tags$h3('Response Data'),
                                                   scores_tab,
-                                                  shiny::tags$h3(ifelse(answer_meta_data, 'Stimuli Info', " ")),
+                                                  shiny::tags$h3(stimuli_info),
                                                   answer_meta_data_tab),
                       page_text_first = FALSE,
                       play_button_id = "playButtonFeedback",

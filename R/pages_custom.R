@@ -44,12 +44,12 @@ intervals_df <- tibble::tibble(
 )
 
 
-sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72) {
+sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72, num_items = 26L) {
 
   psychTestR::code_block(function(state, ...) {
-
     abs_intervals <- intervals_df
-    start_notes <- sample(bottom_range:top_range, 26, replace = TRUE)
+    start_notes <- sample(bottom_range:top_range, num_items, replace = TRUE)
+    abs_intervals <- abs_intervals[sample(1:nrow(abs_intervals), num_items), ]
     abs_intervals$start_note <- start_notes
 
     abs_interval <- apply(abs_intervals, MARGIN = 1, function(row) {
@@ -60,8 +60,11 @@ sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72
       }
       paste0(abs, collapse = ",")
     })
+    print(abs_interval)
     abs_intervals$abs_interval <- abs_interval
+    print(abs_intervals)
     abs_intervals <- abs_intervals[sample(1:nrow(abs_intervals), nrow(abs_intervals)), ]
+    print(abs_intervals)
     psychTestR::set_global("abs_intervals", abs_intervals, state)
 
   })
@@ -90,7 +93,12 @@ play_interval_page <- function(interval = NULL,
 
     if(is.null(interval)) {
       abs_intervals <- psychTestR::get_global("abs_intervals", state)
+      print('is null interval')
+      print(abs_intervals)
       abs_interval <- abs_intervals[trial_no, ]
+      print(trial_no)
+      print(abs_interval)
+      print(abs_interval$abs_interval)
       psychTestR::set_global("answer_meta_data", abs_interval,  state)
     }
 
@@ -104,7 +112,8 @@ play_interval_page <- function(interval = NULL,
                       sound = "piano"),
       shiny::selectInput(inputId = "dropdown",
                          label = NULL,
-                         choices = names(itembankr::intervals)),
+                         choices = names(itembankr::intervals),
+                         width = "30%"),
       psychTestR::trigger_button("next", "Next")),
     label = label, get_answer = get_answer, save_answer = save_answer)
 
@@ -122,7 +131,7 @@ play_interval_page <- function(interval = NULL,
 #' @export
 #'
 #' @examples
-multi_interval_page <- function(n_items = 26,
+multi_interval_page <- function(n_items = 26L,
                                 page_title = "What is the interval?") {
   psychTestR::module(label = "interval_perception",
     lapply(1:n_items, function(trial_no) {

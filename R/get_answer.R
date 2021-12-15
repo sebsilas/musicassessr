@@ -296,11 +296,11 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, ...) {
       file <- get_audio_file(input)
-      pyin_pitch_track <- pyin(file, type = "pitch_track")
-      if(is.null(pyin_pitch_track$freq)) {
+      pyin_res <- pyin(file)
+      if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
-        freqs <- pyin_pitch_track$freq
+        freqs <- pyin_res$freq
         list(user_response = floor(mean(hrep::freq_to_midi(freqs))))
       }
     }
@@ -309,13 +309,13 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, ...) {
       file <- get_audio_file(input)
-      pyin_pitch_track <- pyin(file, type = "pitch_track")
-      if(is.null(pyin_pitch_track$freq)) {
+      pyin_res <- pyin(file)
+      if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
         file <- get_audio_file(input)
-        pyin_pitch_track <- pyin(file, type = "pitch_track")
-        freqs <- pyin_pitch_track$freq
+        pyin_res <- pyin(file)
+        freqs <- pyin_res$freq
         list(user_response = ceiling(mean(hrep::freq_to_midi(freqs))))
       }
     }
@@ -324,11 +324,11 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, ...) {
       file <- get_audio_file(input)
-      pyin_pitch_track <- pyin(file, type = "pitch_track")
-      if(is.null(pyin_pitch_track$freq)) {
+      pyin_res <- pyin(file)
+      if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         list(user_response = NA)
       } else {
-        freqs <- pyin_pitch_track$freq
+        freqs <- pyin_res$freq
         list(user_response = round(mean(hrep::freq_to_midi(freqs))))
       }
     }

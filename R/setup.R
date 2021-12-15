@@ -29,7 +29,6 @@ set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
 }
 
 
-
 #' Setup pages for musicassessr test
 #'
 #' @param input
@@ -41,6 +40,7 @@ set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
 #' @param get_instrument_range
 #' @param absolute_url
 #' @param select_instrument
+#' @param get_instrument_range_musical_notation
 #'
 #' @return
 #' @export
@@ -57,7 +57,13 @@ setup_pages <- function(input = c("microphone",
                         demo = FALSE,
                         get_instrument_range = FALSE,
                         absolute_url,
-                        select_instrument = FALSE) {
+                        select_instrument = FALSE,
+                        get_instrument_range_musical_notation = FALSE) {
+
+  stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
+            is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
+            is.logical(get_instrument_range), is.character(absolute_url),
+            is.logical(select_instrument), is.logical(get_instrument_range_musical_notation))
 
 
   if(demo) {
@@ -86,7 +92,7 @@ setup_pages <- function(input = c("microphone",
 
       record_instructions(),
 
-      get_instrument_range_pages(input, get_instrument_range)
+      get_instrument_range_pages(input, get_instrument_range, show_musical_notation = get_instrument_range_musical_notation)
 
     )
 

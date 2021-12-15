@@ -1,3 +1,13 @@
+#' musicassessr scripts
+#'
+#' @param state
+#' @param visual_notation
+#' @param midi_file_playback
+#'
+#' @return
+#' @export
+#'
+#' @examples
 musicassessr_js <- function(state = "production",
                             visual_notation = FALSE,
                             midi_file_playback = FALSE) {

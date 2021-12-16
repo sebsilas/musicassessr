@@ -1,6 +1,10 @@
 
-melody_scoring_from_user_input <- function(input, result = NULL, trial_type = "audio",
-                                           user_melody_input = NULL, singing_measures = TRUE, pyin_pitch_track = NULL,
+melody_scoring_from_user_input <- function(input,
+                                           result = NULL,
+                                           trial_type = "audio",
+                                           user_melody_input = NULL,
+                                           singing_measures = TRUE,
+                                           pyin_pitch_track = NULL,
                                            stimuli = NA, stimuli_durations = NA) {
 
 
@@ -12,7 +16,6 @@ melody_scoring_from_user_input <- function(input, result = NULL, trial_type = "a
   }
   else {
     if(is.numeric(result$freq)) {
-
       onsets_noteoff <- NA
       user_response_midi_note_off <- NA
       result <- produce_extra_melodic_features(result)
@@ -65,7 +68,7 @@ melody_scoring_from_user_input <- function(input, result = NULL, trial_type = "a
     correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
 
     if(singing_measures) {
-      # singing stuff
+
       # note precision
       note_precision <- get_note_precision(result)
 
@@ -76,16 +79,7 @@ melody_scoring_from_user_input <- function(input, result = NULL, trial_type = "a
       mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(result$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
 
       # melody dtw
-      user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, result)
-      stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
-
-      melody_dtw <- tryCatch({
-        dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)$distance
-      },
-      error = function(cond) {
-        print(cond)
-        return(NA)
-      })
+      melody_dtw <- get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, result)
 
 
     } else {

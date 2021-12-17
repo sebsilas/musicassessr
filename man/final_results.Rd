@@ -12,6 +12,9 @@ final_results(
   num_items_rhythmic
 )
 }
+\arguments{
+\item{num_items_rhythmic}{}
+}
 \value{
 
 }

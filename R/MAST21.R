@@ -614,6 +614,12 @@ MAST_low_wavs_ordered <-  c("1_F_low.wav",
                             "21_BJfull_low.wav")
 
 
+#' deploy_MAST21_low_wav
+#'
+#' @return
+#' @export
+#'
+#' @examples
 deploy_MAST21_low_wav <- function() {
   psychTestR::make_test(
     psychTestR::join(

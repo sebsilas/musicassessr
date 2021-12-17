@@ -56,8 +56,6 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             play_button_id = "playButton", button_area_id = "button_area",
                             hideOnPlay = FALSE, record_immediately = FALSE, ...) {
 
-  print('PS')
-  print(answer_meta_data)
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -70,7 +68,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
             is.vector(durations) & is.numeric(durations) | is.na(durations), is.logical(show_record_button),
             is.logical(auto_next_page), is.character(choices) & is.vector(choices), is.logical(user_rating),
             is.logical(page_text_first), is.logical(happy_with_response),
-            is.integer(attempts_left), is.character(visual_music_notation_id),
+            is.numeric(attempts_left), is.character(visual_music_notation_id),
             is.character(play_button_id), is.character(button_area_id),
             is.logical(hideOnPlay), is.logical(record_immediately))
 
@@ -208,7 +206,7 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
             is.character(play_button_text), is.function(get_answer),
             is.logical(show_record_button), is.logical(save_answer), is.logical(auto_next_page),
             is.character(choices) & is.vector(choices), is.logical(user_rating), is.logical(page_text_first),
-            is.logical(happy_with_response), is.integer(attempts_left))
+            is.logical(happy_with_response), is.numeric(attempts_left))
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions

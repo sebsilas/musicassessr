@@ -180,8 +180,7 @@ reverse_answer <- function(ans) {
   # if reverse == TRUE, then check for the reverse of the answer
   if (length(ans) == 1) {
     ans <- stringi::stri_reverse(ans)
-  }
-  else {
+  } else {
     ans <- rev(ans)
   }
   ans

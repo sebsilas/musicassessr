@@ -165,8 +165,32 @@ MAST21_dooo <- MAST21_trials(label = "MAST21_dooo", sound = "piano",
                              page_title_melody = "Please sing back the melody with a \"Dooo\" sound.")
 
 
+MAST_low_wav <- lapply(MAST_low_wavs_ordered, function(file) {
+
+  if(startsWith(file, "1_") | startsWith(file, "2_") |
+     startsWith(file, "3_") | startsWith(file, "4_")) {
+    text <- "Please sing back the note then click 'Stop'."
+  } else {
+    text <- "Please sing back the melody then click 'Stop'."
+  }
+
+  x <- paste0('musicassessr-assets/MAST21_low/',  file)
+
+  present_stimuli(
+    stimuli = x,
+    stimuli_type = "audio",
+    display_modality = "auditory",
+    page_type = "record_audio_page",
+    page_text = text,
+    hideOnPlay = TRUE,
+    auto_next_page = TRUE)
+})
+
+
 usethis::use_data(MAST21_daah,
                   MAST21_dooo,
                   overwrite = TRUE, internal = TRUE)
+
+usethis::use_data(MAST_low_wav, internal = TRUE, overwrite = TRUE)
 
 

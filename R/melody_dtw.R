@@ -12,7 +12,7 @@
 #' @examples
 get_melody_dtw <- function(stimuli, stimuli_durations, pyin_pitch_track, pyin_res) {
 
-  stopifnot(is.integer(stimuli), is.numeric(stimuli_durations),
+  stopifnot(is.numeric(stimuli), is.numeric(stimuli_durations),
             is.data.frame(pyin_pitch_track), is.data.frame(pyin_res))
 
   user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, pyin_res)

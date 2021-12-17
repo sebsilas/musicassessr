@@ -113,7 +113,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 #' @export
 #'
 #' @examples
-play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3,
+play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3L,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                              answer_meta_data = data.frame(), get_answer = get_answer_pyin,
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,

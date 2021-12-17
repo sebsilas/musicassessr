@@ -1,27 +1,4 @@
 
-tidy_melodies <- function(melody_results) {
-
-  melody_results <- lapply(melody_results, function(x) {
-    lapply(x, function(y) {
-      if(is.list(y)) {
-        lapply(y, as.character)
-      } else {
-        if(length(y) > 1) {
-          paste0(y, collapse = ",")
-        } else {
-          as.character(y)
-        }
-      }
-    })
-  })
-
-  melody_results <- lapply(melody_results, unlist, recursive = FALSE)
-
-  dplyr::bind_rows(melody_results)
-
-}
-
-
 present_scores <- function(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic) {
 
   if(num_items_long_tone > 0) {
@@ -66,7 +43,16 @@ present_scores <- function(res, num_items_long_tone, num_items_arrhythmic, num_i
 
 }
 
+
+
+
 #' Present Final Results
+#'
+#' @param test_name
+#' @param url
+#' @param num_items_long_tone
+#' @param num_items_arrhythmic
+#' @param num_items_rhythmic
 #'
 #' @return
 #' @export
@@ -80,69 +66,188 @@ final_results <- function(test_name, url, num_items_long_tone, num_items_arrhyth
       processed_results <- present_scores(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic)
 
       psychTestR::set_local("similarity",
-                             mean(processed_results$arrhythmic$similarity,
-                                  processed_results$arrhythmic$similarity, na.rm = TRUE)
-                             , state)
+                            mean(processed_results$arrhythmic$similarity,
+                                 processed_results$arrhythmic$similarity, na.rm = TRUE)
+                            , state)
 
       psychTestR::set_local("accuracy",
-                             mean(processed_results$rhythmic$accuracy_octaves_allowed,
-                                  processed_results$rhythmic$accuracy_octaves_allowed, na.rm = TRUE),
-                             state)
+                            mean(processed_results$rhythmic$accuracy_octaves_allowed,
+                                 processed_results$rhythmic$accuracy_octaves_allowed, na.rm = TRUE),
+                            state)
 
       final_score <- produce_naive_final_singing_score(res)
 
       psychTestR::set_local("final_score", final_score, state)
 
 
-    psychTestR::text_input_page(
-      label = "final_score",
-      prompt = shiny::tags$div(style = "width: 500px;",
-        shiny::tags$h2('Final Results'),
-        shiny::tags$h3('Long Note Scores'),
+      psychTestR::text_input_page(
+        label = "final_score",
+        prompt = shiny::tags$div(style = "width: 500px;",
+                                 shiny::tags$h2('Final Results'),
+                                 shiny::tags$h3('Long Note Scores'),
 
-        shiny::renderTable({
+                                 shiny::renderTable({
 
-          long_note_df <- processed_results$long_note
-          long_note_df_names <- names(long_note_df)
-          long_note_df <- base::t(long_note_df)
-          row.names(long_note_df) <- long_note_df_names
-          long_note_df
-        }, rownames = TRUE, colnames = FALSE, width = "50%"),
+                                   long_note_df <- processed_results$long_note
+                                   long_note_df_names <- names(long_note_df)
+                                   long_note_df <- base::t(long_note_df)
+                                   row.names(long_note_df) <- long_note_df_names
+                                   long_note_df
+                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
 
-        shiny::tags$h3('Arrhythmic Melody Scores'),
+                                 shiny::tags$h3('Arrhythmic Melody Scores'),
 
-        shiny::renderTable({
+                                 shiny::renderTable({
 
-          arrhythmic_df <- processed_results$arrhythmic
-          arrhythmic_df_names <- names(arrhythmic_df)
-          arrhythmic_df <- base::t(arrhythmic_df)
-          row.names(arrhythmic_df) <- arrhythmic_df_names
-          arrhythmic_df
-        }, rownames = TRUE, colnames = FALSE, width = "50%"),
+                                   arrhythmic_df <- processed_results$arrhythmic
+                                   arrhythmic_df_names <- names(arrhythmic_df)
+                                   arrhythmic_df <- base::t(arrhythmic_df)
+                                   row.names(arrhythmic_df) <- arrhythmic_df_names
+                                   arrhythmic_df
+                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
 
-        shiny::tags$h3('Rhythmic Melody Scores'),
+                                 shiny::tags$h3('Rhythmic Melody Scores'),
 
-        shiny::renderTable({
+                                 shiny::renderTable({
 
-          rhythmic_df <- processed_results$rhythmic
-          rhythmic_df_names <- names(rhythmic_df)
-          rhythmic_df <- base::t(rhythmic_df)
-          row.names(rhythmic_df) <- rhythmic_df_names
-          rhythmic_df
-        }, rownames = TRUE, colnames = FALSE, width = "50%"),
+                                   rhythmic_df <- processed_results$rhythmic
+                                   rhythmic_df_names <- names(rhythmic_df)
+                                   rhythmic_df <- base::t(rhythmic_df)
+                                   row.names(rhythmic_df) <- rhythmic_df_names
+                                   rhythmic_df
+                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
 
-        shiny::tags$h3('Total Score'),
-        shiny::tags$p(final_score),
-        shiny::tags$p("Enter a username to see the scoreboard: ")
+                                 shiny::tags$h3('Total Score'),
+                                 shiny::tags$p(final_score),
+                                 shiny::tags$p("Enter a username to see the scoreboard: ")
 
+        )
       )
-    )
 
     }),
 
     share_score_page(test_name, url)
   )
 }
+
+
+
+
+
+
+present_scores_pbet <- function(res, num_items_arrhythmic, num_items_rhythmic) {
+
+  if(num_items_arrhythmic > 0) {
+    # arrhythmic
+    arrhythmic_melodies <- tidy_melodies(res$PBET.arrhythmic_melodies)
+
+    arrhythmic_melody_summary <- arrhythmic_melodies %>% dplyr::select(
+      correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
+      correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
+      similarity, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
+      dplyr::mutate_if(is.character,as.numeric) %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+  }
+
+  if(num_items_rhythmic > 0) {
+    # rhythmic
+    rhythmic_melodies <- tidy_melodies(res$PBET.rhythmic_melodies)
+
+    rhythmic_melody_summary <- rhythmic_melodies %>% dplyr::select(
+      correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
+      correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
+      similarity, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
+      dplyr::mutate_if(is.character,as.numeric) %>%
+      dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
+  }
+
+  list("arrhythmic" = ifelse(is.null(arrhythmic_melody_summary), data.frame(accuracy = 1, similarity = 1), arrhythmic_melody_summary),
+       "rhythmic" = ifelse(is.null(rhythmic_melody_summary), data.frame(accuracy = 1, similarity = 1), rhythmic_melody_summary))
+
+}
+
+
+
+
+#' Present Final Results PBET
+#'
+#' @param test_name
+#' @param url
+#' @param num_items_find_this_note
+#' @param num_items_arrhythmic
+#' @param num_items_rhythmic
+#'
+#' @return
+#' @export
+#'
+#' @examples
+final_results_pbet <- function(test_name = "PBET",
+                               url = "https://adaptiveeartraining.com",
+                               num_items_find_this_note = 0L,
+                               num_items_arrhythmic = 0L,
+                               num_items_rhythmic = 0L) {
+
+  c(
+    psychTestR::reactive_page(function(state, ...) {
+      res <- as.list(psychTestR::get_results(state, complete = FALSE))
+
+      processed_results <- present_scores_pbet(res, num_items_arrhythmic, num_items_rhythmic)
+
+      psychTestR::set_local("similarity",
+                            mean(processed_results$arrhythmic$similarity,
+                                 processed_results$arrhythmic$similarity, na.rm = TRUE)
+                            , state)
+
+      psychTestR::set_local("accuracy",
+                            mean(processed_results$rhythmic$accuracy_octaves_allowed,
+                                 processed_results$rhythmic$accuracy_octaves_allowed, na.rm = TRUE),
+                            state)
+
+      final_score <- produce_naive_final_pbet_score(res, num_items_arrhythmic, num_items_rhythmic)
+
+      psychTestR::set_local("final_score", final_score, state)
+
+
+      psychTestR::text_input_page(
+        label = "final_score",
+        prompt = shiny::tags$div(style = "width: 500px;",
+                                 shiny::tags$h2('Final Results'),
+
+                                 shiny::tags$h3('Arrhythmic Melody Scores'),
+
+                                 shiny::renderTable({
+
+                                   arrhythmic_df <- processed_results$arrhythmic
+                                   arrhythmic_df_names <- names(arrhythmic_df)
+                                   arrhythmic_df <- base::t(arrhythmic_df)
+                                   row.names(arrhythmic_df) <- arrhythmic_df_names
+                                   arrhythmic_df
+                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
+
+                                 shiny::tags$h3('Rhythmic Melody Scores'),
+
+                                 shiny::renderTable({
+
+                                   rhythmic_df <- processed_results$rhythmic
+                                   rhythmic_df_names <- names(rhythmic_df)
+                                   rhythmic_df <- base::t(rhythmic_df)
+                                   row.names(rhythmic_df) <- rhythmic_df_names
+                                   rhythmic_df
+                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
+
+                                 shiny::tags$h3('Total Score'),
+                                 shiny::tags$p(final_score),
+                                 shiny::tags$p("Enter a username to see the scoreboard: ")
+
+        )
+      )
+
+    }),
+
+    share_score_page(test_name, url, hashtag = "PlayByEar")
+  )
+}
+
 
 # leaderboard stuff
 
@@ -176,6 +281,34 @@ add_score_to_leaderboard <- function(username, score) {
 
   # and present new leaderboard
   leaderboard
+}
+
+
+produce_naive_final_pbet_score <- function(score_result_object,
+                                           num_items_arrhythmic,
+                                           num_items_rhythmic) {
+
+  print('produce_naive_final_pbet_score')
+  scor <- present_scores_pbet(score_result_object, num_items_arrhythmic, num_items_rhythmic)
+  print('scor')
+  print(scor)
+  arr_scors <- scor$arrhythmic
+  print('arr_scors: ')
+  print(arr_scors)
+  final_arr <- round(arr_scors[[1]] * 1000)
+  print('final_arr: ')
+  print(final_arr)
+  rhy_scors <- scor$rhythmic
+  print('rhy_scors: ')
+  print(rhy_scors)
+  final_rhy <- round(rhy_scors[[1]] * 1000)
+  print('final_rhy: ')
+  print(final_rhy)
+  final_score <- final_arr + final_rhy
+  print('final_score: ')
+  print(final_score)
+  final_score
+
 }
 
 produce_naive_final_singing_score <- function(score_result_object) {
@@ -274,6 +407,28 @@ collapse_results <- function(res) {
   results <- lapply(results, unlist, recursive = FALSE)
 
   #dplyr::bind_rows(results)
+
+}
+
+tidy_melodies <- function(melody_results) {
+
+  melody_results <- lapply(melody_results, function(x) {
+    lapply(x, function(y) {
+      if(is.list(y)) {
+        lapply(y, as.character)
+      } else {
+        if(length(y) > 1) {
+          paste0(y, collapse = ",")
+        } else {
+          as.character(y)
+        }
+      }
+    })
+  })
+
+  melody_results <- lapply(melody_results, unlist, recursive = FALSE)
+
+  dplyr::bind_rows(melody_results)
 
 }
 

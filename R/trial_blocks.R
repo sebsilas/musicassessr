@@ -319,7 +319,7 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
   }
 
     # sample melodies based on range
-    psychTestR::module("long_note_trials",
+    psychTestR::module("find_this_note_trials",
                        c(
                          # instructions
                          psychTestR::one_button_page(shiny::div(

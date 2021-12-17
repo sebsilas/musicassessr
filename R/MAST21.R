@@ -620,7 +620,7 @@ MAST_low_wavs_ordered <-  c("1_F_low.wav",
 #' @export
 #'
 #' @examples
-deploy_MAST21_low_wav <- function() {
+deploy_MAST21_low_wav <- function(musicassessr_state = 'production') {
   psychTestR::make_test(
     psychTestR::join(
       psychTestR::one_button_page("Testing the MAST21 as .wav files."),
@@ -630,7 +630,7 @@ deploy_MAST21_low_wav <- function() {
     opt = psychTestR::test_options(
       title = "MAST .wav test",
       admin_password = "demo",
-      additional_scripts = musicassessr_js('test')
+      additional_scripts = musicassessr_js(musicassessr_state)
     )
   )
 }

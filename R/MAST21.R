@@ -582,36 +582,6 @@ end_only <- function(state = "production") {
 # library(MST)
 # library(musicassessr)
 
-get_MAST_high <- function() {
-  list.files('inst/www/MAST21_high/')
-}
-
-get_MAST_low <- function() {
-  list.files('inst/www/MAST21_low/')
-}
-
-
-MAST_low_wavs_ordered <-  c("1_F_low.wav",
-                            "2_B_low.wav",
-                            "3_E_low.wav",
-                            "4_C_low.wav",
-                            "5_FF_low.wav",
-                            "6_FC_low.wav",
-                            "7_FE_low.wav",
-                            "8_FB_low.wav" ,
-                            "9_FAC_low.wav",
-                            "10_FAbC_low.wav",
-                            "11_FAbCb_low.wav",
-                            "12_FACs_low.wav",
-                            "13_FACAF_low.wav",
-                            "14_FAbCAbF_low.wav",
-                            "15_FAbCbAbF_low.wav",
-                            "16_FACsAF_low.wav",
-                            "17_BJ1_low.wav",
-                            "18_BJ2_low.wav",
-                            "19_BJ3_low.wav",
-                            "20_BJ4_low.wav",
-                            "21_BJfull_low.wav")
 
 
 #' deploy_MAST21_low_wav
@@ -624,6 +594,7 @@ deploy_MAST21_low_wav <- function(musicassessr_state = 'production') {
   psychTestR::make_test(
     psychTestR::join(
       psychTestR::one_button_page("Testing the MAST21 as .wav files."),
+      microphone_calibration_page(),
       MAST_low_wav,
       psychTestR::final_page("The End.")
     ),

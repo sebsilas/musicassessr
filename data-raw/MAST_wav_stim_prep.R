@@ -251,6 +251,8 @@ MAST21_wav <- function(state = "production",
 
 MAST21_wav_block <- MAST21_wav(include_microphone_calibration_page = TRUE)
 
-usethis::use_data(MAST21_wav_block, overwrite = TRUE)
+
+usethis::use_data(MAST21_wav_block, internal = TRUE, overwrite = TRUE)
+
 
 

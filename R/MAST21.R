@@ -421,7 +421,7 @@ upei_test_options <- function(state) {
                            display = psychTestR::display_options(
                              left_margin = 1L,
                              right_margin = 1L,
-                             css = system.file('www/css/style.css', package = "musicassessr")
+                             css = system.file('www/css/musicassessr.css', package = "musicassessr")
                            ),
                            additional_scripts = musicassessr_js(state),
                            languages = c("en"))
@@ -583,19 +583,19 @@ end_only <- function(state = "production") {
 # library(musicassessr)
 
 
-
-#' deploy_MAST21_low_wav
+#' deploy the MAST21 as wavs
+#'
+#' @param musicassessr_state
 #'
 #' @return
 #' @export
 #'
 #' @examples
-deploy_MAST21_low_wav <- function(musicassessr_state = 'production') {
+deploy_MAST21_wav <- function(musicassessr_state = 'production') {
   psychTestR::make_test(
     psychTestR::join(
-      psychTestR::one_button_page("Testing the MAST21 as .wav files."),
-      microphone_calibration_page(),
-      MAST_low_wav,
+      MAST21_wav_block,
+      psychTestR::elt_save_results_to_disk(complete = FALSE),
       psychTestR::final_page("The End.")
     ),
     opt = psychTestR::test_options(
@@ -605,7 +605,3 @@ deploy_MAST21_low_wav <- function(musicassessr_state = 'production') {
     )
   )
 }
-
-
-
-

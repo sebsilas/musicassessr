@@ -176,7 +176,7 @@ present_stimuli_scientific_music_notation <- function(stimuli, display_modality,
 
 # pitch classes
 
-present_stimuli_pitch_classes_visual <- function(stimuli, octave = 4, asChord = FALSE) {
+present_stimuli_pitch_classes_visual <- function(stimuli, octave = 4L, asChord = FALSE) {
 
   xml <- wrap.xml.template(type = "pitch_classes", notes = stimuli, octave = octave, asChord = asChord)
 
@@ -190,7 +190,7 @@ present_stimuli_pitch_classes_auditory <- function(stimuli, octave) {
 }
 
 
-present_stimuli_pitch_classes <- function(stimuli, display_modality, octave = 4, ...) {
+present_stimuli_pitch_classes <- function(stimuli, display_modality, octave = 4L, ...) {
 
   if(display_modality == "visual") {
     return_stimuli <- present_stimuli_pitch_classes_visual(stimuli = stimuli, octave = octave, ...)
@@ -464,7 +464,7 @@ display_previous_answer_music_notation_pitch_class_aws <- function() {
 
 
 
-wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4) {
+wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4L) {
 
   mean_notes <- get_mean_of_notes(notes, type, octave)
 
@@ -580,7 +580,7 @@ format.notes.scientific_music_notation <- function(notes, asChord = FALSE) {
 }
 
 
-format.notes.pitch.classes <- function(notes, octave = 4, asChord = FALSE) {
+format.notes.pitch.classes <- function(notes, octave = 4L, asChord = FALSE) {
 
   res <- ""
 
@@ -629,7 +629,7 @@ format.notes.midi <- function(notes, asChord = FALSE) {
 }
 
 
-format.notes <- function(type, notes, octave = 4, asChord = FALSE) {
+format.notes <- function(type, notes, octave = 4L, asChord = FALSE) {
   if (type == "pitch_classes") {
     res <- format.notes.pitch.classes(notes, octave = octave, asChord = asChord)
   }

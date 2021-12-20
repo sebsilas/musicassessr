@@ -68,13 +68,12 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
             is.vector(durations) & is.numeric(durations) | is.na(durations), is.logical(show_record_button),
             is.logical(auto_next_page), is.character(choices) & is.vector(choices), is.logical(user_rating),
             is.logical(page_text_first), is.logical(happy_with_response),
-            is.numeric(attempts_left), is.character(visual_music_notation_id),
+            is.integer(attempts_left), is.character(visual_music_notation_id),
             is.character(play_button_id), is.character(button_area_id),
             is.logical(hideOnPlay), is.logical(record_immediately))
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
-
 
     return_stimuli <- present_stimuli_reactive(stimuli_reactive, stimuli,
                                                stimuli_type,
@@ -188,6 +187,15 @@ page_types = c("one_button_page",
                "record_key_presses_page",
                "record_midi_page")
 
+get_page_function <- function(page_type) {
+  if(page_type %in% c("record_audio_page", "record_midi_page", "record_key_presses_page",
+                      "record_spoken_words_page", "play_text_page")) {
+    page.fun <- get(page_type, asNamespace("musicassessr"))
+  } else{
+    page.fun <- get(page_type, asNamespace("psychTestR"))
+  }
+  page.fun
+}
 
 retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                                page_text = "Click to hear the stimuli", page_title = " ", interactive = FALSE,
@@ -206,104 +214,55 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
             is.character(play_button_text), is.function(get_answer),
             is.logical(show_record_button), is.logical(save_answer), is.logical(auto_next_page),
             is.character(choices) & is.vector(choices), is.logical(user_rating), is.logical(page_text_first),
-            is.logical(happy_with_response), is.numeric(attempts_left))
+            is.logical(happy_with_response), is.integer(attempts_left))
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
   # before reaching here
 
-  if(page_type %in% c("record_audio_page", "record_midi_page", "record_key_presses_page",
-                             "record_spoken_words_page", "play_text_page")) {
-    page.fun <- get(page_type, asNamespace("musicassessr"))
-  } else{
-    page.fun <- get(page_type, asNamespace("psychTestR"))
-  }
+  page.fun <- get_page_function(page_type)
 
-  args <- match.call(expand.dots = FALSE)$... # i.e the "additional arguments"
-  # remove certain arguments that are not really "additional"
-  args$asChord <- NULL
-  args$octave <- NULL
+  args <- as.list(match.call(expand.dots = FALSE)$...) # i.e the "additional arguments"
 
   # feed the body to the page, but using the correct argument
   # i.e some pages accept "body" whilst others accept "prompt"
-  args <- check.correct.argument.for.body(page_type, args, stimuli_wrapped)
-
-  # convert from pair list:
-  args <- as.list(args)
+  args <- check_correct_argument_for_body(page_type, args, stimuli_wrapped)
 
   if (page_type == "one_button_page") {
     args$button_text <- button_text
-  }
-  else if(page_type == "NAFC_page" | page_type == "dropdown_page") {
+  } else if(page_type == "NAFC_page" | page_type == "dropdown_page") {
     args$choices <- choices
-  }
-  else if(page_type == "play_text_page") {
+  } else if(page_type == "play_text_page") {
     args <- stimuli_wrapped
     args$present_stimuli_characters_auditory <- NULL
     args$page_text <- page_text
     args$page_title <- page_title
-  }
+  } else if(page_type == "record_audio_page" | page_type == "record_midi_page") {
 
-  else if(!stimuli_reactive & page_type == "record_audio_page" |
-          !stimuli_reactive & page_type == "record_midi_page") {
-
-    args$body <- stimuli_wrapped
-    args$page_text <- page_text
-    args$page_title <- page_title
-    args$interactive <- interactive
-    args$answer_meta_data <- answer_meta_data
-    args$stimuli_reactive <- stimuli_reactive
-    args$page_type <- page_type
-    args$get_answer <- get_answer
-    args$midi_device <- midi_device
-    args$show_aws_controls <- show_aws_controls
-    args$label <- page_label
-    args$play_button_text <- play_button_text
-    args$show_record_button <- show_record_button
-    args$save_answer <- save_answer
-    args$auto_next_page <- auto_next_page
-    args$user_rating <- user_rating
-    args$happy_with_response <- happy_with_response
-    args$attempts_left <- attempts_left
-  }
-
-  else if(stimuli_reactive & page_type == "record_audio_page") {
-    args$page_type <- "record_audio_page"
-    args$page_text <- page_text
-    args$page_title <- page_title
-    args$get_answer <- get_answer
-    args$show_aws_controls <- show_aws_controls
-    args$label <- page_label
-    args$button_text <- button_text
-    args$play_button_text <- play_button_text
-    args$show_record_button <- show_record_button
-    args$save_answer <- save_answer
-    args$auto_next_page <- auto_next_page
-    args$user_rating <- user_rating
-    args$happy_with_response <- happy_with_response
-    args$attempts_left <- attempts_left
-  }
-
-  else if(stimuli_reactive & page_type == "record_midi_page") {
-    args$page_type <- "record_midi_page"
-    args$page_text <- page_text
-    args$page_title <- page_title
-    args$get_answer <- get_answer
-    args$midi_device <- midi_device
-    args$label <- page_label
-    args$button_text <- button_text
-    args$play_button_text <- play_button_text
-    args$show_record_button <- show_record_button
-    args$save_answer <- save_answer
-    args$auto_next_page <- auto_next_page
-    args$user_rating <- user_rating
-    args$happy_with_response <- happy_with_response
-    args$attempts_left <- attempts_left
-  }
-
-  else {
+    args <- c(args,
+              list(
+                "page_text" = page_text,
+                "page_title" = page_title,
+                "interactive" = interactive,
+                "answer_meta_data" =  answer_meta_data,
+                "stimuli_reactive" = stimuli_reactive,
+                "page_type" = page_type,
+                "get_answer" = get_answer,
+                "midi_device" = midi_device,
+                "show_aws_controls" = show_aws_controls,
+                "label" =  page_label,
+                "play_button_text" = play_button_text,
+                "show_record_button" = show_record_button,
+                "save_answer" = save_answer,
+                "auto_next_page"  = auto_next_page,
+                "user_rating" = user_rating,
+                "happy_with_response" = happy_with_response,
+                "attempts_left" = attempts_left))
+  } else {
     stop('Unknown page type.')
   }
+
+  validate_page_types(page_type, args)
 
   # set the page up with additional arguments
   page <- do.call(what = page.fun, args = args)
@@ -323,7 +282,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
 
   # generic stimuli types
 
-  if (stimuli_type == "digits" | stimuli_type == "letters" | stimuli_type == "words") {
+  if (stimuli_type %in% c("digits", "letters", "words")) {
     return_stimuli <- present_stimuli_characters(stimuli = stimuli,
                                                  display_modality = display_modality,
                                                  page_type = page_type,
@@ -413,3 +372,16 @@ reactive_stimuli <- function(stimuli_function, stimuli_reactive, prepared_stimul
   }
 }
 
+
+check_correct_argument_for_body <- function(page_type_string, args, stimuli_wrapped) {
+  # feed the body to the page, but using the correct argument
+  # i.e some pages accept "body" whilst others accept "prompt"
+  if (page_type_string %in% c("one_button_page", "record_audio_page", "record_key_presses_page")) {
+    args[["body"]] <- stimuli_wrapped
+  } else if (page_type_string %in% c("NAFC_page", "dropdown_page", "slider_page", "text_input_page")) {
+    args[["prompt"]] <- stimuli_wrapped
+  } else {
+    stop("Unknown body argument.")
+  }
+  args
+}

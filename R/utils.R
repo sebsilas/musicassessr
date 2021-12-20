@@ -44,17 +44,6 @@ set.note.no <- function(stimuli, note_no) {
   js_script
 }
 
-set.audio.parameters.js.script <- function(highest_allowed_freq, lowest_allowed_freq, min_confidence) {
-
-  shiny::tags$script(paste0('var highestAllowedFreq = ', highest_allowed_freq, '; ',
-                            'var lowestAllowedFreq = ', lowest_allowed_freq, '; ',
-                            'var minConfidence = ', min_confidence, '; '))
-}
-
-
-audio_parameters_js_script <- set.audio.parameters.js.script(highest_allowed_freq = highest.allowed.freq,
-                                                             lowest_allowed_freq = lowest.allowed.freq,
-                                                             min_confidence = min.confidence)
 
 present_record_button <- function(present = FALSE, type = "record_audio_page", midi_device = " ",
                                   interactive = FALSE, button_text = "Record",
@@ -116,13 +105,12 @@ present_record_button <- function(present = FALSE, type = "record_audio_page", m
 
 
 
-validate.page.types <- function(page_type_string, args) {
+validate_page_types <- function(page_type_string, args) {
 
   # check if certain page types have their required arguments
   # and give a descriptive error message back to user if they haven't specified something correctly
 
-  if(page_type_string == "NAFC_page" |
-     page_type_string == "dropdown_page") {
+  if(page_type_string %in% c("NAFC_page", "dropdown_page")) {
 
     if(is.null(args$label) | is.null(args$choices)) {
       stop('You must specify a label and choices for NAFC_page or dropdown_page')
@@ -146,33 +134,11 @@ validate.page.types <- function(page_type_string, args) {
   }
 }
 
-check.correct.argument.for.body <- function(page_type_string, args, stimuli_wrapped) {
-  # feed the body to the page, but using the correct argument
-  # i.e some pages accept "body" whilst others accept "prompt"
-  if (page_type_string == "one_button_page" |
-      page_type_string == "record_audio_page" |
-      page_type_string == "record_key_presses_page") {
-    args[["body"]] <- stimuli_wrapped
-  }
-
-  else if (page_type_string == "NAFC_page" |
-           page_type_string == "dropdown_page" |
-           page_type_string == "slider_page" |
-           page_type_string == "text_input_page"
-  ) {
-    args[["prompt"]] <- stimuli_wrapped
-  }
-  else {
-    ## leaving here for now in case there's another use I haven't thought of yet
-  }
-  args
-}
 
 item_bank_type_to_stimuli_type <- function(string_of_item_bank_type) {
   if(str_detect(string_of_item_bank_type, "RDS_file")) {
     item_bank_type <- str_remove(string_of_item_bank_type, "RDS_file_")
-  }
-  else {
+  } else {
     item_bank_type <- string_of_item_bank_type
   }
   item_bank_type

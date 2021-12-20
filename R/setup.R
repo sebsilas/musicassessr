@@ -1,34 +1,3 @@
-#' Set whether a musicassessr test is running in production or locally (test)
-#'
-#' @param state
-#'
-#' @return
-#' @export
-#'
-#' @examples
-set_musicassessr_state <- function(state = c(NULL, "production", "test")) {
-  print('set_musicassessr_state')
-  res <- shiny::tags$script()
-
-  if(!is.null(state)) {
-
-    if(state == "test") {
-
-      # system2(command = "npx",
-      #         args = "kill-port 3000")
-
-      system2(command = "node",
-              args = "/Users/sebsilas/aws-musicassessr-local-file-upload/app.js",
-              wait = FALSE)
-    }
-
-    musicassessr_state <<- state
-    res <- shiny::tags$script(paste0("console.log('set musicassessr state'); const musicassessr_state = \'", musicassessr_state, "\';"))
-  }
-  res
-}
-
-
 #' Setup pages for musicassessr test
 #'
 #' @param input

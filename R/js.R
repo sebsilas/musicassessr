@@ -16,17 +16,14 @@ musicassessr_js <- function(state = "production",
   c(
     get_musicassessr_state_js_script(state),
     "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
-    "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js", # this can go once crepe goes, need mic test page replacement
     "https://www.midijs.net/lib/midi.js",
     if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
     system.file("www/js/modernizr-custom.js", package = "musicassessr"),
     "https://unpkg.com/tone@13.8.25/build/Tone.js",
     system.file("www/js/Tonejs-Instruments.js", package = "musicassessr"),
-    # CDN the below
-    if(visual_notation) system.file("www/js/opensheetmusicdisplay.min.js", package = "musicassessr"), # only required when with visual notation
+    if(visual_notation) "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@0.7.6/build/opensheetmusicdisplay.min.js", # only required when with visual notation
     'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js',
     system.file("www/spinner/spin.js", package = "musicassessr"),
-    system.file("www/js/crepe.js", package = "musicassessr"), # get rid of this eventually
     system.file("www/js/musicassessr.js", package = "musicassessr")
   )
 }

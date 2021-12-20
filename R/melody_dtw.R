@@ -71,3 +71,39 @@ prepare_mel_stimuli_for_dtw <- function(melody, durations) {
 
   df$note
 }
+
+#
+# x <- rnorm(100)
+# plot(x)
+# a <- acf(x)
+# pacf(x)
+# ar_mod <- ar(x)
+#
+# x2 <- readr::read_csv("/Users/sebsilas/true_vamp_pyin_pyin_smoothedpitchtrack.csv",
+#                       col_names = c('onset', 'freq'))
+#
+#
+# plot(x2$freq)
+# ar_mod2 <- ar(x2$freq)
+# ar_mod2 %>% broom::tidy()
+#
+# broom::tidy(ar_mod2)
+#
+#
+# AR <- arima(x2$freq, order = c(1,0,0))
+# print(AR)
+#
+# ts.plot(x2$freq)
+# AR_fit <- x2$freq - residuals(AR)
+# points(AR_fit, type = "l", col = 2, lty = 2)
+# sos <- sum(AR$residuals^2)
+#
+#
+# AR2 <- arima(x, order = c(1,0,0))
+# print(AR2)
+# AR2_fit <- x - residuals(AR2)
+# points(AR2_fit, type = "l", col = 2, lty = 2)
+#
+#
+# sos2 <- sum(AR2$residuals^2)
+

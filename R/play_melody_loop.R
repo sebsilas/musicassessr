@@ -342,7 +342,7 @@ update_play_melody_loop_and_save <- function(state, max_goes) {
     number_attempts <- psychTestR::get_global("number_attempts", state)
     attempts_left <- max_goes - number_attempts
     psychTestR::set_global("attempts_left", attempts_left, state)
-    number_attempts <- number_attempts + 1
+    number_attempts <- number_attempts + 1L
     psychTestR::set_global("number_attempts", number_attempts, state)
     psychTestR::save_results_to_disk(complete = FALSE, state, opt)
   })

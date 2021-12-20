@@ -175,54 +175,8 @@ MAST21_dooo <- MAST21_trials(label = "MAST21_dooo", sound = "piano",
 
 
 
-MAST_low_wavs_ordered <-  c("1_F_low.wav",
-                            "2_B_low.wav",
-                            "3_E_low.wav",
-                            "4_C_low.wav",
-                            "5_FF_low.wav",
-                            "6_FC_low.wav",
-                            "7_FE_low.wav",
-                            "8_FB_low.wav" ,
-                            "9_FAC_low.wav",
-                            "10_FAbC_low.wav",
-                            "11_FAbCb_low.wav",
-                            "12_FACs_low.wav",
-                            "13_FACAF_low.wav",
-                            "14_FAbCAbF_low.wav",
-                            "15_FAbCbAbF_low.wav",
-                            "16_FACsAF_low.wav",
-                            "17_BJ1_low.wav",
-                            "18_BJ2_low.wav",
-                            "19_BJ3_low.wav",
-                            "20_BJ4_low.wav",
-                            "21_BJfull_low.wav")
-
-
-MAST_low_wav <- lapply(MAST_low_wavs_ordered, function(file) {
-
-  if(startsWith(file, "1_") | startsWith(file, "2_") |
-     startsWith(file, "3_") | startsWith(file, "4_")) {
-    text <- "Please sing back the note then click 'Stop'."
-  } else {
-    text <- "Please sing back the melody then click 'Stop'."
-  }
-  x <- paste0('musicassessr-assets/MAST21_low/',  file)
-
-  present_stimuli(
-    stimuli = x,
-    stimuli_type = "audio",
-    display_modality = "auditory",
-    page_type = "record_audio_page",
-    page_text = text,
-    hideOnPlay = TRUE,
-    auto_next_page = TRUE)
-})
-
-
 usethis::use_data(MAST21_daah,
                   MAST21_dooo,
                   overwrite = TRUE, internal = TRUE)
-
-usethis::use_data(MAST_low_wav, internal = TRUE, overwrite = TRUE)
 
 

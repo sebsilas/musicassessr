@@ -73,12 +73,6 @@ record_audio_page <- function(body = " ", label = "record_audio_page", stimuli =
 
 }
 
-tidy_freqs <- function(freqs) {
-  freqs.wo.null <- as.numeric(unlist(lapply(freqs, function(x) ifelse(is.null(x), 0, x) )))
-  notes <- lapply(freqs.wo.null, function(x) ifelse(is.na(x) | x== 0, NA, round(hrep::freq_to_midi(as.numeric(x)))) )
-
-  unlist(notes)
-}
 
 auto_next_page <- function(auto_next_page) {
   if(auto_next_page) {
@@ -89,29 +83,11 @@ auto_next_page <- function(auto_next_page) {
 }
 
 
-deploy_crepe <- function(method, crepe_stats = FALSE) {
-
-  if (crepe_stats == TRUE & method == "crepe") {
-
-    shiny::tags$div(shiny::tags$canvas(id = "activation"),
-        shiny::tags$div(id="output",
-                 shiny::tags$br(),
-                 shiny::tags$p('Status: ', shiny::tags$span(id="status")), shiny::tags$br(),
-                 shiny::tags$p('Estimated Pitch: ', shiny::tags$span(id="estimated-pitch")),
-                 shiny::tags$br(),
-                 shiny::tags$p('Voicing Confidence: ', shiny::tags$span(id="voicing-confidence")),
-                 shiny::tags$p('Your sample rate is', shiny::tags$span(id="srate"), ' Hz.')))
-  }
-  else {
-    shiny::tags$div()
-  }
-}
-
 deploy_aws_pyin <- function(show_aws_controls = TRUE, stop_button_text = "Stop") {
 
   # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
-  shiny::tags$div(htmltools::HTML(paste0('
-  <div id="spinnerContainer" class="spinner"></div>
+  shiny::tags$div(htmltools::HTML(
+  '<div id="spinnerContainer" class="spinner"></div>
 
   <div id="controls">
 
@@ -121,19 +97,18 @@ deploy_aws_pyin <- function(show_aws_controls = TRUE, stop_button_text = "Stop")
   <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
   <p style="display: none;"><strong>Recordings:</strong></p>
   <ol id="recordingsList" style="display: none;"></ol>
-      <div id="csv_file" style="display: none;"></div>')), show_aws_buttons(show_aws_controls))
+      <div id="csv_file" style="display: none;"></div>'), show_aws_buttons(show_aws_controls))
 }
 
 
 
-
 show_aws_buttons <- function(show_aws_controls) {
-  if(!show_aws_controls) {
+  if(show_aws_controls) {
+    aws_controls <- shiny::tags$script('')
+  } else {
     aws_controls <- shiny::tags$script('var controls = document.getElementById("controls");
                                 controls.style.visibility = \'hidden\'; // start hidden
                                 console.log("hide controls");')
-  } else {
-    aws_controls <- shiny::tags$script('')
   }
   aws_controls
 }
@@ -141,45 +116,6 @@ show_aws_buttons <- function(show_aws_controls) {
 
 loading <- function() {
   htmltools::HTML('
-  <style>
-    .hollow-dots-spinner, .hollow-dots-spinner * {
-        box-sizing: border-box;
-      }
-      .hollow-dots-spinner {
-        display: none;
-        height: 15px;
-        width: calc(30px * 3);
-        margin-bottom: 15px;
-      }
-      .hollow-dots-spinner .dot {
-        width: 15px;
-        height: 15px;
-        margin: 0 calc(15px / 2);
-        border: calc(15px / 5) solid #ff1d5e;
-        border-radius: 50%;
-        float: left;
-        transform: scale(0);
-        animation: hollow-dots-spinner-animation 1000ms ease infinite 0ms;
-      }
-      .hollow-dots-spinner .dot:nth-child(1) {
-        animation-delay: calc(300ms * 1);
-      }
-      .hollow-dots-spinner .dot:nth-child(2) {
-        animation-delay: calc(300ms * 2);
-      }
-      .hollow-dots-spinner .dot:nth-child(3) {
-        animation-delay: calc(300ms * 3);
-      }
-      @keyframes hollow-dots-spinner-animation {
-        50% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-        }
-      }
-  </style>
   <div class="hollow-dots-spinner" :style="spinnerStyle;display:none;">
     <div class="dot"></div>
       <div class="dot"></div>

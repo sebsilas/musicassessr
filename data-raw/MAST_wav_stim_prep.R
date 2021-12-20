@@ -112,11 +112,6 @@ MAST_wav <- function(trial_type = c("normal", "daa", "doo"),
 
 
 
-#MAST_wav(trial_type = "doo", high_or_low = "high")
-#MAST_wav(trial_type = "doo", high_or_low = "low")
-
-
-
 
 
 MAST21_wav_block_daa <- psychTestR::module("MAST21_daa",
@@ -139,6 +134,7 @@ MAST21_wav_block_daa <- psychTestR::module("MAST21_daa",
      logic = MAST_wav(trial_type = "daa", high_or_low = "high")
     )
 ))
+
 
 
 
@@ -252,7 +248,9 @@ MAST21_wav <- function(state = "production",
 MAST21_wav_block <- MAST21_wav(include_microphone_calibration_page = TRUE)
 
 
-usethis::use_data(MAST21_wav_block, internal = TRUE, overwrite = TRUE)
+usethis::use_data(MAST_low_wavs_ordered, MAST_high_wavs_ordered, MAST_wav, MAST21_wav_block_daa,
+                  MAST_wav, MAST21_wav_block_doo,
+                  MAST21_wav_block, internal = TRUE, overwrite = TRUE)
 
 
 

@@ -1,11 +1,27 @@
 
+#' Score melodic production measures
+#'
+#' @param input
+#' @param result
+#' @param trial_type
+#' @param user_melody_input
+#' @param singing_measures
+#' @param pyin_pitch_track
+#' @param stimuli
+#' @param stimuli_durations
+#'
+#' @return
+#' @export
+#'
+#' @examples
 melody_scoring_from_user_input <- function(input,
                                            result = NULL,
                                            trial_type = "audio",
                                            user_melody_input = NULL,
                                            singing_measures = TRUE,
                                            pyin_pitch_track = NULL,
-                                           stimuli = NA, stimuli_durations = NA) {
+                                           stimuli = NA,
+                                           stimuli_durations = NA) {
 
 
   # grab midi related stuff
@@ -37,7 +53,7 @@ melody_scoring_from_user_input <- function(input,
   else {
 
     # grab data
-    stimuli_length <- get_stimuli_length(input)
+    stimuli_length <- get_stimuli_length(input, stimuli)
     durations <- get_durations(result)
     # calculate measures
     trial_length <- onsets_noteon[length(onsets_noteon)]
@@ -136,9 +152,11 @@ produce_extra_melodic_features <- function(res) {
 
 }
 
-get_stimuli_length <- function(input) {
+get_stimuli_length <- function(input, stimuli) {
   if(length(input$answer_meta_data) > 1) {
     stimuli_length <- input$answer_meta_data$N
+  } else if(!is.na(stimuli)) {
+    stimuli_length <- length(stimuli)
   } else {
     stimuli_length <- 1
   }

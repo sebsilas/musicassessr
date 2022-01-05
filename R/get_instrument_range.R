@@ -55,13 +55,9 @@ get_instrument_range_pages <- function(type, get_range, show_musical_notation = 
     fake_range()
   } else {
     if (type == "microphone") {
-
       get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation)
-
     } else if(type == "midi_keyboard") {
-
       get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation)
-
     } else {
       midi_or_audio_reactive(show_musical_notation = show_musical_notation)
     }
@@ -98,7 +94,6 @@ range_explanation_page <- function() {
 
 get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE) {
 
-
   c(
     range_explanation_page(),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_low_note")), var_name = "bottom_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
@@ -122,12 +117,12 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
   stopifnot(is.character(var_name), is.character(page_type), is.logical(show_musical_notation))
 
   psychTestR::reactive_page(function(answer, state, ...) {
+
     if(page_type == "record_audio_page") {
       note <- answer$user_response
     } else {
       note <- answer$note
     }
-
 
     if(is.na(note)) {
       psychTestR::one_button_page(shiny::tags$div(
@@ -135,17 +130,12 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
         shiny::tags$p("Perhaps you are too quiet, or you have a noisy computer fan.")))
     } else {
 
-      if(show_musical_notation) {
-        stimuli_type <- "both"
-      } else {
-        stimuli_type <- "auditory"
-      }
-
 
       psychTestR::set_global(var_name, note, state)
+
       present_stimuli(stimuli = note,
                       stimuli_type = "midi_notes",
-                      display_modality = stimuli_type,
+                      display_modality = both_or_auditory(show_musical_notation),
                       page_text = psychTestR::i18n("correct_note_message"),
                       page_type = "NAFC_page",
                       choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No")),
@@ -187,25 +177,13 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
 
     span_result <- determine_span(highest_user_note, lowest_user_note, adjust_range)
 
+    range <- c(span_result$lowest_user_note, span_result$highest_user_note)
+
     psychTestR::set_global("span", span_result$span, state)
-
-    if(adjust_range) {
-      range <- c(span_result$lowest_user_note - 3, span_result$highest_user_note + 3)
-    } else {
-      range <- c(span_result$lowest_user_note, span_result$highest_user_note)
-    }
-
-
-    if(show_musical_notation) {
-      stimuli_type <- "both"
-    } else {
-      stimuli_type <- "auditory"
-    }
-
 
     present_stimuli(stimuli = range,
                     stimuli_type = "midi_notes",
-                    display_modality = stimuli_type,
+                    display_modality = both_or_auditory(show_musical_notation),
                     page_text = shiny::tags$div(
                       shiny::tags$p("You can click below to hear your range."),
                       shiny::tags$p("Please note, we may have changed the range to be slightly higher or lower than you actually sang.")
@@ -214,6 +192,16 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
                     button_text = psychTestR::i18n("Next"))
   })
 }
+
+
+both_or_auditory <- function(both) {
+  if(both) {
+    "both"
+  } else {
+    "auditory"
+  }
+}
+
 
 midi_or_audio <- function(type, prompt_text, var_name) {
 

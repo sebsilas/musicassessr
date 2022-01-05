@@ -4,7 +4,7 @@
 \alias{get_answer_pyin_long_note}
 \title{get_answer pyin for long notes}
 \usage{
-get_answer_pyin_long_note(input, ...)
+get_answer_pyin_long_note(input, state, ...)
 }
 \arguments{
 \item{...}{}

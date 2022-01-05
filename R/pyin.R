@@ -1,7 +1,7 @@
-
-#' pyin
+#' Compute pyin on an audio track
 #'
 #' @param file_name
+#' @param sonic_annotator_location
 #' @param transform_file
 #' @param normalise
 #' @param hidePrint
@@ -11,17 +11,50 @@
 #' @export
 #'
 #' @examples
-pyin <- function(file_name, transform_file = NULL,
+pyin <- function(file_name, sonic_annotator_location, transform_file = NULL,
                  normalise = FALSE, hidePrint = TRUE, type = "notes") {
 
-  if(type == "pitch_track") {
-    vamp_cmd <- "vamp:pyin:pyin:smoothedpitchtrack"
-  } else if(type == "notes") {
-    vamp_cmd <- "vamp:pyin:pyin:notes"
-  } else {
-    stop("Unknown type")
-  }
 
+  vamp_cmd <- get_correct_vamp_cmd(type)
+
+  args <- pyin_construct_args(transform_file, vamp_cmd, file_name, normalise)
+
+  sa_out <- pyin_construct_command(sonic_annotator_location, args, hidePrint)
+
+  if(length(sa_out) == 0) {
+    res <- pyin_handle_null(type, file_name)
+  } else {
+
+    res <- read.csv(text = sa_out, header = FALSE) %>% tibble::as_tibble()
+    res <- pyin_tidy(res, type)
+
+    file_name <- res$V1[[1]]
+
+    res <- res %>% dplyr::select(-V1)
+
+    res <- tibble::tibble(file_name, res)
+  }
+}
+
+pyin_tidy <- function(res, type) {
+  if(type == "notes") {
+    res <- res %>%
+      dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
+      dplyr::mutate(
+        onset = round(onset, 2),
+        dur = round(dur, 2),
+        freq = round(freq, 2),
+        note = round(hrep::freq_to_midi(freq)))
+  } else {
+    res <- res %>%
+      dplyr::rename(onset = V2, freq = V3) %>%
+      dplyr::mutate(
+        onset = round(onset, 2),
+        freq = round(freq, 2))
+  }
+}
+
+pyin_construct_args <- function(transform_file, vamp_cmd, file_name, normalise) {
   if(is.null(transform_file)) {
     args <- c("-d",
               vamp_cmd,
@@ -38,57 +71,43 @@ pyin <- function(file_name, transform_file = NULL,
   if(normalise == 1) {
     args <- c(args, "--normalise")
   }
+  args
+}
 
-  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
-
-  cmd <- ifelse(musicassessr_state == "production",
-                "/opt/sonic-annotator/sonic-annotator",
-                "/Users/sebsilas/sonic-annotator")
-
+pyin_construct_command <- function(sonic_annotator_location, args, hidePrint) {
 
   if(hidePrint) {
-    sa_out <- system2(command = cmd,
+    sa_out <- system2(command = sonic_annotator_location,
                       args = args,
                       stdout = TRUE, stderr = FALSE)
   } else {
-    sa_out <- system2(command = cmd,
+    sa_out <- system2(command = sonic_annotator_location,
                       args = args,
                       stdout = TRUE)
   }
+}
 
-  if(length(sa_out) == 0) {
-    if(type == "notes") {
-      res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
-    } else {
-      res <- tibble::tibble(onset = NA, freq = NA, file_name = file_name)
-    }
+
+pyin_handle_null <- function(type, file_name) {
+  if(type == "notes") {
+    res <- tibble::tibble(onset = NA, dur = NA, freq = NA, note = NA, file_name = file_name)
   } else {
-    res <- read.csv(text = sa_out, header = FALSE)
+    res <- tibble::tibble(onset = NA, freq = NA, file_name = file_name)
+  }
+}
 
-    if(type == "notes") {
-      res <- res %>%
-        dplyr::rename(onset = V2, dur = V3, freq = V4) %>%
-        dplyr::mutate(
-          onset = round(onset, 2),
-          dur = round(dur, 2),
-          freq = round(freq, 2),
-          note = round(hrep::freq_to_midi(freq)))
-    } else {
-      res <- res %>%
-        dplyr::rename(onset = V2, freq = V3) %>%
-        dplyr::mutate(
-          onset = round(onset, 2),
-          freq = round(freq, 2))
-    }
-
-    file_name <- res$V1[[1]]
-
-    res <- res %>% dplyr::select(-V1)
-
-    res <- tibble::tibble(file_name, res)
+get_correct_vamp_cmd <- function(type) {
+  if(type == "pitch_track") {
+    "vamp:pyin:pyin:smoothedpitchtrack"
+  } else if(type == "notes") {
+    "vamp:pyin:pyin:notes"
+  } else {
+    stop("Unknown type")
   }
 }
 
 
 
-#pyin('/Users/sebsilas/true.wav')
+# pyin(file_name = '/Users/sebsilas/true.wav', sonic_annotator_location = '/Users/sebsilas/sonic-annotator')
+# r <-pyin(file_name = '/Users/sebsilas/true.wav', sonic_annotator_location = '/Users/sebsilas/sonic-annotator')
+

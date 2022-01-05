@@ -49,7 +49,7 @@ Imports:
     RPostgres
 Depends: 
     R (>= 2.10)
-Remotes:  
+Remotes: 
     pmcharrison/psychTestR,
     syntheso/itembankr,
     gaborcsardi/async,

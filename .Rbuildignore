@@ -3,4 +3,5 @@
 ^LICENSE\.md$
 ^data-raw$
 ^output$
+^test_apps$
 ^app\.R$

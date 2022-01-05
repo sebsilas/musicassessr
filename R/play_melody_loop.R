@@ -113,7 +113,9 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 #' @export
 #'
 #' @examples
-play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes", max_goes = 3L,
+play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes",
+                             max_goes = 3L,
+                             max_goes_forced = FALSE,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                              answer_meta_data = data.frame(), get_answer = get_answer_pyin,
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,
@@ -165,7 +167,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                      var_name = var_name,
                      sound = sound,
                      reactive_stimuli = reactive_stimuli,
-                     rel_to_abs_mel_function = rel_to_abs_mel_function),
+                     rel_to_abs_mel_function = rel_to_abs_mel_function,
+                     max_goes_forced = max_goes_forced),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -175,6 +178,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
 }
 
 present_melody <- function(stimuli, stimuli_type, display_modality, page_title, page_text,
+                           max_goes_forced = TRUE,
                            page_type, answer_meta_data = data.frame(), get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note = 1L,
                            end_note, durations, state, melody_no, var_name, sound = "piano",
@@ -226,7 +230,8 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                     happy_with_response = TRUE,
                     attempts_left = attempts_left,
                     sound = sound,
-                    hideOnPlay = hideOnPlay)
+                    hideOnPlay = hideOnPlay,
+                    max_goes_forced = max_goes_forced)
 
   })
 }

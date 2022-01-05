@@ -4,10 +4,16 @@
 \alias{musicassessr_init}
 \title{Initiate a musicassessr test}
 \usage{
-musicassessr_init(test_username, test, store_results_in_db)
+musicassessr_init(
+  test_username,
+  test,
+  store_results_in_db = FALSE,
+  local_app_file_dir,
+  sonic_annotator_local_location
+)
 }
 \arguments{
-\item{store_results_in_db}{}
+\item{sonic_annotator_local_location}{}
 }
 \value{
 

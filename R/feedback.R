@@ -40,6 +40,9 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       answer$answer_meta_data <- NULL
       answer$pyin_pitch_track <- NULL
 
+      print('answe.2034o')
+      print(answer)
+
       # produce scores table
       scores_tab <- list_to_shiny_table(answer)
 
@@ -100,7 +103,8 @@ feedback_long_tone <- function() {
     answer$stimuli <- NULL
     answer$onset <- NULL
     answer$freq <- NULL
-
+    print('print answer object...')
+    print(answer)
     tab <- list_to_shiny_table(answer)
 
 

@@ -9,8 +9,6 @@ get_answer_pyin(
   type = c("both", "note", "pitch_track"),
   state,
   melconv = FALSE,
-  singing_measures = TRUE,
-  pyin_pitch_track = NULL,
   ...
 )
 }

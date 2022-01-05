@@ -9,7 +9,7 @@ arrhythmic_melody_trials(
   num_items,
   num_examples = FALSE,
   feedback = FALSE,
-  get_answer = musicassessr::get_answer_pyin,
+  get_answer = get_answer_pyin_melodic_production,
   sound = "piano",
   page_text = psychTestR::i18n("sing_melody_trial"),
   page_title = "Sing the Melody",
@@ -19,11 +19,13 @@ arrhythmic_melody_trials(
   get_trial_characteristics_function = NULL,
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
-  rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred
+  rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
+  no_attempts = 3L,
+  max_goes_forced = FALSE
 )
 }
 \arguments{
-\item{rel_to_abs_mel_function}{}
+\item{max_goes_forced}{}
 }
 \value{
 

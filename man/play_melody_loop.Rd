@@ -10,6 +10,7 @@ play_melody_loop(
   var_name = "melody",
   stimuli_type = "midi_notes",
   max_goes = 3L,
+  max_goes_forced = FALSE,
   page_type = "record_audio_page",
   page_title = "Copy The Melody",
  

@@ -1,95 +1,240 @@
-#' Get answer by running pyin on a recorded audio file
+get_answer_midi_melodic_production <- function(input, state, ...) {
+
+  midi_res <- get_answer_midi(input, state, ...)
+
+  if(is.na(midi_res$user_response_midi_note_on) | is.null(midi_res$user_response_midi_note_on)) {
+
+    return(list(error = TRUE, reason = "no midi notes"))
+
+  } else {
+    res <- concat_mel_prod_results(input,
+                          melconv_res = list(notes = NA, durations = NA),
+                          user_response_midi_note_on,
+                          diff(onsets_noteon),
+                          onsets_noteon,
+                          stimuli,
+                          stimuli_durations,
+                          singing_measures,
+                          pyin_pitch_track)
+
+    store_results_in_db(state, res)
+  }
+
+}
+
+#' Get answer for a MIDI page
 #'
 #' @param input
-#' @param type
 #' @param state
-#' @param melconv
-#' @param singing_measures
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_answer_pyin <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE,
-                            singing_measures = TRUE, pyin_pitch_track = NULL, ...) {
+get_answer_midi <- function(input, state, ...) {
 
-  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+  list(
+    user_response_midi_note_on = rjson::fromJSON(input$user_response_midi_note_on),
+    user_response_midi_note_off =  rjson::fromJSON(input$user_response_midi_note_off),
+    onsets_noteon =  rjson::fromJSON(input$onsets_noteon),
+    onsets_noteoff = rjson::fromJSON(input$onsets_noteoff)
+  )
 
-  file_dir <- ifelse(musicassessr_state == "production",
-                     '/srv/shiny-server/files/',
-                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
+}
 
-  file <- paste0(file_dir, input$key, '.wav')
+get_answer_pyin_melodic_production <- function(input,
+                                               type = c("both", "note", "pitch_track"),
+                                               state,
+                                               melconv = FALSE,
+                                               singing_measures = FALSE, ...) {
+
+  print('get_answer_pyin_melodic_production')
+  print(type)
+  print(melconv)
+  print(singing_measures)
+
+
+  pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
+
+  print('pyin_res:')
+  print(pyin_res)
+
+  if(is.na(pyin_res$pyin_res) | is.null(pyin_res$pyin_res)) {
+
+    return(list(error = TRUE, reason = "pyin returned no result"))
+
+  } else {
+    res <- concat_mel_prod_results(input,
+                          pyin_res$melconv_res,
+                          pyin_res$pyin_res$note,
+                          pyin_res$pyin_res$dur,
+                          pyin_res$pyin_res$onset,
+                          rjson::fromJSON(input$stimuli),
+                          rjson::fromJSON(input$stimuli_durations),
+                          singing_measures,
+                          pyin_res$pyin_pitch_track)
+
+    store_results_in_db(state, res)
+  }
+
+  res
+
+}
+
+
+#' Get answer by running pyin on a recorded audio file
+#'
+#' @param input
+#' @param type
+#' @param state
+#' @param melconv
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_pyin <- function(input,
+                            type = c("both", "note", "pitch_track"),
+                            state,
+                            melconv = FALSE, ...) {
+
+  print('get_answer_pyin')
+  print('type..')
+  print(type)
+
+  # get file
+  audio_file <- get_audio_file_for_pyin(input, state)
+
+  # get stimuli
+  stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
+  stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
+
+  # get pyin
+  pyin_res <- get_pyin(audio_file, type, state)
+
+  print('pyin_res...')
+  print(pyin_res)
+
+  # melconv
+  melconv_res <- get_melconv(melconv, pyin_res)
+
+  list(pyin_res = pyin_res$pyin_res,
+       pyin_pitch_track = pyin_res$pyin_pitch_track,
+       melconv_res = melconv_res)
+
+}
+
+concat_mel_prod_results <- function(
+                           input,
+                           melconv_res,
+                           user_melody_input,
+                           user_duration_input,
+                           user_onset_input,
+                           stimuli,
+                           stimuli_durations,
+                           singing_measures,
+                           pyin_pitch_track) {
+
+  c(
+
+    list(file = file,
+         user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
+         user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
+         melconv_notes = melconv_res$notes,
+         melconv_durations = melconv_res$durations),
+
+    score_melodic_production(user_melody_input,
+                             user_duration_input,
+                             user_onset_input,
+                             stimuli,
+                             stimuli_durations,
+                             singing_measures,
+                             pyin_pitch_track,
+                             input$answer_meta_data))
+}
+
+
+get_pyin <- function(audio_file, type, state) {
+
 
   if(type == "note") {
-    pyin_res <- pyin(file)
+    pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
+    list("pyin_res" = pyin_res, "pyin_pitch_track" = NA)
   } else if(type == "pitch_track") {
-    pyin_pitch_track <- pyin(file, type = "pitch_track")
+    pyin_pitch_track <- pyin(audio_file,
+                             sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
+                             type = "pitch_track")
+    list("pyin_res" = NA, "pyin_pitch_track" = pyin_pitch_track)
   } else {
-    pyin_res <- pyin(file)
-    pyin_pitch_track <- pyin(file, type = "pitch_track")
-  }
+    pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
+                     type = "note")
 
-  if(is.null(psychTestR::get_global("melody", state))) {
-    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
-    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
-  } else {
-    stimuli_both <- psychTestR::get_global("melody", state)
-    stimuli <- stimuli_both$melody
-    stimuli_durations <- stimuli_both$durations
-    stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
+    pyin_pitch_track <- pyin(audio_file,
+                             sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
+                             type = "pitch_track")
+
+    list('pyin_res' = pyin_res,
+         'pyin_pitch_track' = pyin_pitch_track)
   }
+}
+
+get_correct_sonic_annotator_location_musicassessr <- function(state) {
+  # within the context of a musicassessr test, get the correct pyin cmd
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+
+  if(musicassessr_state == "production") {
+    "/opt/sonic-annotator/sonic-annotator"
+  } else {
+    psychTestR::get_global("sonic_annotator_local_location", state)
+  }
+}
+
+get_melconv <- function(melconv, pyin_res) {
 
   if(melconv) {
     melconv_res <- melconv_from_pyin_res(pyin_res)
     melconv_notes <- itembankr::str_mel_to_vector(melconv_res$notes)
-    melconv_dur <- itembankr::str_mel_to_vector(melconv_res$dur)
+    melconv_durations <- itembankr::str_mel_to_vector(melconv_res$durations)
   } else {
     melconv_notes <- NA
-    melconv_dur <- NA
+    melconv_durations <- NA
   }
+  list(
+    "notes" = melconv_notes,
+    "durations" = melconv_durations
+  )
+}
+get_correct_app_dir <- function(state) {
+  # musicassessr_state should be a global variable
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
 
-  if(is.na(pyin_res$onset)) {
+  ifelse(musicassessr_state == "production",
+         '/srv/shiny-server/files/',
+         psychTestR::get_global("local_app_file_dir", state))
+}
 
-    res <- list(error = NA, reason = "pyin returned no result", user_satisfied = input$user_satisfied)
+store_results_in_db <- function(state, res) {
 
-  } else {
+  print('store_results_in_db')
 
-    res <- c(
-      list(file = file,
-           user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-           user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
-           melconv_notes = melconv_notes,
-           melconv_dur = melconv_dur
-      ),
+  store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
+  print(store_results_in_db)
 
-      melody_scoring_from_user_input(input, result = if(!is.null(pyin_res)) pyin_res, trial_type = "audio", singing_measures = singing_measures,
-                                     pyin_pitch_track = if(!is.null(pyin_pitch_track)) pyin_pitch_track, stimuli = stimuli, stimuli_durations = stimuli_durations)
-    )
+  if(store_results_in_db) {
+    session_info <- psychTestR::get_session_info(state, complete = FALSE)
+
+    add_trial_to_db(test_username = psychTestR::get_global("test_username", state),
+                    test = psychTestR::get_global("test", state),
+                    session_id = session_info$p_id,
+                    time_started = session_info$current_time - res$trial_length,
+                    time_completed = session_info$current_time,
+                    melody = paste0(res$stimuli, collapse = ","),
+                    res$similarity,
+                    res$accuracy_octaves_allowed,
+                    pyin_res)
   }
-
-  # store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
-  # store_results_in_db <- ifelse(is.null(store_results_in_db), FALSE, TRUE)
-  # print('store_results_in_db?')
-  # print(store_results_in_db)
-  # if(store_results_in_db) {
-  #   session_info <- psychTestR::get_session_info(state, complete = FALSE)
-  #   print(session_info)
-  #   add_trial_to_db(test_username = psychTestR::get_global("test_username", state),
-  #                   test = psychTestR::get_global("test", state),
-  #                   session_id = session_info$p_id,
-  #                   time_started = session_info$current_time - res$trial_length,
-  #                   time_completed = session_info$current_time,
-  #                   melody = paste0(res$stimuli, collapse = ","),
-  #                   res$similarity,
-  #                   res$accuracy_octaves_allowed,
-  #                   pyin_res)
-  # }
-
-  res
-
-
 }
 
 
@@ -102,7 +247,7 @@ get_answer_interval_page <- function(input, state, ...) {
   c(
     list(
       user_choice = input$dropdown),
-    as.list(answer_meta_data)
+      as.list(answer_meta_data)
   )
 }
 
@@ -119,14 +264,17 @@ get_answer_interval_page <- function(input, state, ...) {
 #' @export
 #'
 #' @examples
-get_answer_pyin_mel_prod_only <- function(input, type = c("both", "note", "pitch_track"), state, melconv = FALSE, ...) {
-  get_answer_pyin(input, type, state, melconv = FALSE, singing_measures = FALSE, ...)
+get_answer_pyin_mel_prod_only <- function(input, state, melconv = FALSE, ...) {
+  print('get_answer_pyin_mel_prod_only')
+  # melodic production without singing measures
+  get_answer_pyin_melodic_production(input, type = "note", state,
+                                     melconv = melconv, singing_measures = FALSE,  ...)
 }
 
 
 
-get_answer_pyin_note_only <- function(input, type = "note", state, melconv = FALSE, ...) {
-  get_answer_pyin(input, type = "note", state, melconv = FALSE, ...)
+get_answer_pyin_note_only <- function(input, type = "note", state, ...) {
+  get_answer_pyin_melodic_production(input, type, state, melconv, ...)
 }
 
 #' get_answer pyin for long notes
@@ -138,30 +286,15 @@ get_answer_pyin_note_only <- function(input, type = "note", state, melconv = FAL
 #' @export
 #'
 #' @examples
-get_answer_pyin_long_note <- function(input, ...) {
+get_answer_pyin_long_note <- function(input, state, ...) {
 
   print('get_answer_pyin_long_note')
 
-  cat(file=stderr(), 'get_answer_pyin_long_note', "\n")
-  cat(file=stderr(), musicassessr_state, "\n")
+  audio_file <- get_audio_file_for_pyin(input, state)
 
-
-  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
-
-  cat(file=stderr(), musicassessr_state, "\n")
-
-
-  file_dir <- ifelse(musicassessr_state == "production",
-                     '/srv/shiny-server/files/',
-                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
-
-  cat(file=stderr(), file_dir, "\n")
-
-
-  file <- paste0(file_dir, input$key, '.wav')
-
-  pyin_res <- pyin(file, type = "pitch_track")
-  print(pyin_res)
+  pyin_res <- pyin(audio_file,
+                   sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
+                   type = "pitch_track")
 
   if(is.na(pyin_res$onset)) {
     long_note_pitch_measures <- list("note_accuracy" = NA,
@@ -184,8 +317,6 @@ get_answer_pyin_long_note <- function(input, ...) {
 
 
 }
-
-# get_answer functions
 
 #' Dummy get_answer function
 #'
@@ -213,18 +344,13 @@ get_answer_midi_note_mode <- function(input, state, ...) {
   }
 }
 
-
-get_answer_simple_pyin_summary <- function(input, ...) {
+get_answer_simple_pyin_summary <- function(input, state, ...) {
   print('get_answer_simple_pyin_summary')
 
-  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+  audio_file <- get_audio_file_for_pyin(input, state)
 
-  file_dir <- ifelse(musicassessr_state == "production",
-                     '/srv/shiny-server/files/',
-                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
-
-  file <- paste0(file_dir, input$key, '.wav')
-  pyin_res <- pyin(file)
+  pyin_res <- pyin(audio_file,
+                   sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
 
   res <- ifelse(is.na(pyin_res$note),
                 yes = list("Min." = NA,
@@ -241,50 +367,13 @@ get_answer_simple_pyin_summary <- function(input, ...) {
 
 
 
-#' Get answer for a MIDI page
-#'
-#' @param input
-#' @param state
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_answer_midi <- function(input, state, ...) {
-  print('get_answer_midi')
-
-  user_response_midi_note_on <- rjson::fromJSON(input$user_response_midi_note_on)
-
-  if(is.null(psychTestR::get_global("melody", state))) {
-    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
-    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
-  } else {
-
-    stimuli_both <- psychTestR::get_global("melody", state)
-    stimuli <- stimuli_both$melody
-    stimuli_durations <- stimuli_both$durations
-    stimuli_durations <- ifelse(!is.na(stimuli_durations) | !is.null(stimuli_durations), stimuli_durations, NA)
-  }
-
-  c(melody_scoring_from_user_input(input = input,
-                                 user_melody_input = user_response_midi_note_on,
-                                 trial_type = "midi", singing_measures = FALSE,
-                                 stimuli = stimuli, stimuli_durations = stimuli_durations),
-    user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-    user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating))
-}
 
 
-get_audio_file <- function(input, ...) {
+get_audio_file_for_pyin <- function(input, state, ...) {
 
-  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+  file_dir <- get_correct_app_dir(state)
 
-  file_dir <- ifelse(musicassessr_state == "production",
-                     '/srv/shiny-server/files/',
-                     '/Users/sebsilas/aws-musicassessr-local-file-upload/files/')
-
-  file <- paste0(file_dir, input$key, '.wav')
+  audio_file <- paste0(file_dir, input$key, '.wav')
 }
 
 get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
@@ -294,9 +383,11 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
   if (floor_or_ceiling == "floor") {
 
-    function(input, ...) {
-      file <- get_audio_file(input)
-      pyin_res <- pyin(file)
+    function(input, state, ...) {
+      audio_file <- get_audio_file_for_pyin(input, state)
+      print('file...')
+      print(audio_file)
+      pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
       if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
@@ -307,14 +398,16 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
   } else if (floor_or_ceiling == "ceiling") {
 
-    function(input, ...) {
-      file <- get_audio_file(input)
-      pyin_res <- pyin(file)
+    function(input, state, ...) {
+      audio_file <- get_audio_file_for_pyin(input, state)
+      print('file...')
+      print(audio_file)
+      pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
       if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
-        file <- get_audio_file(input)
-        pyin_res <- pyin(file)
+        audio_file <- get_audio_file_for_pyin(input, state)
+        pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
         freqs <- pyin_res$freq
         list(user_response = ceiling(mean(hrep::freq_to_midi(freqs))))
       }
@@ -322,9 +415,11 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
   } else {
 
-    function(input, ...) {
-      file <- get_audio_file(input)
-      pyin_res <- pyin(file)
+    function(input, state, ...) {
+      audio_file <- get_audio_file_for_pyin(input, state)
+      print('file...')
+      print(audio_file)
+      pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
       if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         list(user_response = NA)
       } else {
@@ -333,7 +428,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
       }
     }
   }
-
 }
 
 

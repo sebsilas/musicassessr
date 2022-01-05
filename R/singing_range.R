@@ -33,32 +33,32 @@ get_voice_range_page <- function(with_examples = TRUE) {
         htmltools::HTML(
       '<p><strong>Soprano</strong></p>
         <audio controls>
-        <source src="musicassessr-assets/audio/voice_ranges/soprano_voice_no_intro.m4a" type="audio/mp4">
+        <source src="https://adaptiveeartraining.com/magmaGold/audio/voice_ranges/soprano_voice_no_intro.m4a" type="audio/mp4">
           Your browser does not support the audio element.
         </audio>
 
 
           <p><strong>Alto</strong></p>
           <audio controls>
-          <source src="musicassessr-assets/audio/voice_ranges/alto_voice_no_intro.m4a" type="audio/mp4">
+          <source src="https://adaptiveeartraining.com/magmaGold/audio/voice_ranges/alto_voice_no_intro.m4a" type="audio/mp4">
             Your browser does not support the audio element.
           </audio>
 
             <p><strong>Tenor</strong></p>
             <audio controls>
-            <source src="musicassessr-assets/audio/voice_ranges/tenor_voice_no_intro.m4a" type="audio/mp4">
+            <source src="https://adaptiveeartraining.com/magmaGold/audio/voice_ranges/tenor_voice_no_intro.m4a" type="audio/mp4">
               Your browser does not support the audio element.
             </audio>
 
               <p><strong>Baritone</strong></p>
               <audio controls>
-              <source src="musicassessr-assets/audio/voice_ranges/baritone_voice_no_intro.m4a" type="audio/mp4">
+              <source src="https://adaptiveeartraining.com/magmaGold/audio/voice_ranges/baritone_voice_no_intro.m4a" type="audio/mp4">
                 Your browser does not support the audio element.
               </audio>
 
                 <p><strong>Bass</strong></p>
                 <audio controls>
-                <source src="musicassessr-assets/audio/voice_ranges/bass_voice_no_intro.m4a" type="audio/mp4">
+                <source src="https://adaptiveeartraining.com/magmaGold/audio/voice_ranges/bass_voice_no_intro.m4a" type="audio/mp4">
                   Your browser does not support the audio element.
                 </audio>')),
       choices = names(vocal_ranges),

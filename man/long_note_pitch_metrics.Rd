@@ -4,10 +4,10 @@
 \alias{long_note_pitch_metrics}
 \title{Get pitch metrics for long tone trials}
 \usage{
-long_note_pitch_metrics(target_pitch, pyin_res)
+long_note_pitch_metrics(target_pitch, freq)
 }
 \arguments{
-\item{pyin_res}{}
+\item{freq}{}
 }
 \value{
 

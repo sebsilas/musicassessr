@@ -2,10 +2,11 @@
 % Please edit documentation in R/pyin.R
 \name{pyin}
 \alias{pyin}
-\title{pyin}
+\title{Compute pyin on an audio track}
 \usage{
 pyin(
   file_name,
+  sonic_annotator_location,
   transform_file = NULL,
   normalise = FALSE,
   hidePrint = TRUE,
@@ -19,5 +20,5 @@ pyin(
 
 }
 \description{
-pyin
+Compute pyin on an audio track
 }

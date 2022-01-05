@@ -4,13 +4,7 @@
 \alias{get_answer_pyin_mel_prod_only}
 \title{Get mel production scores, but without singing/pitch accuracy measures}
 \usage{
-get_answer_pyin_mel_prod_only(
-  input,
-  type = c("both", "note", "pitch_track"),
-  state,
-  melconv = FALSE,
-  ...
-)
+get_answer_pyin_mel_prod_only(input, state, melconv = FALSE, ...)
 }
 \arguments{
 \item{...}{}

@@ -1,4 +1,19 @@
 
+
+plot_normal_dist_plus_score <- function(data, highlighted_score) {
+  # load('test_apps/PBET/output/leaderboard.rda')
+  std <- sd(leaderboard$score)
+  meann <- mean(leaderboard$score)
+  highlighted_score_y <- pnorm(highlighted_score + 1, mean = meann, sd = std) - pnorm(highlighted_score, mean = meann, sd = std)
+  ggplot2::ggplot(data=leaderboard, ggplot2::aes(score)) +
+    ggplot2::stat_function(fun = dnorm, args = c(mean = meann, sd = std), alpha = .4) +
+    ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
+    ggplot2::geom_vline(xintercept = meann, color = "orange", alpha = .8) +
+    ggplot2::xlim(0, 3*std) +
+    ggplot2::theme(panel.background = ggplot2::element_blank())
+}
+
+
 present_scores <- function(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic) {
 
   if(num_items_long_tone > 0) {
@@ -288,25 +303,17 @@ produce_naive_final_pbet_score <- function(score_result_object,
                                            num_items_arrhythmic,
                                            num_items_rhythmic) {
 
-  print('produce_naive_final_pbet_score')
   scor <- present_scores_pbet(score_result_object, num_items_arrhythmic, num_items_rhythmic)
-  print('scor')
-  print(scor)
+
   arr_scors <- scor$arrhythmic
-  print('arr_scors: ')
-  print(arr_scors)
   final_arr <- round(arr_scors[[1]] * 1000)
-  print('final_arr: ')
-  print(final_arr)
+
   rhy_scors <- scor$rhythmic
-  print('rhy_scors: ')
-  print(rhy_scors)
+
   final_rhy <- round(rhy_scors[[1]] * 1000)
-  print('final_rhy: ')
-  print(final_rhy)
+
   final_score <- final_arr + final_rhy
-  print('final_score: ')
-  print(final_score)
+
   final_score
 
 }
@@ -338,10 +345,11 @@ share_score_page <- function(test_name, url, hashtag = "CanISing") {
   psychTestR::reactive_page(function(state, answer, ...) {
 
   score <- psychTestR::get_local("final_score", state)
+
   username <- answer
 
   leaderboard <- shiny::renderTable({
-    add_score_to_leaderboard(username, score)
+    head(add_score_to_leaderboard(username, score), 10)
   }, rownames = TRUE, colnames = FALSE, width = "50%")
 
 
@@ -362,6 +370,7 @@ share_score_page <- function(test_name, url, hashtag = "CanISing") {
   psychTestR::one_button_page(shiny::tags$div(
     shiny::tags$h1("Leaderboard"),
     shiny::tags$div(leaderboard),
+    shiny::tags$div(plot_normal_dist_plus_score(leaderboard, score)),
     shiny::tags$h1("Share Your Score!"),
     shiny::tags$table(style = " border-spacing: 10px; border-collapse: separate;",
       shiny::tags$tr(

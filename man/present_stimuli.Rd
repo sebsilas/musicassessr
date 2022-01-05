@@ -40,6 +40,7 @@ present_stimuli(
   button_area_id = "button_area",
   hideOnPlay = FALSE,
   record_immediately = FALSE,
+  max_goes_forced = FALSE,
   ...
 )
 }

@@ -25,6 +25,7 @@ record_audio_page(
   page_text_first = TRUE,
   happy_with_response = FALSE,
   attempts_left = integer(),
+  max_goes_forced = FALSE,
   ...
 )
 }

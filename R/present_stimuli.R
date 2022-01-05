@@ -1,4 +1,6 @@
 
+
+
 #' Present Stimuli
 #'
 #' @param stimuli
@@ -54,7 +56,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             page_text_first = TRUE, happy_with_response = FALSE,
                             attempts_left = integer(), visual_music_notation_id = "sheet_music",
                             play_button_id = "playButton", button_area_id = "button_area",
-                            hideOnPlay = FALSE, record_immediately = FALSE, ...) {
+                            hideOnPlay = FALSE, record_immediately = FALSE, max_goes_forced = FALSE, ...) {
 
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
@@ -70,7 +72,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
             is.logical(page_text_first), is.logical(happy_with_response),
             is.integer(attempts_left), is.character(visual_music_notation_id),
             is.character(play_button_id), is.character(button_area_id),
-            is.logical(hideOnPlay), is.logical(record_immediately))
+            is.logical(hideOnPlay), is.logical(record_immediately), is.logical(max_goes_forced))
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
@@ -127,7 +129,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               happy_with_response = happy_with_response,
                               attempts_left = attempts_left,
                               auto_next_page = auto_next_page,
-                              page_text_first = page_text_first, ...)
+                              page_text_first = page_text_first, max_goes_forced = max_goes_forced, ...)
 
   } else if(page_type == "record_audio_page") {
 
@@ -142,7 +144,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               auto_next_page = auto_next_page, user_rating = user_rating,
                               page_text_first = page_text_first,
                               happy_with_response = happy_with_response,
-                              attempts_left = attempts_left, ...)
+                              attempts_left = attempts_left, max_goes_forced = max_goes_forced, ...)
   }
 
   else {
@@ -204,7 +206,7 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                                button_text = "Next", play_button_text = "Play", get_answer = get_answer_null,
                                show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE,
                                choices = character(), user_rating = FALSE, page_text_first = TRUE,
-                               happy_with_response = FALSE, attempts_left = integer(), ...) {
+                               happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, ...) {
 
 
   stopifnot(is.character(page_type), class(stimuli_wrapped) == "shiny.tag",
@@ -214,7 +216,7 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
             is.character(play_button_text), is.function(get_answer),
             is.logical(show_record_button), is.logical(save_answer), is.logical(auto_next_page),
             is.character(choices) & is.vector(choices), is.logical(user_rating), is.logical(page_text_first),
-            is.logical(happy_with_response), is.integer(attempts_left))
+            is.logical(happy_with_response), is.integer(attempts_left), is.logical(max_goes_forced))
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
@@ -257,7 +259,8 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                 "auto_next_page"  = auto_next_page,
                 "user_rating" = user_rating,
                 "happy_with_response" = happy_with_response,
-                "attempts_left" = attempts_left))
+                "attempts_left" = attempts_left,
+                "max_goes_forced" = max_goes_forced))
   } else {
     stop('Unknown page type.')
   }
@@ -288,27 +291,16 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                                  page_type = page_type,
                                                  slide_length = slide_length,
                                                  rate = rate, page_title = page_title, ...)
-  }
-
-  else if (stimuli_type == "images") {
+  } else if (stimuli_type == "images") {
     return_stimuli <- present_stimuli_images(stimuli = stimuli, slide_length = slide_length, ...)
-  }
-
-  else if (stimuli_type == "video") {
+  } else if (stimuli_type == "video") {
     return_stimuli <- present_stimuli_video(video_url = stimuli, ...)
-  }
-
-  else if (stimuli_type == "audio") {
+  } else if (stimuli_type == "audio") {
     return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, ...)
-  }
-
-  else if (stimuli_type == "audio_WJD") {
+  } else if (stimuli_type == "audio_WJD") {
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
-  }
-
-  # musical stimuli types
-
-  else if (stimuli_type == "midi_notes") {
+    # musical stimuli types
+  }  else if (stimuli_type == "midi_notes") {
     return_stimuli <- present_stimuli_midi_notes(stimuli = stimuli, display_modality = display_modality, get_answer = get_answer,
                                                  page_type = page_type, midi_device = midi_device,
                                                  show_aws_controls = show_aws_controls,
@@ -319,44 +311,25 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                                  visual_music_notation_id = visual_music_notation_id,
                                                  play_button_id = play_button_id, button_area_id = button_area_id,
                                                  record_immediately = record_immediately, ...)
-  }
-
-  else if (stimuli_type == "frequencies") {
+  } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)
-  }
-
-  else if (stimuli_type == "pitch_classes") {
+  } else if (stimuli_type == "pitch_classes") {
     return_stimuli <- present_stimuli_pitch_classes(stimuli, display_modality, ...)
-  }
-
-  else if (stimuli_type == "scientific_music_notation") {
+  } else if (stimuli_type == "scientific_music_notation") {
     return_stimuli <- present_stimuli_scientific_music_notation(stimuli, display_modality, ...)
-  }
-
-  else if (stimuli_type == "rhythms") {
+  } else if (stimuli_type == "rhythms") {
     return_stimuli <- present_stimuli_rhythms(stimuli, ...)
-  }
-
-  # music file types
-
-  else if (stimuli_type == "midi_file") {
+    # music file types
+  } else if (stimuli_type == "midi_file") {
     return_stimuli <- present_stimuli_midi_file(stimuli, display_modality, start_note = start_note, end_note = end_note, ...)
-  }
-
-  else if (stimuli_type == "musicxml_file") {
+  } else if (stimuli_type == "musicxml_file") {
     return_stimuli <- present_stimuli_music_xml_file(stimuli, display_modality, ...)
-  }
-
-  # mixed
-
-  else if (stimuli_type == "mixed") {
+    # mixed
+  } else if (stimuli_type == "mixed") {
     return_stimuli <- present_stimuli_mixed(display_modality, button_text = button_text, ...)
-  }
-
-  else {
+  } else {
     stop(paste0('stimuli_type not recognised: ', stimuli_type))
   }
-
 }
 
 

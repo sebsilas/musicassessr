@@ -60,11 +60,11 @@ sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72
       }
       paste0(abs, collapse = ",")
     })
-    print(abs_interval)
+
     abs_intervals$abs_interval <- abs_interval
-    print(abs_intervals)
+
     abs_intervals <- abs_intervals[sample(1:nrow(abs_intervals), nrow(abs_intervals)), ]
-    print(abs_intervals)
+
     psychTestR::set_global("abs_intervals", abs_intervals, state)
 
   })
@@ -93,12 +93,7 @@ play_interval_page <- function(interval = NULL,
 
     if(is.null(interval)) {
       abs_intervals <- psychTestR::get_global("abs_intervals", state)
-      print('is null interval')
-      print(abs_intervals)
       abs_interval <- abs_intervals[trial_no, ]
-      print(trial_no)
-      print(abs_interval)
-      print(abs_interval$abs_interval)
       psychTestR::set_global("answer_meta_data", abs_interval,  state)
     }
 

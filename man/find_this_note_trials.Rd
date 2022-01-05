@@ -9,7 +9,7 @@ find_this_note_trials(
   num_examples = NULL,
   feedback = FALSE,
   page_title = "Find This Note",
-  get_answer = get_answer_pyin,
+  get_answer = get_answer_pyin_mel_prod_only,
   page_type = "record_audio_page",
  
     page_text = "Press play to hear the note. Try and play it on your instrument when you can."

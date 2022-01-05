@@ -10,7 +10,6 @@ score_melodic_production(
   user_onset_input = numeric(),
   stimuli = numeric(),
   stimuli_durations = numeric(),
-  singing_measures = TRUE,
   pyin_pitch_track = tibble::tibble(),
   user_response_midi_note_off = numeric(),
   onsets_noteoff = numeric(),

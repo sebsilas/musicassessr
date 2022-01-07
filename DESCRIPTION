@@ -1,12 +1,12 @@
 Package: musicassessr
-Title: Musical And General Memory Assessment
+Title: musicassessr; develop music psychology tests and assess musicological/psychological data
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Seb",
            family = "Silas",
            role = c("aut", "cre"),
            email = "sebsilas@gmail.com")
-Description: musicassessr helps build different types of psychological tests via the psychTestR package. There is a particular emphasis on deploying musical stimuli (e.g., musical notation, melody playback) and musical response data collection (e.g., audio and MIDI) as well as testing memory more generally. 
+Description: musicassessr helps build different types of psychological tests via the psychTestR package. There is a particular emphasis on deploying musical stimuli (e.g., musical notation, melody playback) and musical response data collection (e.g., audio and MIDI) as well as testing psychological phenomenon more generally. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

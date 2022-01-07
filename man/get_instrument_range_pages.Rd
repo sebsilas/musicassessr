@@ -4,10 +4,15 @@
 \alias{get_instrument_range_pages}
 \title{Get Instrument Range Pages}
 \usage{
-get_instrument_range_pages(type, get_range, show_musical_notation = FALSE)
+get_instrument_range_pages(
+  type,
+  get_range,
+  show_musical_notation = FALSE,
+  adjust_range = FALSE
+)
 }
 \arguments{
-\item{show_musical_notation}{}
+\item{adjust_range}{}
 }
 \value{
 

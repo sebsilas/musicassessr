@@ -5,3 +5,6 @@
 ^output$
 ^test_apps$
 ^app\.R$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

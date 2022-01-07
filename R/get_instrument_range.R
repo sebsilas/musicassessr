@@ -35,17 +35,19 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
 
 
 
+
 #' Get Instrument Range Pages
 #'
 #' @param type
 #' @param get_range
 #' @param show_musical_notation
+#' @param adjust_range
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_instrument_range_pages <- function(type, get_range, show_musical_notation = FALSE) {
+get_instrument_range_pages <- function(type, get_range, show_musical_notation = FALSE, adjust_range = FALSE) {
 
   # a short multi-page protocol to get the user's frequency range
 
@@ -55,11 +57,11 @@ get_instrument_range_pages <- function(type, get_range, show_musical_notation = 
     fake_range()
   } else {
     if (type == "microphone") {
-      get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation)
+      get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
     } else if(type == "midi_keyboard") {
-      get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation)
+      get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
     } else {
-      midi_or_audio_reactive(show_musical_notation = show_musical_notation)
+      midi_or_audio_reactive(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
     }
   }
 
@@ -92,21 +94,21 @@ range_explanation_page <- function() {
                               Sometimes the computer can make a large error, and you will know when that happens, and you will have an opportunity to sing your lowest note again, and give the computer another chance."))
 }
 
-get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE) {
+get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
 
   c(
     range_explanation_page(),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_low_note")), var_name = "bottom_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), psychTestR::i18n("get_range_high_note")), var_name = "top_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
-    present_range(show_musical_notation)
+    present_range(show_musical_notation, adjust_range)
   )
 }
 
-get_note_until_satisfied_loop_midi <- function(show_musical_notation = FALSE) {
+get_note_until_satisfied_loop_midi <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
   c(
     get_note_until_satisfied_loop(prompt_text = psychTestR::i18n("get_range_midi_low_note"), var_name = "bottom_range", page_type = "record_midi_page", show_musical_notation = show_musical_notation),
     get_note_until_satisfied_loop(prompt_text = psychTestR::i18n("get_range_midi_high_note"), var_name = "top_range", page_type = "record_midi_page", show_musical_notation = show_musical_notation),
-    present_range(show_musical_notation)
+    present_range(show_musical_notation, adjust_range)
   )
 }
 

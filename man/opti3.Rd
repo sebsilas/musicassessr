@@ -6,16 +6,18 @@
 \usage{
 opti3(
   pitch_vec1,
-  dur_vec1,
+  onset_vec1,
   pitch_vec2,
-  dur_vec2,
+  onset_vec2,
   N = 3,
   use_bootstrap = TRUE,
-  return_components = FALSE
+  return_components = FALSE,
+  segmentation1 = NULL,
+  segmentation2 = NULL
 )
 }
 \arguments{
-\item{return_components}{}
+\item{segmentation2}{}
 }
 \value{
 

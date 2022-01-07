@@ -7,6 +7,8 @@
 classify_duration(dur_vec, ref_duration = 0.5)
 }
 \arguments{
+\item{dur_vec}{best, should be a ioi vector}
+
 \item{ref_duration}{}
 }
 \value{

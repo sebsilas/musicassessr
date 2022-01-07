@@ -1,15 +1,18 @@
 # musicassessr
 
-`musicassessr` is an R package for facilitating the deployment of stimuli in psychological tests as well as recording and scoring data. Essentially, it provides some convenience functions to get (particularly, musical) stimuli into [`psychTestR`](https://pmcharrison.github.io/psychTestR/) and deploy psychology tests.
+`musicassessr` is an R package for facilitating the deployment of (particularly, musical) stimuli in psychological tests as well as recording and scoring data. Essentially, it provides some convenience functions to deploy stimuli via [`psychTestR`](https://pmcharrison.github.io/psychTestR/) and also supplies some functions collect new types of data, process and score this data, among other things.
 
 ## Usage
 
-To build a psychology test, `musicassessr` assumes and provides some core use cases:
-1) you want to present stimuli from an item bank (e.g already created by [`itembankr`](https://github.com/syntheso/itembankr/)) in [`psychTestR`](https://pmcharrison.github.io/psychTestR/)
-2) you want to sample from your item bank, perhaps based on some information the user provides at test time
-3) you are interested in recording some 'non-standard' data and processing it
+`musicassessr` assumes and facilitates some core use cases:
 
-We now discuss these uses cases
+1. you want to present stimuli from a musical item bank (e.g already created by [`itembankr`](https://github.com/syntheso/itembankr/)) in [`psychTestR`](https://pmcharrison.github.io/psychTestR/)
+
+2. you want to sample from your item bank, perhaps based on some information the user provides at test time
+
+3. you are interested in recording some musical or psychological data, processing and scoring it
+
+We will now discuss these use cases.
 
 ## Presenting stimuli
 

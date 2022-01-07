@@ -15,11 +15,12 @@ setup_pages(
   get_instrument_range = FALSE,
   absolute_url,
   select_instrument = FALSE,
-  get_instrument_range_musical_notation = FALSE
+  get_instrument_range_musical_notation = FALSE,
+  adjust_range = FALSE
 )
 }
 \arguments{
-\item{get_instrument_range_musical_notation}{}
+\item{adjust_range}{}
 }
 \value{
 

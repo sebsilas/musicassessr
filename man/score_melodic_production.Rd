@@ -13,11 +13,12 @@ score_melodic_production(
   pyin_pitch_track = tibble::tibble(),
   user_response_midi_note_off = numeric(),
   onsets_noteoff = numeric(),
-  answer_meta_data = tibble::tibble()
+  answer_meta_data = tibble::tibble(),
+  as_tb = FALSE
 )
 }
 \arguments{
-\item{answer_meta_data}{}
+\item{as_tb}{}
 }
 \value{
 

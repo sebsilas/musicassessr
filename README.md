@@ -1,18 +1,10 @@
 # musicassessr
 
-`musicassessr` is an R package for facilitating the deployment of (particularly, musical) stimuli in psychological tests as well as recording and scoring data. Essentially, it provides some convenience functions to deploy stimuli via [`psychTestR`](https://pmcharrison.github.io/psychTestR/) and also supplies some functions collect new types of data, process and score this data, among other things.
+`musicassessr` is an R package for facilitating the deployment of (particularly, musical) stimuli in psychological tests as well as recording and scoring data. Essentially, it provides some convenience functions to deploy stimuli via [`psychTestR`](https://pmcharrison.github.io/psychTestR/) and also supplies some functions collect new types of data, process and score this data, among other things. With `musicassessr` you can:
+
 
 ## Usage
 
-`musicassessr` assumes and facilitates some core use cases:
-
-1. you want to present stimuli from a musical item bank (e.g already created by [`itembankr`](https://github.com/syntheso/itembankr/)) in [`psychTestR`](https://pmcharrison.github.io/psychTestR/)
-
-2. you want to sample from your item bank, perhaps based on some information the user provides at test time
-
-3. you are interested in recording some musical or psychological data, processing and scoring it
-
-We will now discuss these use cases.
 
 ## Presenting stimuli
 
@@ -23,6 +15,8 @@ The main function is `present_stimuli` which can be used in a number of ways:
 ```
 
 ## Sampling from an item bank
+
+present stimuli from a musical item bank (e.g already created by [`itembankr`](https://github.com/syntheso/itembankr/)) in [`psychTestR`](https://pmcharrison.github.io/psychTestR/)
 
 
 ## Recording non-standard data
@@ -52,16 +46,21 @@ These steps are required if you wish to use any of the following tests we have a
 
 ## Notice
 
-Please note, there are costs associated with AWS usage. We cannot accept responsibility for any charges incurred.
+Please note, there are costs associated with AWS usage. You must take your own responsibility for charges incurred.
 
 ## References
 
-- psychTestR
 
-Audio Processing:
-- sonic annotator
-- pYIN
-- crepe
+Beaty, R. E., Frieler, K., Norgaard, M., Merseal, H. M., MacDonald, M. C., & Weiss, D. J. (2021). Expert musical improvisations contain sequencing biases seen in language production. Journal of Experimental Psychology. https://doi.org/10.1037/xge0001107
 
-Data Scoring:
-- opti3
+Cannam, C., Jewell, M. O., Rhodes, C., Sandler, M., & d’Inverno, M. (2010). Linked Data And You: Bringing music research software into the Semantic Web. Journal of New Music Research, 39(4), 313–325.
+
+Crayencour, H.-C., Velichkina, O., Frieler, K., Höger, F., Pfleiderer, M., Henry, L., Solis, G., Wolff, D., Weyde, T., Peeters, G., Basaran, D., Smith, J., & Proutskova, P. (2021). The DTL1000 Jazz Solo Dataset (in prep.). Journal on Computing and Cultural Heritage
+
+Harrison, P. M. C. (2020). psychTestR: An R package for designing and conducting behavioural psychological experiments. Journal of Open Source Software, 5(49), 2088. https://doi.org/10.21105/joss.02088
+
+Mauch, M., & Dixon, S. (2014). PYIN: a fundamental frequency estimator using probabilistic threshold distributions. Proceedings of the IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP 2014).
+
+Müllensiefen, D., & Frieler, K. (2007). Modelling experts’ notions of melodic similarity. Musicae Scientiae, 11(1_suppl), 183–210. https://doi.org/10.1177/102986490701100108
+
+

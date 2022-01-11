@@ -12,19 +12,26 @@
 #' @examples
 get_melody_dtw <- function(stimuli, stimuli_durations, pyin_pitch_track, pyin_res) {
 
-  stopifnot(is.numeric(stimuli), is.numeric(stimuli_durations),
-            is.data.frame(pyin_pitch_track), is.data.frame(pyin_res))
+  stopifnot(is.numeric(stimuli),
+            is.numeric(stimuli_durations),
+            is.data.frame(pyin_pitch_track),
+            is.data.frame(pyin_res))
 
-  user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, pyin_res)
-  stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
+  if(length(pyin_pitch_track) > 1) {
 
-  melody_dtw <- tryCatch({
-    dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)$distance
-  },
-  error = function(cond) {
-    print(cond)
+    user_prod_for_dtw <- prepare_mel_trial_user_prod_for_dtw(pyin_pitch_track, pyin_res)
+    stimuli_for_dtw <- prepare_mel_stimuli_for_dtw(stimuli, stimuli_durations)
+
+    melody_dtw <- tryCatch({
+      dtw::dtw(user_prod_for_dtw, stimuli_for_dtw, keep = TRUE)$distance
+    },
+    error = function(cond) {
+      print(cond)
+      return(NA)
+    })
+  } else {
     return(NA)
-  })
+  }
 }
 
 plot_dtw_melody <- function(stimuli, stimuli_durations, pyin_smoothed_pitchtrack) {
@@ -39,9 +46,6 @@ plot_dtw_melody <- function(stimuli, stimuli_durations, pyin_smoothed_pitchtrack
 }
 
 prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_res) {
-
-  print(pyin_smoothed_pitchtrack)
-  print(pyin_res)
 
   # participant entry to dtw
   pyin_notes <- pyin_res %>% dplyr::select(-dur)

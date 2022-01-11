@@ -1,15 +1,31 @@
 
+
 #' Useful (but unsophisticated) util to collapse a df into a pretty string df
 #'
 #' @param df
+#' @param exclude_cols
 #'
 #' @return
 #' @export
 #'
 #' @examples
-to_string_df <- function(df) {
-  df %>% dplyr::summarise_all(paste0, collapse = ",")
+to_string_df <- function(df, exclude_cols = character()) {
+
+  if(length(exclude_cols) > 0L) {
+    df1 <- df %>% dplyr::summarise_at(dplyr::vars(-exclude_cols), paste0, collapse = ",")
+    df2 <- df %>% dplyr::select(exclude_cols) %>% dplyr::slice(1)
+    cbind(df1, df2)
+  } else {
+    df %>% dplyr::summarise_all(paste0, collapse = ",")
+  }
 }
+
+# d <- data.frame(
+#   a = 1:10,
+#   b = LETTERS[1:10]
+# )
+#
+# d2 <- to_string_df(d, exclude_cols = "b")
 
 
 #' Check if user has requirements for musicassessr test

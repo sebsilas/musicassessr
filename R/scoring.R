@@ -6,11 +6,11 @@
 #' @param user_onset_input
 #' @param stimuli
 #' @param stimuli_durations
-#' @param singing_measures
 #' @param pyin_pitch_track
 #' @param user_response_midi_note_off
 #' @param onsets_noteoff
 #' @param answer_meta_data
+#' @param as_tb
 #'
 #' @return
 #' @export
@@ -24,15 +24,17 @@ score_melodic_production <- function(user_melody_input = numeric(),
                                      pyin_pitch_track = tibble::tibble(),
                                      user_response_midi_note_off = numeric(),
                                      onsets_noteoff = numeric(),
-                                     answer_meta_data = tibble::tibble()
+                                     answer_meta_data = tibble::tibble(),
+                                     as_tb = FALSE
                                      ) {
 
   stopifnot(
     is.numeric(user_melody_input), is.numeric(user_duration_input),
-    is.numeric(user_onset_input), is.logical(singing_measures),
+    is.numeric(user_onset_input),
     tibble::is_tibble(pyin_pitch_track) | is.na(pyin_pitch_track), is.numeric(stimuli),
     is.numeric(stimuli_durations), is.numeric(user_response_midi_note_off) | is.na(user_response_midi_note_off),
-    is.numeric(onsets_noteoff) | is.na(onsets_noteoff), tibble::is_tibble(answer_meta_data) | is.na(answer_meta_data)
+    is.numeric(onsets_noteoff) | is.na(onsets_noteoff), tibble::is_tibble(answer_meta_data) | is.na(answer_meta_data),
+    is.logical(as_tb)
   )
 
   # features df
@@ -63,8 +65,9 @@ score_melodic_production <- function(user_melody_input = numeric(),
   accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
   accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
 
-  # similarity
-  similarity <- get_similarity(stimuli, stimuli_length, user_melody_input, user_duration_input, stimuli_durations)
+  # opti3
+
+  opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)
   no_note_events <- length(user_melody_input)
 
   # by note events measures
@@ -79,8 +82,7 @@ score_melodic_production <- function(user_melody_input = numeric(),
   mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(features_df$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
   melody_dtw <- get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, features_df)
 
-
-  list(
+  res <- list(
     stimuli = stimuli,
     stimuli_durations = stimuli_durations,
     stimuli_length = stimuli_length,
@@ -107,15 +109,24 @@ score_melodic_production <- function(user_melody_input = numeric(),
     correct_by_note_events_octaves_allowed_log_normal = correct_by_note_events_octaves_allowed_log_normal,
     accuracy = accuracy,
     accuracy_octaves_allowed = accuracy_octaves_allowed,
-    similarity = similarity$opti3,
-    ngrukkon = similarity$ngrukkon,
-    harmcore = similarity$harmcore,
-    rhythfuzz = similarity$rhythfuzz,
+    opti3_harmcore1 = opti3$opti3_harmcore1,
+    opti3_harmcore2 = opti3$opti3_harmcore2,
+    ngrukkon = opti3$ngrukkon,
+    harmcore = opti3$harmcore,
+    harmcore2 = opti3$harmcore2,
+    rhythfuzz = opti3$rhythfuzz,
     note_precision = note_precision,
     melody_dtw = ifelse(is.na(melody_dtw), NA, melody_dtw),
     mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
     mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
     answer_meta_data = answer_meta_data)
+
+  if(as_tb) {
+    tibble::as_tibble(base::t(res))
+  } else {
+    res
+  }
+
 
 }
 
@@ -131,7 +142,8 @@ score_melodic_production <- function(user_melody_input = numeric(),
 produce_extra_melodic_features <- function(pyin_style_res) {
 
   if(!"note" %in% names(pyin_style_res) & "freq" %in% names(pyin_style_res)) {
-    pyin_style_res <- pyin_style_res %>% dplyr::mutate(note = round(hrep::freq_to_midi(freq)))
+    pyin_style_res <- pyin_style_res %>%
+      dplyr::mutate(note = round(hrep::freq_to_midi(freq)))
   }
 
   pyin_style_res <- pyin_style_res %>%
@@ -142,15 +154,16 @@ produce_extra_melodic_features <- function(pyin_style_res) {
       ioi_class = classify_duration(ioi)) %>%
         segment_phrase()
 
-  if("freq" %in% names(pyin_style_res)) {
-    pyin_style_res %>% dplyr::mutate(
-      cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
-      # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
-      pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
-      pitch_class_numeric = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq)))
-    )
+  if(!"freq" %in% names(pyin_style_res)) {
+    pyin_style_res <- pyin_style_res %>% dplyr::mutate(freq = hrep::midi_to_freq(note))
   }
-  pyin_style_res
+
+  pyin_style_res %>% dplyr::mutate(
+    cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
+    # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
+    pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
+    pitch_class_numeric = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq)))
+  )
 
 }
 
@@ -173,19 +186,25 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
   }
 }
 
-get_similarity <- function(stimuli, stimuli_length, user_melody_input, durations, stimuli_durations = NA) {
-  # similarity
-  if(length(user_melody_input) < 3 | stimuli_length < 3) {
-    list(opti3 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA)
+get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin) {
+  # opti3
+  if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {
+    list(opti3_harmcore1 = NA, opti3_harmcore2 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA, harmcore2 = NA)
   } else {
     if(is.na(stimuli_durations)) {
       stimuli_durations <- rep(0.5, stimuli_length)
     }
-    similarity <- itembankr::opti3(pitch_vec1 = stimuli,
-                                   dur_vec1 = stimuli_durations,
-                                   pitch_vec2 = user_melody_input,
-                                   dur_vec2 = durations,
-                                   return_components = TRUE)
+
+    stimuli_df <- tibble::tibble(
+      note = stimuli,
+      dur = stimuli_durations,
+      onset = cumsum(stimuli_durations),
+      ioi = c(NA, diff(onset)),
+      ioi_class = classify_duration(ioi)
+    ) %>% segment_phrase()
+
+    opti3 <- opti3_df(melody1 = stimuli_df,
+                     melody2 = user_input_as_pyin)
   }
 }
 
@@ -235,7 +254,7 @@ check_answer <- function(user_response, correct_answer,
   correct
 }
 
-check_similarity <- function(user_response, correct_answer, reverse = FALSE) {
+check_opti3 <- function(user_response, correct_answer, reverse = FALSE) {
   # if reverse == TRUE, then check for the reverse of the answer
 
   if (reverse == TRUE) {

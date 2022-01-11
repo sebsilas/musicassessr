@@ -69,20 +69,20 @@ get_instrument_range_pages <- function(type, get_range, show_musical_notation = 
 }
 
 
-midi_or_audio_reactive <- function(show_musical_notation = FALSE) {
+midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
   c(
     # is MIDI?
     psychTestR::conditional(test = function(state, ...) {
       response_type <- psychTestR::get_global("response_type", state)
       response_type == "MIDI"
     },
-    logic = get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation)),
+    logic = get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)),
 
     psychTestR::conditional(test = function(state, ...){
       response_type <- psychTestR::get_global("response_type", state)
       response_type == "Microphone"
     },
-    logic = get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation))
+    logic = get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range))
   )
 }
 

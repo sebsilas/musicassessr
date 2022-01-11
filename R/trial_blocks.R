@@ -23,7 +23,7 @@
 #' @export
 #'
 #' @examples
-arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE, feedback = FALSE,
+arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
                                      get_answer = get_answer_pyin_melodic_production, sound = "piano",
                                      page_text = psychTestR::i18n("sing_melody_trial"),
                                      page_title = "Sing the Melody",
@@ -139,7 +139,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = FALSE,
 #' @export
 #'
 #' @examples
-rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, feedback = FALSE,
+rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
                                    get_answer = get_answer_pyin_melodic_production,
                                    sound = "piano",
                                    page_text = psychTestR::i18n("sing_melody_trial"),
@@ -242,7 +242,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = NULL, fe
 #' @export
 #'
 #' @examples
-long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
+long_tone_trials <- function(num_items, num_examples = 0L, feedback = FALSE,
                              page_title = "Sing Along With This Note",
                              get_answer = get_answer_pyin_long_note,
                              page_type = "record_audio_page") {
@@ -313,10 +313,10 @@ long_tone_trials <- function(num_items, num_examples = NULL, feedback = FALSE,
 #' @export
 #'
 #' @examples
-find_this_note_trials <- function(num_items, num_examples = NULL,
+find_this_note_trials <- function(num_items, num_examples = 0L,
                                   feedback = FALSE,
                                  page_title = "Find This Note",
-                                 get_answer = get_answer_pyin_mel_prod_only,
+                                 get_answer = get_answer_pyin_melodic_production,
                                  page_type = "record_audio_page",
                                  page_text = "Press play to hear the note. Try and play it on your instrument when you can.") {
 
@@ -384,8 +384,8 @@ find_this_note_trials <- function(num_items, num_examples = NULL,
 #' @export
 #'
 #' @examples
-wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = FALSE, feedback = FALSE,
-                                    item_length = c(3,15), get_answer = get_answer_pyin_mel_prod_only, sound = "piano",
+wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
+                                    item_length = c(3,15), get_answer = get_answer_pyin_melodic_production, sound = "piano",
                                     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                     page_title = "Play the Melody And Rhythm from Audio",
                                     instruction_text = "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can.") {

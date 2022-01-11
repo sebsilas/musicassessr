@@ -42,7 +42,7 @@ fake_id <- function(x) paste0(sample(1:10, 10), collapse = "")
 #   time_started = unlist(lapply(1:100, function(days) as.POSIXct(lubridate::now() - lubridate::days(days), format = "%Y-%m-d-H:%M:%OS"))),
 #   time_completed = unlist(lapply(1:100, function(days) as.POSIXct(lubridate::now() - lubridate::days(days), format = "%Y-%m-d-H:%M:%OS"))),
 #   session_length = sample(1:100, 100),
-#   melody = rep(item_sampler(itembankr::WJD("phrases"), 10) %>% dplyr::pull(melody), 10),
+#   melody = rep(item_sampler(WJD::WJD("phrases"), 10) %>% dplyr::pull(melody), 10),
 #   opti3 = runif(100),
 #   accuracy = runif(100),
 #   ability_estimate = runif(100))

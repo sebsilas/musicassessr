@@ -4,10 +4,10 @@
 \alias{to_string_df}
 \title{Useful (but unsophisticated) util to collapse a df into a pretty string df}
 \usage{
-to_string_df(df)
+to_string_df(df, exclude_cols = character())
 }
 \arguments{
-\item{df}{}
+\item{exclude_cols}{}
 }
 \value{
 

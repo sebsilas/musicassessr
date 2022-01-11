@@ -9,7 +9,7 @@ opti3_df(
   melody1,
   melody2,
   N = 3,
-  use_bootstrap = TRUE,
+  use_bootstrap = "both",
   only_winner = TRUE,
   use_transposition_hints = TRUE
 )

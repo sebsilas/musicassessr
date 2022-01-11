@@ -7,7 +7,7 @@
 rhythmic_melody_trials(
   item_bank,
   num_items,
-  num_examples = NULL,
+  num_examples = 0L,
   feedback = FALSE,
   get_answer = get_answer_pyin_melodic_production,
   sound = "piano",

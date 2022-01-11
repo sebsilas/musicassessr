@@ -6,7 +6,7 @@
 \usage{
 get_answer_pyin(
   input,
-  type = c("both", "note", "pitch_track"),
+  type = c("both", "notes", "pitch_track"),
   state,
   melconv = FALSE,
   ...

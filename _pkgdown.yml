@@ -1,0 +1,65 @@
+url: https://syntheso.github.io/musicassessr
+bibliography: musicassessr.bib
+
+reference:
+
+- title: "Trial blocks"
+  desc: >
+    Functions for recording data in psychTestR
+  contents:
+  - ends_with("_trials")
+
+
+- title: "Pages"
+  desc: >
+    Functions for recording data in psychTestR
+  contents:
+  - ends_with("page")
+  - ends_with("pages")
+  - ends_with("loop")
+
+- title: "Present Stimuli"
+  desc: "Functions for presenting stimuli"
+  contents:
+  - starts_with("present")
+
+- title: "Scoring"
+  desc: "Functions for scoring results"
+  contents:
+  - starts_with("score")
+  - opti3
+  - opti3_df
+  - ngrukkon
+  - rhythfuzz
+  - harmcore
+
+- title: "Sampling functions"
+  desc: "Functions for sampling from an item bank"
+  contents:
+  - item_sampler
+
+
+- title: "Feedback functions"
+  desc: "Functions for presenting feedback to participants"
+  contents:
+  - starts_with("feedback")
+
+
+- title: "Audio analysis"
+  desc: "Fucnctions for helping analysis of audio"
+  contents:
+  - pyin
+  - compute_SNR
+
+- title: "Utility"
+  desc: "Useful utility functions, particularly for working with musical data"
+  contents:
+  - get_all_ngrams
+  - segment_phrase
+
+- title: "get_answer_functions"
+  desc: psychTestR get_answer functions
+  contents:
+  - starts_with("get_answer")
+
+

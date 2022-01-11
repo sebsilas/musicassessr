@@ -297,10 +297,10 @@ display_previous_answer_music_notation_pitch_class <- function() {
     else {
 
       similarity <- opti3(pitch_vec1 = stimuli,
-                          dur_vec1 = stimuli_durations,
+                          onset_vec1 = stimuli_durations,
                           pitch_vec2 = user_response,
-                          #dur_vec2 = rep(.25, length(user_response)) # arrhythmic
-                          dur_vec2 = user_response_timecodes) # rhythmic
+                          #onset_vec2 = rep(.25, length(user_response)) # arrhythmic
+                          onset_vec2 = user_response_timecodes) # rhythmic
       ## NB!!! need to get the actual onsets of the stimuli ^^^^
 
       # for arrhythmic?
@@ -397,10 +397,10 @@ display_previous_answer_music_notation_pitch_class2 <- function() {
     else {
 
       # similarity <- opti3(pitch_vec1 = stimuli,
-      #                     dur_vec1 = stimuli_durations,
+      #                     onset_vec1 = stimuli_durations,
       #                     pitch_vec2 = user_response,
-      #                     #dur_vec2 = rep(.25, length(user_response)) # arrhythmic
-      #                     dur_vec2 = user_response_timecodes) # rhythmic
+      #                     #onset_vec2 = rep(.25, length(user_response)) # arrhythmic
+      #                     onset_vec2 = user_response_timecodes) # rhythmic
       ## NB!!! need to get the actual onsets of the stimuli ^^^^
 
       # for arrhythmic?

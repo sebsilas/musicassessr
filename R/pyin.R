@@ -97,6 +97,7 @@ pyin_handle_null <- function(type, file_name) {
 }
 
 get_correct_vamp_cmd <- function(type) {
+
   if(type == "pitch_track") {
     "vamp:pyin:pyin:smoothedpitchtrack"
   } else if(type == "notes") {

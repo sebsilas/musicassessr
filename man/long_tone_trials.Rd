@@ -6,7 +6,7 @@
 \usage{
 long_tone_trials(
   num_items,
-  num_examples = NULL,
+  num_examples = 0L,
   feedback = FALSE,
   page_title = "Sing Along With This Note",
   get_answer = get_answer_pyin_long_note,

@@ -2,7 +2,7 @@
 # pyin-related
 
 get_answer_pyin_melodic_production <- function(input,
-                                               type = c("both", "note", "pitch_track"),
+                                               type = c("both", "notes", "pitch_track"),
                                                state,
                                                melconv = FALSE, ...) {
 
@@ -31,7 +31,7 @@ get_answer_pyin_melodic_production <- function(input,
 
 
 
-get_answer_pyin_note_only <- function(input, type = "note", state, ...) {
+get_answer_pyin_note_only <- function(input, type = "notes", state, ...) {
   get_answer_pyin_melodic_production(input, type, state, melconv, ...)
 }
 
@@ -64,7 +64,7 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   }
 
   c(
-    list(file = file,
+    list(file = audio_file,
          stimuli = as.numeric(input$stimuli),
          onset = pyin_res$onset,
          freq = pyin_res$freq
@@ -90,7 +90,7 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 #'
 #' @examples
 get_answer_pyin <- function(input,
-                            type = c("both", "note", "pitch_track"),
+                            type = c("both", "notes", "pitch_track"),
                             state,
                             melconv = FALSE, ...) {
 
@@ -198,7 +198,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 get_pyin <- function(audio_file, type, state) {
 
 
-  if(type == "note") {
+  if(type == "notes") {
     pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
     list("pyin_res" = pyin_res, "pyin_pitch_track" = NA)
   } else if(type == "pitch_track") {
@@ -208,7 +208,7 @@ get_pyin <- function(audio_file, type, state) {
     list("pyin_res" = NA, "pyin_pitch_track" = pyin_pitch_track)
   } else {
     pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
-                     type = "note")
+                     type = "notes")
 
     pyin_pitch_track <- pyin(audio_file,
                              sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
@@ -336,19 +336,12 @@ get_answer_save_aws_key <- function(input, ...) {
 
 # generic
 
-concat_mel_prod_results <- function(
-  input,
-  melconv_res,
-  user_melody_input,
-  user_duration_input,
-  user_onset_input,
-  stimuli,
-  stimuli_durations,
-  pyin_pitch_track) {
+concat_mel_prod_results <- function(input, melconv_res, user_melody_input, user_duration_input,
+                                    user_onset_input, stimuli, stimuli_durations, pyin_pitch_track, ...) {
 
   c(
 
-    list(file = file,
+    list(file = get_audio_file_for_pyin(input, state),
          user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
          user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
          melconv_notes = melconv_res$notes,

@@ -46,7 +46,7 @@
 #' @examples
 present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type = character(),
                             page_text = " ", page_title = " ",  slide_length = numeric(),
-                            answer_meta_data = character(), get_answer = get_answer_null, save_answer = TRUE,
+                            answer_meta_data = character(), get_answer = function() {}, save_answer = TRUE,
                             stimuli_reactive = FALSE, midi_device = " ",
                             show_aws_controls = FALSE, page_label = "x",
                             button_text = "Next", play_button_text = "Play",
@@ -203,7 +203,7 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                                page_text = "Click to hear the stimuli", page_title = " ", interactive = FALSE,
                                stimuli_reactive = FALSE, answer_meta_data = character(), midi_device = " ",
                                show_aws_controls = FALSE, page_label = " ",
-                               button_text = "Next", play_button_text = "Play", get_answer = get_answer_null,
+                               button_text = "Next", play_button_text = "Play", get_answer = function() {},
                                show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE,
                                choices = character(), user_rating = FALSE, page_text_first = TRUE,
                                happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, ...) {

@@ -82,12 +82,12 @@ bootstrap_implicit_harmonies <- function(pitch_vec, segmentation = NULL, sample_
   if(!is.null(segmentation)){
     segments <- unique(segmentation)
     ret <-
-      map_dfr(segments, function(seg){
+      purrr::map_dfr(segments, function(seg){
         bootstrap_implicit_harmonies(pitch_vec[segmentation == seg],
                                      NULL,
                                      sample_frac = sample_frac,
                                      size = size) %>%
-          mutate(segment = seg)
+          dplyr::mutate(segment = seg)
       })
     return(ret)
   }
@@ -95,12 +95,12 @@ bootstrap_implicit_harmonies <- function(pitch_vec, segmentation = NULL, sample_
   sample_size <- max(1, round(sample_frac * l))
 
   bs <-
-    map_dfr(1:size, function(x){
+    purrr::map_dfr(1:size, function(x){
       pv <- sample(pitch_vec, replace = T, sample_size)
-      get_implicit_harmonies(pitch_vec = pv,  only_winner = T)
+      get_implicit_harmonies(pitch_vec = pv,  only_winner = TRUE)
     })
-  best_key <- bs %>% count(key) %>% arrange(desc(n)) %>% pull(key)
-  bs %>% filter(key == best_key[1]) %>% head(1)
+  best_key <- bs %>% dplyr::count(key) %>% dplyr::arrange(dplyr::desc(n)) %>% dplyr::pull(key)
+  bs %>% dplyr::filter(key == best_key[1]) %>% head(1)
 }
 
 #' Classify ioi class (see Frieler.. )
@@ -123,11 +123,43 @@ classify_duration <- function(dur_vec, ref_duration = .5){
   rhythm_class
 }
 
+#' Compute the rhythfuzz measure
+#'
+#' @param dur_vec1
+#' @param dur_vec2
+#'
+#' @return
+#' @export
+#'
+#' @examples
 rhythfuzz <- function(dur_vec1, dur_vec2){
   edit_sim(intToUtf8(dur_vec1 + 128), intToUtf8(dur_vec2 + 128))
 }
 
-harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2 = NULL){
+
+#' Compute harmcore
+#'
+#' @param pitch_vec1
+#' @param pitch_vec2
+#' @param segmentation1
+#' @param segmentation2
+#' @param segmentation_type
+#'
+#' @return
+#' @export
+#'
+#' @examples
+harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2 = NULL, segmentation_type = c("phrase_boundary_marker",
+                                                                                                               "segment_id")){
+
+  # phrase_boundary_marker e.g., c(0, 0, 0, 1, 0 0, 1)
+  # segment_id e.g., c(1, 1, 1, 2, 2, 2, 3)
+
+  if(segmentation_type == "phrase_boundary_marker") {
+    segmentation1 <- cumsum(segmentation1)
+    segmentation2 <- cumsum(segmentation2)
+  }
+
   implicit_harm1 <- get_implicit_harmonies(pitch_vec1, segmentation1) %>% dplyr::pull(key)
   implicit_harm2 <- get_implicit_harmonies(pitch_vec2, segmentation2) %>% dplyr::pull(key)
   common_keys <- levels(factor(union(implicit_harm1, implicit_harm2)))
@@ -136,13 +168,26 @@ harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2
   edit_sim(intToUtf8(implicit_harm1), intToUtf8(implicit_harm2))
 }
 
-harmcore2 <- function(pitch_vec1, pitch_vec2){
-  implicit_harm1 <- bootstrap_implicit_harmonies(pitch_vec1) %>% dplyr::pull(key)
-  implicit_harm2 <- bootstrap_implicit_harmonies(pitch_vec2) %>% dplyr::pull(key)
+
+
+
+harmcore2 <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2 = NULL, segmentation_type = c("phrase_boundary_marker",
+                                                                                                                "segment_id")) {
+
+  # phrase_boundary_marker e.g., c(0, 0, 0, 1, 0 0, 1)
+  # segment_id e.g., c(1, 1, 1, 2, 2, 2, 3)
+
+  if(segmentation_type == "phrase_boundary_marker") {
+    segmentation1 <- cumsum(segmentation1)
+    segmentation2 <- cumsum(segmentation2)
+  }
+
+  implicit_harm1 <- bootstrap_implicit_harmonies(pitch_vec1, segmentation1) %>% dplyr::pull(key)
+  implicit_harm2 <- bootstrap_implicit_harmonies(pitch_vec2, segmentation2) %>% dplyr::pull(key)
   common_keys <- levels(factor(union(implicit_harm1, implicit_harm2)))
   implicit_harm1 <- factor(implicit_harm1, levels = common_keys) %>% as.integer()
   implicit_harm2 <- factor(implicit_harm2, levels = common_keys) %>% as.integer()
-  edit_sim(intToUtf8(implicit_harm1), intToUtf8(implicit_harm2))
+  harmcore2 <- edit_sim(intToUtf8(implicit_harm1), intToUtf8(implicit_harm2))
 }
 
 #little helper to calculate modus of simple vector
@@ -189,9 +234,9 @@ find_best_transposition <- function(pitch_vec1, pitch_vec2){
 #' Score using the opti3 measure of similarity
 #'
 #' @param pitch_vec1
-#' @param dur_vec1
+#' @param onset_vec1
 #' @param pitch_vec2
-#' @param dur_vec2
+#' @param onset_vec2
 #' @param N
 #' @param use_bootstrap
 #' @param return_components
@@ -204,7 +249,8 @@ find_best_transposition <- function(pitch_vec1, pitch_vec2){
 #' @examples
 opti3 <- function(pitch_vec1, onset_vec1,
                   pitch_vec2, onset_vec2,
-                  N = 3, use_bootstrap = TRUE,
+                  N = 3,
+                  use_bootstrap = TRUE,
                   return_components = FALSE,
                   segmentation1 = NULL, segmentation2 = NULL) {
 
@@ -237,8 +283,6 @@ opti3 <- function(pitch_vec1, onset_vec1,
   #         v_ngrukkon, v_rhythfuzz, v_harmcore, opti3)
 
   opti3 <- max(min(opti3, 1), 0)
-
-  print(v_rhythfuzz)
 
   if(return_components) {
     list("opti3" = opti3,
@@ -299,34 +343,48 @@ read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
 opti3_df <- function(melody1,
                      melody2,
                      N = 3,
-                     use_bootstrap = TRUE,
+                     use_bootstrap = "both",
                      only_winner = TRUE,
-                     use_transposition_hints = TRUE){
+                     use_transposition_hints = TRUE) {
 
   stopifnot(all(c(melody1$note, melody2$note) > 0L))
 
   v_rhythfuzz <- rhythfuzz(melody1$ioi_class, melody2$ioi_class)
 
   if(use_transposition_hints) {
+
     trans_hints <- get_transposition_hints(melody1$note, melody2$note)
 
+
     sims <- purrr::map_dfr(trans_hints, function(th){
+
       v_ngrukkon <- ngrukkon(melody1$note, melody2$note + th, N = N)
 
-      if(use_bootstrap){
-        v_harmcore <- harmcore2(melody1$note, melody2$note + th)
+      if(use_bootstrap == "both"){
+        v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
+        v_harmcore2 <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
+      } else if(use_bootstrap) {
+        v_harmcore <- NA
+        v_harmcore2 <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
       } else{
         v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
+        v_harmcore2 <- NA
       }
+
+      opti3_harmcore1 <- 0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146
+      opti3_harmcore2 <- 0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore2 - 0.146
+      opti3_harmcore2 <- max(min(opti3_harmcore2, 1), 0)
 
       tidyr::tibble(transposition = th,
                     ngrukkon = v_ngrukkon,
                     rhythfuzz = v_rhythfuzz,
                     harmcore = v_harmcore,
-                    opti3 =  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146)
+                    harmcore2 = v_harmcore2,
+                    opti3_harmcore1 =  opti3_harmcore1,
+                    opti3_harmcore2 =  opti3_harmcore2)
     })
 
-    res <- sims %>% dplyr::arrange(dplyr::desc(opti3))
+    res <- sims %>% dplyr::arrange(dplyr::desc(opti3_harmcore1))
 
     if(only_winner) {
       res %>% dplyr::slice(1)
@@ -351,6 +409,7 @@ opti3_df <- function(melody1,
 
 
 }
+
 
 
 best_subsequence_similarity <- function(melody1, melody2){
@@ -390,7 +449,7 @@ best_subsequence_similarity <- function(melody1, melody2){
 #' @examples
 segment_phrase <- function(note_track){
   # (originally add_phrase_info from KF)
-  note_track <- note_track %>% dplyr::mutate(ioi = c(NA, diff(onset)), note_pos = 1:dplyr::n())
+  note_track <- note_track %>% dplyr::mutate(ioi = c(0, diff(onset)), note_pos = 1:dplyr::n())
   outliers <- note_track %>% dplyr::pull(ioi) %>% boxplot(plot = FALSE) %>% `[[`("out")
   outliers <- outliers[outliers > .65]
   r <- note_track %>%
@@ -398,6 +457,7 @@ segment_phrase <- function(note_track){
                   phrasbeg = as.numeric(dplyr::lag(phrasend) | note_pos == 1))
 
   r$phrasend[is.na(r$phrasend)] <- 0
+  r$phrasend[length(r$phrasend)] <- 1
   r
 }
 
@@ -425,11 +485,11 @@ edit_sim <- function(s, t){
 
 
 
+#
 # melody_1 <- read_melody('/Users/sebsilas/Downloads/K_S/HBD_test/seb.csv', style = "tony")
 # melody_2 <- read_melody('/Users/sebsilas/Downloads/K_S/HBD_test/sylvia.csv', style = "tony")
 #
 # da <- opti3_df(melody_1, melody_2)
-#
 # da1 <- opti3_df(melody_1, melody_2, only_winner = FALSE)
 #
 # da2 <- opti3(melody_1$note, melody_1$onset, melody_2$note, melody_2$onset)
@@ -451,4 +511,91 @@ edit_sim <- function(s, t){
 #          segmentation1 = melody_1$phrasbeg,
 #          segmentation2 = melody_2$phrasbeg)
 #
-# harmcore2(melody_1$note, melody_2$note)
+# harmcore2(melody_1$note,
+#           melody_2$note,
+#           segmentation1 = melody_1$phrasbeg,
+#           segmentation2 = melody_2$phrasbeg)
+# random_melody <- function() {
+#   melody_length <- sample(5:20, 1)
+#   mel1 <- sample(50:72, melody_length, replace = TRUE)
+#   mel2 <- sample(50:72, melody_length, replace = TRUE)
+#   seg1 <- sample(0:1, melody_length, replace = TRUE)
+#   seg2 <- sample(0:1, melody_length, replace = TRUE)
+#   # list(mel1, mel2)
+#   harmcore <- harmcore(mel1, mel2, seg1, seg2)
+#   r <- list(
+#     mel1 = mel1,
+#     mel2 = mel2,
+#     seg1 = seg1,
+#     seg2 = seg2,
+#     harmcore = harmcore
+#   )
+#   print(r)
+#   r
+# }
+#
+# random_melody2 <- function() {
+#   melody_length <- sample(5:20, 1)
+#   mel1 <- sample(50:72, melody_length, replace = TRUE)
+#   mel2 <- sample(50:72, melody_length, replace = TRUE)
+#   seg1 <- sample(0:1, melody_length, replace = TRUE)
+#   seg2 <- sample(0:1, melody_length, replace = TRUE)
+#   # list(mel1, mel2)
+#   harmcore <- harmcore2(mel1, mel2, seg1, seg2)
+#   r <- list(
+#     mel1 = mel1,
+#     mel2 = mel2,
+#     seg1 = seg1,
+#     seg2 = seg2,
+#     harmcore = harmcore
+#   )
+#   print(r)
+#   r
+# }
+#
+# mels <- lapply(1:100, function(x) {
+#   print(x)
+#   random_melody()
+# })
+#
+#
+# mels2 <- lapply(1:100, function(x) {
+#   print(x)
+#   random_melody2()
+# })
+#
+
+
+# pitch + segmentation match
+harmcore(c(60, 62, 64, 65, 62, 63, 65, 66), c(60, 62, 64, 65, 62, 63, 65, 66),
+         c(1, 0, 0, 0, 1, 0, 0, 0), c(1, 0, 0, 0, 1, 0, 0, 0))
+
+# > 1
+
+#  segmentation matches but pitch doesn't match in both segments
+harmcore(c(61, 63, 65, 66, 62, 63, 65, 66), c(60, 62, 64, 65, 63, 64, 66, 67),
+         c(1, 0, 0, 0, 1, 0, 0, 0), c(1, 0, 0, 0, 1, 0, 0, 0))
+
+# > 0
+
+#  segmentation matches but pitch doesn't match in first segment
+harmcore(c(61, 63, 65, 66, 62, 63, 65, 66), c(60, 62, 64, 65, 62, 63, 65, 66),
+         c(1, 0, 0, 0, 1, 0, 0, 0), c(1, 0, 0, 0, 1, 0, 0, 0))
+# > 0
+# This is surprising
+
+#  pitches match, but segmentation does not
+harmcore(c(60, 62, 64, 65, 62, 63, 65, 66), c(60, 62, 64, 65, 62, 63, 65, 66),
+         c(1, 0, 1, 0, 1, 0, 1, 0), c(1, 0, 0, 0, 1, 0, 0, 0))
+# > 0.5
+
+harmcore(c(60, 62, 64, 65, 62, 63, 65, 66), c(60, 62, 64, 65, 62, 63, 65, 66),
+         c(1, 0, 1, 0, 1, 1, 1, 0), c(1, 0, 0, 0, 1, 0, 0, 1))
+
+# > 0.5
+
+
+
+
+
+

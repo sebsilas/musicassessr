@@ -16,7 +16,7 @@
 #' @param item_characteristics_sampler_function
 #' @param item_characteristics_pars
 #' @param rel_to_abs_mel_function
-#' @param no_attempts
+#' @param max_goes
 #' @param max_goes_forced
 #'
 #' @return
@@ -33,7 +33,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                      item_characteristics_sampler_function = NULL,
                                      item_characteristics_pars = NULL,
                                      rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
-                                     no_attempts = 3L,
+                                     max_goes = 3L,
                                      max_goes_forced = FALSE) {
 
   if(num_items == 0) {
@@ -80,7 +80,9 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                example = TRUE,
                                feedback = feedback,
                                sound = sound,
-                               get_trial_characteristics_function = get_trial_characteristics_function),
+                               get_trial_characteristics_function = get_trial_characteristics_function,
+                               max_goes_forced = max_goes_forced,
+                               max_goes = max_goes),
                              ## sample
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -105,7 +107,9 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            arrhythmic = TRUE,
                            feedback = feedback,
                            sound = sound,
-                           get_trial_characteristics_function = get_trial_characteristics_function)
+                           get_trial_characteristics_function = get_trial_characteristics_function,
+                           max_goes_forced = max_goes_forced,
+                           max_goes = max_goes)
                        )
     )
   }
@@ -132,7 +136,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param item_characteristics_sampler_function
 #' @param item_characteristics_pars
 #' @param rel_to_abs_mel_function
-#' @param no_attempts
+#' @param max_goes
 #' @param max_goes_forced
 #'
 #' @return
@@ -150,7 +154,7 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feed
                                    item_characteristics_sampler_function = NULL,
                                    item_characteristics_pars = NULL,
                                    rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
-                                   no_attempts = 3L,
+                                   max_goes = 3L,
                                    max_goes_forced = FALSE) {
 
   if(num_items == 0) {
@@ -197,7 +201,9 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feed
               example = TRUE,
               feedback = feedback,
               sound = sound,
-              get_trial_characteristics_function = get_trial_characteristics_function),
+              get_trial_characteristics_function = get_trial_characteristics_function,
+              max_goes_forced = max_goes_forced,
+              max_goes = max_goes),
         psychTestR::one_button_page(shiny::tags$div(
           shiny::tags$h2(page_title),
           shiny::tags$p("Now you're ready for the real thing!")))
@@ -223,7 +229,9 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feed
           rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
           feedback = feedback,
           sound = sound,
-          get_trial_characteristics_function = get_trial_characteristics_function)
+          get_trial_characteristics_function = get_trial_characteristics_function,
+          max_goes_forced = max_goes_forced,
+          max_goes = max_goes)
       )
     )
   }

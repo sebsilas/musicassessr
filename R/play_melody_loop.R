@@ -1,5 +1,6 @@
 
 
+
 #' A page builder for creating a specified number of play_melody_loops
 #'
 #' @param presampled_items
@@ -19,6 +20,7 @@
 #' @param feedback
 #' @param sound
 #' @param get_trial_characteristics_function
+#' @param max_goes_forced
 #'
 #' @return
 #' @export
@@ -28,10 +30,11 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                                         page_type = "record_audio_page", max_goes = 3L,
                                         page_title = psychTestR::i18n("copy_melody_title"),
                                         page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                        get_answer = get_answer_save_aws_key, rel_to_abs_mel_function = NULL,
+                                        get_answer = get_answer_pyin_melodic_production, rel_to_abs_mel_function = NULL,
                                         start_from_trial_no = 1L, clip_stimuli_length = FALSE,
                                         arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano",
-                                        get_trial_characteristics_function = NULL) {
+                                        get_trial_characteristics_function = NULL,
+                                        max_goes_forced = FALSE) {
 
   if(is.null(presampled_items)) {
     # items should be a dataframe
@@ -50,7 +53,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                        arrhythmic = arrhythmic,
                        example = example,
                        sound = sound,
-                       get_trial_characteristics_function = get_trial_characteristics_function)
+                       get_trial_characteristics_function = get_trial_characteristics_function,
+                       max_goes_forced = max_goes_forced)
       })
 
       items
@@ -71,7 +75,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                          clip_stimuli_length = clip_stimuli_length,
                          arrhythmic = arrhythmic,
                          example = example,
-                         sound = sound)   })
+                         sound = sound,
+                         max_goes_forced = max_goes_forced)   })
 
     }
 
@@ -84,6 +89,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 
 
 
+
+
 #' Create a psychTestR test loop for having several attempts at playing back a melody.
 #'
 #' @param melody
@@ -91,6 +98,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 #' @param var_name
 #' @param stimuli_type
 #' @param max_goes
+#' @param max_goes_forced
 #' @param page_type
 #' @param page_title
 #' @param page_text
@@ -117,7 +125,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                              max_goes = 3L,
                              max_goes_forced = FALSE,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                             answer_meta_data = data.frame(), get_answer = get_answer_pyin,
+                             answer_meta_data = data.frame(), get_answer = get_answer_pyin_melodic_production,
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,
                              start_note = 1L, end_note = "end", durations = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE, sound = "piano",
@@ -178,7 +186,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
 }
 
 present_melody <- function(stimuli, stimuli_type, display_modality, page_title, page_text,
-                           max_goes_forced = TRUE,
+                           max_goes_forced = FALSE,
                            page_type, answer_meta_data = data.frame(), get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note = 1L,
                            end_note, durations, state, melody_no, var_name, sound = "piano",

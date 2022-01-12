@@ -25,17 +25,17 @@ score_melodic_production <- function(user_melody_input = numeric(),
                                      user_response_midi_note_off = numeric(),
                                      onsets_noteoff = numeric(),
                                      answer_meta_data = tibble::tibble(),
-                                     as_tb = FALSE
-                                     ) {
+                                     as_tb = FALSE) {
 
   stopifnot(
     is.numeric(user_melody_input), is.numeric(user_duration_input),
-    is.numeric(user_onset_input),
-    tibble::is_tibble(pyin_pitch_track) | is.na(pyin_pitch_track), is.numeric(stimuli),
+    is.numeric(user_onset_input), tibble::is_tibble(pyin_pitch_track) | is.na(pyin_pitch_track), is.numeric(stimuli),
     is.numeric(stimuli_durations), is.numeric(user_response_midi_note_off) | is.na(user_response_midi_note_off),
     is.numeric(onsets_noteoff) | is.na(onsets_noteoff), tibble::is_tibble(answer_meta_data) | is.na(answer_meta_data),
     is.logical(as_tb)
   )
+
+  print('score_mpp')
 
   # features df
   features_df <- tibble::tibble(
@@ -120,6 +120,8 @@ score_melodic_production <- function(user_melody_input = numeric(),
     mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
     mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
     answer_meta_data = answer_meta_data)
+
+  print(res)
 
   if(as_tb) {
     tibble::as_tibble(base::t(res))
@@ -293,4 +295,8 @@ check_opti3 <- function(user_response, correct_answer, reverse = FALSE) {
 
 
 
-
+# t <- score_melodic_production(user_melody_input = c(60, 61, 63, 64, 65),
+#                          user_duration_input = c(1, 1.5, 1, 1.2, 1),
+#                          user_onset_input = cumsum(c(1, 1, 1, 1, 1)),
+#                          stimuli = c(60, 62, 63, 64, 65),
+#                          stimuli_durations = c(1, 1, 1, 1, 1))

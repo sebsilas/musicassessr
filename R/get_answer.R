@@ -1,6 +1,18 @@
 
 # pyin-related
 
+#' Analyse a melody with pyin then compute melodic production scores
+#'
+#' @param input
+#' @param type
+#' @param state
+#' @param melconv
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_answer_pyin_melodic_production <- function(input,
                                                type = c("both", "notes", "pitch_track"),
                                                state,
@@ -13,13 +25,14 @@ get_answer_pyin_melodic_production <- function(input,
     return(list(error = TRUE, reason = "pyin returned no result"))
 
   } else {
+
+
     res <- concat_mel_prod_results(input,
+                                   state,
                                    pyin_res$melconv_res,
                                    pyin_res$pyin_res$note,
                                    pyin_res$pyin_res$dur,
                                    pyin_res$pyin_res$onset,
-                                   rjson::fromJSON(input$stimuli),
-                                   rjson::fromJSON(input$stimuli_durations),
                                    pyin_res$pyin_pitch_track)
 
     store_results_in_db(state, res)
@@ -96,10 +109,6 @@ get_answer_pyin <- function(input,
 
   # get file
   audio_file <- get_audio_file_for_pyin(input, state)
-
-  # get stimuli
-  stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
-  stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
 
   # get pyin
   pyin_res <- get_pyin(audio_file, type, state)
@@ -251,13 +260,11 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
     return(list(error = TRUE, reason = "no midi notes"))
 
   } else {
-    res <- concat_mel_prod_results(input,
+    res <- concat_mel_prod_results(input, state,
                           melconv_res = list(notes = NA, durations = NA),
                           user_response_midi_note_on,
                           diff(onsets_noteon),
                           onsets_noteon,
-                          stimuli,
-                          stimuli_durations,
                           pyin_pitch_track)
 
     store_results_in_db(state, res)
@@ -276,12 +283,12 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 #'
 #' @examples
 get_answer_midi <- function(input, state, ...) {
-
+  print('get_answer_midi')
   list(
-    user_response_midi_note_on = rjson::fromJSON(input$user_response_midi_note_on),
-    user_response_midi_note_off =  rjson::fromJSON(input$user_response_midi_note_off),
-    onsets_noteon =  rjson::fromJSON(input$onsets_noteon),
-    onsets_noteoff = rjson::fromJSON(input$onsets_noteoff)
+    user_response_midi_note_on = as.numeric(rjson::fromJSON(input$user_response_midi_note_on)),
+    user_response_midi_note_off =  as.numeric(rjson::fromJSON(input$user_response_midi_note_off)),
+    onsets_noteon =  as.numeric(rjson::fromJSON(input$onsets_noteon)),
+    onsets_noteoff = as.numeric(rjson::fromJSON(input$onsets_noteoff))
   )
 
 }
@@ -336,8 +343,27 @@ get_answer_save_aws_key <- function(input, ...) {
 
 # generic
 
-concat_mel_prod_results <- function(input, melconv_res, user_melody_input, user_duration_input,
-                                    user_onset_input, stimuli, stimuli_durations, pyin_pitch_track, ...) {
+concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input, user_duration_input,
+                                    user_onset_input, pyin_pitch_track, ...) {
+
+  print('concat_mel_prod_results')
+  print(input$user_response_midi_note_off)
+  print(input$onsets_noteoff)
+
+  if(length(input$user_response_midi_note_off) == 0) {
+    user_response_midi_note_off <- NA
+    onsets_noteoff <- NA
+  } else {
+    user_response_midi_note_off <- as.numeric(rjson::fromJSON(input$user_response_midi_note_off))
+    onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
+  }
+
+  print('nah')
+  print(as.numeric(rjson::fromJSON(input$stimuli)))
+  print(as.numeric(rjson::fromJSON(input$stimuli_durations)))
+  print(user_response_midi_note_off)
+  print(onsets_noteoff)
+  print(input$answer_meta_data)
 
   c(
 
@@ -350,10 +376,13 @@ concat_mel_prod_results <- function(input, melconv_res, user_melody_input, user_
     score_melodic_production(user_melody_input,
                              user_duration_input,
                              user_onset_input,
-                             stimuli,
-                             stimuli_durations,
+                             as.numeric(rjson::fromJSON(input$stimuli)),
+                             as.numeric(rjson::fromJSON(input$stimuli_durations)),
                              pyin_pitch_track,
-                             input$answer_meta_data))
+                             user_response_midi_note_off,
+                             onsets_noteoff,
+                             tibble::as_tibble(input$answer_meta_data))
+  )
 }
 
 

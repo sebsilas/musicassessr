@@ -20,7 +20,7 @@ arrhythmic_melody_trials(
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
   rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
-  no_attempts = 3L,
+  max_goes = 3L,
   max_goes_forced = FALSE
 )
 }

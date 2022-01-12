@@ -14,7 +14,7 @@ multi_page_play_melody_loop(
   page_title = psychTestR::i18n("copy_melody_title"),
  
     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-  get_answer = get_answer_save_aws_key,
+  get_answer = get_answer_pyin_melodic_production,
   rel_to_abs_mel_function = NULL,
   start_from_trial_no = 1L,
   clip_stimuli_length = FALSE,
@@ -22,11 +22,12 @@ multi_page_play_melody_loop(
   example = FALSE,
   feedback = FALSE,
   sound = "piano",
-  get_trial_characteristics_function = NULL
+  get_trial_characteristics_function = NULL,
+  max_goes_forced = FALSE
 )
 }
 \arguments{
-\item{get_trial_characteristics_function}{}
+\item{max_goes_forced}{}
 }
 \value{
 

@@ -52,7 +52,7 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
   res
 }
 
-sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range, difficulty, length = NULL) {
+sample_melody_in_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_range, top_range, difficulty, length = NULL) {
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -83,7 +83,7 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
     abs_mel <- itembankr::rel_to_abs_mel(itembankr::str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
 
     # check key
-    mel_key <- itembankr::get_implicit_harmonies(abs_mel)
+    mel_key <- get_implicit_harmonies(abs_mel)
     mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
     # how far away is it from being the correct tonal centre?
 
@@ -138,11 +138,11 @@ sample_melody_in_key <- function(item_bank = itembankr::WJD("phrases"), inst, bo
 
 }
 
-sample_melody_in_easy_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range) {
+sample_melody_in_easy_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "easy")
 }
 
-sample_melody_in_hard_key <- function(item_bank = itembankr::WJD("phrases"), inst, bottom_range, top_range) {
+sample_melody_in_hard_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "hard")
 }
 
@@ -246,11 +246,11 @@ leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_ra
 ## tests
 
 
-# d <- itembankr::WJD("main")
-# item_bank_subset <- itembankr::subset_item_bank(itembankr::WJD("main"),
+# d <- WJD::WJD("main")
+# item_bank_subset <- itembankr::subset_item_bank(WJD::WJD("main"),
 #                                                 tonality = "major",
 #                                                 span_max = 24, item_length = 11L)
-# dd <- sample_melody_in_key(item_bank = itembankr::WJD("phrases"),
+# dd <- sample_melody_in_key(item_bank = WJD::WJD("phrases"),
 #                      inst = "Piano",
 #                      bottom_range = 48, top_range = 72,
 #                      difficulty =  "easy", length = 3)
@@ -258,7 +258,7 @@ leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_ra
 
 # sample_keys_by_difficulty("Piano", n_easy = 4, n_hard = 4)
 
-#rel_to_abs_mel_mean_centred(itembankr::Berkowitz[1000, "melody"], 40, 65, TRUE)
+#rel_to_abs_mel_mean_centred(Berkowitz::Berkowitz[1000, "melody"], 40, 65, TRUE)
 
 # sampled_keys <- sample_keys_by_difficulty("Alto Saxophone", 10, 10)
 
@@ -310,7 +310,7 @@ leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_ra
 
 
 
-#test_sub <- itembankr::subset_item_bank(itembankr::WJD("phrases"), N_range = c(3, NULL))
+#test_sub <- itembankr::subset_item_bank(WJD::WJD("phrases"), N_range = c(3, NULL))
 #test_sub[1000, "melody"]
 
 

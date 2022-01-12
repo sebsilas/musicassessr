@@ -70,7 +70,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
             is.vector(durations) & is.numeric(durations) | is.na(durations), is.logical(show_record_button),
             is.logical(auto_next_page), is.character(choices) & is.vector(choices), is.logical(user_rating),
             is.logical(page_text_first), is.logical(happy_with_response),
-            is.integer(attempts_left), is.character(visual_music_notation_id),
+            is.numeric(attempts_left), is.character(visual_music_notation_id),
             is.character(play_button_id), is.character(button_area_id),
             is.logical(hideOnPlay), is.logical(record_immediately), is.logical(max_goes_forced))
 
@@ -86,7 +86,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                                hideOnPlay = hideOnPlay,
                                                record_immediately = record_immediately, ...)
   } else {
-    return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type, get_answer = get_answer,
+    return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type,
+                                             get_answer = get_answer,
                                              midi_device = midi_device, play_button_text = play_button_text,
                                              sound = sound, note_length = note_length,
                                              asChord = asChord, slide_length = slide_length, page_title = page_title,
@@ -216,7 +217,7 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
             is.character(play_button_text), is.function(get_answer),
             is.logical(show_record_button), is.logical(save_answer), is.logical(auto_next_page),
             is.character(choices) & is.vector(choices), is.logical(user_rating), is.logical(page_text_first),
-            is.logical(happy_with_response), is.integer(attempts_left), is.logical(max_goes_forced))
+            is.logical(happy_with_response), is.numeric(attempts_left), is.logical(max_goes_forced))
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
@@ -301,7 +302,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
     # musical stimuli types
   }  else if (stimuli_type == "midi_notes") {
-    return_stimuli <- present_stimuli_midi_notes(stimuli = stimuli, display_modality = display_modality, get_answer = get_answer,
+    return_stimuli <- present_stimuli_midi_notes(stimuli = stimuli, display_modality = display_modality,
                                                  page_type = page_type, midi_device = midi_device,
                                                  show_aws_controls = show_aws_controls,
                                                  page_label = page_label, button_text = button_text,

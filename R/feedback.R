@@ -1,5 +1,4 @@
 
-
 #' Simple melodic production feedback
 #'
 #' @return
@@ -32,16 +31,13 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       if(answer_meta_data) {
         stimuli_info <- 'Stimuli Info'
       } else {
-        stimuli_info <- ' '
+        stimuli_info <- " "
       }
 
       # get then remove necessary vars
       amd <- answer$answer_meta_data
       answer$answer_meta_data <- NULL
       answer$pyin_pitch_track <- NULL
-
-      print('answe.2034o')
-      print(answer)
 
       # produce scores table
       scores_tab <- list_to_shiny_table(answer)
@@ -76,22 +72,28 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 }
 
 list_to_shiny_table <- function(l) {
-  l <- l[!is.na(l)]
-  l_names <- names(l)
+
   shiny::renderTable({
+    l <- l[!is.na(l) & lengths(l) > 0]
+    l_names <- names(l)
     l <- lapply(1:length(l), function(x) {
 
-      if(length(l[[x]]) > 1) {
+      if (length(l[[x]]) > 1) {
         paste0(l[[x]], collapse = ",")
       } else {
         l[[x]]
       }
     })
+    l <- l[!is.na(l)]
     r <- base::t(as.data.frame(l))
     row.names(r) <- l_names
     r
   }, rownames = TRUE, colnames = FALSE, width = "50%")
 }
+
+
+
+
 
 feedback_long_tone <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
@@ -103,8 +105,7 @@ feedback_long_tone <- function() {
     answer$stimuli <- NULL
     answer$onset <- NULL
     answer$freq <- NULL
-    print('print answer object...')
-    print(answer)
+
     tab <- list_to_shiny_table(answer)
 
 

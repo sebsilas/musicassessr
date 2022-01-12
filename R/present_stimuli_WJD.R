@@ -14,7 +14,7 @@ present_stimuli_audio_WJD <- function(pattern, ...) {
   url
 }
 
-# asdw <- itembankr::WJD("ngram") %>% dplyr::slice(100)
+# asdw <- WJD::WJD("ngram") %>% dplyr::slice(100)
 
 # d <- present_stimuli_audio_WJD(asdw)
 
@@ -22,13 +22,13 @@ present_stimuli_audio_WJD <- function(pattern, ...) {
 # %>% dplyr::ungroup()
 
 
-# p <- itembankr::WJD("phrases")
+# p <- WJD::WJD("phrases")
 #
-# d2 <- itembankr::WJD("phrases")[998, ]
+# d2 <- WJD::WJD("phrases")[998, ]
 #
 # da2 <- DTL_similarity_search_results(search_patterns = d2$orig_abs_melody, database_names = "wjazzd", transformation = "pitch")
 #
-# d3 <- itembankr::WJD("phrases")[998, ]
+# d3 <- WJD::WJD("phrases")[998, ]
 # da3 <- DTL_similarity_search_results(search_patterns = "61,62", transformation = "pitch")
 
 # da4 <- da3 %>% dplyr::filter(database_name == "omnibook")

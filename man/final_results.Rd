@@ -2,22 +2,23 @@
 % Please edit documentation in R/results.R
 \name{final_results}
 \alias{final_results}
-\title{Present Final Results}
+\title{Present final results}
 \usage{
 final_results(
   test_name,
   url,
   num_items_long_tone,
   num_items_arrhythmic,
-  num_items_rhythmic
+  num_items_rhythmic,
+  socials = FALSE
 )
 }
 \arguments{
-\item{num_items_rhythmic}{}
+\item{socials}{}
 }
 \value{
 
 }
 \description{
-Present Final Results
+Present final results
 }

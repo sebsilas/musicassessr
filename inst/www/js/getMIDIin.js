@@ -39,6 +39,10 @@ function instantiateMIDI(midi_device, interactive_midi) {
   // empty previous buffer
   if (user_response_midi_note_on) {
     user_response_midi_note_on = [];
+    user_response_midi_note_off = [];
+    user_response_midi_note_on = [];
+    onsets_noteon = [];
+    onsets_noteoff = [];
   }
 
   console.log(user_response_midi_note_on);

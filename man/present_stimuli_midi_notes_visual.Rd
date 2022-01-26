@@ -10,7 +10,8 @@ present_stimuli_midi_notes_visual(
   asChord = FALSE,
   ascending,
   id = "sheet_music",
-  present_div = TRUE
+  present_div = TRUE,
+  clef = "auto"
 )
 }
 \arguments{

@@ -1,4 +1,6 @@
-#' Record MIDI page
+
+
+#' Page to record MIDI in psychTestR
 #'
 #' @param body
 #' @param label
@@ -7,62 +9,77 @@
 #' @param page_text
 #' @param page_title
 #' @param interactive
-#' @param note_no
 #' @param show_record_button
 #' @param get_answer
 #' @param answer_meta_data
-#' @param autoInstantiate
-#' @param midi_device
+#' @param show_aws_controls
 #' @param button_text
+#' @param stop_button_text
+#' @param record_duration
+#' @param on_complete
 #' @param auto_next_page
+#' @param save_answer
 #' @param page_text_first
 #' @param happy_with_response
 #' @param attempts_left
-#' @param stop_button_text
+#' @param max_goes_forced
+#' @param autoInstantiate
+#' @param midi_device
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-record_midi_page <- function(body = " ", label = "record_midi_page", stimuli = " ", stimuli_reactive = FALSE, page_text = " ", page_title = " ",
-                             interactive = FALSE, note_no = "max", show_record_button = TRUE, get_answer = get_answer_midi,
-                             answer_meta_data = 0, autoInstantiate = FALSE, midi_device, button_text = "Record",
-                             auto_next_page = FALSE, page_text_first = TRUE,
-                             happy_with_response =  FALSE, attempts_left = NULL, stop_button_text = "Stop", ...) {
+record_midi_page <- function(body = " ",
+                             label = "record_midi_page",
+                             stimuli = " ",
+                             stimuli_reactive = FALSE,
+                             page_text = " ",
+                             page_title = " ",
+                             interactive = FALSE,
+                             show_record_button = TRUE,
+                             get_answer = get_answer_midi,
+                             answer_meta_data = tibble::tibble(),
+                             show_aws_controls,
+                             button_text = "Record",
+                             stop_button_text = "Stop",
+                             record_duration = NULL,
+                             on_complete = NULL,
+                             auto_next_page = FALSE,
+                             save_answer = TRUE,
+                             page_text_first = TRUE,
+                             happy_with_response =  FALSE,
+                             attempts_left = NULL,
+                             max_goes_forced = FALSE,
+                             autoInstantiate = FALSE,
+                             midi_device, ...) {
 
+  record_midi_or_audio_ui(body,
+                          label,
+                          stimuli,
+                          stimuli_reactive,
+                          page_text,
+                          page_title,
+                          page_type = "record_midi_page",
+                          interactive,
+                          show_record_button,
+                          get_answer,
+                          answer_meta_data,
+                          show_aws_controls,
+                          button_text,
+                          stop_button_text,
+                          record_duration,
+                          on_complete,
+                          auto_next_page,
+                          save_answer,
+                          page_text_first,
+                          happy_with_response,
+                          attempts_left,
+                          max_goes_forced,
+                          autoInstantiate,
+                          midi_device)
 
-  interactive <- ifelse(interactive, "true", "false")
-
-  psychTestR::page(ui = shiny::tags$div(
-
-    shiny::tags$head(
-      auto_next_page(auto_next_page),
-      shiny::tags$script('console.log(\"this is an midi page\");'),
-      autoInstantiateMidi(instantiate = autoInstantiate, midi_device, interactive),
-      shiny::tags$script(set_answer_meta_data(answer_meta_data))
-
-    ),
-    shiny::tags$body(
-      shiny::tags$h2(page_title),
-      shiny::tags$p(page_text),
-      shiny::tags$div(body),
-      reactive_stimuli(stimuli_function = stimuli_function,
-                       stimuli_reactive = stimuli_reactive,
-                       prepared_stimuli = abs_mel),
-
-      present_record_button(show_record_button, type = "record_midi_page",
-                            button_text = button_text, stop_button_text = stop_button_text),
-
-
-      happy_with_response_message(happy_with_response, attempts_left)
-
-    )
-  ),
-  label = label,
-  get_answer = get_answer,
-  save_answer = TRUE
-  )
 }
 
 

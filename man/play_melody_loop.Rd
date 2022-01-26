@@ -28,11 +28,12 @@ play_melody_loop(
   example = FALSE,
   sound = "piano",
   reactive_stimuli = NULL,
-  get_trial_characteristics_function = NULL
+  get_trial_characteristics_function = NULL,
+  give_first_melody_note = FALSE
 )
 }
 \arguments{
-\item{get_trial_characteristics_function}{}
+\item{give_first_melody_note}{}
 }
 \value{
 

@@ -28,6 +28,10 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 #' @examples
 long_note_pitch_metrics <- function(target_pitch, freq) {
 
+  print('long_note_pitch_metrics')
+  print(target_pitch)
+  print(freq)
+
   ## dtw scoring
 
   ref <- itembankr::produce_arrhythmic_durations(length(freq), hrep::midi_to_freq(target_pitch))

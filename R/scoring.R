@@ -26,7 +26,7 @@ score_melodic_production <- function(user_melody_input = numeric(),
                                      onsets_noteoff = numeric(),
                                      answer_meta_data = tibble::tibble(),
                                      as_tb = FALSE) {
-
+  # N.B; this should remain completely abstracted from psychTestR for post-hoc analyses
   stopifnot(
     is.numeric(user_melody_input), is.numeric(user_duration_input),
     is.numeric(user_onset_input), tibble::is_tibble(pyin_pitch_track) | is.na(pyin_pitch_track), is.numeric(stimuli),
@@ -34,8 +34,6 @@ score_melodic_production <- function(user_melody_input = numeric(),
     is.numeric(onsets_noteoff) | is.na(onsets_noteoff), tibble::is_tibble(answer_meta_data) | is.na(answer_meta_data),
     is.logical(as_tb)
   )
-
-  print('score_mpp')
 
   # features df
   features_df <- tibble::tibble(
@@ -109,19 +107,15 @@ score_melodic_production <- function(user_melody_input = numeric(),
     correct_by_note_events_octaves_allowed_log_normal = correct_by_note_events_octaves_allowed_log_normal,
     accuracy = accuracy,
     accuracy_octaves_allowed = accuracy_octaves_allowed,
-    opti3_harmcore1 = opti3$opti3_harmcore1,
-    opti3_harmcore2 = opti3$opti3_harmcore2,
+    opti3 = opti3$opti3,
     ngrukkon = opti3$ngrukkon,
     harmcore = opti3$harmcore,
-    harmcore2 = opti3$harmcore2,
     rhythfuzz = opti3$rhythfuzz,
     note_precision = note_precision,
     melody_dtw = ifelse(is.na(melody_dtw), NA, melody_dtw),
     mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
     mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
     answer_meta_data = answer_meta_data)
-
-  print(res)
 
   if(as_tb) {
     tibble::as_tibble(base::t(res))
@@ -191,7 +185,7 @@ get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors)
 get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin) {
   # opti3
   if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {
-    list(opti3_harmcore1 = NA, opti3_harmcore2 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA, harmcore2 = NA)
+    list(opti3 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA)
   } else {
     if(is.na(stimuli_durations)) {
       stimuli_durations <- rep(0.5, stimuli_length)

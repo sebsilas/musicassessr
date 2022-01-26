@@ -2,7 +2,7 @@
 % Please edit documentation in R/record_midi_page.R
 \name{record_midi_page}
 \alias{record_midi_page}
-\title{Record MIDI page}
+\title{Page to record MIDI in psychTestR}
 \usage{
 record_midi_page(
   body = " ",
@@ -12,18 +12,22 @@ record_midi_page(
   page_text = " ",
   page_title = " ",
   interactive = FALSE,
-  note_no = "max",
   show_record_button = TRUE,
   get_answer = get_answer_midi,
-  answer_meta_data = 0,
-  autoInstantiate = FALSE,
-  midi_device,
+  answer_meta_data = tibble::tibble(),
+  show_aws_controls,
   button_text = "Record",
+  stop_button_text = "Stop",
+  record_duration = NULL,
+  on_complete = NULL,
   auto_next_page = FALSE,
+  save_answer = TRUE,
   page_text_first = TRUE,
   happy_with_response = FALSE,
   attempts_left = NULL,
-  stop_button_text = "Stop",
+  max_goes_forced = FALSE,
+  autoInstantiate = FALSE,
+  midi_device,
   ...
 )
 }
@@ -34,5 +38,5 @@ record_midi_page(
 
 }
 \description{
-Record MIDI page
+Page to record MIDI in psychTestR
 }

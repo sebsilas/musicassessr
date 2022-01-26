@@ -5,11 +5,11 @@
 \title{Initiate a musicassessr test}
 \usage{
 musicassessr_init(
-  test_username,
-  test,
+  test_username = NA,
+  test = NA,
   store_results_in_db = FALSE,
-  local_app_file_dir,
-  sonic_annotator_local_location
+  local_app_file_dir = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/",
+  sonic_annotator_local_location = "/Users/sebsilas/sonic-annotator"
 )
 }
 \arguments{

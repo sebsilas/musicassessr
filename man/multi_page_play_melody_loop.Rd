@@ -23,11 +23,12 @@ multi_page_play_melody_loop(
   feedback = FALSE,
   sound = "piano",
   get_trial_characteristics_function = NULL,
-  max_goes_forced = FALSE
+  max_goes_forced = FALSE,
+  give_first_melody_note = FALSE
 )
 }
 \arguments{
-\item{max_goes_forced}{}
+\item{give_first_melody_note}{}
 }
 \value{
 

@@ -295,6 +295,10 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
 
 function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null, auto_next_page) {
 
+  console.log('playSeq');
+  console.log(note_list);
+  console.log(dur_list);
+
   if(hidePlay) {
     hidePlayButton();
   }
@@ -579,8 +583,6 @@ function hide_happy_with_response_message() {
 function hidePlayButton(play_button_id = "playButton") {
   // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var x = document.getElementById(play_button_id);
-  console.log('what is x?');
-  console.log(x);
   if (x !== null) {
     x.style.display = "none";
   }

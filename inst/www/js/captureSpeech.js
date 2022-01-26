@@ -1,5 +1,3 @@
-console.log("")
-
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
 var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
 var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
@@ -56,9 +54,11 @@ recognition.onresult = function(event) {
   console.log(user_response_words);
   //console.log(onsets);
 
-  Shiny.setInputValue("user_response", JSON.stringify(user_response_words));
+  var user_response_words_last = user_response_words[user_response_words.length - 1];
+
+  Shiny.setInputValue("user_response_words", JSON.stringify(user_response_words_last));
   Shiny.setInputValue("confidence", JSON.stringify(confidences));
-  Shiny.setInputValue("onset", JSON.stringify(onsets));
+  Shiny.setInputValue("onsets", JSON.stringify(onsets));
 
 
 }

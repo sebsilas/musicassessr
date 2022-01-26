@@ -2,19 +2,19 @@
 % Please edit documentation in R/record_audio_page.R
 \name{record_audio_page}
 \alias{record_audio_page}
-\title{Record Audio Page}
+\title{Page to record audio in psychTestR}
 \usage{
 record_audio_page(
   body = " ",
-  label = "record_audio_page",
+  label = "record_midi_page",
   stimuli = " ",
   stimuli_reactive = FALSE,
   page_text = " ",
   page_title = " ",
   interactive = FALSE,
   show_record_button = TRUE,
-  get_answer = get_answer_store_async,
-  answer_meta_data = data.frame(),
+  get_answer = get_answer_save_aws_key,
+  answer_meta_data = tibble::tibble(),
   show_aws_controls = FALSE,
   button_text = "Record",
   stop_button_text = "Stop",
@@ -24,7 +24,7 @@ record_audio_page(
   save_answer = TRUE,
   page_text_first = TRUE,
   happy_with_response = FALSE,
-  attempts_left = integer(),
+  attempts_left = NULL,
   max_goes_forced = FALSE,
   ...
 )
@@ -36,5 +36,5 @@ record_audio_page(
 
 }
 \description{
-Record Audio Page
+Page to record audio in psychTestR
 }

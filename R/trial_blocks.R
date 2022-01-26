@@ -1,5 +1,125 @@
 
 
+#' Sing arrhythmic melody trial block
+#'
+#' @param item_bank
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param get_answer
+#' @param sound
+#' @param page_text
+#' @param page_title
+#' @param page_type
+#' @param instruction_text
+#' @param get_trial_characteristics_function
+#' @param item_characteristics_sampler_function
+#' @param item_characteristics_pars
+#' @param rel_to_abs_mel_function
+#' @param max_goes
+#' @param max_goes_forced
+#' @param give_first_melody_note
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
+                                     get_answer = get_answer_pyin_melodic_production, sound = "piano",
+                                     page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+                                     page_title = "Sing the Melody",
+                                     page_type = "record_audio_page",
+                                     instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
+                                     get_trial_characteristics_function = NULL,
+                                     item_characteristics_sampler_function = NULL,
+                                     item_characteristics_pars = NULL,
+                                     rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
+                                     max_goes = 3L,
+                                     max_goes_forced = FALSE,
+                                     give_first_melody_note = FALSE) {
+
+  arrhythmic_melody_trials(item_bank,
+                           num_items,
+                           num_examples,
+                           feedback,
+                           get_answer, sound,
+                           page_text,
+                           page_title,
+                           page_type,
+                           instruction_text,
+                           get_trial_characteristics_function,
+                           item_characteristics_sampler_function ,
+                           item_characteristics_pars,
+                           rel_to_abs_mel_function,
+                           max_goes,
+                           max_goes_forced,
+                           give_first_melody_note)
+
+}
+
+
+#' Sing rhythmic melody trial block
+#'
+#' @param item_bank
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param get_answer
+#' @param sound
+#' @param page_text
+#' @param page_title
+#' @param page_type
+#' @param instruction_text
+#' @param get_trial_characteristics_function
+#' @param item_characteristics_sampler_function
+#' @param item_characteristics_pars
+#' @param rel_to_abs_mel_function
+#' @param max_goes
+#' @param max_goes_forced
+#' @param give_first_melody_note
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sing_rhythmic_melody_trials <- function(item_bank,
+                                        num_items,
+                                        num_examples = 0L,
+                                        feedback = FALSE,
+                                        get_answer = get_answer_pyin_melodic_production,
+                                        sound = "piano",
+                                        page_text = psychTestR::i18n("sing_melody_trial"),
+                                        page_title = "Sing This Melody Plus Rhythm",
+                                        page_type = "record_audio_page",
+                                        instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
+                                        get_trial_characteristics_function = NULL,
+                                        item_characteristics_sampler_function = NULL,
+                                        item_characteristics_pars = NULL,
+                                        rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
+                                        max_goes = 3L,
+                                        max_goes_forced = FALSE,
+                                        give_first_melody_note = FALSE) {
+
+  rhythmic_melody_trials(item_bank,
+                         num_items,
+                         num_examples,
+                         feedback,
+                         get_answer,
+                         sound,
+                         page_text,
+                         page_title,
+                         page_type,
+                         instruction_text,
+                         get_trial_characteristics_function,
+                         item_characteristics_sampler_function,
+                         item_characteristics_pars,
+                         rel_to_abs_mel_function,
+                         max_goes,
+                         max_goes_forced,
+                         give_first_melody_note)
+
+}
+
 #' Arrhythmic Melody Trials Block
 #'
 #' @param item_bank
@@ -18,6 +138,7 @@
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
+#' @param give_first_melody_note
 #'
 #' @return
 #' @export
@@ -25,16 +146,18 @@
 #' @examples
 arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
                                      get_answer = get_answer_pyin_melodic_production, sound = "piano",
-                                     page_text = psychTestR::i18n("sing_melody_trial"),
-                                     page_title = "Sing the Melody",
+                                     page_text = "Click below to hear the melody. Play back the melody. Click Stop when finished.",
+                                     page_title = "Play the Melody",
                                      page_type = "record_audio_page",
-                                     instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
+                                     instruction_text = "Now you will hear some melodies. Please try and play the melodies.",
                                      get_trial_characteristics_function = NULL,
                                      item_characteristics_sampler_function = NULL,
                                      item_characteristics_pars = NULL,
                                      rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                      max_goes = 3L,
-                                     max_goes_forced = FALSE) {
+                                     max_goes_forced = FALSE,
+                                     give_first_melody_note = FALSE) {
+
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -82,7 +205,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                sound = sound,
                                get_trial_characteristics_function = get_trial_characteristics_function,
                                max_goes_forced = max_goes_forced,
-                               max_goes = max_goes),
+                               max_goes = max_goes,
+                               give_first_melody_note = give_first_melody_note),
                              ## sample
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -109,11 +233,13 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            sound = sound,
                            get_trial_characteristics_function = get_trial_characteristics_function,
                            max_goes_forced = max_goes_forced,
-                           max_goes = max_goes)
+                           max_goes = max_goes,
+                           give_first_melody_note = give_first_melody_note)
                        )
     )
   }
 }
+
 
 
 
@@ -138,24 +264,29 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
+#' @param give_first_melody_note
 #'
 #' @return
 #' @export
 #'
 #' @examples
-rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
+rhythmic_melody_trials <- function(item_bank,
+                                   num_items,
+                                   num_examples = 0L,
+                                   feedback = FALSE,
                                    get_answer = get_answer_pyin_melodic_production,
                                    sound = "piano",
-                                   page_text = psychTestR::i18n("sing_melody_trial"),
-                                   page_title = "Sing This Melody Plus Rhythm",
+                                   page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
+                                   page_title = "Play This Melody Plus Rhythm",
                                    page_type = "record_audio_page",
-                                   instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
+                                   instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
                                    get_trial_characteristics_function = NULL,
                                    item_characteristics_sampler_function = NULL,
                                    item_characteristics_pars = NULL,
                                    rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                    max_goes = 3L,
-                                   max_goes_forced = FALSE) {
+                                   max_goes_forced = FALSE,
+                                   give_first_melody_note = FALSE) {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -203,7 +334,8 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feed
               sound = sound,
               get_trial_characteristics_function = get_trial_characteristics_function,
               max_goes_forced = max_goes_forced,
-              max_goes = max_goes),
+              max_goes = max_goes,
+              give_first_melody_note = give_first_melody_note),
         psychTestR::one_button_page(shiny::tags$div(
           shiny::tags$h2(page_title),
           shiny::tags$p("Now you're ready for the real thing!")))
@@ -231,7 +363,8 @@ rhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feed
           sound = sound,
           get_trial_characteristics_function = get_trial_characteristics_function,
           max_goes_forced = max_goes_forced,
-          max_goes = max_goes)
+          max_goes = max_goes,
+          give_first_melody_note = give_first_melody_note)
       )
     )
   }

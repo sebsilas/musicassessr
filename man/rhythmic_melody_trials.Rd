@@ -11,21 +11,22 @@ rhythmic_melody_trials(
   feedback = FALSE,
   get_answer = get_answer_pyin_melodic_production,
   sound = "piano",
-  page_text = psychTestR::i18n("sing_melody_trial"),
-  page_title = "Sing This Melody Plus Rhythm",
+  page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
+  page_title = "Play This Melody Plus Rhythm",
   page_type = "record_audio_page",
  
-    instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
+    instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
   get_trial_characteristics_function = NULL,
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
   rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
   max_goes = 3L,
-  max_goes_forced = FALSE
+  max_goes_forced = FALSE,
+  give_first_melody_note = FALSE
 )
 }
 \arguments{
-\item{max_goes_forced}{}
+\item{give_first_melody_note}{}
 }
 \value{
 

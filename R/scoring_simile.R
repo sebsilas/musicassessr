@@ -334,82 +334,37 @@ read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
 #' @param melody2
 #' @param N
 #' @param use_bootstrap
-#' @param only_winner
+#' @param return_winner
 #'
 #' @return
 #' @export
 #'
 #' @examples
-opti3_df <- function(melody1,
-                     melody2,
-                     N = 3,
-                     use_bootstrap = "both",
-                     only_winner = TRUE,
-                     use_transposition_hints = TRUE) {
-
-  stopifnot(all(c(melody1$note, melody2$note) > 0L))
-
+opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE){
+  trans_hints <- get_transposition_hints(melody1$note, melody2$note)
   v_rhythfuzz <- rhythfuzz(melody1$ioi_class, melody2$ioi_class)
-
-  if(use_transposition_hints) {
-
-    trans_hints <- get_transposition_hints(melody1$note, melody2$note)
-
-
-    sims <- purrr::map_dfr(trans_hints, function(th){
-
-      v_ngrukkon <- ngrukkon(melody1$note, melody2$note + th, N = N)
-
-      if(use_bootstrap == "both"){
-        v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
-        v_harmcore2 <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
-      } else if(use_bootstrap) {
-        v_harmcore <- NA
-        v_harmcore2 <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
-      } else{
-        v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
-        v_harmcore2 <- NA
-      }
-
-      opti3_harmcore1 <- 0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146
-      opti3_harmcore2 <- 0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore2 - 0.146
-      opti3_harmcore2 <- max(min(opti3_harmcore2, 1), 0)
-
-      tidyr::tibble(transposition = th,
-                    ngrukkon = v_ngrukkon,
-                    rhythfuzz = v_rhythfuzz,
-                    harmcore = v_harmcore,
-                    harmcore2 = v_harmcore2,
-                    opti3_harmcore1 =  opti3_harmcore1,
-                    opti3_harmcore2 =  opti3_harmcore2)
-    })
-
-    res <- sims %>% dplyr::arrange(dplyr::desc(opti3_harmcore1))
-
-    if(only_winner) {
-      res %>% dplyr::slice(1)
-    } else {
-      res
-    }
-  } else {
-
-    v_ngrukkon <- ngrukkon(melody1$note, melody2$note, N = N)
-
+  sims <- purrr::map_dfr(trans_hints, function(th){
+    v_ngrukkon <- ngrukkon(melody1$note, melody2$note + th, N = N)
     if(use_bootstrap){
       v_harmcore <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
-    } else{
-      v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
     }
+    else{
+      v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
 
-    tidyr::tibble(ngrukkon = v_ngrukkon,
-                  rhythfuzz = v_rhythfuzz,
-                  harmcore = v_harmcore,
-                  opti3 =  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146)
+    }
+    tibble::tibble(transposition = th,
+           ngrukkon = v_ngrukkon,
+           rhythfuzz = v_rhythfuzz,
+           harmcore = v_harmcore,
+           opti3 =  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146)
+  })
+  res <- sims %>% dplyr::arrange(dplyr::desc(opti3))
+  if(return_winner) {
+    res %>% dplyr::slice(1)
+  } else {
+    res
   }
-
-
 }
-
 
 
 best_subsequence_similarity <- function(melody1, melody2){

@@ -5,17 +5,10 @@
 \title{opti3 for melodies read by read_melody
 returns sorted tibble of transpositions of melody2 and opti3 similarity}
 \usage{
-opti3_df(
-  melody1,
-  melody2,
-  N = 3,
-  use_bootstrap = "both",
-  only_winner = TRUE,
-  use_transposition_hints = TRUE
-)
+opti3_df(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE)
 }
 \arguments{
-\item{only_winner}{}
+\item{return_winner}{}
 }
 \value{
 

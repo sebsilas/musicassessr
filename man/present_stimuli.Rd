@@ -2,7 +2,7 @@
 % Please edit documentation in R/present_stimuli.R
 \name{present_stimuli}
 \alias{present_stimuli}
-\title{Present Stimuli}
+\title{Present stimuli}
 \usage{
 present_stimuli(
   stimuli,
@@ -41,6 +41,9 @@ present_stimuli(
   hideOnPlay = FALSE,
   record_immediately = FALSE,
   max_goes_forced = FALSE,
+  give_first_melody_note = FALSE,
+  transpose_first_melody_note = 0,
+  clef = "auto",
   ...
 )
 }
@@ -51,5 +54,5 @@ present_stimuli(
 
 }
 \description{
-Present Stimuli
+Present stimuli
 }

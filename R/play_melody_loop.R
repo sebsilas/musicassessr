@@ -1,6 +1,7 @@
 
 
 
+
 #' A page builder for creating a specified number of play_melody_loops
 #'
 #' @param presampled_items
@@ -21,6 +22,7 @@
 #' @param sound
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
+#' @param give_first_melody_note
 #'
 #' @return
 #' @export
@@ -34,7 +36,9 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                                         start_from_trial_no = 1L, clip_stimuli_length = FALSE,
                                         arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano",
                                         get_trial_characteristics_function = NULL,
-                                        max_goes_forced = FALSE) {
+                                        max_goes_forced = FALSE, give_first_melody_note = FALSE) {
+
+
 
   if(is.null(presampled_items)) {
     # items should be a dataframe
@@ -54,7 +58,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                        example = example,
                        sound = sound,
                        get_trial_characteristics_function = get_trial_characteristics_function,
-                       max_goes_forced = max_goes_forced)
+                       max_goes_forced = max_goes_forced,
+                       give_first_melody_note = give_first_melody_note)
       })
 
       items
@@ -76,7 +81,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                          arrhythmic = arrhythmic,
                          example = example,
                          sound = sound,
-                         max_goes_forced = max_goes_forced)   })
+                         max_goes_forced = max_goes_forced,
+                         give_first_melody_note = give_first_melody_note)   })
 
     }
 
@@ -85,6 +91,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
   items
 
 }
+
 
 
 
@@ -116,6 +123,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 #' @param sound
 #' @param reactive_stimuli
 #' @param get_trial_characteristics_function
+#' @param give_first_melody_note
 #'
 #' @return
 #' @export
@@ -129,7 +137,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,
                              start_note = 1L, end_note = "end", durations = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE, sound = "piano",
-                             reactive_stimuli = NULL, get_trial_characteristics_function = NULL) {
+                             reactive_stimuli = NULL, get_trial_characteristics_function = NULL, give_first_melody_note = FALSE) {
 
   save_answer <- example_save(example)
 
@@ -176,7 +184,8 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
                      sound = sound,
                      reactive_stimuli = reactive_stimuli,
                      rel_to_abs_mel_function = rel_to_abs_mel_function,
-                     max_goes_forced = max_goes_forced),
+                     max_goes_forced = max_goes_forced,
+                     give_first_melody_note = give_first_melody_note),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -190,7 +199,7 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                            page_type, answer_meta_data = data.frame(), get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note = 1L,
                            end_note, durations, state, melody_no, var_name, sound = "piano",
-                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, ...) {
+                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, give_first_melody_note = FALSE, ...) {
 
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
@@ -206,6 +215,8 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
     max_goes <- psychTestR::get_global("max_goes", state)
     attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
     answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
+    transpose_first_melody_note <- psychTestR::get_global("transpose_first_melody_note", state)
+    clef <- psychTestR::get_global("clef", state)
 
     # midi checks
     midi_device <- midi_device_check(page_type, state)
@@ -239,7 +250,10 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                     attempts_left = attempts_left,
                     sound = sound,
                     hideOnPlay = hideOnPlay,
-                    max_goes_forced = max_goes_forced)
+                    max_goes_forced = max_goes_forced,
+                    give_first_melody_note = give_first_melody_note,
+                    transpose_first_melody_note = transpose_first_melody_note,
+                    clef = clef)
 
   })
 }

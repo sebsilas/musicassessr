@@ -91,7 +91,7 @@ range_explanation_page <- function() {
                               You will be asked first to sing your lowest comfortable note.
                               The computer will then analyse this note and it will be played back to you.
                               You will be asked to decide if this is a good match to your lowest note.
-                              Sometimes the computer can make a large error, and you will know when that happens, and you will have an opportunity to sing your lowest note again, and give the computer another chance."))
+                              Sometimes the computer can make a large error. You should know when that happens, and you will have an opportunity to sing your  note again, and give the computer another chance."))
 }
 
 get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
@@ -163,8 +163,8 @@ determine_span <- function(highest_user_note, lowest_user_note, adjust_range) {
   }
 
   list("span" = span,
-      "highest_user_note" = highest_user_note,
-      "lowest_user_note" = lowest_user_note)
+       "highest_user_note" = highest_user_note,
+       "lowest_user_note" = lowest_user_note)
 
 }
 
@@ -189,7 +189,7 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE) {
                     page_text = shiny::tags$div(
                       shiny::tags$p("You can click below to hear your range."),
                       shiny::tags$p("Please note, we may have changed the range to be slightly higher or lower than you actually sang.")
-                      ),
+                    ),
                     page_type = "one_button_page",
                     button_text = psychTestR::i18n("Next"))
   })
@@ -236,5 +236,42 @@ midi_or_audio <- function(type, prompt_text, var_name) {
     })
   }
 }
+
+
+#' A page to identify a user's singing range by asking them to sing Happy Birthday
+#'
+#' @param feedback
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sing_happy_birthday_page <- function(feedback = FALSE, label = "sing_hbd") {
+
+  page <- record_audio_page(label = label,
+                            page_text = "Please sing Happy Birthday.",
+                            get_answer = musicassessr::get_answer_simple_pyin_summary,
+                            auto_next_page = TRUE)
+
+  if(feedback) {
+    c(
+      page,
+      psychTestR::reactive_page(function(state, answer, ...) {
+        psychTestR::one_button_page(
+          shiny::tags$div(
+            shiny::tags$h1("Output"),
+            shiny::tags$p(paste0('Min: ', answer$Min.)),
+            shiny::tags$p(paste0('Max: ', answer$Max.)),
+            shiny::tags$p(paste0('Mean: ', answer$Mean)),
+            shiny::tags$p(paste0('Median: ', answer$Median))
+          )
+        )
+      })
+    )
+  } else {
+    page
+  }
+}
+
 
 

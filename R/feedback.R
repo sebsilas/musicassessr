@@ -71,7 +71,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
   })
 }
 
-list_to_shiny_table <- function(l) {
+list_to_shiny_table <- function(l, rownames = TRUE, colnames = FALSE) {
 
   shiny::renderTable({
     l <- l[!is.na(l) & lengths(l) > 0]
@@ -88,7 +88,7 @@ list_to_shiny_table <- function(l) {
     r <- base::t(as.data.frame(l))
     row.names(r) <- l_names
     r
-  }, rownames = TRUE, colnames = FALSE, width = "50%")
+  }, rownames = rownames, colnames = colnames, width = "50%")
 }
 
 
@@ -157,7 +157,7 @@ add_feedback <- function(items, feedback, after = 2) {
   if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)
   } else {
-    res <- insert.every.other.pos.in.list(items, feedback(), n = after)
+    res <- insert_item_into_every_other_n_position_in_list(items, feedback(), n = after)
     res <- lapply(res, function(x) {
       if(is.list(x)) {
         unlist(x)

@@ -1,4 +1,28 @@
 
+#' Useful function for randomising which of 2 blocks goes first
+#'
+#' @param block1
+#' @param block2
+#'
+#' @return
+#' @export
+#'
+#' @examples
+psych_test_snap <- function(block1, block2) {
+  psychTestR::join(
+    psychTestR::code_block(function(state, ...) {
+      snap <- sample(1:2, 1)
+      psychTestR::set_global("snap", snap, state)
+    }),
+    psychTestR::conditional(test = function(state, ...) {
+      psychTestR::get_global("snap", state) == 1
+    }, logic = block1),
+
+    psychTestR::conditional(test = function(state, ...) {
+      psychTestR::get_global("snap", state) == 2
+    }, logic = block2)
+  )
+}
 
 #' Useful (but unsophisticated) util to collapse a df into a pretty string df
 #'
@@ -57,7 +81,17 @@ log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 # generic
 
 
-insert.every.other.pos.in.list <- function(l, item_to_add, n = 2) {
+#' Insert item into every other n position in list
+#'
+#' @param l
+#' @param item_to_add
+#' @param n
+#'
+#' @return
+#' @export
+#'
+#' @examples
+insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 2) {
   for (i in seq_along(l)) {
     l <- append(l, item_to_add, after = (i*n)-1)
   }
@@ -133,7 +167,7 @@ urlFileExist <- function(url){
 # tests
 
 #g <- as.list(1:10)
-# g2 <- insert.every.other.pos.in.list(g, "a")
-# g3 <- insert.every.other.pos.in.list(g, "a", n = 3)
-# g4 <- insert.every.other.pos.in.list(g, "a", n = 4)
+# g2 <- insert_item_into_every_other_position_in_list(g, "a")
+# g3 <- insert_item_into_every_other_position_in_list(g, "a", n = 3)
+# g4 <- insert_item_into_every_other_position_in_list(g, "a", n = 4)
 

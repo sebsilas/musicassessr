@@ -81,11 +81,12 @@ record_spoken_words_page <- function() {
       shiny::tags$p(shiny::tags$em("...diagnostic messages"), class = "output"),
       shiny::tags$button("Record", onclick="recognition.start();"),
       psychTestR::trigger_button("next", "Next"),
-      shiny::includeScript(system.file("www/js/captureSpeech.js"))
+      shiny::includeScript(system.file("www/js/captureSpeech.js", package = "musicassessr"))
     ),
     get_answer = function(input, ...) {
       list(confidence = input$confidence,
-           user_response = input$user_response)
+           user_response_words = input$user_response_words,
+           onsets = input$onsets)
 
     },
     save_answer = TRUE

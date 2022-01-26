@@ -6,7 +6,7 @@
 \usage{
 present_stimuli_midi_notes_both(
   stimuli,
-  note_length,
+  note_length = 0.5,
   sound = "piano",
   asChord = FALSE,
   play_button_text = "Play",

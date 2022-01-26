@@ -52,7 +52,7 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
   res
 }
 
-sample_melody_in_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_range, top_range, difficulty, length = NULL) {
+sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -138,11 +138,11 @@ sample_melody_in_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_r
 
 }
 
-sample_melody_in_easy_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_range, top_range) {
+sample_melody_in_easy_key <- function(item_bank, inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "easy")
 }
 
-sample_melody_in_hard_key <- function(item_bank = WJD::WJD("phrases"), inst, bottom_range, top_range) {
+sample_melody_in_hard_key <- function(item_bank, inst, bottom_range, top_range) {
   sample_melody_in_key(item_bank = item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = "hard")
 }
 

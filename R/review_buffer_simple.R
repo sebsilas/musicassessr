@@ -1,7 +1,7 @@
 
 
-WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
-WJD_mini$correct <- 0
+#WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
+#WJD_mini$correct <- 0
 
 review_buffer <- function() {
   psychTestR::make_test(

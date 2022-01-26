@@ -46,15 +46,12 @@ Imports:
     purrr,
     jsonlite,
     lubridate,
-    RPostgres,
-    paws,
-    WJD (>= 0.1.0)
+    RPostgres
 Depends: 
     R (>= 2.10)
 Remotes: 
     pmcharrison/psychTestR,
     sebsilas/itembankr,
-    sebsilas/WJD,
     gaborcsardi/async,
     pmcharrison/hrep,
     fmhoeger/psyquest

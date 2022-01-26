@@ -2,9 +2,9 @@
 # NB: completely decouple the visualising table stuff from the main functionality
 # i.e., the main functionality shouldn't be based around the table displaying at all
 
-WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
-WJD_mini$correct <- 0
-WJD_mini$time_next_due <- Sys.time() + lubridate::minutes(1)
+#WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
+#WJD_mini$correct <- 0
+#WJD_mini$time_next_due <- Sys.time() + lubridate::minutes(1)
 
 
 sample_from_item_bank_and_remove <- function(state) {

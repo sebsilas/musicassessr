@@ -46,7 +46,8 @@ Imports:
     purrr,
     jsonlite,
     lubridate,
-    RPostgres
+    RPostgres,
+    paws
 Depends: 
     R (>= 2.10)
 Remotes: 

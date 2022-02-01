@@ -5,6 +5,7 @@
 \title{A page builder for creating a specified number of play_melody_loops}
 \usage{
 multi_page_play_melody_loop(
+  item_bank = NULL,
   presampled_items = NULL,
   n_items,
   var_name = "melody",

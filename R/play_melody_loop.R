@@ -1,9 +1,7 @@
 
-
-
-
 #' A page builder for creating a specified number of play_melody_loops
 #'
+#' @param item_bank
 #' @param presampled_items
 #' @param n_items
 #' @param var_name
@@ -28,7 +26,7 @@
 #' @export
 #'
 #' @examples
-multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_name = "melody", stimuli_type = "midi_notes",
+multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NULL, n_items, var_name = "melody", stimuli_type = "midi_notes",
                                         page_type = "record_audio_page", max_goes = 3L,
                                         page_title = psychTestR::i18n("copy_melody_title"),
                                         page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
@@ -59,7 +57,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                        sound = sound,
                        get_trial_characteristics_function = get_trial_characteristics_function,
                        max_goes_forced = max_goes_forced,
-                       give_first_melody_note = give_first_melody_note)
+                       give_first_melody_note = give_first_melody_note,
+                       item_bank = item_bank)
       })
 
       items
@@ -82,7 +81,8 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
                          example = example,
                          sound = sound,
                          max_goes_forced = max_goes_forced,
-                         give_first_melody_note = give_first_melody_note)   })
+                         give_first_melody_note = give_first_melody_note,
+                         item_bank = item_bank)   })
 
     }
 
@@ -97,9 +97,9 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 
 
 
-
 #' Create a psychTestR test loop for having several attempts at playing back a melody.
 #'
+#' @param item_bank
 #' @param melody
 #' @param melody_no
 #' @param var_name
@@ -129,7 +129,7 @@ multi_page_play_melody_loop <- function(presampled_items = NULL, n_items, var_na
 #' @export
 #'
 #' @examples
-play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes",
+play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes",
                              max_goes = 3L,
                              max_goes_forced = FALSE,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
@@ -151,7 +151,7 @@ play_melody_loop <- function(melody = NULL, melody_no = "x", var_name = "melody"
       psychTestR::set_global("max_goes", max_goes, state)
       psychTestR::set_global("attempts_left", max_goes, state)
       # grab sampled melody for this trial (if one not specified)
-      grab_sampled_melody(melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = rel_to_abs_mel_function, get_trial_characteristics_function = get_trial_characteristics_function)
+      grab_sampled_melody(item_bank, melody, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = rel_to_abs_mel_function, get_trial_characteristics_function = get_trial_characteristics_function)
     }),
 
     # keep in loop until the participant confirms they are happy with their entry
@@ -263,7 +263,7 @@ example_save <- function(example) {
   ifelse(example, FALSE, TRUE)
 }
 
-grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = NULL,
+grab_sampled_melody <- function(item_bank = NULL, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function = NULL,
                                 note_length = 0.5, get_trial_characteristics_function = NULL, ...) {
 
   # not all trials will need the range, inst. etc but grab it here anyway
@@ -284,7 +284,7 @@ grab_sampled_melody <- function(melody_row, var_name, stimuli_type, state, melod
       } else {
         trials <- psychTestR::get_global(var_name, state)
         trial_char <- get_trial_characteristics_function(trial_df = trials, trial_no = melody_no)
-        melody_row <- sample_melody_in_key(inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$key_difficulty, length = trial_char$melody_length)
+        melody_row <- sample_melody_in_key(item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$key_difficulty, length = trial_char$melody_length)
         melody_row <- cbind(melody_row, data.frame("key_difficulty"= trial_char$key_difficulty))
         # not fully abstracted from PBET setup, yet
         abs_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(abs_melody))

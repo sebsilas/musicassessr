@@ -1,8 +1,3 @@
-
-
-
-
-
 #' Present stimuli
 #'
 #' @param stimuli

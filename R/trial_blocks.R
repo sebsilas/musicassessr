@@ -206,7 +206,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                get_trial_characteristics_function = get_trial_characteristics_function,
                                max_goes_forced = max_goes_forced,
                                max_goes = max_goes,
-                               give_first_melody_note = give_first_melody_note),
+                               give_first_melody_note = give_first_melody_note,
+                               item_bank = item_bank),
                              ## sample
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -234,7 +235,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            get_trial_characteristics_function = get_trial_characteristics_function,
                            max_goes_forced = max_goes_forced,
                            max_goes = max_goes,
-                           give_first_melody_note = give_first_melody_note)
+                           give_first_melody_note = give_first_melody_note,
+                           item_bank = item_bank)
                        )
     )
   }
@@ -335,7 +337,8 @@ rhythmic_melody_trials <- function(item_bank,
               get_trial_characteristics_function = get_trial_characteristics_function,
               max_goes_forced = max_goes_forced,
               max_goes = max_goes,
-              give_first_melody_note = give_first_melody_note),
+              give_first_melody_note = give_first_melody_note,
+              item_bank = item_bank),
         psychTestR::one_button_page(shiny::tags$div(
           shiny::tags$h2(page_title),
           shiny::tags$p("Now you're ready for the real thing!")))
@@ -364,7 +367,8 @@ rhythmic_melody_trials <- function(item_bank,
           get_trial_characteristics_function = get_trial_characteristics_function,
           max_goes_forced = max_goes_forced,
           max_goes = max_goes,
-          give_first_melody_note = give_first_melody_note)
+          give_first_melody_note = give_first_melody_note,
+          item_bank = item_bank)
       )
     )
   }

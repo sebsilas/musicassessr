@@ -5,6 +5,7 @@
 \title{Create a psychTestR test loop for having several attempts at playing back a melody.}
 \usage{
 play_melody_loop(
+  item_bank = NULL,
   melody = NULL,
   melody_no = "x",
   var_name = "melody",

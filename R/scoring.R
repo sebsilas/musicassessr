@@ -59,20 +59,28 @@ score_melodic_production <- function(user_melody_input = numeric(),
   errors_boolean_octaves_allowed <- as.vector(!user_pitch_classes %in% stimuli_pitch_classes)
   no_correct_octaves_allowed <- sum(correct_boolean_octaves_allowed)
   no_errors_octaves_allowed <- sum(errors_boolean_octaves_allowed)
-  # accuracy
-  accuracy <- get_note_accuracy(stimuli, user_melody_input, no_correct, no_errors)
-  accuracy_octaves_allowed <- get_note_accuracy(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed)
+
 
   # opti3
-
   opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)
   no_note_events <- length(user_melody_input)
 
-  # by note events measures
-  correct_by_note_events <- no_correct/no_note_events
-  correct_by_note_events_log_normal <- correct_by_note_events * log_normal(no_note_events/stimuli_length)
-  correct_by_note_events_octaves_allowed <- no_correct_octaves_allowed/no_note_events
-  correct_by_note_events_octaves_allowed_log_normal <- correct_by_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
+  # accuracy style measures
+
+  ## proportion of correct note events i.e., no_correct/no_note_events
+  proportion_of_correct_note_events <- get_proportion_of_correct_note_events(stimuli, user_melody_input, no_correct, no_errors, no_note_events)
+  proportion_of_correct_note_events_octaves_allowed <- get_proportion_of_correct_note_events(stimuli, user_melody_input, no_correct_octaves_allowed, no_errors_octaves_allowed, no_note_events)
+
+  ## controlled for stimuli length and [0,1]
+
+  proportion_of_correct_note_events_controlled_by_stimuli_length_log_normal <- proportion_of_correct_note_events * log_normal(no_note_events/stimuli_length)
+  proportion_of_correct_note_events_octaves_allowed_controlled_by_stimuli_length_log_normal <- proportion_of_correct_note_events_octaves_allowed * log_normal(no_note_events/stimuli_length)
+
+
+  # proportion of stimuli (target) notes found
+  proportion_of_stimuli_notes_found <- length(base::intersect(user_melody_input, stimuli))/stimuli_length
+  proportion_of_stimuli_notes_found_octaves_allowed <- length(base::intersect(user_pitch_classes, stimuli_pitch_classes))/stimuli_length
+
 
   # fine-grained pitch measures (i.e singing style):
   note_precision <- get_note_precision(features_df)
@@ -101,12 +109,11 @@ score_melodic_production <- function(user_melody_input = numeric(),
     errors_boolean_octaves_allowed = errors_boolean_octaves_allowed,
     no_correct_octaves_allowed = no_correct_octaves_allowed,
     no_errors_octaves_allowed = no_errors_octaves_allowed,
-    correct_by_note_events = correct_by_note_events,
-    correct_by_note_events_log_normal = correct_by_note_events_log_normal,
-    correct_by_note_events_octaves_allowed = correct_by_note_events_octaves_allowed,
-    correct_by_note_events_octaves_allowed_log_normal = correct_by_note_events_octaves_allowed_log_normal,
-    accuracy = accuracy,
-    accuracy_octaves_allowed = accuracy_octaves_allowed,
+    proportion_of_correct_note_events = proportion_of_correct_note_events,
+    proportion_of_correct_note_events_controlled_by_stimuli_length_log_normal = proportion_of_correct_note_events_controlled_by_stimuli_length_log_normal,
+    proportion_of_correct_note_events_octaves_allowed_controlled_by_stimuli_length_log_normal = proportion_of_correct_note_events_octaves_allowed_controlled_by_stimuli_length_log_normal,
+    proportion_of_stimuli_notes_found = proportion_of_stimuli_notes_found,
+    proportion_of_stimuli_notes_found_octaves_allowed = proportion_of_stimuli_notes_found_octaves_allowed,
     opti3 = opti3$opti3,
     ngrukkon = opti3$ngrukkon,
     harmcore = opti3$harmcore,
@@ -125,6 +132,35 @@ score_melodic_production <- function(user_melody_input = numeric(),
 
 
 }
+
+
+
+# (t <- score_melodic_production(user_melody_input = c(60, 62, 64, 65),
+#                                user_duration_input = rep(1, 4),
+#                                user_onset_input = c(0, cumsum(rep(1, 3))),
+#                                stimuli = c(60, 62, 64, 65),
+#                                stimuli_duration = rep(1, 4)))
+#
+# (t2 <- score_melodic_production(user_melody_input = c(60, 67, 64, 65),
+#                                 user_duration_input = rep(1, 4),
+#                                 user_onset_input = c(0, cumsum(rep(1, 3))),
+#                                 stimuli = c(60, 62, 64, 65),
+#                                 stimuli_duration = rep(1, 4)))
+#
+#
+# (t3 <- score_melodic_production(user_melody_input = c(60, 67, 64, 65, 60, 60),
+#                                 user_duration_input = rep(1, 6),
+#                                 user_onset_input = c(0, cumsum(rep(1, 5))),
+#                                 stimuli = c(60, 62, 64, 65),
+#                                 stimuli_duration = rep(1, 4)))
+#
+# # octave
+#
+# (t4 <- score_melodic_production(user_melody_input = c(72, 62, 64, 65),
+#                                user_duration_input = rep(1, 4),
+#                                user_onset_input = c(0, cumsum(rep(1, 3))),
+#                                stimuli = c(60, 62, 64, 65),
+#                                stimuli_duration = rep(1, 4)))
 
 
 #' Produce extra melodic features from a pyin note track
@@ -165,6 +201,14 @@ produce_extra_melodic_features <- function(pyin_style_res) {
 
 # helper functions / mainly for dealing with presence of NAs when scoring methods used at test time
 
+get_proportion_of_correct_note_events <- function(stimuli, user_melody_input, no_correct, no_errors, no_note_events) {
+  if (no_errors == 0 & no_correct == length(stimuli)) {
+    proportion_of_correct_note_events  <- 1
+  } else {
+    proportion_of_correct_note_events <- no_correct/no_note_events
+  }
+}
+
 get_durations <- function(result) {
   if(is.null(result$dur)) {
     durations <- diff(onsets_noteon)
@@ -173,14 +217,6 @@ get_durations <- function(result) {
   }
 }
 
-get_note_accuracy <- function(stimuli, user_melody_input, no_correct, no_errors) {
-  # accuracy
-  if (no_errors == 0 & no_correct == length(stimuli)) {
-    accuracy <- 1
-  } else {
-    accuracy <- no_correct/length(user_melody_input)
-  }
-}
 
 get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin) {
   # opti3

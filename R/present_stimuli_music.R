@@ -12,9 +12,6 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 record_immediately = FALSE, give_first_melody_note = FALSE, transpose_first_melody_note = 0,
                                                 clef = "auto", ...) {
 
-  print('transoisepp22')
-  print(transpose_first_melody_note)
-
   if(length(durations) == 0) {
     durations <- rjson::toJSON(rep(note_length, length(stimuli)))
   } else {
@@ -717,7 +714,7 @@ show_first_melody_note <- function(give_first_melody_note, stimuli, transpose_fi
     shiny::tags$div(
       shiny::tags$p("The first note is: "),
       present_stimuli_midi_notes_visual(stimuli[1] + transpose_first_melody_note, clef = clef),
-      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = "Play First Note")
+      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = "Play First Note", play_button_id = "firstMelodyPlay")
     )
   } else {
     return(" ")

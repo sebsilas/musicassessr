@@ -10,7 +10,6 @@ PBET::PBET_standalone(num_items = list("interval_perception" = 0L,
                       max_goes_forced = TRUE,
                       max_goes = 1L,
                       give_first_melody_note = TRUE,
-
                       melody_length = 3:4)
 
 # shiny::runApp("test_apps/PBET/app.R")

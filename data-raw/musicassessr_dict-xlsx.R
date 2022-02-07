@@ -13,7 +13,6 @@ musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
 
 usethis::use_data(musicassessr_dict_df, overwrite = TRUE)
 
-usethis::use_data(musicassessr_dict_df, insts_table, overwrite = TRUE, internal = TRUE)
-
 # NB.. this also has to be updated at the test level (PBET, SAA etc.. to propogate there)
 # i.e., you need to recreate the dicts there
+

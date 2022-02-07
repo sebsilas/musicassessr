@@ -1,4 +1,6 @@
 
+
+
 #' Setup pages for musicassessr test
 #'
 #' @param input
@@ -12,6 +14,8 @@
 #' @param select_instrument
 #' @param get_instrument_range_musical_notation
 #' @param adjust_range
+#' @param test_type
+#' @param microphone_test
 #'
 #' @return
 #' @export
@@ -30,7 +34,9 @@ setup_pages <- function(input = c("microphone",
                         absolute_url,
                         select_instrument = FALSE,
                         get_instrument_range_musical_notation = FALSE,
-                        adjust_range = FALSE) {
+                        adjust_range = FALSE,
+                        test_type = c("voice", "instrument"),
+                        microphone_test = TRUE) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
@@ -43,7 +49,7 @@ setup_pages <- function(input = c("microphone",
     psychTestR::join(
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url),
+      correct_setup(input, SNR_test, absolute_url, microphone_test),
 
       fake_range()
     )
@@ -60,11 +66,14 @@ setup_pages <- function(input = c("microphone",
 
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url),
+      correct_setup(input, SNR_test, absolute_url, microphone_test),
 
       record_instructions(),
 
-      get_instrument_range_pages(input, get_instrument_range, show_musical_notation = get_instrument_range_musical_notation, adjust_range = adjust_range)
+      get_instrument_range_pages(input, get_instrument_range,
+                                 show_musical_notation = get_instrument_range_musical_notation,
+                                 adjust_range = adjust_range,
+                                 test_type = test_type)
 
     )
 
@@ -72,14 +81,14 @@ setup_pages <- function(input = c("microphone",
 }
 
 
-correct_setup <- function(input, SNR_test, absolute_url) {
+correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE) {
   if(!sjmisc::str_contains(input, "midi_keyboard")) {
-    microphone_setup(SNR_test, absolute_url)
+    microphone_setup(SNR_test, absolute_url, microphone_test)
   } else if(!sjmisc::str_contains(input, "microphone")) {
     midi_setup()
   } else if(input == "midi_keyboard_and_microphone") {
     c(
-      microphone_setup(SNR_test, absolute_url),
+      microphone_setup(SNR_test, absolute_url, microphone_test),
       midi_setup()
     )
 
@@ -89,7 +98,7 @@ correct_setup <- function(input, SNR_test, absolute_url) {
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "Microphone"
-      }, logic = microphone_setup(SNR_test, absolute_url)),
+      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test)),
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "MIDI"
@@ -160,13 +169,19 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(SNR_test, absolute_url) {
-  c(
+microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE) {
 
-    microphone_type_page(),
+  if(microphone_test) {
+    microphone_pages <- psychTestR::join(
+      microphone_type_page(),
+      musicassessr::microphone_calibration_page()
+    )
+  } else {
+    microphone_pages <- psychTestR::code_block(function(state, ...){}) # there needs to be the possibility of something resolving
+  }
 
-    musicassessr::microphone_calibration_page(),
-
+  psychTestR::join(
+      microphone_pages,
     if(SNR_test) musicassessr::get_SNR_pages(absolute_url = absolute_url)
   )
 }
@@ -194,9 +209,10 @@ set_instrument_range_code_block <- function(inst = NULL) {
 midi_setup <- function() {
 
   c(
-    select_midi_device_page(title = "select_midi_device_title",
-                            message = "select_midi_device_message",
-                            button_text = psychTestR::i18n("Next")),
+    select_midi_device_page(title = psychTestR::i18n("select_midi_device_title"),
+                            message = psychTestR::i18n("select_midi_device_message"),
+                            button_text = psychTestR::i18n("Next"),
+                            error_notification =  psychTestR::i18n("no_midi_device_found")),
     psychTestR::code_block(fun = function(state, ...) {
       psychTestR::set_global("inst", "Piano", state)
     }),

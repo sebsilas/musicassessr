@@ -4,7 +4,13 @@
 \alias{share_score_page}
 \title{A page for sharing scores.}
 \usage{
-share_score_page(test_name, url, hashtag = "CanISing", socials = TRUE)
+share_score_page(
+  test_name,
+  url,
+  hashtag = "CanISing",
+  socials = TRUE,
+  leaderboard_name = "leaderboard.rda"
+)
 }
 \arguments{
 \item{hashtag}{}

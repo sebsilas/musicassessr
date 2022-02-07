@@ -16,11 +16,13 @@ setup_pages(
   absolute_url,
   select_instrument = FALSE,
   get_instrument_range_musical_notation = FALSE,
-  adjust_range = FALSE
+  adjust_range = FALSE,
+  test_type = c("voice", "instrument"),
+  microphone_test = TRUE
 )
 }
 \arguments{
-\item{adjust_range}{}
+\item{microphone_test}{}
 }
 \value{
 

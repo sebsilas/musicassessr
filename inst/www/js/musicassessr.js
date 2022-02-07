@@ -6,6 +6,9 @@ toneJSInit();
 
 
 preloadImage("https://adaptiveeartraining.com/magmaGold/img/record.gif");
+preloadImage("https://adaptiveeartraining.com/magmaGold/img/intro.png");
+preloadImage("https://adaptiveeartraining.com/magmaGold/img/music.png");
+preloadImage("https://adaptiveeartraining.com/magmaGold/img/saxophone.png");
 
 // constants
 // a little delay after playback finishes before hitting record
@@ -21,6 +24,7 @@ var user_response_midi_note_on = [];
 var user_response_midi_note_off = [];
 var onsets_noteon = [];
 var onsets_noteoff = [];
+var auto_next_page;
 
 // functions
 
@@ -169,7 +173,7 @@ function triggerNote(sound, freq_tone, seconds, time) {
 function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "record_audio_page", stop_button_text = "Stop", showStop = false, record_immediately = true) {
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
   }
 
   // play a tone for x seconds
@@ -226,7 +230,7 @@ function playTones (note_list) {
 function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound) {
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
   }
   if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
     note_list = note_list-12;
@@ -235,7 +239,7 @@ function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_butto
 
   var freq_list = Tone.Frequency(note_list, "midi").toNote();
 
-  auto_next_page = true;
+  //auto_next_page = true;
   triggerNote(sound, freq_list, dur_list);
   setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, dur_list*1000);
 
@@ -245,7 +249,7 @@ function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_butto
 function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
   }
    var pattern = new Tone.Sequence(function(time, note){
 
@@ -265,7 +269,7 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
 function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
   }
   var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
   notesAndDurations = notesAndDurations.map(timeFromDurations);
@@ -297,13 +301,16 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
   console.log('playSeq');
   console.log(note_list);
-  console.log(dur_list);
+  console.log('auto_next_page...');
+  console.log(auto_next_page);
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
+    hidePlayButton("firstMelodyPlay");
   }
 
   auto_next_page = auto_next_page;
+
 
   // make sure not playing
   Tone.Transport.stop();
@@ -382,7 +389,7 @@ function metronome () {
 function toneJSPlay (midi, start_note, end_note, hidePlay, transpose, id, sound, bpm = 90) {
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
      }
     // start timer
 
@@ -506,7 +513,7 @@ function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose
     console.log(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm);
 
     // hide after play
-    hidePlayButton();
+    hidePlayButton(id);
     // toneJS: boolean. true if file file to be played via toneJS. otherwise, via MIDIJS
 
     if (toneJS) {
@@ -598,7 +605,7 @@ function hideAudioFilePlayer() {
 function recordAndStop (ms, showStop, hidePlay, id = null, type = "record_audio_page", stop_button_text = "Stop") {
 
   if(hidePlay) {
-    hidePlayButton();
+    hidePlayButton(id);
   }
 
   setTimeout(() => {
@@ -616,14 +623,14 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "record_audio_
 
   }, record_delay);
 
-     if (ms === null) {
-        console.log('ms null');
-        recordUpdateUI(showStop, hidePlay, type);
-     } else {
-        recordUpdateUI(showStop, hidePlay, type, stop_button_text);
-        setTimeout(() => { stopRecording();
-        hideRecordImage(); }, ms);
-     }
+  if (ms === null) {
+    console.log('ms null');
+    recordUpdateUI(showStop, hidePlay, type);
+  } else {
+    recordUpdateUI(showStop, hidePlay, type, stop_button_text);
+    setTimeout(() => { stopRecording();
+    hideRecordImage(); }, ms);
+  }
 
 }
 
@@ -655,7 +662,6 @@ function createCorrectStopButton(type) {
   stopButton.style.visibility = 'visible';
 
   stopButton.onclick = function () {
-    //next_page();
     if(show_happy_with_response) {
       show_happy_with_response_message();
     }
@@ -955,7 +961,7 @@ function upload_file_to_s3_local(blob) {
 
   var recordkey = create_recordkey();
 
-  var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // remote / production
+  var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // local
   console.log(file_url);
 
 	var xhr=new XMLHttpRequest();
@@ -973,6 +979,8 @@ function upload_file_to_s3_local(blob) {
 		spinner = document.getElementsByClassName("hollow-dots-spinner");
 		spinner[0].style.display="none";
 		file_is_ready = true;
+		console.log('auto_next_page...');
+		console.log(auto_next_page);
 		if(auto_next_page) {
 			next_page();
 			}

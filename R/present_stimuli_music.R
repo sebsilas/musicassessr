@@ -1,8 +1,8 @@
 
 
 
-# midi notes
 
+# midi notes
 
 present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, sound = "piano",
                                                 page_type = 'null', play_button_text = "Play",
@@ -12,24 +12,16 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 record_immediately = FALSE, give_first_melody_note = FALSE, transpose_first_melody_note = 0,
                                                 clef = "auto", ...) {
 
-  if(length(durations) == 0) {
-    durations <- rjson::toJSON(rep(note_length, length(stimuli)))
-  } else {
-    durations <- rjson::toJSON(durations)
-  }
+  durations <- sort_durations(durations, note_length, stimuli)
+  auto_next_page <- TRUE_to_js_true(auto_next_page)
 
   if(sound == "tone") {
-    if(record_immediately) {
-      record_immediately <- "true"
-      hidePlay <- "true"
-    } else {
-      record_immediately <- "false"
-      hidePlay <- "true"
-    }
+    record_immediately <- TRUE_to_js_true(record_immediately)
+    hidePlay <- "true"
     js.script <- paste0('playTone(',stimuli,', ', note_length,', this.id, \'tone\',', hidePlay,',\'', page_type,'\', \'',stop_button_text, '\', false, ', record_immediately,');')
   } else {
       melody.for.js <- rjson::toJSON(stimuli)
-      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ", true);")
+      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ", ", auto_next_page,");")
   }
 
   shiny::tags$div(
@@ -48,12 +40,16 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
 }
 
 
+
 #' Present MIDI notes as musical notation
 #'
 #' @param stimuli
 #' @param note_length
 #' @param asChord
 #' @param ascending
+#' @param id
+#' @param present_div
+#' @param clef
 #'
 #' @return
 #' @export
@@ -75,6 +71,7 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
 
 }
 
+
 #' Present midi notes in both visual and auditory modalities
 #'
 #' @param stimuli
@@ -83,6 +80,9 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
 #' @param asChord
 #' @param play_button_text
 #' @param ascending
+#' @param visual_music_notation_id
+#' @param play_button_id
+#' @param button_area_id
 #' @param ...
 #'
 #' @return
@@ -712,11 +712,21 @@ open.music.display.wrapper <- function(xml, id = "sheet-music", return_div = TRU
 show_first_melody_note <- function(give_first_melody_note, stimuli, transpose_first_melody_note = 0, clef = "auto") {
   if(give_first_melody_note) {
     shiny::tags$div(
-      shiny::tags$p("The first note is: "),
+      shiny::tags$p(psychTestR::i18n("first_note_is")),
+      if(transpose_first_melody_note != 0) shiny::tags$p(psychTestR::i18n("transposed")),
       present_stimuli_midi_notes_visual(stimuli[1] + transpose_first_melody_note, clef = clef),
-      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = "Play First Note", play_button_id = "firstMelodyPlay")
+      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = psychTestR::i18n("play_first_note"), play_button_id = "firstMelodyPlay", auto_next_page = FALSE)
     )
   } else {
     return(" ")
   }
 }
+
+sort_durations <- function(durations, note_length, stimuli) {
+  if(length(durations) == 0) {
+    durations <- rjson::toJSON(rep(note_length, length(stimuli)))
+  } else {
+    durations <- rjson::toJSON(durations)
+  }
+}
+

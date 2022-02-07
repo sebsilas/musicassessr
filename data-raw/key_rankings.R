@@ -33,3 +33,6 @@ key_rankings$key_tonality[key_rankings$key_tonality == "maj"] <- "major"
 key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 
 use_data(key_rankings, instrument_list, keys_table, wjd_meta, overwrite = TRUE)
+
+# do instrument list onternval vs insts.R
+

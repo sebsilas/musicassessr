@@ -2,16 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{psych_test_snap}
 \alias{psych_test_snap}
-\title{Useful function for randomising which of 2 blocks goes first}
+\title{Useful function for randomising which of 2 blocks goes first (or forcing it with force_snap)}
 \usage{
-psych_test_snap(block1, block2)
+psych_test_snap(
+  block1,
+  block2,
+  condition1_name = "1",
+  condition2_name = "2",
+  force_snap = NULL
+)
 }
 \arguments{
-\item{block2}{}
+\item{force_snap}{}
 }
 \value{
 
 }
 \description{
-Useful function for randomising which of 2 blocks goes first
+Useful function for randomising which of 2 blocks goes first (or forcing it with force_snap)
 }

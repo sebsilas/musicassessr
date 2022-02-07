@@ -7,9 +7,9 @@
 multi_play_long_tone_record_audio_pages(
   no_items,
   page_type = "record_audio_page",
-  page_text = "Sing along with the tone for 5 seconds.",
+  page_text = psychTestR::i18n("long_tone_text"),
   example = FALSE,
-  page_title = "Sing Along With This Note",
+  page_title = psychTestR::i18n("long_tone_heading"),
   feedback = FALSE,
   get_answer = get_answer_pyin_long_note
 )

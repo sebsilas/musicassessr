@@ -1,4 +1,4 @@
-
+# load('R/sysdata.rda')
 key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
   if(nchar(inst) > 4) {
     inst <- instrument_list[[inst]]

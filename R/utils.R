@@ -1,18 +1,72 @@
 
-#' Useful function for randomising which of 2 blocks goes first
+
+
+
+#' Allow the experimenter to set a condition at the beginning of the test
 #'
 #' @param block1
 #' @param block2
+#' @param condition1_name
+#' @param condition2_name
 #'
 #' @return
 #' @export
 #'
 #' @examples
-psych_test_snap <- function(block1, block2) {
+set_condition_page <- function(block1, block2, condition1_name, condition2_name) {
+
+  psychTestR::join(
+    psychTestR::NAFC_page(
+      label = "experimental_conditon",
+      prompt = "NB: This is only for the experimenter. What condition should this participant be?",
+      choices = as.character(1:2),
+      on_complete = function(state, answer, ...) {
+        answer <- as.numeric(answer)
+        if(answer == 1) {
+          psychTestR::set_global("condition", condition1_name, state)
+        } else {
+          psychTestR::set_global("condition", condition2_name, state)
+        }
+        psychTestR::set_global("snap", answer, state)
+      }),
+    psychTestR::conditional(test = function(state, ...) {
+      psychTestR::get_global("snap", state) == 1
+    }, logic = block1),
+
+    psychTestR::conditional(test = function(state, ...) {
+      psychTestR::get_global("snap", state) == 2
+    }, logic = block2)
+  )
+}
+
+#' Useful function for randomising which of 2 blocks goes first (or forcing it with force_snap)
+#'
+#' @param block1
+#' @param block2
+#' @param condition1_name
+#' @param condition2_name
+#' @param force_snap
+#'
+#' @return
+#' @export
+#'
+#' @examples
+psych_test_snap <- function(block1, block2, condition1_name = "1", condition2_name = "2", force_snap = NULL) {
+
+  stopifnot(force_snap == 1 | force_snap == 2 | is.null(force_snap))
+
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
-      snap <- sample(1:2, 1)
+      if(is.null(force_snap)) {
+        snap <- sample(1:2, 1)
+      }
+      if(snap == 1) {
+        psychTestR::save_result(place = "results", "experimental_condition", condition1_name)
+      } else {
+        psychTestR::save_result(place = "results", "experimental_condition", condition2_name)
+      }
       psychTestR::set_global("snap", snap, state)
+
     }),
     psychTestR::conditional(test = function(state, ...) {
       psychTestR::get_global("snap", state) == 1
@@ -43,6 +97,7 @@ to_string_df <- function(df, exclude_cols = character()) {
     df %>% dplyr::summarise_all(paste0, collapse = ",")
   }
 }
+
 
 # d <- data.frame(
 #   a = 1:10,
@@ -98,6 +153,15 @@ insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 
   l
 }
 
+TRUE_to_js_true <- function(cond) {
+  if(cond) {
+    "true"
+  } else {
+    "false"
+  }
+}
+
+
 
 set_answer_meta_data <- function(meta_data) {
   paste0('Shiny.setInputValue(\"answer_meta_data\", ', meta_data, ');')
@@ -129,6 +193,13 @@ item_bank_type_to_stimuli_type <- function(string_of_item_bank_type) {
   item_bank_type
 }
 
+if_example_save_answer <- function(example) {
+  if(example) {
+    save_answer <- FALSE
+  } else {
+    save_answer <- TRUE
+  }
+}
 
 # response check functions
 

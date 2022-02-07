@@ -15,7 +15,7 @@ present_stimuli_midi_notes_visual(
 )
 }
 \arguments{
-\item{ascending}{}
+\item{clef}{}
 }
 \value{
 

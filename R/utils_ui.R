@@ -1,5 +1,4 @@
 
-
 #' Should the end of the test present a final page or not?
 #'
 #' @param final
@@ -9,18 +8,21 @@
 #' @export
 #'
 #' @examples
-final_page_or_continue_to_new_text <- function(final = TRUE, task_name) {
+final_page_or_continue_to_new_test <- function(final = TRUE, task_name) {
   if(final) {
-    psychTestR::final_page(paste0("You have completed the ", task_name))
+    psychTestR::final_page(paste0(psychTestR::i18n("you_have_completed_the"), " ", task_name))
   } else {
-    psychTestR::one_button_page("Click to proceed to the next test.")
+    psychTestR::one_button_page(psychTestR::i18n("proceed_next_test"))
   }
 }
 
-present_record_button <- function(present = FALSE, type = "record_audio_page", midi_device = " ",
-                                  interactive = FALSE, button_text = "Record",
+present_record_button <- function(present = FALSE,
+                                  type = "record_audio_page",
+                                  midi_device = " ",
+                                  interactive = FALSE,
+                                  button_text = psychTestR::i18n("Record"),
                                   record_duration = NULL, show_stop_button_after_record = FALSE,
-                                  stop_button_text = "Stop") {
+                                  stop_button_text = psychTestR::i18n("Stop")) {
 
   if (present & type == "record_audio_page" & is.null(record_duration)) {
 

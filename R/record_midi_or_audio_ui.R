@@ -93,10 +93,10 @@ loading <- function() {
 return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE) {
 
   if(max_goes_forced) {
-    attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1")
+    attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1.forced")
     attempts_remaining_several.2 <- psychTestR::i18n("attempts_remaining_several.2.forced")
   } else {
-    attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1.forced")
+    attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1")
     attempts_remaining_several.2 <- psychTestR::i18n("attempts_remaining_several.2")
   }
 

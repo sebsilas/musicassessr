@@ -18,3 +18,4 @@ get_correct_app_dir <- function(state) {
          '/srv/shiny-server/files/',
          psychTestR::get_global("local_app_file_dir", state))
 }
+

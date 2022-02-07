@@ -2,154 +2,15 @@
 
 plot_normal_dist_plus_score <- function(data, highlighted_score) {
   std <- sd(data$score)
-  meann <- mean(data$score)
-  highlighted_score_y <- pnorm(highlighted_score + 1, mean = meann, sd = std) - pnorm(highlighted_score, mean = meann, sd = std)
+  m <- mean(data$score)
+  highlighted_score_y <- pnorm(highlighted_score + 1, mean = m, sd = std) - pnorm(highlighted_score, mean = m, sd = std)
   ggplot2::ggplot(data=data, ggplot2::aes(x = score)) +
-    ggplot2::stat_function(fun = dnorm, args = c(mean = meann, sd = std), alpha = .4) +
+    ggplot2::stat_function(fun = dnorm, args = c(mean = m, sd = std), alpha = .4) +
     ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
-    ggplot2::geom_vline(xintercept = meann, color = "orange", alpha = .8) +
-    ggplot2::xlim(0, meann + std*5) +
+    ggplot2::geom_vline(xintercept = m, color = "orange", alpha = .8) +
+    ggplot2::xlim(0, m + std * 5) +
     ggplot2::theme(panel.background = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
-}
-
-
-present_scores <- function(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic) {
-
-  if(num_items_long_tone > 0) {
-    # long tones
-    long_tones <- as.data.frame(lapply(res$SAA.long_note_trials$long_tone_, paste0, collapse = ","))
-
-    long_tone_summary <- long_tones %>%
-      dplyr::select(note_accuracy, note_precision, dtw_distance) %>%
-        dplyr::mutate_if(is.character,as.numeric) %>%
-          dplyr::summarise(mean_note_accuracy = mean(note_accuracy, na.rm = TRUE),
-                           note_precision = mean(note_precision, na.rm = TRUE),
-                           mean_dtw_distance = mean(note_precision, na.rm = TRUE))
-  }
-
-  if(num_items_arrhythmic > 0) {
-    # arrhythmic
-    arrhythmic_melodies <- tidy_melodies(res$SAA.arrhythmic_melodies)
-
-    arrhythmic_melody_summary <- arrhythmic_melodies %>% dplyr::select(
-    correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
-     correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
-      opti3, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
-        dplyr::mutate_if(is.character,as.numeric) %>%
-          dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
-  }
-
-  if(num_items_rhythmic > 0) {
-    # rhythmic
-    rhythmic_melodies <- tidy_melodies(res$SAA.rhythmic_melodies)
-
-    rhythmic_melody_summary <- rhythmic_melodies %>% dplyr::select(
-      correct_by_note_events_log_normal, correct_by_note_events_octaves_allowed,
-      correct_by_note_events_octaves_allowed_log_normal, accuracy, accuracy_octaves_allowed,
-      opti3, note_precision, mean_cents_deviation_from_nearest_stimuli_pitch, mean_cents_deviation_from_nearest_midi_pitch) %>%
-        dplyr::mutate_if(is.character,as.numeric) %>%
-          dplyr::summarise(dplyr::across(dplyr::everything(), ~ mean(.x, na.rm = TRUE)))
-  }
-
-  list("long_note" = ifelse(is.null(long_tone_summary), data.frame(mean_note_accuracy = 1, note_precision = 1, mean_dtw_distance = 1), long_tone_summary),
-       "arrhythmic" = ifelse(is.null(arrhythmic_melody_summary), data.frame(accuracy = 1, opti3 = 1), arrhythmic_melody_summary),
-       "rhythmic" = ifelse(is.null(rhythmic_melody_summary), data.frame(accuracy = 1, opti3 = 1), rhythmic_melody_summary))
-
-}
-
-
-
-
-
-#' Present final results
-#'
-#' @param test_name
-#' @param url
-#' @param num_items_long_tone
-#' @param num_items_arrhythmic
-#' @param num_items_rhythmic
-#' @param socials
-#'
-#' @return
-#' @export
-#'
-#' @examples
-final_results <- function(test_name,
-                          url,
-                          num_items_long_tone,
-                          num_items_arrhythmic,
-                          num_items_rhythmic,
-                          socials = FALSE) {
-  c(
-    psychTestR::reactive_page(function(state, ...) {
-      res <- as.list(psychTestR::get_results(state, complete = FALSE))
-
-      processed_results <- present_scores(res, num_items_long_tone, num_items_arrhythmic, num_items_rhythmic)
-
-      psychTestR::set_local("opti3",
-                            mean(processed_results$arrhythmic$opti3,
-                                 processed_results$arrhythmic$opti3, na.rm = TRUE)
-                            , state)
-
-      psychTestR::set_local("accuracy",
-                            mean(processed_results$rhythmic$accuracy_octaves_allowed,
-                                 processed_results$rhythmic$accuracy_octaves_allowed, na.rm = TRUE),
-                            state)
-
-      final_score <- produce_naive_final_singing_score(res)
-
-      psychTestR::set_local("final_score", final_score, state)
-
-
-      psychTestR::text_input_page(
-        label = "final_score",
-        prompt = shiny::tags$div(style = "width: 500px;",
-                                 shiny::tags$h2('Final Results'),
-                                 shiny::tags$h3('Long Note Scores'),
-
-                                 shiny::renderTable({
-
-                                   long_note_df <- processed_results$long_note
-                                   long_note_df_names <- names(long_note_df)
-                                   long_note_df <- base::t(long_note_df)
-                                   row.names(long_note_df) <- long_note_df_names
-                                   long_note_df
-                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
-
-                                 shiny::tags$h3('Arrhythmic Melody Scores'),
-
-                                 shiny::renderTable({
-
-                                   arrhythmic_df <- processed_results$arrhythmic
-                                   arrhythmic_df_names <- names(arrhythmic_df)
-                                   arrhythmic_df <- base::t(arrhythmic_df)
-                                   row.names(arrhythmic_df) <- arrhythmic_df_names
-                                   arrhythmic_df
-                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
-
-                                 shiny::tags$h3('Rhythmic Melody Scores'),
-
-                                 shiny::renderTable({
-
-                                   rhythmic_df <- processed_results$rhythmic
-                                   rhythmic_df_names <- names(rhythmic_df)
-                                   rhythmic_df <- base::t(rhythmic_df)
-                                   row.names(rhythmic_df) <- rhythmic_df_names
-                                   rhythmic_df
-                                 }, rownames = TRUE, colnames = FALSE, width = "50%"),
-
-                                 shiny::tags$h3('Total Score'),
-                                 shiny::tags$p(final_score),
-                                 shiny::tags$p("Enter a username to see the scoreboard: ")
-
-        )
-      )
-
-    }),
-
-    share_score_page(test_name, url, hashtag, socials)
-  )
 }
 
 
@@ -173,23 +34,21 @@ render_scores_table <- function(res) {
 
 # leaderboard stuff
 
-load_leaderboard <- function() {
-  if(file.exists('output/leaderboard.rda')) {
-    load('output/leaderboard.rda')
+load_leaderboard <- function(leaderboard_name = 'leaderboard.rda') {
+  if(file.exists(paste0('output/', leaderboard_name))) {
+    load(paste0('output/', leaderboard_name))
   } else {
     # or create if doesn't exist
     leaderboard <- tibble::tibble(
       username = character(0),
       score = numeric(0)
     )
-    save(leaderboard, file = 'output/leaderboard.rda')
+    save(leaderboard, file = paste0('output/', leaderboard_name))
   }
   leaderboard
 }
 
-add_score_to_leaderboard <- function(username, score) {
-
-  print('add_score_to_leaderboard')
+add_score_to_leaderboard <- function(username, score, leaderboard_name) {
 
   leaderboard <- load_leaderboard()
 
@@ -197,11 +56,18 @@ add_score_to_leaderboard <- function(username, score) {
     username = username,
     score = score
   )
+
+  print('new_score...')
+  print(new_score)
+
   leaderboard <- rbind(leaderboard, new_score) %>% dplyr::arrange(desc(score))
 
   leaderboard <- leaderboard[!is.na(leaderboard$score), ]
 
-  save(leaderboard, file = 'output/leaderboard.rda')
+  save(leaderboard, file = paste0('output/', leaderboard_name))
+
+  print('l23929..')
+  print(leaderboard)
 
   # and present new leaderboard
   leaderboard
@@ -222,7 +88,7 @@ add_score_to_leaderboard <- function(username, score) {
 #' @export
 #'
 #' @examples
-share_score_page <- function(test_name, url, hashtag = "CanISing", socials = TRUE) {
+share_score_page <- function(test_name, url, hashtag = "CanISing", socials = TRUE, leaderboard_name = 'leaderboard.rda') {
 
   hashtag <- paste0("%23", hashtag)
 
@@ -232,7 +98,7 @@ share_score_page <- function(test_name, url, hashtag = "CanISing", socials = TRU
 
   username <- answer
 
-  updated_leaderboard <- add_score_to_leaderboard(username, score)
+  updated_leaderboard <- add_score_to_leaderboard(username, score, leaderboard_name = leaderboard_name)
 
   leaderboard_table <- shiny::renderTable({
     head(updated_leaderboard, 10)

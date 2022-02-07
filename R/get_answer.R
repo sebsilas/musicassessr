@@ -62,19 +62,15 @@ get_answer_pyin_note_only <- function(input, type = "notes", state, ...) {
 #' @examples
 get_answer_pyin_long_note <- function(input, state, ...) {
 
-  print('get_answer_pyin_long_note')
-  print('dobule check...')
 
   audio_file <- get_audio_file_for_pyin(input, state)
+
+  copy_audio_file(state, audio_file)
 
   pyin_res <- pyin(audio_file,
                    sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state),
                    type = "pitch_track")
 
-  print('pyin_res...')
-  print(pyin_res)
-  print(pyin_res$onset)
-  print(input$stimuli)
 
   if(is.na(pyin_res$onset)) {
     long_note_pitch_measures <- list("note_accuracy" = NA,
@@ -119,6 +115,9 @@ get_answer_pyin <- function(input,
   # get file
   audio_file <- get_audio_file_for_pyin(input, state)
 
+  # copy it to user-specified location
+  copy_audio_file(state, audio_file)
+
   # get pyin
   pyin_res <- get_pyin(audio_file, type, state)
 
@@ -148,8 +147,9 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  pyin_res <- pyin(audio_file,
-                   sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
+  copy_audio_file(state, audio_file)
+
+  pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
 
   res <- ifelse(is.na(pyin_res$note),
                 yes = list("Min." = NA,
@@ -187,6 +187,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
+      copy_audio_file(state, audio_file)
       pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
       if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
@@ -200,6 +201,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
+      copy_audio_file(state, audio_file)
       pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
       if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
@@ -215,6 +217,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
+      copy_audio_file(state, audio_file)
       pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
       if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         list(user_response = NA)
@@ -441,6 +444,17 @@ store_results_in_db <- function(state, res) {
   }
 }
 
+
+copy_audio_file <- function(state, audio_file) {
+  copy_location <- psychTestR::get_global("copy_audio_to", state)
+  print('copy_location...')
+  print(copy_location)
+  print('audio_file...')
+  print(audio_file)
+  if(!is.null(copy_location)) {
+    file.copy(audio_file, copy_location)
+  }
+}
 
 # test
 # #r <- melconv_from_pyin_res('/Users/sebsilas/true.wav')

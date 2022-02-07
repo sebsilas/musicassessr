@@ -11,13 +11,23 @@
 #' @export
 #'
 #' @examples
-multi_play_long_tone_record_audio_pages <- function(no_items, page_type = "record_audio_page",
-                                                    page_text = "Sing along with the tone for 5 seconds.",
+multi_play_long_tone_record_audio_pages <- function(no_items,
+                                                    page_type = "record_audio_page",
+                                                    page_text = psychTestR::i18n("long_tone_text"),
                                                     example = FALSE,
-                                                    page_title = "Sing Along With This Note",
+                                                    page_title = psychTestR::i18n("long_tone_heading"),
                                                     feedback = FALSE, get_answer = get_answer_pyin_long_note) {
-  items <- unlist(lapply(1:no_items, function(x) play_long_tone_record_audio_page(long_note_no = x, page_type = page_type, page_title = page_title,
-                                                                                  page_text = page_text, example = example, get_answer = get_answer)))
+
+  items <- purrr::map(1:no_items, function(x) {
+
+    play_long_tone_record_audio_page(long_note_no = x,
+                                     page_type = page_type,
+                                     page_title = page_title,
+                                     page_text = page_text,
+                                     example = example,
+                                     get_answer = get_answer)
+    })
+
   items <- add_feedback(items, feedback)
 }
 
@@ -56,14 +66,10 @@ play_long_tone_record_audio_page <- function(note = NULL,
 
   # a page type for playing a 5-second tone and recording a user singing with it
 
-  if(example) {
-    save_answer <- FALSE
-  } else {
-    save_answer <- TRUE
-  }
+  save_answer <- if_example_save_answer(example)
 
   psychTestR::reactive_page(function(state, ...) {
-    print('in reactive long tone page')
+
     if(is.null(note)) {
       user_range <- psychTestR::get_global("user_range_sample", state)
       note <- user_range[long_note_no]

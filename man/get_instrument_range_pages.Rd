@@ -8,11 +8,12 @@ get_instrument_range_pages(
   type,
   get_range,
   show_musical_notation = FALSE,
-  adjust_range = FALSE
+  adjust_range = FALSE,
+  test_type = c("voice", "instrument")
 )
 }
 \arguments{
-\item{adjust_range}{}
+\item{test_type}{}
 }
 \value{
 

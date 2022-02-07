@@ -22,6 +22,7 @@ select_musical_instrument_page <- function() {
                     answer <- translate_from_dict(non_english_translation = answer, language = language)
                   }
                   psychTestR::set_global("inst", answer, state)
+
                   trans_first_note <- insts_table %>% dplyr::filter(en == answer) %>% dplyr::pull(transpose)
                   clef <- insts_table %>% dplyr::filter(en == answer) %>% dplyr::pull(clef)
                   psychTestR::set_global("transpose_first_melody_note", trans_first_note, state)

@@ -89,7 +89,7 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                                auto_next_page = auto_next_page, visual_music_notation_id = visual_music_notation_id,
                                                hideOnPlay = hideOnPlay,
                                                record_immediately = record_immediately, give_first_melody_note = give_first_melody_note,
-                                               transpose_first_melody_note = transpose_first_melody_note, clef = clef, ...)
+                                               transpose_first_melody_note = transpose_first_melody_note, clef = clef, note_length = note_length, ...)
   } else {
     return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type,
                                              get_answer = get_answer,
@@ -310,7 +310,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
   } else if (stimuli_type == "audio_WJD") {
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
     # musical stimuli types
-  }  else if (stimuli_type == "midi_notes") {
+  } else if (stimuli_type == "midi_notes") {
     return_stimuli <- present_stimuli_midi_notes(stimuli = stimuli, display_modality = display_modality,
                                                  page_type = page_type, midi_device = midi_device,
                                                  show_aws_controls = show_aws_controls,

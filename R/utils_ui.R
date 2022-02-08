@@ -10,9 +10,11 @@
 #' @examples
 final_page_or_continue_to_new_test <- function(final = TRUE, task_name) {
   if(final) {
-    psychTestR::final_page(paste0(psychTestR::i18n("you_have_completed_the"), " ", task_name))
+    #psychTestR::final_page(paste0(psychTestR::i18n("you_have_completed_the"), " ", task_name))
+    psychTestR::final_page(paste0("You have completed the ", task_name))
   } else {
-    psychTestR::one_button_page(psychTestR::i18n("proceed_next_test"))
+    #psychTestR::one_button_page(psychTestR::i18n("proceed_next_test"))
+    psychTestR::one_button_page('Click to proceed to the next test.')
   }
 }
 

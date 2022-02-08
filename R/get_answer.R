@@ -331,12 +331,10 @@ get_answer_midi <- function(input, state, ...) {
   print(input$user_response_midi_note_on)
   print(input$user_response_midi_note_off)
   print(input$onsets_noteon)
-  print(input$onsets_noteff)
   list(
     user_response_midi_note_on = as.numeric(rjson::fromJSON(input$user_response_midi_note_on)),
     user_response_midi_note_off =  as.numeric(rjson::fromJSON(input$user_response_midi_note_off)),
-    onsets_noteon =  as.numeric(rjson::fromJSON(input$onsets_noteon)),
-    onsets_noteoff = as.numeric(rjson::fromJSON(input$onsets_noteoff))
+    onsets_noteon =  as.numeric(rjson::fromJSON(input$onsets_noteon))
   )
 
 }

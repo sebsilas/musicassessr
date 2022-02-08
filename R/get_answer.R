@@ -18,6 +18,7 @@ get_answer_pyin_melodic_production <- function(input,
                                                state,
                                                melconv = FALSE, ...) {
 
+
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
 
 
@@ -288,12 +289,7 @@ get_melconv <- function(melconv, pyin_res) {
 #' @examples
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
-
-  midi_res <- get_answer_midi(input, state, ...)
-  print('get_answer_midi_melodic_production')
-  print(midi_res)
-
-  if(is.na(midi_res$user_response_midi_note_on) | is.null(midi_res$user_response_midi_note_on)) {
+  if(is.null(input$user_response_midi_note_on)) {
 
     return(list(error = TRUE,
                 reason = "no midi notes",
@@ -302,11 +298,18 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
   } else {
 
+    midi_res <- get_answer_midi(input, state, ...)
+    print(midi_res)
+    print('da concat...')
+    print(c(diff(midi_res$onsets_noteon), midi_res$onsets_noteon[length(midi_res$onsets_noteon)]-midi_res$onsets_noteon[length(midi_res$onsets_noteon)]))
+    print(midi_res$user_response_midi_note_on)
+    print(midi_res$onsets_noteon)
+
     res <- concat_mel_prod_results(input,
                                    state,
                                     melconv_res = list(notes = NA, durations = NA),
                                     midi_res$user_response_midi_note_on,
-                                    c(diff(midi_res$onsets_noteon), midi_res$onsets_noteoff[length(midi_res$onsets_noteoff)]-midi_res$onsets_noteon[length(midi_res$onsets_noteon)]),
+                                    c(diff(midi_res$onsets_noteon), midi_res$onsets_noteon[length(midi_res$onsets_noteon)]-midi_res$onsets_noteon[length(midi_res$onsets_noteon)]),
                                     midi_res$onsets_noteon,
                                     tibble::tibble())
 

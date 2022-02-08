@@ -58,7 +58,7 @@ record_midi_or_audio_ui <- function(body = " ",
                             button_text = button_text, record_duration = record_duration,
                             stop_button_text = stop_button_text),
 
-      loading(),
+      if(page_type == "record_audio_page") loading(),
 
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced),
       if(page_type == "record_audio_page") deploy_aws_pyin(show_aws_controls = show_aws_controls, stop_button_text),

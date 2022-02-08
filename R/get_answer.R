@@ -400,7 +400,9 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
     onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
   }
 
-
+  print('stimuli...')
+  print(input$stimuli)
+  print(input$stimuli_durations)
   scores <- score_melodic_production(user_melody_input,
                                      user_duration_input,
                                      user_onset_input,

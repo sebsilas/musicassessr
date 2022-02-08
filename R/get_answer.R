@@ -289,6 +289,9 @@ get_melconv <- function(melconv, pyin_res) {
 #' @examples
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
+  print('get_answer_midi_melodic_production')
+  print(input)
+
   if(is.null(input$user_response_midi_note_on)) {
 
     return(list(error = TRUE,
@@ -456,10 +459,7 @@ store_results_in_db <- function(state, res) {
 
 copy_audio_file <- function(state, audio_file) {
   copy_location <- psychTestR::get_global("copy_audio_to", state)
-  print('copy_location...')
-  print(copy_location)
-  print('audio_file...')
-  print(audio_file)
+
   if(!is.null(copy_location)) {
     file.copy(audio_file, copy_location)
   }

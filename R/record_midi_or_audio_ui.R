@@ -25,6 +25,11 @@ record_midi_or_audio_ui <- function(body = " ",
                               autoInstantiate = FALSE,
                               midi_device = " ", ...) {
 
+  print('record_Midi_or_audioaui')
+
+  print('auto_next_page...')
+  print(auto_next_page)
+
   interactive <- ifelse(interactive, "true", "false")
 
   psychTestR::page(ui = shiny::tags$div(

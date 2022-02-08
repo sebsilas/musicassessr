@@ -670,6 +670,10 @@ function createCorrectStopButton(type) {
     } else if(type === "record_midi_page") {
       WebMidi.disable();
       hideButtonAreaShowUserRating();
+      if(auto_next_page) {
+        console.log('papp!!');
+        next_page();
+      }
     } else {
       console.log('Unknown page type');
     }
@@ -979,10 +983,9 @@ function upload_file_to_s3_local(blob) {
 		spinner = document.getElementsByClassName("hollow-dots-spinner");
 		spinner[0].style.display="none";
 		file_is_ready = true;
-		console.log('auto_next_page...');
-		console.log(auto_next_page);
+
 		if(auto_next_page) {
 			next_page();
-			}
+		}
 	};
 }

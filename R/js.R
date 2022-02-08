@@ -11,6 +11,8 @@
 musicassessr_js <- function(state = "production",
                             visual_notation = FALSE,
                             midi_file_playback = FALSE) {
+
+  # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
   musicassessr_state <<- state
 
   c(
@@ -24,7 +26,9 @@ musicassessr_js <- function(state = "production",
     if(visual_notation) "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@0.7.6/build/opensheetmusicdisplay.min.js", # only required when with visual notation
     'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js',
     system.file("www/spinner/spin.js", package = "musicassessr"),
-    system.file("www/js/musicassessr.js", package = "musicassessr")
+    system.file("www/js/musicassessr.js", package = "musicassessr"),
+    "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
+    system.file("www/js/getMIDIin.js", package = "musicassessr")
   )
 }
 

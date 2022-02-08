@@ -290,6 +290,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
 
   midi_res <- get_answer_midi(input, state, ...)
+  print('get_answer_midi_melodic_production')
+  print(midi_res)
 
   if(is.na(midi_res$user_response_midi_note_on) | is.null(midi_res$user_response_midi_note_on)) {
 
@@ -326,6 +328,10 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 #' @examples
 get_answer_midi <- function(input, state, ...) {
   print('get_answer_midi')
+  print(input$user_response_midi_note_on)
+  print(input$user_response_midi_note_off)
+  print(input$onsets_noteon)
+  print(input$onsets_noteff)
   list(
     user_response_midi_note_on = as.numeric(rjson::fromJSON(input$user_response_midi_note_on)),
     user_response_midi_note_off =  as.numeric(rjson::fromJSON(input$user_response_midi_note_off)),

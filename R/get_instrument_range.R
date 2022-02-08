@@ -176,11 +176,6 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
 
 present_musical_notation_range_page <- function(show_musical_notation, note, transpose, var_name, transposed_note_message) {
 
-  print(show_musical_notation)
-  print(note)
-  print(transpose)
-  print(var_name)
-  print(transposed_note_message)
 
   if(show_musical_notation) {
     musical_notation <- present_stimuli(stimuli = note + transpose,
@@ -285,7 +280,8 @@ midi_or_audio <- function(type, prompt_text, var_name) {
                        show_record_button = TRUE,
                        midi_device = midi_device,
                        button_text = psychTestR::i18n("Record"),
-                       stop_button_text = psychTestR::i18n("Stop"))
+                       stop_button_text = psychTestR::i18n("Stop"),
+                       auto_next_page = TRUE)
     })
   }
 }

@@ -1,5 +1,6 @@
 
 
+
 #' Page to record MIDI in psychTestR
 #'
 #' @param body
@@ -111,8 +112,6 @@ select_midi_device_page <- function(title = "Select MIDI device",
       shiny::tags$br(),
       shiny::tags$br(),
       psychTestR::trigger_button("next", button_text),
-      shiny::includeScript(path = "https://cdn.jsdelivr.net/npm/webmidi@2.5.1"),
-      shiny::includeScript(path = system.file("www/js/getMIDIin.js", package = "musicassessr")),
       shiny::tags$script('generateDeviceDropdown();'),
     ),
 

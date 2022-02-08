@@ -61,7 +61,8 @@ present_record_button <- function(present = FALSE,
                     shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                            recordAndStop(null, true, false, this.id, \"record_midi_page\");
                             hideRecordButton();
-                           instantiateMIDI(\"',midi_device,'\", false); })'))
+                           instantiateMIDI(\"',midi_device,'\", false);
+                            })'))
     )
   } else {
     shiny::tags$div(id = "button_area",

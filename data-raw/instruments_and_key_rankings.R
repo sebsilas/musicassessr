@@ -1,4 +1,8 @@
 library(dplyr)
+library(readxl)
+library(dplyr)
+
+
 # grab WJD meta info
 wjd_meta <- read.csv2('data-raw/wjd_meta.csv')
 # standardise namings
@@ -20,9 +24,33 @@ keys_table <- tibble::tibble(key = keys_list,
 
 # list of instruments in the WJD
 instrument_list <- as.list(levels(as.factor(wjd_meta$instrument)))
+
+# remove guitar and vibraphone (possibility of polyphony)
+
+instrument_list[instrument_list=="vib"] <- NULL
+instrument_list[instrument_list=="g"] <- NULL
+
+
 # attach long name format, to allow the grabbing of the abbreviated form
-names(instrument_list) <- c("Alto Saxophone", "Bass Clarinet", "Bass", "Clarinet", "Cornet", "Guitar", "Piano",
-                            "Soprano Saxophone", "Trombone", "Trumpet", "Tenor Saxophone", "C Tenor Saxophone", "Vibraphone")
+names(instrument_list) <- c("Alto Saxophone", "Bass Clarinet", "Baritone Saxophone", "Clarinet", "Cornet", "Piano",
+                            "Soprano Saxophone", "Trombone", "Trumpet", "Tenor Saxophone", "C Tenor Saxophone")
+
+# attach other (non WJD, but allowed) instruments
+insts_table <- read_excel('data-raw/musical_instruments.xlsx')
+
+
+uniques <- insts_table$en %in% names(instrument_list)
+insts_table$en[!uniques]
+
+# add flute.. treat it like piano by giving it the same instrument code
+instrument_list$Flute <- "pno"
+
+
+
+
+
+insts_table2 <- insts_table %>% select(-c(low_note, high_note, transpose, clef))
+insts <- insts_table %>% pull(key)
 
 
 # create key rankings table
@@ -32,7 +60,11 @@ key_rankings$key_tonality <- sapply(key_rankings$key, function(x) strsplit(x, "-
 key_rankings$key_tonality[key_rankings$key_tonality == "maj"] <- "major"
 key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 
-use_data(key_rankings, instrument_list, keys_table, wjd_meta, overwrite = TRUE)
+use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, overwrite = TRUE)
 
-# do instrument list onternval vs insts.R
+# NB, run the other file for the musicassessr dict
+
+usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
+                  instrument_list, key_rankings, keys_table, overwrite = TRUE, internal = TRUE)
+
 

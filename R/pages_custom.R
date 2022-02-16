@@ -17,10 +17,11 @@ select_musical_instrument_page <- function() {
                 alternative_text = psychTestR::i18n("other_please_state"),
                 on_complete = function(state, answer, ...) {
                   language <- psychTestR::get_url_params(state)$language
-
+                  print(answer)
                   if(language != "en") {
                     answer <- translate_from_dict(non_english_translation = answer, language = language)
                   }
+                  print(answer)
                   psychTestR::set_global("inst", answer, state)
 
                   trans_first_note <- insts_table %>% dplyr::filter(en == answer) %>% dplyr::pull(transpose)

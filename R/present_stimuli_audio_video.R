@@ -9,7 +9,8 @@ present_stimuli_video <- function(video_url, ...) {
 
 present_stimuli_audio <- function(audio_url, hideOnPlay = FALSE, page_type = 'null',
                                   stop_button_text = "Stop",
-                                  answer_meta_data = data.frame(), ...) {
+                                  answer_meta_data = data.frame(),
+                                  volume = 1, ...) {
 
 
   shiny::tags$div(
@@ -18,6 +19,10 @@ present_stimuli_audio <- function(audio_url, hideOnPlay = FALSE, page_type = 'nu
                       oncanplay="hide_spinner();"),
     shiny::tags$br(),
     shiny::tags$br(),
+    if(volume != 1) {
+      shiny::tags$script(paste0('var player = document.getElementById("player");
+                                 player.volume = ', volume, ';'))
+    },
     if(hideOnPlay) {
       shiny::tags$script(paste0('
         function hide_spinner(){

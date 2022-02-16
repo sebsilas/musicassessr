@@ -407,7 +407,9 @@ long_tone_trials <- function(num_items, num_examples = 0L, feedback = FALSE,
         # instructions
         psychTestR::one_button_page(shiny::div(
           shiny::tags$h2(page_title),
-          shiny::tags$p("Now you will hear some long tones. Please try and sing the exact same note along with the tone as soon as you can. It will last 5 seconds.")
+          shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
+          shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
+          shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))
           )),
         # examples
         if(is.numeric(num_examples) & num_examples > 0L) {

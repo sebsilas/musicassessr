@@ -1,3 +1,5 @@
+
+
 #' Present stimuli
 #'
 #' @param stimuli
@@ -38,6 +40,8 @@
 #' @param max_goes_forced
 #' @param give_first_melody_note
 #' @param transpose_first_melody_note
+#' @param clef
+#' @param volume
 #' @param ...
 #'
 #' @return
@@ -57,7 +61,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             attempts_left = integer(), visual_music_notation_id = "sheet_music",
                             play_button_id = "playButton", button_area_id = "button_area",
                             hideOnPlay = FALSE, record_immediately = FALSE, max_goes_forced = FALSE,
-                            give_first_melody_note = FALSE, transpose_first_melody_note = 0, clef = "auto", ...) {
+                            give_first_melody_note = FALSE, transpose_first_melody_note = 0, clef = "auto",
+                            volume = 1, ...) {
 
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
@@ -76,7 +81,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
             is.logical(hideOnPlay), is.logical(record_immediately), is.logical(max_goes_forced),
             is.logical(give_first_melody_note),
             is.numeric(transpose_first_melody_note),
-            is.character(clef) & length(clef) == 1)
+            is.character(clef) & length(clef) == 1,
+            is.numeric(volume) & length(volume) == 1)
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
@@ -89,7 +95,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                                auto_next_page = auto_next_page, visual_music_notation_id = visual_music_notation_id,
                                                hideOnPlay = hideOnPlay,
                                                record_immediately = record_immediately, give_first_melody_note = give_first_melody_note,
-                                               transpose_first_melody_note = transpose_first_melody_note, clef = clef, note_length = note_length, ...)
+                                               transpose_first_melody_note = transpose_first_melody_note, clef = clef, note_length = note_length,
+                                               volume = volume, ...)
   } else {
     return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type,
                                              get_answer = get_answer,
@@ -102,7 +109,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                                              play_button_id = play_button_id, button_area_id = button_area_id,
                                              hideOnPlay = hideOnPlay, answer_meta_data = answer_meta_data,
                                              record_immediately = record_immediately, give_first_melody_note = give_first_melody_note,
-                                             transpose_first_melody_note = transpose_first_melody_note, clef = clef, ...)
+                                             transpose_first_melody_note = transpose_first_melody_note, clef = clef,
+                                             volume = volume, ...)
 
   }
 
@@ -291,7 +299,8 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                    start_note = 1L, end_note = "end", durations = 'null', auto_next_page = FALSE,
                                    visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                    button_area_id = "button_area", hideOnPlay = FALSE, record_immediately = FALSE,
-                                   give_first_melody_note = FALSE, transpose_first_melody_note = 0, clef = "auto", ...) {
+                                   give_first_melody_note = FALSE, transpose_first_melody_note = 0, clef = "auto",
+                                   volume = 1, ...) {
 
   # generic stimuli types
 
@@ -306,7 +315,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
   } else if (stimuli_type == "video") {
     return_stimuli <- present_stimuli_video(video_url = stimuli, ...)
   } else if (stimuli_type == "audio") {
-    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, ...)
+    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, ...)
   } else if (stimuli_type == "audio_WJD") {
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
     # musical stimuli types

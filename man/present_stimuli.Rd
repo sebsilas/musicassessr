@@ -44,6 +44,7 @@ present_stimuli(
   give_first_melody_note = FALSE,
   transpose_first_melody_note = 0,
   clef = "auto",
+  volume = 1,
   ...
 )
 }

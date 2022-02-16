@@ -133,9 +133,11 @@ deploy_demographics <- function(deploy) {
 #' @examples
 test_headphones_page <- function() {
   psychTestR::volume_calibration_page(prompt = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Headphone_Test")),
-                                                               shiny::tags$p(psychTestR::i18n("headphone_test1")),
+                                                               shiny::tags$p(psychTestR::i18n("headphone_test1"),
+                                                                             shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/play_triangle.png')),
                                                                shiny::tags$p(psychTestR::i18n("headphone_test2")),
                                                                shiny::tags$p(psychTestR::i18n("headphone_test3")),
+                                                               shiny::tags$p(psychTestR::i18n("headphone_test4")),
                                                                shiny::tags$p("Use your normal way of changing loudness on your computer to do this")),
                                       url = "https://adaptiveeartraining.com/magmaGold/audio/test_headphones.mp3",
                                       button_text = psychTestR::i18n("comfortable_volume"),

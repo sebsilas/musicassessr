@@ -47,8 +47,6 @@ instrument_list$Flute <- "pno"
 
 
 
-
-
 insts_table2 <- insts_table %>% select(-c(low_note, high_note, transpose, clef))
 insts <- insts_table %>% pull(key)
 
@@ -60,7 +58,13 @@ key_rankings$key_tonality <- sapply(key_rankings$key, function(x) strsplit(x, "-
 key_rankings$key_tonality[key_rankings$key_tonality == "maj"] <- "major"
 key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 
-use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, overwrite = TRUE)
+
+
+musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")
+musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
+
+use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df, overwrite = TRUE)
+
 
 # NB, run the other file for the musicassessr dict
 

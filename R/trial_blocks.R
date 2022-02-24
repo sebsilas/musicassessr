@@ -642,6 +642,83 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
 }
 
 
+
+
+
+
+audio_block_melodic_production <- function(audio_directory,
+                                           no_to_sample = NULL,
+                                           module_prefix = "audio_trial",
+                                           text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+                                           grab_meta_data) {
+
+  shiny_prefix <- paste0("audio_", paste(sample(1:9, 20, replace = TRUE), sep="", collapse="")) # NB: for cases where multiple blocks with different directories are used
+
+  shiny::addResourcePath(
+    prefix = shiny_prefix, # custom prefix that will be used to reference your directory
+    directoryPath = audio_directory
+  )
+
+  files_list <- list.files(audio_directory, pattern = "\\.mp3$")
+
+  shiny_files_list <- paste0(shiny_prefix,'/', files_list)
+
+  if(!is.null(no_to_sample)) {
+    smp <- sample(x = 1:length(files_list), size = no_to_sample)
+    shiny_files_list <- shiny_files_list[smp]
+    files_list <- files_list[smp]
+  }
+
+
+  trials <- purrr::map(1:length(shiny_files_list), function(i) {
+
+    file <- shiny_files_list[i]
+
+    if(grab_meta_data) {
+      base_file <- basename(file)
+      md <- grab_meta_data(base_file)
+      md_note <- md %>% pull(note) %>% itembankr::str_mel_to_vector()
+      md_durations <- md %>% pull(durations) %>% itembankr::str_mel_to_vector()
+
+    } else {
+      md <- " "
+      md_note <- " "
+      md_durations <- " "
+    }
+
+    page_lab <- paste0(module_prefix, file)
+
+    psychTestR::reactive_page(function(state, ...) {
+      psychTestR::set_global("answer_meta_data", rjson::toJSON(md), state)
+      psychTestR::set_global("stimuli", rjson::toJSON(md_note), state)
+      psychTestR::set_global("stimuli_durations", rjson::toJSON(md_durations), state)
+
+        musicassessr::present_stimuli(
+          stimuli = file,
+          stimuli_type = "audio",
+          display_modality = "auditory",
+          page_type = "record_audio_page",
+          #get_answer = musicassessr::get_answer_pyin_melodic_production,
+          get_answer = musicassessr::get_answer_pyin,
+          page_text = text,
+          hideOnPlay = TRUE,
+          auto_next_page = TRUE,
+          page_label = page_lab,
+          answer_meta_data = rjson::toJSON(md))
+    })
+
+  })
+
+  #trials_with_feedback <- add_feedback(trials, musicassessr::feedback_melodic_production)
+
+  psychTestR::module(label = module_prefix, trials)
+
+}
+
+
+
+
+
 # abstracted way of defining trials:: WIP
 
 # arrhythmic_melody_trials <- function(item_bank,

@@ -402,15 +402,25 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
     user_response_midi_note_off <- as.numeric(rjson::fromJSON(input$user_response_midi_note_off))
     onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
   }
+    print('stimuli...')
+    print(input$stimuli)
+    print(input$stimuli_durations)
 
-  print('stimuli...')
-  print(input$stimuli)
-  print(input$stimuli_durations)
+  if(is.null(input$stimuli)) {
+    stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
+    stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
+  } else {
+    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
+    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
+  }
+
+  print(stimuli)
+  print(stimuli_durations)
   scores <- score_melodic_production(user_melody_input,
                                      user_duration_input,
                                      user_onset_input,
-                                     as.numeric(rjson::fromJSON(input$stimuli)),
-                                     as.numeric(rjson::fromJSON(input$stimuli_durations)),
+                                     stimuli,
+                                     stimuli_durations,
                                      pyin_pitch_track,
                                      user_response_midi_note_off,
                                      onsets_noteoff,

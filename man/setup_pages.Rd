@@ -18,11 +18,12 @@ setup_pages(
   get_instrument_range_musical_notation = FALSE,
   adjust_range = FALSE,
   test_type = c("voice", "instrument"),
-  microphone_test = TRUE
+  microphone_test = TRUE,
+  allow_repeat_SNR_tests = TRUE
 )
 }
 \arguments{
-\item{microphone_test}{}
+\item{allow_repeat_SNR_tests}{}
 }
 \value{
 

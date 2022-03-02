@@ -134,7 +134,7 @@ deploy_demographics <- function(deploy) {
 test_headphones_page <- function() {
   psychTestR::volume_calibration_page(prompt = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Headphone_Test")),
                                                                shiny::tags$p(psychTestR::i18n("headphone_test1"),
-                                                                             shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/play_triangle.png')),
+                                                                             shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/play_triangle.png', width = 66, height = 68)),
                                                                shiny::tags$p(psychTestR::i18n("headphone_test2")),
                                                                shiny::tags$p(psychTestR::i18n("headphone_test3")),
                                                                shiny::tags$p(psychTestR::i18n("headphone_test4")),

@@ -36,9 +36,7 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url) {
 
       }
 
-
-      SNR <- compute_SNR(signal_file = signal_file,
-                         noise_file = noise_file)
+      SNR <- compute_SNR(signal_file = signal_file, noise_file = noise_file)
 
       psychTestR::set_global("SNR", SNR, state)
 
@@ -89,9 +87,7 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url) {
 
           }
 
-
-          SNR <- compute_SNR(signal_file = signal_file,
-                             noise_file = noise_file)
+          SNR <- compute_SNR(signal_file = signal_file, noise_file = noise_file)
 
           psychTestR::set_global("SNR", SNR, state)
 

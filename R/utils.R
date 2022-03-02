@@ -163,6 +163,35 @@ TRUE_to_js_true <- function(cond) {
 
 
 
+#' Expand a string dataframe row to a dataframe
+#'
+#' @param df
+#' @param row_id
+#'
+#' @return
+#' @export
+#'
+#' @examples
+expand_string_df_row <- function(df, row_id = NULL) {
+
+  if(!is.null(row_id)) {
+    df <- df %>% slice(row_id)
+  }
+
+  out <- apply(df, MARGIN = 2, function(col) {
+    c <- unlist(col)
+    if(is.na(c)) {
+      NA
+    } else if(is.character(c)) {
+      itembankr::str_mel_to_vector(c)
+    } else {
+      c
+    }
+
+  })
+  tibble::as_tibble(out)
+}
+
 set_answer_meta_data <- function(meta_data) {
   paste0('Shiny.setInputValue(\"answer_meta_data\", ', meta_data, ');')
 }

@@ -1,7 +1,5 @@
 
 
-
-
 #' Allow the experimenter to set a condition at the beginning of the test
 #'
 #' @param block1

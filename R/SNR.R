@@ -48,6 +48,15 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url) {
 }
 
 
+#' Get SNR pages as a loop (i.e., the participant can take multiple attempts)
+#'
+#' @param min_SNR
+#' @param absolute_url
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_SNR_pages_loop <- function(min_SNR = 14, absolute_url) {
 
   psychTestR::join(

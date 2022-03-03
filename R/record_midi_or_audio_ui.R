@@ -23,12 +23,9 @@ record_midi_or_audio_ui <- function(body = " ",
                               attempts_left = integer(),
                               max_goes_forced = FALSE,
                               autoInstantiate = FALSE,
-                              midi_device = " ", ...) {
+                              midi_device = " ",
+                              p_id = " ", ...) {
 
-  print('record_Midi_or_audioaui')
-
-  print('auto_next_page...')
-  print(auto_next_page)
 
   interactive <- ifelse(interactive, "true", "false")
 
@@ -38,6 +35,8 @@ record_midi_or_audio_ui <- function(body = " ",
 
       shiny::tags$script(paste0('console.log(\"this is a ', page_type, '\");')),
       if(page_type == "record_midi_page") autoInstantiateMidi(instantiate = autoInstantiate, midi_device, interactive),
+
+      if(page_type == "record_audio_page") send_page_label_and_p_id_to_js(label, p_id),
 
       auto_next_page(auto_next_page),
 
@@ -72,6 +71,12 @@ record_midi_or_audio_ui <- function(body = " ",
   on_complete = on_complete
   )
 
+}
+
+
+send_page_label_and_p_id_to_js <- function(label, p_id) {
+  shiny::tags$script(paste0('var page_label = \"', label, '\"; ',
+                            'var p_id = \"', p_id, '\";'))
 }
 
 auto_next_page <- function(auto_next_page) {

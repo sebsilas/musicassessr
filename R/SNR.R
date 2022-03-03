@@ -130,6 +130,7 @@ record_background_page <- function() {
                                 shiny::tags$p(psychTestR::i18n("record_bg2")),
                                 shiny::tags$p(psychTestR::i18n("record_bg3"))
                               ),
+                    label = "SNR_test_background",
                     method = "aws_pyin",
                     record_duration = 5,
                     auto_next_page = TRUE,
@@ -146,6 +147,7 @@ record_signal_page <- function(page_text = shiny::tags$div(
   # a page type for recording background noise to compute signal-to-noise ratio (SNR)
   record_audio_page(page_text = page_text,
                     method = "aws_pyin",
+                    label = "SNR_test_signal",
                     record_duration = 5,
                     auto_next_page = TRUE,
                     get_answer = get_answer_save_aws_key,

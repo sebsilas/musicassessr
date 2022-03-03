@@ -52,7 +52,7 @@ record_audio_page <- function(body = " ",
                              happy_with_response =  FALSE,
                              attempts_left = NULL,
                              max_goes_forced = FALSE,
-                             p_id = " ", ...) {
+                             p_id = "no_p_id", ...) {
 
   record_midi_or_audio_ui(body,
                           label,

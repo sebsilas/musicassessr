@@ -2,7 +2,7 @@
 % Please edit documentation in R/setup.R
 \name{test_headphones_page}
 \alias{test_headphones_page}
-\title{test_headphones_page
+\title{Test headphones page
 Essentially a wrapper for volume_calibration_page with a default audio file.}
 \usage{
 test_headphones_page()
@@ -11,6 +11,6 @@ test_headphones_page()
 
 }
 \description{
-test_headphones_page
+Test headphones page
 Essentially a wrapper for volume_calibration_page with a default audio file.
 }

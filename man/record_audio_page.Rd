@@ -6,7 +6,7 @@
 \usage{
 record_audio_page(
   body = " ",
-  label = "record_midi_page",
+  label = "record_audio_page",
   stimuli = " ",
   stimuli_reactive = FALSE,
   page_text = " ",
@@ -26,6 +26,7 @@ record_audio_page(
   happy_with_response = FALSE,
   attempts_left = NULL,
   max_goes_forced = FALSE,
+  p_id = "no_p_id",
   ...
 )
 }

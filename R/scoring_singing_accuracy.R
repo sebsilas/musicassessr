@@ -55,21 +55,12 @@ long_note_pitch_metrics <- function(target_pitch, freq, state) {
                                         note_precision = note.precision,
                                         dtw_distance = dtw.distance)
 
-  print('long tone...')
-  print(long_tone_holder_df)
 
-
-  agg_dv_long_note <- predict(long_note_pca, data = long_tone_holder_df, old.data = long_tone_dat_min) %>% as.vector()
-
-  print(agg_dv_long_note)
+  agg_dv_long_note <- predict(musicassessr::long_note_pca, data = long_tone_holder_df, old.data = musicassessr::long_tone_dat_min) %>% as.vector()
 
   item_df <- tibble::tibble(stimuli = target_pitch, agg_dv_long_note = agg_dv_long_note, p_id = psychTestR::p_id(state))
 
-  print(item_df)
-
-  long_note_IRT <- predict(long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
-
-  print(long_note_IRT)
+  long_note_IRT <- predict(musicassessr::long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
 
 
   list("note_accuracy" = note.accuracy,

@@ -17,7 +17,7 @@ play_long_tone_record_audio_page(
   auto_next_page = TRUE,
   example = FALSE,
   get_answer = get_answer_pyin_long_note,
-  page_label = "long_tone_"
+  page_label = "long_tone"
 )
 }
 \arguments{

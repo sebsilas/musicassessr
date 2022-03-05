@@ -375,6 +375,7 @@ rhythmic_melody_trials <- function(item_bank,
 }
 
 
+
 #' Present a block of long tone trials
 #'
 #' @param num_items
@@ -382,15 +383,22 @@ rhythmic_melody_trials <- function(item_bank,
 #' @param feedback
 #' @param page_title
 #' @param get_answer
+#' @param page_type
+#' @param long_tone_trials_as_screening
+#' @param long_tone_trials_as_screening_failure_page
 #'
 #' @return
 #' @export
 #'
 #' @examples
-long_tone_trials <- function(num_items, num_examples = 0L, feedback = FALSE,
+long_tone_trials <- function(num_items,
+                             num_examples = 0L,
+                             feedback = FALSE,
                              page_title = "Sing Along With This Note",
                              get_answer = get_answer_pyin_long_note,
-                             page_type = "record_audio_page") {
+                             page_type = "record_audio_page",
+                             long_tone_trials_as_screening = FALSE,
+                             long_tone_trials_as_screening_failure_page = "http://www.google.com") {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -436,14 +444,40 @@ long_tone_trials <- function(num_items, num_examples = 0L, feedback = FALSE,
         # sample
         musicassessr::sample_from_user_range(num_items),
         # build pages
-        musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = page_type, feedback = feedback, get_answer = get_answer)
+        musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = page_type, feedback = feedback, get_answer = get_answer),
+
+        if(long_tone_trials_as_screening) long_tone_screening(long_tone_trials_as_screening_failure_page)
+
       )
     )
   }
 }
 
 
+long_tone_screening <- function(failure_page = 'http://www.google.com') {
+  psychTestR::join(
 
+    psychTestR::code_block(function(state, ...) {
+      res <- as.list(psychTestR::results(state))
+      participant_long_note_summary <- res$SAA.long_note_trials
+      participant_long_note_summary <- purrr::map_dfr(1:length(participant_long_note_summary), function(i) {
+        tibble::tibble(trial = names(participant_long_note_summary)[i], long_note_IRT = participant_long_note_summary[[i]]$long_note_IRT)
+      })
+      # check long note score from model
+      avg_long_tone_screening <- participant_long_note_summary %>%
+        dplyr::summarise(avg_long_note_IRT = mean(long_note_IRT, na.rm = TRUE)) %>%
+        dplyr::pull(avg_long_note_IRT)
+      psychTestR::set_global("long_tone_screening_score", avg_long_tone_screening, state)
+    }),
+
+    psychTestR::conditional(test = function(state, ...) {
+      score <- psychTestR::get_global("long_tone_screening_score", state)
+      !dplyr::between(score, -0.9040568, 1.763759) # i.e., proceed if the score is between these values (and skip the redirect page)
+    }, logic = redirect_page(url = failure_page, final = TRUE))
+
+
+  )
+}
 
 
 #' Present "Find This Note" trials
@@ -646,7 +680,19 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
 
 
 
-audio_block_melodic_production <- function(audio_directory,
+#' Present a trial block of melodies from audio files
+#'
+#' @param audio_directory
+#' @param no_to_sample
+#' @param module_prefix
+#' @param text
+#' @param grab_meta_data
+#'
+#' @return
+#' @export
+#'
+#' @examples
+audio_melodic_production_trials <- function(audio_directory,
                                            no_to_sample = NULL,
                                            module_prefix = "audio_trial",
                                            text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",

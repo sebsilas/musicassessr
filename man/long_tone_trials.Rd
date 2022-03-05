@@ -10,11 +10,13 @@ long_tone_trials(
   feedback = FALSE,
   page_title = "Sing Along With This Note",
   get_answer = get_answer_pyin_long_note,
-  page_type = "record_audio_page"
+  page_type = "record_audio_page",
+  long_tone_trials_as_screening = FALSE,
+  long_tone_trials_as_screening_failure_page = "http://www.google.com"
 )
 }
 \arguments{
-\item{get_answer}{}
+\item{long_tone_trials_as_screening_failure_page}{}
 }
 \value{
 

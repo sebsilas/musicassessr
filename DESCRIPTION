@@ -46,7 +46,10 @@ Imports:
     purrr,
     jsonlite,
     lubridate,
-    RPostgres
+    RPostgres,
+    psych,
+    lme4,
+    lmerTest
 Depends: 
     R (>= 2.10)
 Remotes: 

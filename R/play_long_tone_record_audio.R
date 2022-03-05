@@ -25,7 +25,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                      page_title = page_title,
                                      page_text = page_text,
                                      example = example,
-                                     get_answer = get_answer)
+                                     get_answer = get_answer,
+                                     page_label = paste0("long_tone_", x))
     })
 
   items <- add_feedback(items, feedback)
@@ -62,7 +63,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              auto_next_page = TRUE,
                                              example = FALSE,
                                              get_answer = get_answer_pyin_long_note,
-                                             page_label = "long_tone_") {
+                                             page_label = "long_tone") {
 
   # a page type for playing a 5-second tone and recording a user singing with it
 

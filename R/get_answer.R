@@ -76,10 +76,12 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   if(is.na(pyin_res$onset)) {
     long_note_pitch_measures <- list("note_accuracy" = NA,
                                      "note_precision" = NA,
-                                     "dtw_distance" = NA)
+                                     "dtw_distance" = NA,
+                                     "agg_dv_long_note" = NA,
+                                     "long_note_IRT" = NA)
 
   } else {
-    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res$freq)
+    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res$freq, state)
   }
 
   c(
@@ -402,9 +404,7 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
     user_response_midi_note_off <- as.numeric(rjson::fromJSON(input$user_response_midi_note_off))
     onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
   }
-    print('stimuli...')
-    print(input$stimuli)
-    print(input$stimuli_durations)
+
 
   if(is.null(input$stimuli)) {
     stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
@@ -414,8 +414,7 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
     stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
   }
 
-  print(stimuli)
-  print(stimuli_durations)
+
   scores <- score_melodic_production(user_melody_input,
                                      user_duration_input,
                                      user_onset_input,

@@ -3,6 +3,7 @@
 export("%...>%")
 export("%>%")
 export(arrhythmic_melody_trials)
+export(audio_melodic_production_trials)
 export(classify_duration)
 export(deploy_demographics)
 export(dict)

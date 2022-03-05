@@ -141,4 +141,20 @@ multi_interval_page <- function(n_items = 26L,
   )
 }
 
+redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 5000, url = "http://www.google.com", final = TRUE) {
+
+  content <- shiny::tags$div(
+    shiny::tags$script(paste0('setTimeout(function() {
+    window.location.href = \"', url, '\";
+    }, ', ms, ');')),
+    shiny::tags$p(text))
+
+  if(final) {
+    psychTestR::one_button_page(content)
+  } else {
+    psychTestR::final_page(content)
+  }
+
+}
+
 

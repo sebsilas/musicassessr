@@ -25,6 +25,7 @@ var user_response_midi_note_off = [];
 var onsets_noteon = [];
 var onsets_noteoff = [];
 var auto_next_page;
+var p_id = "no_p_id";
 
 // functions
 

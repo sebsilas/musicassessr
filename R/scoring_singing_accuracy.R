@@ -26,11 +26,8 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 #' @export
 #'
 #' @examples
-long_note_pitch_metrics <- function(target_pitch, freq) {
+long_note_pitch_metrics <- function(target_pitch, freq, state) {
 
-  print('long_note_pitch_metrics')
-  print(target_pitch)
-  print(freq)
 
   ## dtw scoring
 
@@ -53,9 +50,33 @@ long_note_pitch_metrics <- function(target_pitch, freq) {
   # note that note precision has no reference to target pitch and therefore thus independent of accuracy
   note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(freq) )
 
+  # now grab the PCA version
+  long_tone_holder_df <- tibble::tibble(note_accuracy = note.accuracy,
+                                        note_precision = note.precision,
+                                        dtw_distance = dtw.distance)
+
+  print('long tone...')
+  print(long_tone_holder_df)
+
+
+  agg_dv_long_note <- predict(long_note_pca, data = long_tone_holder_df, old.data = long_tone_dat_min) %>% as.vector()
+
+  print(agg_dv_long_note)
+
+  item_df <- tibble::tibble(stimuli = target_pitch, agg_dv_long_note = agg_dv_long_note, p_id = psychTestR::p_id(state))
+
+  print(item_df)
+
+  long_note_IRT <- predict(long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
+
+  print(long_note_IRT)
+
+
   list("note_accuracy" = note.accuracy,
        "note_precision" = note.precision,
-       "dtw_distance" = dtw.distance)
+       "dtw_distance" = dtw.distance,
+       "agg_dv_long_note" = agg_dv_long_note,
+       "long_note_IRT" = long_note_IRT)
 }
 
 get_note_precision <- function(pyin_result) {

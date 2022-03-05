@@ -4,7 +4,7 @@
 \alias{long_note_pitch_metrics}
 \title{Get pitch metrics for long tone trials}
 \usage{
-long_note_pitch_metrics(target_pitch, freq)
+long_note_pitch_metrics(target_pitch, freq, state)
 }
 \arguments{
 \item{freq}{}

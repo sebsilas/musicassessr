@@ -1,10 +1,15 @@
-#' Get SNR pages
+
+#'  Get SNR pages
+#'
+#' @param min_SNR
+#' @param absolute_url
+#' @param report_SNR
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_SNR_pages <- function(min_SNR = 14, absolute_url) {
+get_SNR_pages <- function(min_SNR = 14, absolute_url, report_SNR = FALSE) {
   psychTestR::join(
     record_background_page(),
     record_signal_page(),
@@ -40,7 +45,7 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url) {
 
       psychTestR::set_global("SNR", SNR, state)
 
-      SNR_conclusion(SNR, min_SNR)
+      SNR_conclusion(SNR, min_SNR, report_SNR)
 
     })
   )
@@ -48,16 +53,18 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url) {
 }
 
 
+
 #' Get SNR pages as a loop (i.e., the participant can take multiple attempts)
 #'
 #' @param min_SNR
 #' @param absolute_url
+#' @param report_SNR
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_SNR_pages_loop <- function(min_SNR = 14, absolute_url) {
+get_SNR_pages_loop <- function(min_SNR = 14, absolute_url, report_SNR) {
 
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
@@ -100,7 +107,7 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url) {
 
           psychTestR::set_global("SNR", SNR, state)
 
-          SNR_conclusion_loop(SNR, min_SNR)
+          SNR_conclusion_loop(SNR, min_SNR, report_SNR)
 
         })
       ))

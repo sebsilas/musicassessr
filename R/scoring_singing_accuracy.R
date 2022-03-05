@@ -50,18 +50,26 @@ long_note_pitch_metrics <- function(target_pitch, freq, state) {
   # note that note precision has no reference to target pitch and therefore thus independent of accuracy
   note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(freq) )
 
+  cat(file=stderr())
+
   # now grab the PCA version
   long_tone_holder_df <- tibble::tibble(note_accuracy = note.accuracy,
                                         note_precision = note.precision,
                                         dtw_distance = dtw.distance)
 
+  cat(file=stderr())
 
   agg_dv_long_note <- predict(musicassessr::long_note_pca, data = long_tone_holder_df, old.data = musicassessr::long_tone_dat_min) %>% as.vector()
 
+  cat(file=stderr())
+
   item_df <- tibble::tibble(stimuli = target_pitch, agg_dv_long_note = agg_dv_long_note, p_id = psychTestR::p_id(state))
+
+  cat(file=stderr())
 
   long_note_IRT <- predict(musicassessr::long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
 
+  cat(file=stderr())
 
   list("note_accuracy" = note.accuracy,
        "note_precision" = note.precision,

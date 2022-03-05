@@ -23,8 +23,7 @@ record_midi_or_audio_ui <- function(body = " ",
                               attempts_left = integer(),
                               max_goes_forced = FALSE,
                               autoInstantiate = FALSE,
-                              midi_device = " ",
-                              p_id = "no_p_id", ...) {
+                              midi_device = " ", ...) {
 
 
   interactive <- ifelse(interactive, "true", "false")

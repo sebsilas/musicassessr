@@ -24,7 +24,6 @@
 #' @param happy_with_response
 #' @param attempts_left
 #' @param max_goes_forced
-#' @param p_id
 #' @param ...
 #'
 #' @return
@@ -51,8 +50,7 @@ record_audio_page <- function(body = " ",
                              page_text_first = TRUE,
                              happy_with_response =  FALSE,
                              attempts_left = NULL,
-                             max_goes_forced = FALSE,
-                             p_id = "no_p_id", ...) {
+                             max_goes_forced = FALSE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -77,8 +75,7 @@ record_audio_page <- function(body = " ",
                           attempts_left,
                           max_goes_forced,
                           autoInstantiate =  FALSE,
-                          midi_device = " ",
-                          p_id)
+                          midi_device = " ")
 
 }
 

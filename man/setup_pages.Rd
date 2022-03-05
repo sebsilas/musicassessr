@@ -19,11 +19,12 @@ setup_pages(
   adjust_range = FALSE,
   test_type = c("voice", "instrument"),
   microphone_test = TRUE,
-  allow_repeat_SNR_tests = TRUE
+  allow_repeat_SNR_tests = TRUE,
+  report_SNR = FALSE
 )
 }
 \arguments{
-\item{allow_repeat_SNR_tests}{}
+\item{report_SNR}{}
 }
 \value{
 

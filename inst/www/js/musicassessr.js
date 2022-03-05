@@ -25,7 +25,6 @@ var user_response_midi_note_off = [];
 var onsets_noteon = [];
 var onsets_noteoff = [];
 var auto_next_page;
-var p_id = "no_p_id";
 
 // functions
 
@@ -938,10 +937,12 @@ function create_recordkey() {
 
   if (typeof p_id === 'string') {
     recordkey = p_id + '.' + recordkey;
+      console.log(p_id);
+      console.log(recordkey);
+
+
   }
 
-  console.log(p_id);
-  console.log(recordkey);
 
   return(recordkey)
 }

@@ -1,4 +1,5 @@
 
+
 #' Setup pages for musicassessr test
 #'
 #' @param input
@@ -15,6 +16,7 @@
 #' @param test_type
 #' @param microphone_test
 #' @param allow_repeat_SNR_tests
+#' @param report_SNR
 #'
 #' @return
 #' @export
@@ -36,7 +38,8 @@ setup_pages <- function(input = c("microphone",
                         adjust_range = FALSE,
                         test_type = c("voice", "instrument"),
                         microphone_test = TRUE,
-                        allow_repeat_SNR_tests = TRUE) {
+                        allow_repeat_SNR_tests = TRUE,
+                        report_SNR = FALSE) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
@@ -49,7 +52,7 @@ setup_pages <- function(input = c("microphone",
     psychTestR::join(
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR),
 
       fake_range()
     )
@@ -66,7 +69,7 @@ setup_pages <- function(input = c("microphone",
 
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR),
 
       record_instructions(),
 
@@ -81,9 +84,9 @@ setup_pages <- function(input = c("microphone",
 }
 
 
-correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE) {
+correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE) {
   if(!sjmisc::str_contains(input, "midi_keyboard")) {
-    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests)
+    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR)
   } else if(!sjmisc::str_contains(input, "microphone")) {
     midi_setup()
   } else if(input == "midi_keyboard_and_microphone") {
@@ -170,7 +173,7 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE) {
+microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE) {
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
@@ -183,8 +186,8 @@ microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, all
 
   psychTestR::join(
       microphone_pages,
-    if(SNR_test & !allow_repeat_SNR_tests) musicassessr::get_SNR_pages(absolute_url = absolute_url),
-    if(SNR_test & allow_repeat_SNR_tests) musicassessr::get_SNR_pages_loop(absolute_url = absolute_url)
+    if(SNR_test & !allow_repeat_SNR_tests) musicassessr::get_SNR_pages(absolute_url = absolute_url, report_SNR = report_SNR),
+    if(SNR_test & allow_repeat_SNR_tests) musicassessr::get_SNR_pages_loop(absolute_url = absolute_url, report_SNR = report_SNR)
   )
 }
 

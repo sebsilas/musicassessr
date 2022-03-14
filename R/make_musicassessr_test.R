@@ -1,4 +1,5 @@
 
+
 #' Make a musicassessr test
 #'
 #' @param musicassessr_state
@@ -10,6 +11,7 @@
 #' @param admin_password
 #' @param languages
 #' @param additional_dict
+#' @param musicassessr_opt
 #' @param ...
 #'
 #' @return
@@ -22,7 +24,8 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
                                    setup_pages,
                                    setup_pages_options = musicassessr::setup_pages_options,
                                    title, admin_password, languages = "en",
-                                   additional_dict = NULL, ...) {
+                                   additional_dict = NULL,
+                                   musicassessr_opt = musicassessr_opt(), ...) {
 
   stopifnot(
     is.character(musicassessr_state) & length(musicassessr_state) == 1,
@@ -35,7 +38,7 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
     psychTestR::new_timeline(
     psychTestR::join(
 
-      musicassessr::musicassessr_init(),
+      musicassessr::musicassessr_opt(),
 
       elts_before_setup_pages(),
 
@@ -102,4 +105,20 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
 
 
 
+}
+
+musicassessr_opt <- function(test_username = NA,
+                             test = NA,
+                             store_results_in_db = FALSE,
+                             local_app_file_dir = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/",
+                             sonic_annotator_local_location = "/Users/sebsilas/sonic-annotator",
+                             copy_audio_to_location = NULL) {
+  musicassessr_init(
+    test_username,
+    test,
+    store_results_in_db,
+    local_app_file_dir,
+    sonic_annotator_local_location,
+    copy_audio_to_location
+  )
 }

@@ -18,11 +18,12 @@ long_tone_trials(
   instruction_text = shiny::div(shiny::tags$h2(page_title),
     shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
     shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
-    shiny::tags$p(psychTestR::i18n("long_tone_instruction_3")))
+    shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
+  module_name = "long_note_trials"
 )
 }
 \arguments{
-\item{instruction_text}{}
+\item{module_name}{}
 }
 \value{
 

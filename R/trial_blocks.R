@@ -391,6 +391,7 @@ rhythmic_melody_trials <- function(item_bank,
 #' @param long_tone_trials_as_screening
 #' @param long_tone_trials_as_screening_failure_page
 #' @param instruction_text
+#' @param module_name
 #'
 #' @return
 #' @export
@@ -410,7 +411,8 @@ long_tone_trials <- function(num_items,
                                shiny::tags$h2(page_title),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
-                               shiny::tags$p(psychTestR::i18n("long_tone_instruction_3")))) {
+                               shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
+                             module_name = "long_note_trials") {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -422,7 +424,7 @@ long_tone_trials <- function(num_items,
     }
   }
     # sample melodies based on range
-    psychTestR::module("long_note_trials",
+    psychTestR::module(module_name,
       psychTestR::join(
         # instructions
         if(show_instructions) {

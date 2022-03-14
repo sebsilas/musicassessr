@@ -15,7 +15,7 @@ make_musicassessr_test(
   admin_password,
   languages = "en",
   additional_dict = NULL,
-  musicassessr_opt = musicassessr_opt(),
+  musicassessr_opt = musicassessr::musicassessr_opt(),
   ...
 )
 }

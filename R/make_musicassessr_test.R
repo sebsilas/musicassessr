@@ -25,7 +25,7 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
                                    setup_pages_options = musicassessr::setup_pages_options,
                                    title, admin_password, languages = "en",
                                    additional_dict = NULL,
-                                   musicassessr_opt = musicassessr_opt(), ...) {
+                                   musicassessr_opt = musicassessr::musicassessr_opt(), ...) {
 
   stopifnot(
     is.character(musicassessr_state) & length(musicassessr_state) == 1,
@@ -107,6 +107,19 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
 
 }
 
+#' Specify options for a musicassessr test.
+#'
+#' @param test_username
+#' @param test
+#' @param store_results_in_db
+#' @param local_app_file_dir
+#' @param sonic_annotator_local_location
+#' @param copy_audio_to_location
+#'
+#' @return
+#' @export
+#'
+#' @examples
 musicassessr_opt <- function(test_username = NA,
                              test = NA,
                              store_results_in_db = FALSE,

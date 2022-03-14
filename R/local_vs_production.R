@@ -12,10 +12,14 @@ get_correct_sonic_annotator_location_musicassessr <- function(state) {
 
 get_correct_app_dir <- function(state) {
   # musicassessr_state should be a global variable
-  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+  musicassessr_state <- get_musicassessr_state()
 
   ifelse(musicassessr_state == "production",
          '/srv/shiny-server/files/',
          psychTestR::get_global("local_app_file_dir", state))
 }
 
+
+get_musicassessr_state <- function() {
+  musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+}

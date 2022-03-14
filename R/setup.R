@@ -83,7 +83,8 @@ setup_pages <- function(input = c("microphone",
       get_instrument_range_pages(input, get_instrument_range,
                                  show_musical_notation = get_instrument_range_musical_notation,
                                  adjust_range = adjust_range,
-                                 test_type = test_type)
+                                 test_type = test_type,
+                                 concise_wording = concise_wording)
     ))
 
   }

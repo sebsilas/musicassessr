@@ -9,11 +9,12 @@ get_instrument_range_pages(
   get_range,
   show_musical_notation = FALSE,
   adjust_range = FALSE,
-  test_type = c("voice", "instrument")
+  test_type = c("voice", "instrument"),
+  concise_wording = FALSE
 )
 }
 \arguments{
-\item{test_type}{}
+\item{concise_wording}{}
 }
 \value{
 

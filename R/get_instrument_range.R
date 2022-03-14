@@ -37,6 +37,7 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
 
 
 
+
 #' Get Instrument Range Pages
 #'
 #' @param type
@@ -44,12 +45,13 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
 #' @param show_musical_notation
 #' @param adjust_range
 #' @param test_type
+#' @param concise_wording
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_instrument_range_pages <- function(type, get_range, show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument")) {
+get_instrument_range_pages <- function(type, get_range, show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), concise_wording = FALSE) {
 
   # a short multi-page protocol to get the user's frequency range
 
@@ -59,7 +61,7 @@ get_instrument_range_pages <- function(type, get_range, show_musical_notation = 
     fake_range()
   } else {
     if (type == "microphone") {
-      get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type)
+      get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording)
     } else if(type == "midi_keyboard") {
       get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
     } else {
@@ -88,7 +90,7 @@ midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range =
   )
 }
 
-range_explanation_page <- function(test_type = c("voice", "instrument")) {
+range_explanation_page <- function(test_type = c("voice", "instrument"), concise_wording = FALSE) {
 
   if(test_type == "voice") {
     if(concise_wording) {
@@ -102,7 +104,7 @@ range_explanation_page <- function(test_type = c("voice", "instrument")) {
   psychTestR::one_button_page(text)
 }
 
-get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument")) {
+get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), concise_wording = FALSE) {
 
   if(test_type == "voice") {
     low_note_text <- psychTestR::i18n("get_range_low_note_voice")
@@ -114,7 +116,7 @@ get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, a
   }
 
   psychTestR::join(
-    range_explanation_page(test_type),
+    range_explanation_page(test_type, concise_wording),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), low_note_text), var_name = "bottom_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), high_note_text), var_name = "top_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
     present_range(show_musical_notation, adjust_range, test_type)

@@ -28,6 +28,7 @@ record_midi_page(
   max_goes_forced = FALSE,
   autoInstantiate = FALSE,
   midi_device,
+  max_goes = 1,
   ...
 )
 }

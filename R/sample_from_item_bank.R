@@ -189,7 +189,12 @@ sample_from_user_range <- function(no_to_sample) {
     bottom_range <- psychTestR::get_global("bottom_range", state)
     top_range <- psychTestR::get_global("top_range", state)
     range <- bottom_range:top_range
-    sample <- sample(range, no_to_sample)
+    if(length(range) < no_to_sample) {
+      sample <- sample(range, no_to_sample, replace = TRUE)
+    } else {
+      sample <- sample(range, no_to_sample)
+    }
+
     psychTestR::set_global("user_range_sample", sample, state)
   })
 }

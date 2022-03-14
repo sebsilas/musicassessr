@@ -8,15 +8,21 @@ long_tone_trials(
   num_items,
   num_examples = 0L,
   feedback = FALSE,
+  show_instructions = TRUE,
+  page_text = psychTestR::i18n("long_tone_text"),
   page_title = "Sing Along With This Note",
   get_answer = get_answer_pyin_long_note,
   page_type = "record_audio_page",
   long_tone_trials_as_screening = FALSE,
-  long_tone_trials_as_screening_failure_page = "http://www.google.com"
+  long_tone_trials_as_screening_failure_page = "http://www.google.com",
+  instruction_text = shiny::div(shiny::tags$h2(page_title),
+    shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
+    shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
+    shiny::tags$p(psychTestR::i18n("long_tone_instruction_3")))
 )
 }
 \arguments{
-\item{long_tone_trials_as_screening_failure_page}{}
+\item{instruction_text}{}
 }
 \value{
 

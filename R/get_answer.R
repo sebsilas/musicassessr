@@ -154,16 +154,18 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
   pyin_res <- pyin(audio_file, sonic_annotator_location = get_correct_sonic_annotator_location_musicassessr(state))
 
-  res <- ifelse(is.na(pyin_res$note),
-                yes = list("Min." = NA,
-                           "1st Qu." = NA,
-                           "Median" = NA,
-                           "Mean" = NA,
-                           "3rd Qu." = NA,
-                           "Max." = NA),
-                no = as.list(round(summary(pyin_res$note))))
+  if(is.na(pyin_res$note)) {
+    res <- list("Min." = NA,
+                "1st Qu." = NA,
+                "Median" = NA,
+                "Mean" = NA,
+                "3rd Qu." = NA,
+                "Max." = NA)
+  } else {
+    res <- as.list(round(summary(pyin_res$note)))
+  }
 
-  res$file <- file
+  res$file <- audio_file
   res
 }
 

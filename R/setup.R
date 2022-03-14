@@ -1,22 +1,22 @@
 
-
 #' Setup pages for musicassessr test
 #'
-#' @param input
-#' @param headphones
-#' @param SNR_test
-#' @param min_SNR
-#' @param get_user_info
-#' @param demo
-#' @param get_instrument_range
-#' @param absolute_url
-#' @param select_instrument
-#' @param get_instrument_range_musical_notation
-#' @param adjust_range
-#' @param test_type
-#' @param microphone_test
-#' @param allow_repeat_SNR_tests
-#' @param report_SNR
+#' @param input The form of musicassessr test.
+#' @param headphones Deploy a headphone setup page.
+#' @param SNR_test Deploy an SNR test.
+#' @param min_SNR The minimum accepted SNR value.
+#' @param get_user_info Get user info from their browser.
+#' @param demo Deploy demo test.
+#' @param get_instrument_range Get the user's pitch/instrument range at test time.
+#' @param absolute_url If in production, what is the absolute URL.
+#' @param select_instrument Deploy instrument selection page.
+#' @param get_instrument_range_musical_notation When displaying instrument range, provide visual music notation.
+#' @param adjust_range Adjust range.
+#' @param test_type Voice vs. instrument test.
+#' @param microphone_test Deploy microphone test page.
+#' @param allow_repeat_SNR_tests Allow repeated SNR tests, if FALSE, then participant only gets one go and the test will fail if the SNR test fails.
+#' @param report_SNR Should the SNR be reported to the user.
+#' @param concise_wording Whether the wording should be concise or not.
 #'
 #' @return
 #' @export
@@ -39,12 +39,18 @@ setup_pages <- function(input = c("microphone",
                         test_type = c("voice", "instrument"),
                         microphone_test = TRUE,
                         allow_repeat_SNR_tests = TRUE,
-                        report_SNR = FALSE) {
+                        report_SNR = FALSE,
+                        concise_wording = FALSE) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
             is.logical(get_instrument_range), is.character(absolute_url),
-            is.logical(select_instrument), is.logical(get_instrument_range_musical_notation))
+            is.logical(select_instrument), is.logical(get_instrument_range_musical_notation),
+            is.logical(adjust_range),
+            is.character(test_type),
+            is.logical(microphone_test),
+            is.logical(allow_repeat_SNR_tests),
+            is.logical(report_SNR), is.logical(concise_wording))
 
 
   if(demo) {
@@ -52,24 +58,25 @@ setup_pages <- function(input = c("microphone",
     psychTestR::join(
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording),
 
       fake_range()
     )
 
   } else {
 
-    psychTestR::join(
+    psychTestR::module("musicasssessr_setup",
+      psychTestR::join(
 
       requirements_page(headphones = headphones, input = input),
 
       if(get_user_info) musicassessr::get_user_info_page(),
 
-      if(headphones) musicassessr::test_headphones_page(),
+      if(headphones) musicassessr::test_headphones_page(concise_wording),
 
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording),
 
       record_instructions(),
 
@@ -77,31 +84,33 @@ setup_pages <- function(input = c("microphone",
                                  show_musical_notation = get_instrument_range_musical_notation,
                                  adjust_range = adjust_range,
                                  test_type = test_type)
-
-    )
+    ))
 
   }
 }
 
 
-correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE) {
+correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
+                          concise_wording = FALSE) {
+
   if(!sjmisc::str_contains(input, "midi_keyboard")) {
-    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR)
+    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording)
   } else if(!sjmisc::str_contains(input, "microphone")) {
     midi_setup()
   } else if(input == "midi_keyboard_and_microphone") {
-    c(
-      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests),
+    psychTestR::join(
+      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording),
       midi_setup()
     )
 
   } else {
-    c(
+
+    psychTestR::join(
       midi_vs_audio_select_page(),
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "Microphone"
-      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests)),
+      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording)),
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "MIDI"
@@ -129,18 +138,26 @@ deploy_demographics <- function(deploy) {
 
 
 #' Test headphones page
-#' Essentially a wrapper for volume_calibration_page with a default audio file.
+#'
+#' @param concise_wording
+#'
 #' @return
 #' @export
 #'
 #' @examples
-test_headphones_page <- function() {
-  psychTestR::volume_calibration_page(prompt = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Headphone_Test")),
-                                                               shiny::tags$p(psychTestR::i18n("headphone_test1"), shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/play_triangle.png', width = 30, height = 31, style = "margin: 0 0 5px 0;")),
-                                                               shiny::tags$p(psychTestR::i18n("headphone_test2")),
-                                                               shiny::tags$p(psychTestR::i18n("headphone_test3")),
-                                                               shiny::tags$p(psychTestR::i18n("headphone_test4")),
-                                                               shiny::tags$p("Use your normal way of changing loudness on your computer to do this")),
+test_headphones_page <- function(concise_wording = FALSE) {
+
+  if(concise_wording) {
+    wording <- "Please make sure your headphones are working and adjust the volume to a good level."
+  } else {
+    wording <- shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Headphone_Test")),
+                    shiny::tags$p(psychTestR::i18n("headphone_test1"), shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/play_triangle.png', width = 30, height = 31, style = "margin: 0 0 5px 0;")),
+                    shiny::tags$p(psychTestR::i18n("headphone_test2")),
+                    shiny::tags$p(psychTestR::i18n("headphone_test3")),
+                    shiny::tags$p(psychTestR::i18n("headphone_test4")),
+                    shiny::tags$p("Use your normal way of changing loudness on your computer to do this"))
+  }
+  psychTestR::volume_calibration_page(prompt = wording,
                                       url = "https://adaptiveeartraining.com/magmaGold/audio/test_headphones.mp3",
                                       button_text = psychTestR::i18n("comfortable_volume"),
                                       show_controls = TRUE)
@@ -156,7 +173,7 @@ microphone_type_page <- function() {
   psychTestR::NAFC_page(label = "microphone_type",
                         prompt = shiny::tags$div(
                           shiny::tags$h2("Microphone Type"),
-                          shiny::tags$p("Are you using an internal (in-built) microphone external (plugged-in) ?"),
+                          shiny::tags$p("Are you using an internal (in-built) or external (plugged-in) microphone?"),
                           shiny::tags$br(),
                           shiny::tags$table(style = "border: none;",
                                             shiny::tags$tr(
@@ -173,12 +190,12 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE) {
+microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE, concise_wording = FALSE) {
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
       microphone_type_page(),
-      musicassessr::microphone_calibration_page()
+      musicassessr::microphone_calibration_page(concise_wording = concise_wording)
     )
   } else {
     microphone_pages <- psychTestR::code_block(function(state, ...){}) # there needs to be the possibility of something resolving

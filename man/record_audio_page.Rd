@@ -26,7 +26,7 @@ record_audio_page(
   happy_with_response = FALSE,
   attempts_left = NULL,
   max_goes_forced = FALSE,
-  p_id = "no_p_id",
+  max_goes = 1,
   ...
 )
 }

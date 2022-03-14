@@ -1,6 +1,7 @@
 
 
 
+
 #' Page to record MIDI in psychTestR
 #'
 #' @param body
@@ -26,6 +27,7 @@
 #' @param max_goes_forced
 #' @param autoInstantiate
 #' @param midi_device
+#' @param max_goes
 #' @param ...
 #'
 #' @return
@@ -54,7 +56,8 @@ record_midi_page <- function(body = " ",
                              attempts_left = NULL,
                              max_goes_forced = FALSE,
                              autoInstantiate = FALSE,
-                             midi_device, ...) {
+                             midi_device,
+                             max_goes = 1, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -79,7 +82,8 @@ record_midi_page <- function(body = " ",
                           attempts_left,
                           max_goes_forced,
                           autoInstantiate,
-                          midi_device)
+                          midi_device,
+                          max_goes)
 
 }
 

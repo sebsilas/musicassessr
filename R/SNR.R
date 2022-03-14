@@ -1,5 +1,7 @@
 
-#'  Get SNR pages
+
+
+#' Get SNR pages
 #'
 #' @param min_SNR
 #' @param absolute_url

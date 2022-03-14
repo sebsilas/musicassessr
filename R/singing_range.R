@@ -75,7 +75,11 @@ get_voice_range_page <- function(with_examples = TRUE) {
       choices = c(names(vocal_ranges), "Not sure"),
       arrange_vertically = FALSE,
       on_complete = function(state, answer, ...){
-        answer <- ifelse(answer == "Not sure", "Tenor", answer)
+        print('setting range...')
+        print(answer)
+        if(answer == "Not sure") {
+          answer <- "Tenor"
+        }
         psychTestR::set_global("range", answer, state)
       })
 

@@ -376,16 +376,21 @@ rhythmic_melody_trials <- function(item_bank,
 
 
 
+
+
 #' Present a block of long tone trials
 #'
 #' @param num_items
 #' @param num_examples
 #' @param feedback
+#' @param show_instructions
+#' @param page_text
 #' @param page_title
 #' @param get_answer
 #' @param page_type
 #' @param long_tone_trials_as_screening
 #' @param long_tone_trials_as_screening_failure_page
+#' @param instruction_text
 #'
 #' @return
 #' @export
@@ -394,11 +399,18 @@ rhythmic_melody_trials <- function(item_bank,
 long_tone_trials <- function(num_items,
                              num_examples = 0L,
                              feedback = FALSE,
+                             show_instructions = TRUE,
+                             page_text = psychTestR::i18n("long_tone_text"),
                              page_title = "Sing Along With This Note",
                              get_answer = get_answer_pyin_long_note,
                              page_type = "record_audio_page",
                              long_tone_trials_as_screening = FALSE,
-                             long_tone_trials_as_screening_failure_page = "http://www.google.com") {
+                             long_tone_trials_as_screening_failure_page = "http://www.google.com",
+                             instruction_text = shiny::div(
+                               shiny::tags$h2(page_title),
+                               shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
+                               shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
+                               shiny::tags$p(psychTestR::i18n("long_tone_instruction_3")))) {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -411,31 +423,33 @@ long_tone_trials <- function(num_items,
   }
     # sample melodies based on range
     psychTestR::module("long_note_trials",
-      c(
+      psychTestR::join(
         # instructions
-        psychTestR::one_button_page(shiny::div(
-          shiny::tags$h2(page_title),
-          shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
-          shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
-          shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))
-          )),
+        if(show_instructions) {
+          psychTestR::one_button_page(instruction_text)
+          },
         # examples
         if(is.numeric(num_examples) & num_examples > 0L) {
-          c(psychTestR::one_button_page(shiny::div(
+          psychTestR::join(psychTestR::one_button_page(shiny::div(
             shiny::tags$h2(page_title),
             shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
             musicassessr::sample_from_user_range(num_examples),
             if(page_type == "reactive") {
               psychTestR::conditional(function(state, ...) {
                 psychTestR::get_global("response_type", state) == "MIDI"
-              }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page", example = TRUE, feedback = feedback, get_answer = get_answer_midi_melodic_production))
+              }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
+                                                                               example = TRUE, feedback = feedback,
+                                                                               get_answer = get_answer_midi_melodic_production,
+                                                                               page_text = page_text, page_title = page_title))
 
               psychTestR::conditional(function(state, ...){
                 psychTestR::get_global("response_type", state) == "Microphone"
               }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer_pyin_melodic_production))
 
             } else {
-              musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type, example = TRUE, feedback = feedback, get_answer = get_answer)
+              musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
+                                                                    example = TRUE, feedback = feedback, get_answer = get_answer,
+                                                                    page_text = page_text, page_title = page_title)
             },
         psychTestR::one_button_page(shiny::div(
           shiny::tags$h2(page_title),
@@ -444,7 +458,12 @@ long_tone_trials <- function(num_items,
         # sample
         musicassessr::sample_from_user_range(num_items),
         # build pages
-        musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items, page_type = page_type, feedback = feedback, get_answer = get_answer),
+        musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items,
+                                                              page_type = page_type,
+                                                              feedback = feedback,
+                                                              get_answer = get_answer,
+                                                              page_text = page_text,
+                                                              page_title = page_title),
 
         if(long_tone_trials_as_screening) long_tone_screening(long_tone_trials_as_screening_failure_page)
 
@@ -680,13 +699,19 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
 
 
 
+
+
 #' Present a trial block of melodies from audio files
 #'
 #' @param audio_directory
 #' @param no_to_sample
 #' @param module_prefix
-#' @param text
+#' @param page_title
+#' @param page_text
 #' @param grab_meta_data
+#' @param meta_data_df
+#' @param meta_data_lookup_column
+#' @param get_answer
 #'
 #' @return
 #' @export
@@ -695,8 +720,12 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
 audio_melodic_production_trials <- function(audio_directory,
                                            no_to_sample = NULL,
                                            module_prefix = "audio_trial",
-                                           text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
-                                           grab_meta_data) {
+                                           page_title = "Sing back the melody",
+                                           page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+                                           grab_meta_data,
+                                           meta_data_df,
+                                           meta_data_lookup_column,
+                                           get_answer = musicassessr::get_answer_pyin_melodic_production) {
 
   shiny_prefix <- paste0("audio_", paste(sample(1:9, 20, replace = TRUE), sep="", collapse="")) # NB: for cases where multiple blocks with different directories are used
 
@@ -718,13 +747,15 @@ audio_melodic_production_trials <- function(audio_directory,
 
   trials <- purrr::map(1:length(shiny_files_list), function(i) {
 
-    file <- shiny_files_list[i]
+    shiny_file <- shiny_files_list[i]
+    file <- files_list[i]
 
     if(grab_meta_data) {
+      print('grab_md')
       base_file <- basename(file)
-      md <- grab_meta_data(base_file)
-      md_note <- md %>% pull(note) %>% itembankr::str_mel_to_vector()
-      md_durations <- md %>% pull(durations) %>% itembankr::str_mel_to_vector()
+      md <- grab_meta_data(meta_data_df, meta_data_lookup_column, base_file)
+      md_note <- md %>% dplyr::pull(note) %>% itembankr::str_mel_to_vector()
+      md_durations <- md %>% dplyr::pull(durations) %>% itembankr::str_mel_to_vector()
 
     } else {
       md <- " "
@@ -732,7 +763,7 @@ audio_melodic_production_trials <- function(audio_directory,
       md_durations <- " "
     }
 
-    page_lab <- paste0(module_prefix, file)
+    page_lab <- paste0(module_prefix, "_", tools::file_path_sans_ext(file))
 
     psychTestR::reactive_page(function(state, ...) {
       psychTestR::set_global("answer_meta_data", rjson::toJSON(md), state)
@@ -740,17 +771,18 @@ audio_melodic_production_trials <- function(audio_directory,
       psychTestR::set_global("stimuli_durations", rjson::toJSON(md_durations), state)
 
         musicassessr::present_stimuli(
-          stimuli = file,
+          stimuli = shiny_file,
           stimuli_type = "audio",
           display_modality = "auditory",
+          page_title = page_title,
           page_type = "record_audio_page",
-          #get_answer = musicassessr::get_answer_pyin_melodic_production,
-          get_answer = musicassessr::get_answer_pyin,
-          page_text = text,
+          get_answer = get_answer,
+          page_text = page_text,
           hideOnPlay = TRUE,
           auto_next_page = TRUE,
           page_label = page_lab,
-          answer_meta_data = rjson::toJSON(md))
+          answer_meta_data = rjson::toJSON(md),
+          audio_playback_as_single_play_button = TRUE)
     })
 
   })
@@ -761,9 +793,19 @@ audio_melodic_production_trials <- function(audio_directory,
 
 }
 
+grab_meta_data <- function(meta_data_df, lookup_column, value) {
+  print('grab_meta_data....1')
+  print(meta_data_df)
+  print(lookup_column)
+  print(value)
+  print(meta_data_df %>% dplyr::filter(!!as.name(lookup_column) == value))
+  meta_data_df %>% dplyr::filter(!!as.name(lookup_column) == value)
+}
 
 
 
+# t <- data.frame(a = c("light", "battery"), b = c("sausage", "mirror"))
+# grab_meta_data(t, "a", "light")
 
 # abstracted way of defining trials:: WIP
 

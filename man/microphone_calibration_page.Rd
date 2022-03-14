@@ -4,10 +4,13 @@
 \alias{microphone_calibration_page}
 \title{Microphone Calibration Page}
 \usage{
-microphone_calibration_page(button_text = "Start test")
+microphone_calibration_page(
+  button_text = "Start test",
+  concise_wording = FALSE
+)
 }
 \arguments{
-\item{deploy_crepe_stats}{}
+\item{concise_wording}{}
 }
 \value{
 

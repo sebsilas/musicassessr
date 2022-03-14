@@ -91,7 +91,11 @@ midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range =
 range_explanation_page <- function(test_type = c("voice", "instrument")) {
 
   if(test_type == "voice") {
-    text <- psychTestR::i18n("range_explanation_voice")
+    if(concise_wording) {
+      text <- "We will now find your approximate voice range. You will first be asked  to sing the lowest comfortable note for your voice, then the highest. Each time you try, the computer will analyse the note you sang. If you don't think it recorded the right note, you can try again."
+    } else {
+      text <- psychTestR::i18n("range_explanation_voice")
+    }
   } else {
     text <- psychTestR::i18n("range_explanation_instrument")
   }
@@ -109,7 +113,7 @@ get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, a
     high_note_text <- psychTestR::i18n("get_range_high_note")
   }
 
-  c(
+  psychTestR::join(
     range_explanation_page(test_type),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), low_note_text), var_name = "bottom_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
     get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), high_note_text), var_name = "top_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
@@ -290,20 +294,22 @@ midi_or_audio <- function(type, prompt_text, var_name) {
 #' A page to identify a user's singing range by asking them to sing Happy Birthday
 #'
 #' @param feedback
+#' @param label
+#' @param text
 #'
 #' @return
 #' @export
 #'
 #' @examples
-sing_happy_birthday_page <- function(feedback = FALSE, label = "sing_hbd") {
+sing_happy_birthday_page <- function(feedback = FALSE, label = "sing_hbd", text = psychTestR::i18n("sing_hbd")) {
 
   page <- record_audio_page(label = label,
-                            page_text = psychTestR::i18n("sing_hbd"),
+                            page_text = text,
                             get_answer = musicassessr::get_answer_simple_pyin_summary,
                             auto_next_page = TRUE)
 
   if(feedback) {
-    c(
+    psychTestR::join(
       page,
       psychTestR::reactive_page(function(state, answer, ...) {
         psychTestR::one_button_page(

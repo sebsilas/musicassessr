@@ -8,13 +8,17 @@ audio_melodic_production_trials(
   audio_directory,
   no_to_sample = NULL,
   module_prefix = "audio_trial",
+  page_title = "Sing back the melody",
  
-    text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
-  grab_meta_data
+    page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+  grab_meta_data,
+  meta_data_df,
+  meta_data_lookup_column,
+  get_answer = musicassessr::get_answer_pyin_melodic_production
 )
 }
 \arguments{
-\item{grab_meta_data}{}
+\item{get_answer}{}
 }
 \value{
 

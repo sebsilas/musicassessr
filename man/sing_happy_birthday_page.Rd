@@ -4,10 +4,14 @@
 \alias{sing_happy_birthday_page}
 \title{A page to identify a user's singing range by asking them to sing Happy Birthday}
 \usage{
-sing_happy_birthday_page(feedback = FALSE, label = "sing_hbd")
+sing_happy_birthday_page(
+  feedback = FALSE,
+  label = "sing_hbd",
+  text = psychTestR::i18n("sing_hbd")
+)
 }
 \arguments{
-\item{feedback}{}
+\item{text}{}
 }
 \value{
 

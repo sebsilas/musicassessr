@@ -51,8 +51,12 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
       title = title,
       admin_password = admin_password,
       languages = languages,
-      additional_scripts = musicassessr::musicassessr_js(musicassessr_state), ...
-    )
+      additional_scripts = musicassessr::musicassessr_js(musicassessr_state),
+      display = psychTestR::display_options(
+        left_margin = 1L,
+        right_margin = 1L,
+        css = system.file('www/css/musicassessr.css', package = "musicassessr")
+      ), ...)
   )
 }
 

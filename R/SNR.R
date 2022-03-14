@@ -43,6 +43,11 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url, report_SNR = FALSE) {
 
       }
 
+
+      cat(signal_file)
+      cat(noise_file)
+
+
       SNR <- compute_SNR(signal_file = signal_file, noise_file = noise_file)
 
       psychTestR::set_global("SNR", SNR, state)

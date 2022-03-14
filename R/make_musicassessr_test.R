@@ -2,16 +2,16 @@
 
 #' Make a musicassessr test
 #'
-#' @param musicassessr_state
-#' @param elts_before_setup_pages
-#' @param elts
-#' @param setup_pages
-#' @param setup_pages_options
-#' @param title
-#' @param admin_password
-#' @param languages
-#' @param additional_dict
-#' @param musicassessr_opt
+#' @param musicassessr_state Production or test.
+#' @param elts_before_setup_pages Timeline to go before setup pages.
+#' @param elts Timeline to go after setup pages.
+#' @param setup_pages Should there be setup pages.
+#' @param setup_pages_options Options for setup pages.
+#' @param title Title of the test.
+#' @param admin_password Password for the test.
+#' @param languages Languages for the test.
+#' @param additional_dict Additional dictionary for the test.
+#' @param musicassessr_opt Musicassessr options.
 #' @param ...
 #'
 #' @return

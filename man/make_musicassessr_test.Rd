@@ -15,10 +15,31 @@ make_musicassessr_test(
   admin_password,
   languages = "en",
   additional_dict = NULL,
+  musicassessr_opt = musicassessr_opt(),
   ...
 )
 }
 \arguments{
+\item{musicassessr_state}{Production or test.}
+
+\item{elts_before_setup_pages}{Timeline to go before setup pages.}
+
+\item{elts}{Timeline to go after setup pages.}
+
+\item{setup_pages}{Should there be setup pages.}
+
+\item{setup_pages_options}{Options for setup pages.}
+
+\item{title}{Title of the test.}
+
+\item{admin_password}{Password for the test.}
+
+\item{languages}{Languages for the test.}
+
+\item{additional_dict}{Additional dictionary for the test.}
+
+\item{musicassessr_opt}{Musicassessr options.}
+
 \item{...}{}
 }
 \value{

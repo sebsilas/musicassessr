@@ -22,4 +22,5 @@ get_correct_app_dir <- function(state) {
 
 get_musicassessr_state <- function() {
   musicassessr_state <- ifelse(exists("musicassessr_state"), musicassessr_state, "production")
+  musicassessr_state
 }

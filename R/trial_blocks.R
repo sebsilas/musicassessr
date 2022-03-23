@@ -412,7 +412,7 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
-                             module_name = "long_note_trials") {
+                             module_name = "long_tone_trials") {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))

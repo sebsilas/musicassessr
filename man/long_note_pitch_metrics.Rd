@@ -2,9 +2,9 @@
 % Please edit documentation in R/scoring_singing_accuracy.R
 \name{long_note_pitch_metrics}
 \alias{long_note_pitch_metrics}
-\title{Get pitch metrics for long tone trials}
+\title{Compute long tone pitch metrics}
 \usage{
-long_note_pitch_metrics(target_pitch, freq, state)
+long_note_pitch_metrics(target_pitch, freq)
 }
 \arguments{
 \item{freq}{}
@@ -13,5 +13,5 @@ long_note_pitch_metrics(target_pitch, freq, state)
 
 }
 \description{
-Get pitch metrics for long tone trials
+Compute long tone pitch metrics
 }

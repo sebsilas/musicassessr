@@ -49,7 +49,9 @@ Imports:
     RPostgres,
     psych,
     lme4,
-    lmerTest
+    lmerTest,
+    randtests,
+    stats
 Depends: 
     R (>= 2.10)
 Remotes: 

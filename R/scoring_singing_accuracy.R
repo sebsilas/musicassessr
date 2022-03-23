@@ -17,7 +17,7 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 ### long tone scoring
 
 
-#' Get pitch metrics for long tone trials
+#' Compute long tone pitch metrics
 #'
 #' @param target_pitch
 #' @param freq
@@ -26,7 +26,7 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 #' @export
 #'
 #' @examples
-long_note_pitch_metrics <- function(target_pitch, freq, state) {
+long_note_pitch_metrics <- function(target_pitch, freq) {
 
 
   ## dtw scoring
@@ -50,33 +50,111 @@ long_note_pitch_metrics <- function(target_pitch, freq, state) {
   # note that note precision has no reference to target pitch and therefore thus independent of accuracy
   note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(freq) )
 
-  cat(file=stderr())
-
-  # now grab the PCA version
-  long_tone_holder_df <- tibble::tibble(note_accuracy = note.accuracy,
-                                        note_precision = note.precision,
-                                        dtw_distance = dtw.distance)
-
-  cat(file=stderr())
-
-  agg_dv_long_note <- predict(musicassessr::long_note_pca, data = long_tone_holder_df, old.data = musicassessr::long_tone_dat_min) %>% as.vector()
-
-  cat(file=stderr())
-
-  item_df <- tibble::tibble(stimuli = target_pitch, agg_dv_long_note = agg_dv_long_note, p_id = psychTestR::p_id(state))
-
-  cat(file=stderr())
-
-  long_note_IRT <- predict(musicassessr::long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
-
-  cat(file=stderr())
+  # cat(file=stderr())
+  #
+  # # now grab the PCA version
+  # long_tone_holder_df <- tibble::tibble(note_accuracy = note.accuracy,
+  #                                       note_precision = note.precision,
+  #                                       dtw_distance = dtw.distance)
+  #
+  # cat(file=stderr())
+  #
+  # agg_dv_long_note <- predict(musicassessr::long_note_pca, data = long_tone_holder_df, old.data = musicassessr::long_tone_dat_min) %>% as.vector()
+  # cat(file=stderr())
+  #
+  # item_df <- tibble::tibble(stimuli = target_pitch, agg_dv_long_note = agg_dv_long_note, p_id = psychTestR::p_id(state))
+  #
+  # cat(file=stderr())
+  #
+  # long_note_IRT <- predict(musicassessr::long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
+  #
+  # cat(file=stderr())
 
   list("note_accuracy" = note.accuracy,
        "note_precision" = note.precision,
        "dtw_distance" = dtw.distance,
-       "agg_dv_long_note" = agg_dv_long_note,
-       "long_note_IRT" = long_note_IRT)
+       "agg_dv_long_note" = NA,
+       "na_count" = sum(c(is.na(freq) | is.nan(freq))),
+       "dtw_distance_max" = max(dtw.distance),
+       "note_accuracy_max" = max(note.accuracy),
+       "note_precision_max" = max(note.precision),
+       "var" = var(freq),
+       "run_test" = as.numeric(randtests::runs.test(freq)$statistic),
+        "freq_max" = max(freq),
+       "freq_min" = min(freq),
+        "autocorrelation_mean" = mean(abs(stats::acf(freq,  na.action = na.pass, plot = FALSE)$acf))
+       )
+
 }
+
+
+classify_whether_noise <- function(res, display_noise_trial_notificiation = FALSE) {
+  res <- res %>% tibble::as_tibble() %>% dplyr::mutate(
+    na_count_test = dplyr::case_when(na_count > 0 ~ "noise"),
+    dtw_distance_test = dplyr::case_when(dtw_distance_max > 200000 ~ "noise"),
+    note_accuracy_test = dplyr::case_when(note_accuracy_max > 4000 ~ "noise"),
+    note_precision_test = dplyr::case_when(note_precision_max > 1000 ~ "noise"),
+    freq_min_test = dplyr::case_when(freq_min < 82 ~ "noise"),
+    freq_max_test = dplyr::case_when(freq_max > 1046 ~ "noise"),
+    autocorrelation_mean_test = dplyr::case_when(autocorrelation_mean > .8 ~ "noise"),
+    var_test = dplyr::case_when(var > 15000 ~ "noise"),
+    run_test_test = dplyr::case_when(run_test > -15 ~ "noise")
+  ) %>% dplyr::mutate(dplyr::across(na_count_test:run_test_test, ~tidyr::replace_na(., "long_notes"))) %>%
+    tidyr::pivot_longer(na_count_test:run_test_test, values_to = "prediction")
+
+  print(res)
+  failed_tests <- res %>% dplyr::filter(prediction == "noise") %>% dplyr::pull(name)
+  print('failed tests... ')
+  print(failed_tests)
+
+  res_counts <- res %>% dplyr::count(prediction)
+
+  if(any(grepl("noise", res_counts$prediction))) {
+    no_tests_failed <- res_counts %>% dplyr::filter(prediction == "noise") %>% pull(n)
+    cat('no tests failed: ', no_tests_failed, '\n')
+    if(no_tests_failed >= 2) {
+      prediction <- "noise"
+    } else {
+      prediction <- "long_notes"
+    }
+
+  } else {
+    prediction <- "long_notes"
+  }
+
+
+  list(prediction = prediction,
+       failed_tests = failed_tests)
+}
+
+end_of_long_note_trial_screening <- function() {
+  code_block(function(state, answer, ...) {
+    res <- as.list(get_results(state, complete = FALSE))$long_tone_trials
+    res <- purrr:::map_chr(res, function(trial) {
+      as.vector(unlist(trial['noise_classification']))
+    })
+    t <- table(res)
+    no_noise <- t['noise']
+    if(is.null(no_noise)) {
+      final_prediction <- "long_notes"
+      pretty_final_prediction <- "Long Notes"
+    } else {
+      if(no_noise >= 3) {
+        final_prediction <- "noise"
+        pretty_final_prediction <- "Noise"
+      } else {
+        final_prediction <- "long_notes"
+        pretty_final_prediction <- "Long Notes"
+      }
+
+    }
+    # noise_classification
+    psychTestR::set_global("final_long_note_block_prediction", pretty_final_prediction, state)
+    final_prediction <- psychTestR::set_global("no_failed_long_note_trials", no_noise, state)
+
+  })
+}
+
 
 get_note_precision <- function(pyin_result) {
   note_precision <- pyin_result %>%

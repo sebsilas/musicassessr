@@ -63,7 +63,6 @@ get_answer_pyin_note_only <- function(input, type = "notes", state, ...) {
 #' @examples
 get_answer_pyin_long_note <- function(input, state, ...) {
 
-
   audio_file <- get_audio_file_for_pyin(input, state)
 
   copy_audio_file(state, audio_file)
@@ -78,23 +77,54 @@ get_answer_pyin_long_note <- function(input, state, ...) {
                                      "note_precision" = NA,
                                      "dtw_distance" = NA,
                                      "agg_dv_long_note" = NA,
-                                     "long_note_IRT" = NA)
+                                     "na_count" = NA,
+                                     "dtw_distance_max" = NA,
+                                     "note_accuracy_max" = NA,
+                                     "note_precision_max" = NA,
+                                     "var" = NA,
+                                     "run_test" = NA,
+                                     "freq_max" = NA,
+                                     "freq_min" = NA,
+                                     "autocorrelation_mean" = NA)
+    noise.classification <- list(prediction = "noise", failed_tests = 'na_count')
 
   } else {
-    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res$freq, state)
+    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res$freq)
+    noise.classification <- classify_whether_noise(long_note_pitch_measures)
   }
+
+
+  display_noise_trial_message(noise.classification, state)
 
   c(
     list(file = audio_file,
          stimuli = as.numeric(input$stimuli),
          onset = pyin_res$onset,
-         freq = pyin_res$freq
-    ),
+         freq = pyin_res$freq,
+         noise_classification = noise.classification$prediction,
+         failed_tests = noise.classification$failed_tests),
+          long_note_pitch_measures
 
-    long_note_pitch_measures
   )
 
 
+}
+
+display_noise_trial_message <- function(noise_classification, state) {
+
+  display_noise_trial_notificiation <- psychTestR::get_global("display_noise_trial_message", state)
+
+  if(is.null(display_noise_trial_notificiation)) {
+    display_noise_trial_notificiation <- FALSE
+  }
+
+  if(display_noise_trial_notificiation) {
+    if(noise_classification$prediction == "noise") {
+      shiny::showNotification(paste0(c("Prediction: That was a noise trial. ", paste0(length(noise_classification$failed_tests), "/9 failed tests: "), noise_classification$failed_tests), collapse = "  "))
+    } else {
+      shiny::showNotification(paste0(c("Prediction: That was a proper long note singing trial. ", paste0(length(noise_classification$failed_tests), "/9 failed tests: "), noise_classification$failed_tests), collapse = "  "))
+    }
+  }
 }
 
 

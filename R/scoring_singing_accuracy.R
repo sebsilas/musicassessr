@@ -127,9 +127,15 @@ classify_whether_noise <- function(res, display_noise_trial_notificiation = FALS
        failed_tests = failed_tests)
 }
 
+#' End of long note trial screening code block
+#'
+#' @return
+#' @export
+#'
+#' @examples
 end_of_long_note_trial_screening <- function() {
-  code_block(function(state, answer, ...) {
-    res <- as.list(get_results(state, complete = FALSE))$long_tone_trials
+  psychTestR::code_block(function(state, answer, ...) {
+    res <- as.list(psychTestR::get_results(state, complete = FALSE))$long_tone_trials
     res <- purrr:::map_chr(res, function(trial) {
       as.vector(unlist(trial['noise_classification']))
     })

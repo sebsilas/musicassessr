@@ -82,7 +82,7 @@ long_note_pitch_metrics <- function(target_pitch, freq) {
        "run_test" = as.numeric(randtests::runs.test(freq)$statistic),
         "freq_max" = max(freq),
        "freq_min" = min(freq),
-        "autocorrelation_mean" = mean(abs(stats::acf(freq,  na.action = na.pass, plot = FALSE)$acf))
+        "autocorrelation_mean" = mean(abs(stats::acf(freq,  na.action = stats::na.pass, plot = FALSE)$acf))
        )
 
 }
@@ -110,7 +110,7 @@ classify_whether_noise <- function(res, display_noise_trial_notificiation = FALS
   res_counts <- res %>% dplyr::count(prediction)
 
   if(any(grepl("noise", res_counts$prediction))) {
-    no_tests_failed <- res_counts %>% dplyr::filter(prediction == "noise") %>% pull(n)
+    no_tests_failed <- res_counts %>% dplyr::filter(prediction == "noise") %>% dplyr::pull(n)
     cat('no tests failed: ', no_tests_failed, '\n')
     if(no_tests_failed >= 2) {
       prediction <- "noise"

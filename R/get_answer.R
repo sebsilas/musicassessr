@@ -96,6 +96,8 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 
   display_noise_trial_message(noise.classification, state)
 
+  cat(file=stderr())
+
   c(
     list(file = audio_file,
          stimuli = as.numeric(input$stimuli),

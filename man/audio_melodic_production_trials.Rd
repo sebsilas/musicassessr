@@ -14,11 +14,12 @@ audio_melodic_production_trials(
   grab_meta_data,
   meta_data_df,
   meta_data_lookup_column,
-  get_answer = musicassessr::get_answer_pyin_melodic_production
+  get_answer = musicassessr::get_answer_pyin_melodic_production,
+  feedback = FALSE
 )
 }
 \arguments{
-\item{get_answer}{}
+\item{feedback}{}
 }
 \value{
 

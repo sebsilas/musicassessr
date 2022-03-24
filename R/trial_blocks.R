@@ -683,8 +683,7 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
 
 
 
-
-#' Present a trial block of melodies from audio files
+#'  Present a trial block of melodies from audio files
 #'
 #' @param audio_directory
 #' @param no_to_sample
@@ -695,6 +694,7 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
 #' @param meta_data_df
 #' @param meta_data_lookup_column
 #' @param get_answer
+#' @param feedback
 #'
 #' @return
 #' @export
@@ -708,7 +708,8 @@ audio_melodic_production_trials <- function(audio_directory,
                                            grab_meta_data,
                                            meta_data_df,
                                            meta_data_lookup_column,
-                                           get_answer = musicassessr::get_answer_pyin_melodic_production) {
+                                           get_answer = musicassessr::get_answer_pyin_melodic_production,
+                                           feedback = FALSE) {
 
   shiny_prefix <- paste0("audio_", paste(sample(1:9, 20, replace = TRUE), sep="", collapse="")) # NB: for cases where multiple blocks with different directories are used
 
@@ -774,9 +775,11 @@ audio_melodic_production_trials <- function(audio_directory,
 
   })
 
-  trials_with_feedback <- add_feedback(trials, feedback_melodic_production)
+  if(feedback) {
+    trials <- add_feedback(trials, feedback_melodic_production)
+  }
 
-  psychTestR::module(label = module_prefix, trials_with_feedback)
+  psychTestR::module(label = module_prefix, trials)
 
 }
 

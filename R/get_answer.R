@@ -96,8 +96,6 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 
   display_noise_trial_message(noise.classification, state)
 
-  cat(file=stderr())
-
   c(
     list(file = audio_file,
          stimuli = as.numeric(input$stimuli),
@@ -431,6 +429,10 @@ get_answer_save_aws_key <- function(input, ...) {
 concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input, user_duration_input,
                                     user_onset_input, pyin_pitch_track, ...) {
 
+  print('concat_mel_prod_results...')
+  print(input$stimuli)
+  print(input$stimuli_durations)
+
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
     onsets_noteoff <- NA
@@ -444,6 +446,9 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
     stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
     stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
   } else {
+    print('icaconlll...')
+    print(input$stimuli)
+    print(input$stimuli_durations)
     stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
     stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
   }

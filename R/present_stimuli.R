@@ -234,7 +234,7 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
 
 
   stopifnot(is.character(page_type), class(stimuli_wrapped) == "shiny.tag",
-            is.character(page_text), is.character(page_title), is.logical(interactive),
+            is.character(page_text) | class (page_text) == "shiny.tag", is.character(page_title), is.logical(interactive),
             is.logical(stimuli_reactive), is.character(answer_meta_data), is.character(midi_device),
             is.logical(show_aws_controls), is.character(page_label), is.character(button_text),
             is.character(play_button_text), is.function(get_answer),

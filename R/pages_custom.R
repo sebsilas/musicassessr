@@ -150,9 +150,9 @@ redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 
     shiny::tags$p(text))
 
   if(final) {
-    psychTestR::one_button_page(content)
-  } else {
     psychTestR::final_page(content)
+  } else {
+    psychTestR::one_button_page(content)
   }
 
 }

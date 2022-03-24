@@ -11,7 +11,7 @@ feedback_melodic_production_simple <- function() {
 
 
 feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TRUE) {
-  # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
+
   psychTestR::reactive_page(function(state, answer, ...) {
 
     if(is.null(answer$error)) {
@@ -36,6 +36,11 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
       # get then remove necessary vars
       amd <- answer$answer_meta_data
+
+      if(is.character(amd)) {
+        amd <- rjson::fromJSON(amd)
+      }
+
       answer$answer_meta_data <- NULL
       answer$pyin_pitch_track <- NULL
 
@@ -43,11 +48,21 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       scores_tab <- list_to_shiny_table(answer)
 
       # make meta data table
-      if(answer_meta_data & is.list(amd)) {
+      if(answer_meta_data & is.data.frame(amd)) {
+        t_names <- names(amd)
+        amd <- amd %>% dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>% base::t() %>% as.data.frame()
+        row.names(amd) <- t_names
+        answer_meta_data_tab <- shiny_table(amd)
+      } else if (answer_meta_data & is.list(answer_meta_data) &! is.data.frame(answer_meta_data)) {
+        print('else iff')
         answer_meta_data_tab <- list_to_shiny_table(amd)
       } else {
         answer_meta_data_tab <- " "
       }
+
+      print('sadasd')
+      print(class(scores_tab))
+      print(class(answer_meta_data_tab))
 
       present_stimuli(answer$user_response_note,
                       stimuli_type = "midi_notes",
@@ -60,7 +75,8 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
                                                   shiny::tags$h3('Response Data'),
                                                   scores_tab,
                                                   shiny::tags$h3(stimuli_info),
-                                                  answer_meta_data_tab),
+                                                  answer_meta_data_tab
+                                                  ),
                       page_text_first = FALSE,
                       play_button_id = "playButtonFeedback",
                       button_area_id = "buttonArea3")
@@ -71,24 +87,30 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
   })
 }
 
+shiny_table <- function(content, rownames = TRUE, colnames = FALSE) {
+  shiny::renderTable({
+    content
+  }, rownames = rownames, colnames = colnames, width = "50%")
+}
+
 list_to_shiny_table <- function(l, rownames = TRUE, colnames = FALSE) {
 
-  shiny::renderTable({
-    l <- l[!is.na(l) & lengths(l) > 0]
-    l_names <- names(l)
-    l <- lapply(1:length(l), function(x) {
+  l <- l[!is.na(l) & lengths(l) > 0]
+  l_names <- names(l)
+  l <- lapply(1:length(l), function(x) {
 
-      if (length(l[[x]]) > 1) {
-        paste0(l[[x]], collapse = ",")
-      } else {
-        l[[x]]
-      }
-    })
-    l <- l[!is.na(l)]
-    r <- base::t(as.data.frame(l))
-    row.names(r) <- l_names
-    r
-  }, rownames = rownames, colnames = colnames, width = "50%")
+    if (length(l[[x]]) > 1) {
+      paste0(l[[x]], collapse = ",")
+    } else {
+      l[[x]]
+    }
+  })
+  l <- l[!is.na(l)]
+  r <- as.data.frame(base::t(as.data.frame(l)))
+  row.names(r) <- l_names
+  r <- r %>% dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+  shiny_table(r)
+
 }
 
 

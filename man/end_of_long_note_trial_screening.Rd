@@ -4,7 +4,7 @@
 \alias{end_of_long_note_trial_screening}
 \title{End of long note trial screening code block}
 \usage{
-end_of_long_note_trial_screening()
+end_of_long_note_trial_screening(failure_page = "http://www.google.com")
 }
 \value{
 

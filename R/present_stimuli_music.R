@@ -15,28 +15,33 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
   durations <- sort_durations(durations, note_length, stimuli)
   auto_next_page <- TRUE_to_js_true(auto_next_page)
 
+  print(durations)
+
   if(sound == "tone") {
     record_immediately <- TRUE_to_js_true(record_immediately)
     hidePlay <- "true"
     js.script <- paste0('playTone(',stimuli,', ', note_length,', this.id, \'tone\',', hidePlay,',\'', page_type,'\', \'',stop_button_text, '\', false, ', record_immediately,');')
   } else {
-      melody.for.js <- rjson::toJSON(stimuli)
-      js.script <- paste0("playSeq(",melody.for.js,", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", durations, ", ", auto_next_page,");")
+      js.script <- paste0("playSeq(",rjson::toJSON(stimuli),", true, this.id, \'",sound,"\', \"", page_type, "\", \"", stop_button_text, "\", ", rjson::toJSON(durations), ", ", auto_next_page,");")
   }
 
   shiny::tags$div(
     # should first note be shown?
     show_first_melody_note(give_first_melody_note, stimuli, transpose_first_melody_note, clef = clef),
-    # send stimuli to js
-    shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
-                       Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
-                       var stimuli_durations = ', durations, ';
-                       Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
-                       ')),
+    set_melodic_stimuli(stimuli, durations),
     shiny::tags$div(id = button_area_id,
                     shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default")),
     shiny::tags$br())
 
+}
+
+set_melodic_stimuli <- function(stimuli, durations) {
+  # send stimuli to js
+  shiny::tags$script(htmltools::HTML(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
+                       Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
+                       var stimuli_durations = ', rjson::toJSON(durations), ';
+                       Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
+                       ')))
 }
 
 
@@ -723,10 +728,12 @@ show_first_melody_note <- function(give_first_melody_note, stimuli, transpose_fi
 }
 
 sort_durations <- function(durations, note_length, stimuli) {
+  print('sort_durations')
+  print(durations)
+  print(stimuli)
   if(length(durations) == 0) {
-    durations <- rjson::toJSON(rep(note_length, length(stimuli)))
-  } else {
-    durations <- rjson::toJSON(durations)
+    durations <- rep(note_length, length(stimuli))
   }
+  durations
 }
 

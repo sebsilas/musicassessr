@@ -30,6 +30,10 @@ record_midi_or_audio_ui <- function(body = " ",
     auto_next_page <- TRUE
   }
 
+  if(is.character(page_text)) {
+    page_text <- shiny::tags$p(page_text)
+  }
+
 
   interactive <- ifelse(interactive, "true", "false")
 
@@ -50,7 +54,7 @@ record_midi_or_audio_ui <- function(body = " ",
     shiny::tags$body(
 
       shiny::tags$h2(page_title),
-      if(page_text_first) shiny::tags$p(page_text),
+      if(page_text_first) page_text,
 
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
@@ -66,7 +70,7 @@ record_midi_or_audio_ui <- function(body = " ",
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced, max_goes),
       if(page_type == "record_audio_page") deploy_aws_pyin(show_aws_controls = show_aws_controls, stop_button_text),
 
-      if(!page_text_first) shiny::tags$p(page_text)
+      if(!page_text_first) page_text
     )
   ),
   label = label,

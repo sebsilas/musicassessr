@@ -414,6 +414,9 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
                              module_name = "long_tone_trials") {
 
+  print('long_tone_trials_as_screening?')
+  print(long_tone_trials_as_screening)
+
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
@@ -467,7 +470,9 @@ long_tone_trials <- function(num_items,
                                                               page_text = page_text,
                                                               page_title = page_title),
 
-        if(long_tone_trials_as_screening) long_tone_screening(long_tone_trials_as_screening_failure_page)
+        psychTestR::elt_save_results_to_disk(complete = FALSE),
+
+        if(long_tone_trials_as_screening) end_of_long_note_trial_screening(long_tone_trials_as_screening_failure_page)
 
       )
     )
@@ -475,30 +480,6 @@ long_tone_trials <- function(num_items,
 }
 
 
-long_tone_screening <- function(failure_page = 'http://www.google.com') {
-  psychTestR::join(
-
-    psychTestR::code_block(function(state, ...) {
-      res <- as.list(psychTestR::results(state))
-      participant_long_note_summary <- res$SAA.long_note_trials
-      participant_long_note_summary <- purrr::map_dfr(1:length(participant_long_note_summary), function(i) {
-        tibble::tibble(trial = names(participant_long_note_summary)[i], long_note_IRT = participant_long_note_summary[[i]]$long_note_IRT)
-      })
-      # check long note score from model
-      avg_long_tone_screening <- participant_long_note_summary %>%
-        dplyr::summarise(avg_long_note_IRT = mean(long_note_IRT, na.rm = TRUE)) %>%
-        dplyr::pull(avg_long_note_IRT)
-      psychTestR::set_global("long_tone_screening_score", avg_long_tone_screening, state)
-    }),
-
-    psychTestR::conditional(test = function(state, ...) {
-      score <- psychTestR::get_global("long_tone_screening_score", state)
-      !dplyr::between(score, -0.9040568, 1.763759) # i.e., proceed if the score is between these values (and skip the redirect page)
-    }, logic = redirect_page(url = failure_page, final = TRUE))
-
-
-  )
-}
 
 
 #' Present "Find This Note" trials
@@ -755,9 +736,13 @@ audio_melodic_production_trials <- function(audio_directory,
     if(grab_meta_data) {
       print('grab_md')
       base_file <- basename(file)
+      print(base_file)
       md <- grab_meta_data(meta_data_df, meta_data_lookup_column, base_file)
+      print(md)
       md_note <- md %>% dplyr::pull(note) %>% itembankr::str_mel_to_vector()
+      print(md_note)
       md_durations <- md %>% dplyr::pull(durations) %>% itembankr::str_mel_to_vector()
+      print(md_durations)
 
     } else {
       md <- " "
@@ -779,7 +764,7 @@ audio_melodic_production_trials <- function(audio_directory,
           page_title = page_title,
           page_type = "record_audio_page",
           get_answer = get_answer,
-          page_text = page_text,
+          page_text = shiny::tags$div(set_melodic_stimuli(md_note, md_durations), page_text),
           hideOnPlay = TRUE,
           auto_next_page = TRUE,
           page_label = page_lab,
@@ -789,25 +774,28 @@ audio_melodic_production_trials <- function(audio_directory,
 
   })
 
-  #trials_with_feedback <- add_feedback(trials, musicassessr::feedback_melodic_production)
+  trials_with_feedback <- add_feedback(trials, feedback_melodic_production)
 
-  psychTestR::module(label = module_prefix, trials)
+  psychTestR::module(label = module_prefix, trials_with_feedback)
 
 }
 
+
+#' Grab meta data from a df
+#'
+#' @param meta_data_df
+#' @param lookup_column
+#' @param value
+#'
+#' @return
+#' @export
+#'
+#' @examples
 grab_meta_data <- function(meta_data_df, lookup_column, value) {
-  print('grab_meta_data....1')
-  print(meta_data_df)
-  print(lookup_column)
-  print(value)
-  print(meta_data_df %>% dplyr::filter(!!as.name(lookup_column) == value))
-  meta_data_df %>% dplyr::filter(!!as.name(lookup_column) == value)
+  lookup_column <- as.name(lookup_column)
+  meta_data_df %>% dplyr::filter(!!lookup_column == !!value)
 }
 
-
-
-# t <- data.frame(a = c("light", "battery"), b = c("sausage", "mirror"))
-# grab_meta_data(t, "a", "light")
 
 # abstracted way of defining trials:: WIP
 

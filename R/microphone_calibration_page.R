@@ -12,9 +12,8 @@
 microphone_calibration_page <- function(button_text = "Start test", concise_wording = FALSE) {
 
   if(concise_wording) {
-    wording <- shiny::tags$div(shiny::tags$p("If a message pops up, click Allow. Click Start Test to see if your microphone is working.
-                                              You should see colours moving on the meter if it is working.
-                                             If not, try and setup your mic again and rejoin the test."))
+    wording <- shiny::tags$div(shiny::tags$p("If a message pops up, click Allow. Click Start Test to see if your microphone is working. Make some sound."),
+                               shiny::tags$p("You should see colours moving on the meter if it is working. If not, try and setup your mic again and rejoin the test."))
   } else {
     wording <- shiny::tags$div(shiny::tags$p(psychTestR::i18n("microphone_calibration_message_1")),
                     shiny::tags$p(psychTestR::i18n("microphone_calibration_message_2")),

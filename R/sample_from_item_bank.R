@@ -41,12 +41,7 @@ item_sampler <- function(item_bank, no_items) {
 
 sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
   psychTestR::code_block(function(state, ...) {
-    print('sample_item_characteristics!')
-    print(item_characteristics_pars)
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
-    print(item_chars)
-    print('set::')
-    print(var_name)
     psychTestR::set_global(var_name, item_chars, state)
   })
 }
@@ -203,6 +198,7 @@ sample_from_user_range <- function(no_to_sample) {
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
+    span_warning(span)
     # sample arrhythmic
     arrhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
@@ -213,11 +209,18 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
 sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
+    span_warning(span)
     # sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
     psychTestR::set_global(id, rhythmic_sample, state)
   })
+}
+
+span_warning <- function(span) {
+  if(is.null(span)) {
+    warning("There was no user span set. Do you need a user range page or fake_range before sampling?")
+  }
 }
 
 #rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = itembankr::Berkowitz("main"), item_length = c(3,7))

@@ -55,7 +55,7 @@ get_instrument_range_pages <- function(type, get_range, show_musical_notation = 
 
   # a short multi-page protocol to get the user's frequency range
 
-  stopifnot(is.character(type), is.logical(get_range), is.logical(show_musical_notation))
+  stopifnot(is.character(type), is.logical(get_range) | is.character(get_range) & length(get_range) == 1, is.logical(show_musical_notation))
 
   if(get_range == "test" | get_range == FALSE) {
     fake_range()

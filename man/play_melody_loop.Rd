@@ -7,7 +7,7 @@
 play_melody_loop(
   item_bank = NULL,
   melody = NULL,
-  melody_no = "x",
+  melody_no = 0,
   var_name = "melody",
   stimuli_type = "midi_notes",
   max_goes = 3L,
@@ -30,11 +30,15 @@ play_melody_loop(
   sound = "piano",
   reactive_stimuli = NULL,
   get_trial_characteristics_function = NULL,
-  give_first_melody_note = FALSE
+  give_first_melody_note = FALSE,
+  display_modality = "auditory",
+  show_record_button = FALSE,
+  total_no_melodies = 0,
+  show_progress = FALSE
 )
 }
 \arguments{
-\item{give_first_melody_note}{}
+\item{show_progress}{}
 }
 \value{
 

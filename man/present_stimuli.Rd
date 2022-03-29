@@ -47,6 +47,9 @@ present_stimuli(
   volume = 1,
   audio_playback_as_single_play_button = FALSE,
   max_goes = 1,
+  melody_no = 0,
+  total_no_melodies = 0,
+  show_progress = FALSE,
   ...
 )
 }

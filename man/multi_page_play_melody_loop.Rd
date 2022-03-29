@@ -25,11 +25,14 @@ multi_page_play_melody_loop(
   sound = "piano",
   get_trial_characteristics_function = NULL,
   max_goes_forced = FALSE,
-  give_first_melody_note = FALSE
+  give_first_melody_note = FALSE,
+  display_modality = "auditory",
+  show_record_button = FALSE,
+  show_progress = TRUE
 )
 }
 \arguments{
-\item{give_first_melody_note}{}
+\item{show_progress}{}
 }
 \value{
 

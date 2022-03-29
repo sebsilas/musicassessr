@@ -27,6 +27,9 @@ record_audio_page(
   attempts_left = NULL,
   max_goes_forced = FALSE,
   max_goes = 1,
+  show_progress = FALSE,
+  melody_no = 0,
+  total_no_melodies = 0,
   ...
 )
 }

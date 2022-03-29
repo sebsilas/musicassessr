@@ -24,7 +24,10 @@ record_midi_or_audio_ui <- function(body = " ",
                               max_goes_forced = FALSE,
                               autoInstantiate = FALSE,
                               midi_device = " ",
-                              max_goes = 1, ...) {
+                              max_goes = 1,
+                              show_progress = FALSE,
+                              melody_no = 0,
+                              total_no_melodies = 0, ...) {
 
   if(max_goes == 1) {
     auto_next_page <- TRUE
@@ -53,7 +56,10 @@ record_midi_or_audio_ui <- function(body = " ",
     ),
     shiny::tags$body(
 
+      if(show_progress) shiny::tags$h3(paste0('Section Progress: ', melody_no, "/", total_no_melodies)),
+
       shiny::tags$h2(page_title),
+
       if(page_text_first) page_text,
 
       shiny::tags$div(body),

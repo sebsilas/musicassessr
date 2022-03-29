@@ -11,11 +11,15 @@ present_stimuli_midi_notes_visual(
   ascending,
   id = "sheet_music",
   present_div = TRUE,
-  clef = "auto"
+  clef = "auto",
+  give_first_melody_note = FALSE,
+  transpose_first_melody_note = 0,
+  show_first_melody_note_visual = FALSE,
+  audio_play_button_id = "playButton"
 )
 }
 \arguments{
-\item{clef}{}
+\item{audio_play_button_id}{}
 }
 \value{
 

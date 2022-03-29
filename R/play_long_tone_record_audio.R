@@ -1,11 +1,15 @@
 
 
-#' Build multiple play_long_tone_record_audio_pages based on a user's range
+#'  Build multiple play_long_tone_record_audio_pages based on a user's range
 #'
 #' @param no_items
 #' @param page_type
+#' @param page_text
 #' @param example
+#' @param page_title
 #' @param feedback
+#' @param get_answer
+#' @param show_progress
 #'
 #' @return
 #' @export
@@ -16,7 +20,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                                     page_text = psychTestR::i18n("long_tone_text"),
                                                     example = FALSE,
                                                     page_title = psychTestR::i18n("long_tone_heading"),
-                                                    feedback = FALSE, get_answer = get_answer_pyin_long_note) {
+                                                    feedback = FALSE, get_answer = get_answer_pyin_long_note,
+                                                    show_progress = TRUE) {
 
   items <- purrr::map(1:no_items, function(x) {
 
@@ -26,11 +31,15 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                      page_text = page_text,
                                      example = example,
                                      get_answer = get_answer,
-                                     page_label = paste0("long_tone_", x))
+                                     page_label = paste0("long_tone_", x),
+                                     total_no_long_notes = no_items,
+                                     show_progress = show_progress)
     })
 
   items <- add_feedback(items, feedback)
 }
+
+
 
 #' Create a page which produces a given tone
 #'
@@ -46,13 +55,16 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #' @param auto_next_page
 #' @param example
 #' @param get_answer
+#' @param page_label
+#' @param total_no_long_notes
+#' @param show_progress
 #'
 #' @return
 #' @export
 #'
 #' @examples
 play_long_tone_record_audio_page <- function(note = NULL,
-                                             long_note_no = "x",
+                                             long_note_no = 0,
                                              note_length = 5,
                                              page_title = psychTestR::i18n("long_tone_heading"),
                                              page_text = "Sing along with the tone for 5 seconds.",
@@ -63,7 +75,9 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              auto_next_page = TRUE,
                                              example = FALSE,
                                              get_answer = get_answer_pyin_long_note,
-                                             page_label = "long_tone") {
+                                             page_label = "long_tone",
+                                             total_no_long_notes = 0,
+                                             show_progress = FALSE) {
 
   # a page type for playing a 5-second tone and recording a user singing with it
 
@@ -91,7 +105,10 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     auto_next_page = auto_next_page,
                     save_answer = save_answer,
                     get_answer = get_answer,
-                    record_immediately = TRUE)
+                    record_immediately = TRUE,
+                    melody_no = long_note_no,
+                    total_no_melodies = total_no_long_notes,
+                    show_progress = show_progress)
   })
 
 }

@@ -19,11 +19,12 @@ long_tone_trials(
     shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
     shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
     shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
-  module_name = "long_tone_trials"
+  module_name = "long_tone_trials",
+  show_progress = TRUE
 )
 }
 \arguments{
-\item{module_name}{}
+\item{show_progress}{}
 }
 \value{
 

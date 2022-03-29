@@ -1,3 +1,4 @@
+
 #' Sing arrhythmic melody trial block
 #'
 #' @param item_bank
@@ -17,6 +18,7 @@
 #' @param max_goes
 #' @param max_goes_forced
 #' @param give_first_melody_note
+#' @param show_progress
 #'
 #' @return
 #' @export
@@ -34,7 +36,8 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
                                           rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                           max_goes = 3L,
                                           max_goes_forced = FALSE,
-                                          give_first_melody_note = FALSE) {
+                                          give_first_melody_note = FALSE,
+                                          show_progress = TRUE) {
 
   arrhythmic_melody_trials(item_bank,
                            num_items,
@@ -51,9 +54,11 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
                            rel_to_abs_mel_function,
                            max_goes,
                            max_goes_forced,
-                           give_first_melody_note)
+                           give_first_melody_note,
+                           show_progress)
 
 }
+
 
 
 #' Sing rhythmic melody trial block
@@ -75,6 +80,7 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
 #' @param max_goes
 #' @param max_goes_forced
 #' @param give_first_melody_note
+#' @param show_progress
 #'
 #' @return
 #' @export
@@ -96,7 +102,8 @@ sing_rhythmic_melody_trials <- function(item_bank,
                                         rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                         max_goes = 3L,
                                         max_goes_forced = FALSE,
-                                        give_first_melody_note = FALSE) {
+                                        give_first_melody_note = FALSE,
+                                        show_progress = TRUE) {
 
   rhythmic_melody_trials(item_bank,
                          num_items,
@@ -114,9 +121,12 @@ sing_rhythmic_melody_trials <- function(item_bank,
                          rel_to_abs_mel_function,
                          max_goes,
                          max_goes_forced,
-                         give_first_melody_note)
+                         give_first_melody_note,
+                         show_progress)
 
 }
+
+
 
 #' Arrhythmic Melody Trials Block
 #'
@@ -137,6 +147,8 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param max_goes
 #' @param max_goes_forced
 #' @param give_first_melody_note
+#' @param display_modality
+#' @param show_record_button
 #'
 #' @return
 #' @export
@@ -154,7 +166,10 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                      rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                      max_goes = 3L,
                                      max_goes_forced = FALSE,
-                                     give_first_melody_note = FALSE) {
+                                     give_first_melody_note = FALSE,
+                                     display_modality = "auditory",
+                                     show_record_button = FALSE,
+                                     show_progress = TRUE) {
 
 
   if(num_items == 0) {
@@ -205,7 +220,10 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                max_goes_forced = max_goes_forced,
                                max_goes = max_goes,
                                give_first_melody_note = give_first_melody_note,
-                               item_bank = item_bank),
+                               item_bank = item_bank,
+                               display_modality = display_modality,
+                               show_record_button = show_record_button,
+                               show_progress = show_progress),
                              ## sample
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -234,7 +252,10 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            max_goes_forced = max_goes_forced,
                            max_goes = max_goes,
                            give_first_melody_note = give_first_melody_note,
-                           item_bank = item_bank)
+                           item_bank = item_bank,
+                           display_modality = display_modality,
+                           show_record_button = show_record_button,
+                           show_progress = show_progress)
                        )
     )
   }
@@ -246,7 +267,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 
 
 
-#' Rhythmic melody trials block
+#'  Rhythmic melody trials block
 #'
 #' @param item_bank
 #' @param num_items
@@ -265,6 +286,9 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param max_goes
 #' @param max_goes_forced
 #' @param give_first_melody_note
+#' @param display_modality
+#' @param show_record_button
+#' @param show_progress
 #'
 #' @return
 #' @export
@@ -286,7 +310,10 @@ rhythmic_melody_trials <- function(item_bank,
                                    rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                    max_goes = 3L,
                                    max_goes_forced = FALSE,
-                                   give_first_melody_note = FALSE) {
+                                   give_first_melody_note = FALSE,
+                                   display_modality = "auditory",
+                                   show_record_button = FALSE,
+                                   show_progress = TRUE) {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -336,7 +363,10 @@ rhythmic_melody_trials <- function(item_bank,
                                max_goes_forced = max_goes_forced,
                                max_goes = max_goes,
                                give_first_melody_note = give_first_melody_note,
-                               item_bank = item_bank),
+                               item_bank = item_bank,
+                               display_modality = display_modality,
+                               show_record_button = show_record_button,
+                               show_progress = show_progress),
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p("Now you're ready for the real thing!")))
@@ -366,7 +396,10 @@ rhythmic_melody_trials <- function(item_bank,
                            max_goes_forced = max_goes_forced,
                            max_goes = max_goes,
                            give_first_melody_note = give_first_melody_note,
-                           item_bank = item_bank)
+                           item_bank = item_bank,
+                           display_modality = display_modality,
+                           show_record_button = show_record_button,
+                           show_progress = show_progress)
                        )
     )
   }
@@ -390,6 +423,7 @@ rhythmic_melody_trials <- function(item_bank,
 #' @param long_tone_trials_as_screening_failure_page
 #' @param instruction_text
 #' @param module_name
+#' @param show_progress
 #'
 #' @return
 #' @export
@@ -410,10 +444,9 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
-                             module_name = "long_tone_trials") {
+                             module_name = "long_tone_trials",
+                             show_progress = TRUE) {
 
-  print('long_tone_trials_as_screening?')
-  print(long_tone_trials_as_screening)
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -466,7 +499,8 @@ long_tone_trials <- function(num_items,
                                                                                feedback = feedback,
                                                                                get_answer = get_answer,
                                                                                page_text = page_text,
-                                                                               page_title = page_title),
+                                                                               page_title = page_title,
+                                                                               show_progress = show_progress),
 
                          psychTestR::elt_save_results_to_disk(complete = FALSE),
 

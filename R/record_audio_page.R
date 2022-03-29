@@ -2,6 +2,7 @@
 
 
 
+
 #' Page to record audio in psychTestR
 #'
 #' @param body
@@ -26,6 +27,9 @@
 #' @param attempts_left
 #' @param max_goes_forced
 #' @param max_goes
+#' @param show_progress
+#' @param melody_no
+#' @param total_no_melodies
 #' @param ...
 #'
 #' @return
@@ -53,7 +57,10 @@ record_audio_page <- function(body = " ",
                              happy_with_response =  FALSE,
                              attempts_left = NULL,
                              max_goes_forced = FALSE,
-                             max_goes = 1, ...) {
+                             max_goes = 1,
+                             show_progress = FALSE,
+                             melody_no = 0,
+                             total_no_melodies = 0, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -79,7 +86,10 @@ record_audio_page <- function(body = " ",
                           max_goes_forced,
                           autoInstantiate =  FALSE,
                           midi_device = " ",
-                          max_goes)
+                          max_goes,
+                          show_progress,
+                          melody_no,
+                          total_no_melodies)
 
 }
 

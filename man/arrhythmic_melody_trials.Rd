@@ -23,11 +23,14 @@ arrhythmic_melody_trials(
   rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
   max_goes = 3L,
   max_goes_forced = FALSE,
-  give_first_melody_note = FALSE
+  give_first_melody_note = FALSE,
+  display_modality = "auditory",
+  show_record_button = FALSE,
+  show_progress = TRUE
 )
 }
 \arguments{
-\item{give_first_melody_note}{}
+\item{show_record_button}{}
 }
 \value{
 

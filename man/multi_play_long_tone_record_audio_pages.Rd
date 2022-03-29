@@ -11,11 +11,12 @@ multi_play_long_tone_record_audio_pages(
   example = FALSE,
   page_title = psychTestR::i18n("long_tone_heading"),
   feedback = FALSE,
-  get_answer = get_answer_pyin_long_note
+  get_answer = get_answer_pyin_long_note,
+  show_progress = TRUE
 )
 }
 \arguments{
-\item{feedback}{}
+\item{show_progress}{}
 }
 \value{
 

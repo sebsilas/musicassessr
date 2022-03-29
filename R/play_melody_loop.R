@@ -1,4 +1,5 @@
 
+
 #' A page builder for creating a specified number of play_melody_loops
 #'
 #' @param item_bank
@@ -21,6 +22,9 @@
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
 #' @param give_first_melody_note
+#' @param display_modality
+#' @param show_record_button
+#' @param show_progress
 #'
 #' @return
 #' @export
@@ -34,7 +38,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NUL
                                         start_from_trial_no = 1L, clip_stimuli_length = FALSE,
                                         arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano",
                                         get_trial_characteristics_function = NULL,
-                                        max_goes_forced = FALSE, give_first_melody_note = FALSE) {
+                                        max_goes_forced = FALSE, give_first_melody_note = FALSE,
+                                        display_modality = "auditory", show_record_button = FALSE,
+                                        show_progress = TRUE) {
 
 
 
@@ -58,7 +64,11 @@ multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NUL
                        get_trial_characteristics_function = get_trial_characteristics_function,
                        max_goes_forced = max_goes_forced,
                        give_first_melody_note = give_first_melody_note,
-                       item_bank = item_bank)
+                       item_bank = item_bank,
+                       display_modality = display_modality,
+                       show_record_button = show_record_button,
+                       total_no_melodies = n_items,
+                       show_progress = show_progress)
       })
 
       items
@@ -82,7 +92,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NUL
                          sound = sound,
                          max_goes_forced = max_goes_forced,
                          give_first_melody_note = give_first_melody_note,
-                         item_bank = item_bank)   })
+                         item_bank = item_bank,
+                         display_modality = display_modality,
+                         show_record_button = show_record_button)   })
 
     }
 
@@ -91,6 +103,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NUL
   items
 
 }
+
 
 
 
@@ -124,12 +137,16 @@ multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NUL
 #' @param reactive_stimuli
 #' @param get_trial_characteristics_function
 #' @param give_first_melody_note
+#' @param display_modality
+#' @param show_record_button
+#' @param total_no_melodies
+#' @param show_progress
 #'
 #' @return
 #' @export
 #'
 #' @examples
-play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = "x", var_name = "melody", stimuli_type = "midi_notes",
+play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = 0, var_name = "melody", stimuli_type = "midi_notes",
                              max_goes = 3L,
                              max_goes_forced = FALSE,
                              page_type = "record_audio_page", page_title = "Copy The Melody", page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
@@ -137,7 +154,8 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = "x", v
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,
                              start_note = 1L, end_note = "end", durations = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE, sound = "piano",
-                             reactive_stimuli = NULL, get_trial_characteristics_function = NULL, give_first_melody_note = FALSE) {
+                             reactive_stimuli = NULL, get_trial_characteristics_function = NULL, give_first_melody_note = FALSE,
+                             display_modality = "auditory", show_record_button = FALSE, total_no_melodies = 0, show_progress = FALSE) {
 
   save_answer <- example_save(example)
 
@@ -165,7 +183,7 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = "x", v
       # present the melody
       present_melody(stimuli = melody,
                      stimuli_type = stimuli_type,
-                     display_modality = "auditory",
+                     display_modality = display_modality,
                      page_title = page_title,
                      page_text = page_text,
                      page_type = page_type,
@@ -185,7 +203,10 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = "x", v
                      reactive_stimuli = reactive_stimuli,
                      rel_to_abs_mel_function = rel_to_abs_mel_function,
                      max_goes_forced = max_goes_forced,
-                     give_first_melody_note = give_first_melody_note),
+                     give_first_melody_note = give_first_melody_note,
+                     show_record_button = show_record_button,
+                     total_no_melodies = total_no_melodies,
+                     show_progress = show_progress),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -199,7 +220,8 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                            page_type, answer_meta_data = data.frame(), get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note = 1L,
                            end_note, durations, state, melody_no, var_name, sound = "piano",
-                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, give_first_melody_note = FALSE, ...) {
+                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, give_first_melody_note = FALSE,
+                           show_record_button = FALSE, show_progress = TRUE, total_no_melodies = 0, ...) {
 
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
@@ -232,7 +254,7 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
 
     present_stimuli(stimuli = melody_checks$melody,
                     stimuli_type = stimuli_type,
-                    display_modality = "auditory",
+                    display_modality = display_modality,
                     page_title = page_title,
                     page_text = page_text,
                     page_type = page_type,
@@ -253,7 +275,11 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                     max_goes_forced = max_goes_forced,
                     give_first_melody_note = give_first_melody_note,
                     transpose_first_melody_note = transpose_first_melody_note,
-                    clef = clef)
+                    clef = clef,
+                    show_record_button = show_record_button,
+                    melody_no = melody_no,
+                    show_progress = show_progress,
+                    total_no_melodies = total_no_melodies)
 
   })
 }

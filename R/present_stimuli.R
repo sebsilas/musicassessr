@@ -1,7 +1,5 @@
 
 
-
-
 #' Present stimuli
 #'
 #' @param stimuli
@@ -46,6 +44,9 @@
 #' @param volume
 #' @param audio_playback_as_single_play_button
 #' @param max_goes
+#' @param melody_no
+#' @param total_no_melodies
+#' @param show_progress
 #' @param ...
 #'
 #' @return
@@ -66,7 +67,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                             play_button_id = "playButton", button_area_id = "button_area",
                             hideOnPlay = FALSE, record_immediately = FALSE, max_goes_forced = FALSE,
                             give_first_melody_note = FALSE, transpose_first_melody_note = 0, clef = "auto",
-                            volume = 1, audio_playback_as_single_play_button = FALSE, max_goes = 1, ...) {
+                            volume = 1, audio_playback_as_single_play_button = FALSE, max_goes = 1, melody_no = 0, total_no_melodies = 0,
+                            show_progress = FALSE, ...) {
 
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
@@ -88,7 +90,10 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
             is.character(clef) & length(clef) == 1,
             is.numeric(volume) & length(volume) == 1,
             is.logical(audio_playback_as_single_play_button),
-            is.numeric(max_goes))
+            is.numeric(max_goes),
+            is.numeric(melody_no) & length(melody_no) == 1,
+            is.numeric(total_no_melodies) & length(total_no_melodies) == 1,
+            is.logical(show_progress))
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
@@ -150,7 +155,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               happy_with_response = happy_with_response,
                               attempts_left = attempts_left,
                               auto_next_page = auto_next_page,
-                              page_text_first = page_text_first, max_goes_forced = max_goes_forced, max_goes = max_goes, ...)
+                              page_text_first = page_text_first, max_goes_forced = max_goes_forced, max_goes = max_goes,
+                              melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies, ...)
 
   } else if(page_type == "record_audio_page") {
 
@@ -165,7 +171,8 @@ present_stimuli <- function(stimuli, stimuli_type, display_modality, page_type =
                               auto_next_page = auto_next_page, user_rating = user_rating,
                               page_text_first = page_text_first,
                               happy_with_response = happy_with_response,
-                              attempts_left = attempts_left, max_goes_forced = max_goes_forced, max_goes = max_goes, ...)
+                              attempts_left = attempts_left, max_goes_forced = max_goes_forced, max_goes = max_goes,
+                              melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies, ...)
   }
 
   else {
@@ -230,7 +237,8 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                                button_text = "Next", play_button_text = "Play", get_answer = function() {},
                                show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE,
                                choices = character(), user_rating = FALSE, page_text_first = TRUE,
-                               happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, max_goes = 1, ...) {
+                               happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, max_goes = 1,
+                               melody_no = 0, total_no_melodies = 0, show_progress = FALSE,...) {
 
 
   stopifnot(is.character(page_type), class(stimuli_wrapped) == "shiny.tag",
@@ -241,7 +249,10 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
             is.logical(show_record_button), is.logical(save_answer), is.logical(auto_next_page),
             is.character(choices) & is.vector(choices), is.logical(user_rating), is.logical(page_text_first),
             is.logical(happy_with_response), is.numeric(attempts_left), is.logical(max_goes_forced),
-            is.numeric(max_goes))
+            is.numeric(max_goes),
+            is.numeric(melody_no) & length(melody_no) == 1,
+            is.numeric(total_no_melodies) & length(total_no_melodies) == 1,
+            is.logical(show_progress))
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
@@ -286,7 +297,10 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                 "happy_with_response" = happy_with_response,
                 "attempts_left" = attempts_left,
                 "max_goes_forced" = max_goes_forced,
-                "max_goes" = max_goes))
+                "max_goes" = max_goes,
+                "melody_no" = melody_no,
+                "total_no_melodies" = total_no_melodies,
+                "show_progress" = show_progress))
   } else {
     stop('Unknown page type.')
   }

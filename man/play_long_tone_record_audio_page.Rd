@@ -6,7 +6,7 @@
 \usage{
 play_long_tone_record_audio_page(
   note = NULL,
-  long_note_no = "x",
+  long_note_no = 0,
   note_length = 5,
   page_title = psychTestR::i18n("long_tone_heading"),
   page_text = "Sing along with the tone for 5 seconds.",
@@ -17,11 +17,13 @@ play_long_tone_record_audio_page(
   auto_next_page = TRUE,
   example = FALSE,
   get_answer = get_answer_pyin_long_note,
-  page_label = "long_tone"
+  page_label = "long_tone",
+  total_no_long_notes = 0,
+  show_progress = FALSE
 )
 }
 \arguments{
-\item{get_answer}{}
+\item{show_progress}{}
 }
 \value{
 

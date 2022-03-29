@@ -30,7 +30,11 @@
 #' @export
 #'
 #' @examples
-multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NULL, n_items, var_name = "melody", stimuli_type = "midi_notes",
+multi_page_play_melody_loop <- function(item_bank = NULL,
+                                        presampled_items = NULL,
+                                        n_items,
+                                        var_name = "melody",
+                                        stimuli_type = "midi_notes",
                                         page_type = "record_audio_page", max_goes = 3L,
                                         page_title = psychTestR::i18n("copy_melody_title"),
                                         page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
@@ -39,8 +43,13 @@ multi_page_play_melody_loop <- function(item_bank = NULL, presampled_items = NUL
                                         arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano",
                                         get_trial_characteristics_function = NULL,
                                         max_goes_forced = FALSE, give_first_melody_note = FALSE,
-                                        display_modality = "auditory", show_record_button = FALSE,
+                                        display_modality = "auditory",
+                                        show_record_button = FALSE,
                                         show_progress = TRUE) {
+
+  print('multi_page_play_melody_loop')
+  print('display_modality...')
+  print(display_modality)
 
 
 
@@ -157,6 +166,10 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = 0, var
                              reactive_stimuli = NULL, get_trial_characteristics_function = NULL, give_first_melody_note = FALSE,
                              display_modality = "auditory", show_record_button = FALSE, total_no_melodies = 0, show_progress = FALSE) {
 
+  print('play_melody_loop...')
+  print('display_modality...')
+  print(display_modality)
+
   save_answer <- example_save(example)
 
   c(
@@ -222,6 +235,9 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                            end_note, durations, state, melody_no, var_name, sound = "piano",
                            reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, give_first_melody_note = FALSE,
                            show_record_button = FALSE, show_progress = TRUE, total_no_melodies = 0, ...) {
+
+  print('present_melody')
+  print(display_modality)
 
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {

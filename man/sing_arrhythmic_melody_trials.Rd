@@ -24,11 +24,13 @@ sing_arrhythmic_melody_trials(
   max_goes = 3L,
   max_goes_forced = FALSE,
   give_first_melody_note = FALSE,
-  show_progress = TRUE
+  show_progress = TRUE,
+  show_record_button = FALSE,
+  module_name = "sing_arrhythmic_melodies"
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{module_name}{}
 }
 \value{
 

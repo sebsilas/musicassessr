@@ -1,4 +1,6 @@
 
+
+
 #' Sing arrhythmic melody trial block
 #'
 #' @param item_bank
@@ -19,6 +21,8 @@
 #' @param max_goes_forced
 #' @param give_first_melody_note
 #' @param show_progress
+#' @param show_record_button
+#' @param module_name
 #'
 #' @return
 #' @export
@@ -37,27 +41,34 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
                                           max_goes = 3L,
                                           max_goes_forced = FALSE,
                                           give_first_melody_note = FALSE,
-                                          show_progress = TRUE) {
+                                          show_progress = TRUE,
+                                          show_record_button = FALSE,
+                                          module_name = "sing_arrhythmic_melodies") {
 
   arrhythmic_melody_trials(item_bank,
                            num_items,
                            num_examples,
                            feedback,
-                           get_answer, sound,
+                           get_answer,
+                           sound,
                            page_text,
                            page_title,
                            page_type,
                            instruction_text,
                            get_trial_characteristics_function,
-                           item_characteristics_sampler_function ,
+                           item_characteristics_sampler_function,
                            item_characteristics_pars,
                            rel_to_abs_mel_function,
                            max_goes,
                            max_goes_forced,
                            give_first_melody_note,
-                           show_progress)
+                           display_modality,
+                           show_record_button,
+                           show_progress,
+                           module_name)
 
 }
+
 
 
 
@@ -80,7 +91,10 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
 #' @param max_goes
 #' @param max_goes_forced
 #' @param give_first_melody_note
+#' @param display_modality
+#' @param show_record_button
 #' @param show_progress
+#' @param module_name
 #'
 #' @return
 #' @export
@@ -103,7 +117,10 @@ sing_rhythmic_melody_trials <- function(item_bank,
                                         max_goes = 3L,
                                         max_goes_forced = FALSE,
                                         give_first_melody_note = FALSE,
-                                        show_progress = TRUE) {
+                                        display_modality = "auditory",
+                                        show_record_button = FALSE,
+                                        show_progress = TRUE,
+                                        module_name = "sing_rhythmic_melodies") {
 
   rhythmic_melody_trials(item_bank,
                          num_items,
@@ -117,12 +134,15 @@ sing_rhythmic_melody_trials <- function(item_bank,
                          instruction_text,
                          get_trial_characteristics_function,
                          item_characteristics_sampler_function,
-                         item_characteristics_pars,
+                         item_characteristics_pars ,
                          rel_to_abs_mel_function,
                          max_goes,
                          max_goes_forced,
                          give_first_melody_note,
-                         show_progress)
+                         display_modality,
+                         show_record_button,
+                         show_progress,
+                         module_name)
 
 }
 
@@ -149,6 +169,8 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param give_first_melody_note
 #' @param display_modality
 #' @param show_record_button
+#' @param show_progress
+#' @param module_name
 #'
 #' @return
 #' @export
@@ -169,7 +191,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                      give_first_melody_note = FALSE,
                                      display_modality = "auditory",
                                      show_record_button = FALSE,
-                                     show_progress = TRUE) {
+                                     show_progress = TRUE,
+                                     module_name = "arrhythmic_melodies") {
 
 
   if(num_items == 0) {
@@ -182,7 +205,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
       }
     }
 
-    psychTestR::module("arrhythmic_melodies",
+    psychTestR::module(module_name,
                        c(
                          # instructions
                          psychTestR::one_button_page(shiny::tags$div(
@@ -267,7 +290,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 
 
 
-#'  Rhythmic melody trials block
+#' Rhythmic melody trials block
 #'
 #' @param item_bank
 #' @param num_items
@@ -289,6 +312,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param display_modality
 #' @param show_record_button
 #' @param show_progress
+#' @param module_name
 #'
 #' @return
 #' @export
@@ -313,7 +337,8 @@ rhythmic_melody_trials <- function(item_bank,
                                    give_first_melody_note = FALSE,
                                    display_modality = "auditory",
                                    show_record_button = FALSE,
-                                   show_progress = TRUE) {
+                                   show_progress = TRUE,
+                                   module_name = "rhythmic_melodies") {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -326,7 +351,7 @@ rhythmic_melody_trials <- function(item_bank,
       }
     }
 
-    psychTestR::module("rhythmic_melodies",
+    psychTestR::module(module_name,
                        c(
                          # instructions
                          psychTestR::one_button_page(shiny::tags$div(

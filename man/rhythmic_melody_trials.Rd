@@ -25,11 +25,12 @@ rhythmic_melody_trials(
   give_first_melody_note = FALSE,
   display_modality = "auditory",
   show_record_button = FALSE,
-  show_progress = TRUE
+  show_progress = TRUE,
+  module_name = "rhythmic_melodies"
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{module_name}{}
 }
 \value{
 

@@ -23,11 +23,14 @@ sing_rhythmic_melody_trials(
   max_goes = 3L,
   max_goes_forced = FALSE,
   give_first_melody_note = FALSE,
-  show_progress = TRUE
+  display_modality = "auditory",
+  show_record_button = FALSE,
+  show_progress = TRUE,
+  module_name = "sing_rhythmic_melodies"
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{module_name}{}
 }
 \value{
 

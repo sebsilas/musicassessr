@@ -56,7 +56,9 @@ record_midi_or_audio_ui <- function(body = " ",
     ),
     shiny::tags$body(
 
-      if(show_progress) shiny::tags$h3(paste0('Section Progress: ', melody_no, "/", total_no_melodies)),
+      if(show_progress) shiny::tags$h4(paste0('Section Progress: ', melody_no, "/", total_no_melodies)),
+
+      shiny::tags$br(),
 
       shiny::tags$h2(page_title),
 

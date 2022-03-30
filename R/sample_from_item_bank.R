@@ -208,7 +208,7 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
 
 sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
-    cat(file=stderr(), ..., "\n")
+    cat(file=stderr(), "\n")
     span <- psychTestR::get_global("span", state)
     cat("span: \n")
     cat(file=stderr(), span, "\n")

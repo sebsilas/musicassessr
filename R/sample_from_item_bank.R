@@ -208,11 +208,16 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
 
 sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
+    cat(file=stderr(), ..., "\n")
     span <- psychTestR::get_global("span", state)
+    cat("span: \n")
+    cat(file=stderr(), span, "\n")
     span_warning(span)
     # sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
+    cat(file=stderr(), rhythmic_item_bank_subset, "\n")
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
+    cat(file=stderr(), rhythmic_sample, "\n")
     psychTestR::set_global(id, rhythmic_sample, state)
   })
 }

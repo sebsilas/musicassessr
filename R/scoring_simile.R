@@ -1,21 +1,4 @@
 
-#' Get all ngrams from a given vector
-#'
-#' @param x
-#' @param N
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_all_ngrams <- function(x, N = 3){
-  l <- length(x) - N + 1
-  stopifnot(l > 0)
-  purrr::map_dfr(1:l, function(i){
-    ngram <- x[i:(i + N - 1)]
-    tidyr::tibble(start = i, N = N, value = paste(ngram, collapse = ","))
-  })
-}
 
 #' ngrukkon as in  Müllensiefen & Frieler (2004)
 #'
@@ -29,8 +12,8 @@ get_all_ngrams <- function(x, N = 3){
 #' @examples
 ngrukkon <- function(x, y, N = 3){
   #browser()
-  x <- get_all_ngrams(x, N = N) %>% dplyr::pull(value)
-  y <- get_all_ngrams(y, N = N) %>% dplyr::pull(value)
+  x <- itembankr::get_all_ngrams(x, N = N) %>% dplyr::pull(value)
+  y <- itembankr::get_all_ngrams(y, N = N) %>% dplyr::pull(value)
   joint <- c(x, y) %>% table()
   tx <- factor(x, levels = names(joint)) %>% table()
   ty <- factor(y, levels = names(joint)) %>% table()
@@ -103,25 +86,7 @@ bootstrap_implicit_harmonies <- function(pitch_vec, segmentation = NULL, sample_
   bs %>% dplyr::filter(key == best_key[1]) %>% head(1)
 }
 
-#' Classify ioi class (see Frieler.. )
-#'
-#' @param dur_vec best, should be a ioi vector
-#' @param ref_duration
-#'
-#' @return
-#' @export
-#'
-#' @examples
-classify_duration <- function(dur_vec, ref_duration = .5){
-  rel_dur <- dur_vec/ref_duration
-  rhythm_class <- rep(-2, length(rel_dur))
-  #rhythm_class[rel_dur <= .45] <- -2
-  rhythm_class[rel_dur > 0.45] <- -1
-  rhythm_class[rel_dur > 0.9] <- 0
-  rhythm_class[rel_dur > 1.8] <- 1
-  rhythm_class[rel_dur > 3.3] <- 2
-  rhythm_class
-}
+
 
 #' Compute the rhythfuzz measure
 #'
@@ -155,13 +120,17 @@ harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2
   # phrase_boundary_marker e.g., c(0, 0, 0, 1, 0 0, 1)
   # segment_id e.g., c(1, 1, 1, 2, 2, 2, 3)
 
-  if(segmentation_type == "phrase_boundary_marker") {
-    segmentation1 <- cumsum(segmentation1)
-    segmentation2 <- cumsum(segmentation2)
+  if(!is.null(segmentation1) & !is.null(segmentation2)) {
+    if(segmentation_type == "phrase_boundary_marker") {
+      segmentation1 <- cumsum(segmentation1)
+      segmentation2 <- cumsum(segmentation2)
+    }
   }
 
   implicit_harm1 <- get_implicit_harmonies(pitch_vec1, segmentation1) %>% dplyr::pull(key)
   implicit_harm2 <- get_implicit_harmonies(pitch_vec2, segmentation2) %>% dplyr::pull(key)
+
+
   common_keys <- levels(factor(union(implicit_harm1, implicit_harm2)))
   implicit_harm1 <- factor(implicit_harm1, levels = common_keys) %>% as.integer()
   implicit_harm2 <- factor(implicit_harm2, levels = common_keys) %>% as.integer()
@@ -311,7 +280,7 @@ read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
     read.csv(fname, header = F) %>%
     tidyr::as_tibble() %>%
     {if(style == "sonic_annotator") dplyr::rename(., onset = V1, freq = V3, dur = V2) else dplyr::rename(.,onset = V1, freq = V2, dur = V3)} %>%
-    produce_extra_melodic_features() ## NB! sonic annotator and tony output different column orders, hence the above
+    itembankr::produce_extra_melodic_features() ## NB! sonic annotator and tony output different column orders, hence the above
 
 
   #browser()
@@ -394,27 +363,6 @@ best_subsequence_similarity <- function(melody1, melody2){
 
 
 
-#' Segment a note track by adding phrasend and phrasbeg columns with boolean markers.
-#'
-#' @param note_track a data frame with an "onset" column
-#'
-#' @return
-#' @export
-#'
-#' @examples
-segment_phrase <- function(note_track){
-  # (originally add_phrase_info from KF)
-  note_track <- note_track %>% dplyr::mutate(ioi = c(0, diff(onset)), note_pos = 1:dplyr::n())
-  outliers <- note_track %>% dplyr::pull(ioi) %>% boxplot(plot = FALSE) %>% `[[`("out")
-  outliers <- outliers[outliers > .65]
-  r <- note_track %>%
-    dplyr::mutate(phrasend = as.numeric(ioi >.96 | ioi %in% outliers),
-                  phrasbeg = as.numeric(dplyr::lag(phrasend) | note_pos == 1))
-
-  r$phrasend[is.na(r$phrasend)] <- 0
-  r$phrasend[length(r$phrasend)] <- 1
-  r
-}
 
 
 messagef <- function(...) message(sprintf(...))
@@ -473,6 +421,6 @@ edit_sim <- function(s, t){
 
 
 
-
+# opti3(50:60, 1:10, 50:60, 1:10, use_bootstrap = F)
 
 

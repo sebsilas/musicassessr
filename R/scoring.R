@@ -41,7 +41,7 @@ score_melodic_production <- function(user_melody_input = numeric(),
     note = user_melody_input,
     onset = user_onset_input,
     dur = user_duration_input
-  ) %>% produce_extra_melodic_features()
+  ) %>% itembankr::produce_extra_melodic_features()
 
   # stimuli
   stimuli_length <- length(stimuli)
@@ -164,41 +164,7 @@ score_melodic_production <- function(user_melody_input = numeric(),
 #                                stimuli_duration = rep(1, 4)))
 
 
-#' Produce extra melodic features from a pyin note track
-#'
-#' @param pyin_style_res
-#'
-#' @return
-#' @export
-#'
-#' @examples
-produce_extra_melodic_features <- function(pyin_style_res) {
 
-  if(!"note" %in% names(pyin_style_res) & "freq" %in% names(pyin_style_res)) {
-    pyin_style_res <- pyin_style_res %>%
-      dplyr::mutate(note = round(hrep::freq_to_midi(freq)))
-  }
-
-  pyin_style_res <- pyin_style_res %>%
-    dplyr::mutate(
-      sci_notation = itembankr::midi_to_sci_notation(note),
-      interval = c(NA, diff(note)),
-      ioi = c(NA, diff(onset)),
-      ioi_class = classify_duration(ioi)) %>%
-        segment_phrase()
-
-  if(!"freq" %in% names(pyin_style_res)) {
-    pyin_style_res <- pyin_style_res %>% dplyr::mutate(freq = hrep::midi_to_freq(note))
-  }
-
-  pyin_style_res %>% dplyr::mutate(
-    cents_deviation_from_nearest_midi_pitch = vector_cents_between_two_vectors(round(hrep::midi_to_freq(hrep::freq_to_midi(freq))), freq),
-    # the last line looks tautological, but, by converting back and forth, you get the quantised pitch and can measure the cents deviation from this
-    pitch_class = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq))),
-    pitch_class_numeric = itembankr::midi_to_pitch_class(round(hrep::freq_to_midi(freq)))
-  )
-
-}
 
 # helper functions / mainly for dealing with presence of NAs when scoring methods used at test time
 
@@ -233,7 +199,7 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
       dur = stimuli_durations,
       onset = cumsum(stimuli_durations),
       ioi = c(NA, diff(onset)),
-      ioi_class = classify_duration(ioi)
+      ioi_class = itembankr::classify_duration(ioi)
     ) %>% segment_phrase()
 
     opti3 <- opti3_df(melody1 = stimuli_df,
@@ -321,7 +287,7 @@ check_opti3 <- function(user_response, correct_answer, reverse = FALSE) {
 
 
 # t <- itembankr::midi_file_to_notes_and_durations('/Users/sebsilas/true.mid', string_df = FALSE)
-# t2 <- itembankr::midi_file_to_notes_and_durations('/Users/sebsilas/true.mid', string_df = TRUE, produce_extra_melodic_features = TRUE)
+# t2 <- itembankr::midi_file_to_notes_and_durations('/Users/sebsilas/true.mid', string_df = TRUE, itembankr::produce_extra_melodic_features = TRUE)
 # t3 <- t2 %>% to_string_df()
 
 

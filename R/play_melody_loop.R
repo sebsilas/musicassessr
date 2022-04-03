@@ -35,23 +35,23 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         n_items,
                                         var_name = "melody",
                                         stimuli_type = "midi_notes",
-                                        page_type = "record_audio_page", max_goes = 3L,
+                                        page_type = "record_audio_page",
+                                        max_goes = 3L,
                                         page_title = psychTestR::i18n("copy_melody_title"),
                                         page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
-                                        get_answer = get_answer_pyin_melodic_production, rel_to_abs_mel_function = NULL,
-                                        start_from_trial_no = 1L, clip_stimuli_length = FALSE,
-                                        arrhythmic = FALSE, example = FALSE, feedback = FALSE, sound = "piano",
+                                        get_answer = get_answer_pyin_melodic_production,
+                                        rel_to_abs_mel_function = NULL,
+                                        start_from_trial_no = 1L,
+                                        clip_stimuli_length = FALSE,
+                                        arrhythmic = FALSE,
+                                        example = FALSE,
+                                        feedback = FALSE,
+                                        sound = "piano",
                                         get_trial_characteristics_function = NULL,
                                         max_goes_forced = FALSE, give_first_melody_note = FALSE,
                                         display_modality = "auditory",
                                         show_record_button = FALSE,
                                         show_progress = TRUE) {
-
-  print('multi_page_play_melody_loop')
-  print('display_modality...')
-  print(display_modality)
-
-
 
   if(is.null(presampled_items)) {
     # items should be a dataframe
@@ -166,9 +166,6 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = 0, var
                              reactive_stimuli = NULL, get_trial_characteristics_function = NULL, give_first_melody_note = FALSE,
                              display_modality = "auditory", show_record_button = FALSE, total_no_melodies = 0, show_progress = FALSE) {
 
-  print('play_melody_loop...')
-  print('display_modality...')
-  print(display_modality)
 
   save_answer <- example_save(example)
 
@@ -236,10 +233,6 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                            reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, give_first_melody_note = FALSE,
                            show_record_button = FALSE, show_progress = TRUE, total_no_melodies = 0, ...) {
 
-  print('present_melody')
-  print(display_modality)
-
-
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
     # then this presumes that the melody was transposed at test time, and therefore, should be grabbed
     # via get_local/global
@@ -288,6 +281,7 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                     attempts_left = attempts_left,
                     sound = sound,
                     hideOnPlay = hideOnPlay,
+                    max_goes = max_goes,
                     max_goes_forced = max_goes_forced,
                     give_first_melody_note = give_first_melody_note,
                     transpose_first_melody_note = transpose_first_melody_note,

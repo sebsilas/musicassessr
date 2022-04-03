@@ -149,6 +149,11 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
 
 
 happy_with_response_message <- function(happy_with_response_message, attempts_left, max_goes_forced = FALSE, max_goes = 1) {
+  print('happy_with_response_message')
+  print(happy_with_response_message)
+  print(attempts_left)
+  print(max_goes_forced)
+  print(max_goes)
   if(max_goes == 1) {
     happy_with_response_message <- FALSE
   }

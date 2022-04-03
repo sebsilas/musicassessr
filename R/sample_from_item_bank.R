@@ -1,12 +1,15 @@
+
 #' Item sampler
 #'
 #' @param item_bank
+#' @param no_items
+#' @param replace
 #'
 #' @return
 #' @export
 #'
 #' @examples
-item_sampler <- function(item_bank, no_items) {
+item_sampler <- function(item_bank, no_items, replace = FALSE) {
 
   item_bank <- item_bank %>% dplyr::arrange(N)
 
@@ -28,7 +31,7 @@ item_sampler <- function(item_bank, no_items) {
 
   sample_dat <- apply(tabl, MARGIN = 1, function(x) {
     dat_subset <- item_bank[item_bank$N == as.integer(x["N_list"]), ]
-    sample_i <- sample(1:nrow(dat_subset), x["Freq"])
+    sample_i <- sample(1:nrow(dat_subset), x["Freq"], replace = replace)
     sampl <- dat_subset[sample_i, ]
   })
 
@@ -205,10 +208,14 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
     }
     # sample arrhythmic
     arrhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
-    if(nrow(arrhythmic_item_bank_subset) >= 1) {
+    if(nrow(arrhythmic_item_bank_subset) <= 1) {
       arrhythmic_item_bank_subset <- item_bank
     }
-    arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
+    if(nrow(arrhythmic_item_bank_subset) < num_items_arrhythmic) {
+      arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic, replace = TRUE)
+    } else {
+      arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
+    }
     psychTestR::set_global(id, arrhythmic_sample, state)
   })
 }
@@ -225,11 +232,17 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
     cat(file=stderr(), str(span), "\n")
     # sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
-    if(nrow(rhythmic_item_bank_subset) >= 1) {
+    if(nrow(rhythmic_item_bank_subset) <= 1) {
       rhythmic_item_bank_subset <- item_bank
     }
     #cat(file=stderr(), str(rhythmic_item_bank_subset), "\n")
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
+
+    if(nrow(rhythmic_item_bank_subset) < num_items_rhythmic) {
+      rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic, replace = TRUE)
+    } else {
+      rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
+    }
     #cat(file=stderr(), str(rhythmic_sample), "\n")
     psychTestR::set_global(id, rhythmic_sample, state)
   })

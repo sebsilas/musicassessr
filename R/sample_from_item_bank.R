@@ -199,8 +199,15 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
     span_warning(span)
+
+    if(is.null(span) | span < 10) {
+      span <- 10
+    }
     # sample arrhythmic
     arrhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
+    if(nrow(arrhythmic_item_bank_subset) >= 1) {
+      arrhythmic_item_bank_subset <- item_bank
+    }
     arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
     psychTestR::set_global(id, arrhythmic_sample, state)
   })
@@ -210,14 +217,17 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
   psychTestR::code_block(function(state, ...) {
     #cat(file=stderr(), "\n")
     span <- psychTestR::get_global("span", state)
+    span_warning(span)
     if(is.null(span) | span < 10) {
       span <- 10
     }
-    #cat("span: \n")
+    cat("span: \n")
     cat(file=stderr(), str(span), "\n")
-    span_warning(span)
     # sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
+    if(nrow(rhythmic_item_bank_subset) >= 1) {
+      rhythmic_item_bank_subset <- item_bank
+    }
     #cat(file=stderr(), str(rhythmic_item_bank_subset), "\n")
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
     #cat(file=stderr(), str(rhythmic_sample), "\n")

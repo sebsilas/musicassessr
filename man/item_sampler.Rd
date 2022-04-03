@@ -4,10 +4,10 @@
 \alias{item_sampler}
 \title{Item sampler}
 \usage{
-item_sampler(item_bank, no_items)
+item_sampler(item_bank, no_items, replace = FALSE)
 }
 \arguments{
-\item{item_bank}{}
+\item{replace}{}
 }
 \value{
 

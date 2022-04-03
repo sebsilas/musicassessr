@@ -118,6 +118,38 @@ loading <- function() {
 return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE) {
 
   if(max_goes_forced) {
+    attempts_remaining_1 <- "You have one attempt remaining."
+    attempts_remaining_several.2 <- "attempts remaining."
+  } else {
+    attempts_remaining_1 <- "You have one attempt remaining if you would like."
+    attempts_remaining_several.2 <- "attempts remaining if you would like."
+  }
+
+  if(attempts_left == 0L) {
+    shiny::tags$div(id = "happy_with_response", style = "display:none;",
+                    shiny::tags$p("You have no more attempts. Click to hear the next melody."),
+                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
+    )
+  } else if (attempts_left == 1L) {
+    shiny::tags$div(id = "happy_with_response", style = "display:none;",
+                    shiny::tags$p('If you were happy with your response, please click to \"Continue\", otherwise please click to \"Try Again\".'),
+                    shiny::tags$p(attempts_remaining_1),
+                    shiny::tags$button("Try Again", id = "Try Again", label = "Try Again", onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
+                    if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
+    )
+  } else {
+    shiny::tags$div(id = "happy_with_response", style = "display:none;",
+                    shiny::tags$p('If you were happy with your response, please click to "Continue", otherwise please click to "Try Again".'),
+                    shiny::tags$p(paste0('You have ', " ", attempts_left, ' attempts remaining if you would like.')),
+                    shiny::tags$button('Try Again', id = 'Try Again', label = 'Try Again', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
+                    if(!max_goes_forced) shiny::tags$button('Continue', id = 'Continue', label = 'Continue', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
+    )
+  }
+}
+
+return_correct_attempts_left_2 <- function(attempts_left, max_goes_forced = FALSE) {
+
+  if(max_goes_forced) {
     attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1.forced")
     attempts_remaining_several.2 <- psychTestR::i18n("attempts_remaining_several.2.forced")
   } else {
@@ -149,11 +181,7 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
 
 
 happy_with_response_message <- function(happy_with_response_message, attempts_left, max_goes_forced = FALSE, max_goes = 1) {
-  print('happy_with_response_message')
-  print(happy_with_response_message)
-  print(attempts_left)
-  print(max_goes_forced)
-  print(max_goes)
+
   if(max_goes == 1) {
     happy_with_response_message <- FALSE
   }

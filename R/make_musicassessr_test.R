@@ -44,7 +44,7 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
 
       if(setup_pages) setup_pages_options(),
 
-      elts = elts()
+      elts()
 
     ), dict = musicassessr::dict(additional_dict)),
     opt = psychTestR::test_options(

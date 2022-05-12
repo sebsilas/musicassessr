@@ -60,10 +60,6 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
         answer_meta_data_tab <- " "
       }
 
-      print('sadasd')
-      print(class(scores_tab))
-      print(class(answer_meta_data_tab))
-
       present_stimuli(answer$user_response_note,
                       stimuli_type = "midi_notes",
                       display_modality = "both",
@@ -175,6 +171,16 @@ feedback_long_note_plot <- function(onsets, freqs, stimuli) {
 
 
 
+#' Helper for adding a feedback function to a timeline of pages
+#'
+#' @param items
+#' @param feedback
+#' @param after
+#'
+#' @return
+#' @export
+#'
+#' @examples
 add_feedback <- function(items, feedback, after = 2) {
   if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)

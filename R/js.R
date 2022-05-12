@@ -52,6 +52,25 @@ get_musicassessr_state_js_script <- function(state = "production") {
 }
 
 
+#' Include musicassessr scripts in a webpage
+#'
+#' @return
+#' @export
+#'
+#' @examples
+include_musicassessr_js <- function(visual_notation = FALSE) {
+  htmltools::tagList(
+    lapply(musicassessr::musicassessr_js(visual_notation = visual_notation), function(x) {
+      if(base::startsWith(x, "http")) {
+        htmltools::tags$script(src = x)
+      } else {
+        htmltools::includeScript(x)
+      }
+    })
+  )
+}
+
+
 
 enable.cors <- '
 // Create the XHR object.

@@ -215,6 +215,8 @@ function playTones (note_list) {
 
     if (note === last_note) {
       console.log("finished!");
+      pattern.stop();
+      Tone.Transport.stop();
     }
 
     }, note_list);
@@ -336,9 +338,9 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
     var count = 0;
 
     if(dur_list === null) {
-      playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text)
+      playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text);
     } else {
-      playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text)
+      playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text);
     }
   }
 

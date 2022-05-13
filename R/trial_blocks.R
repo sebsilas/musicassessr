@@ -1,6 +1,33 @@
 
 
 
+#' A block of record audio pages
+#'
+#' @param no_pages
+#' @param feedback
+#' @param get_answer
+#' @param page_text
+#' @param page_title
+#'
+#' @return
+#' @export
+#'
+#' @examples
+record_audio_block <- function(no_pages, feedback = NULL, get_answer = musicassessr::get_answer_pyin,
+                               page_text = " ", page_title = " ") {
+  pages <- psychTestR::join(
+    rep(list(record_audio_page(get_answer = get_answer,
+                                             page_text = page_text,
+                                             page_title = page_title)), no_pages)
+  )
+  if(!is.null(feedback)) {
+    pages <- add_feedback(pages, feedback)
+  }
+  pages
+}
+
+
+
 #' Sing arrhythmic melody trial block
 #'
 #' @param item_bank

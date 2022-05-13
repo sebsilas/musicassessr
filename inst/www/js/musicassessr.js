@@ -914,12 +914,16 @@ function stopRecording() {
 	gumStream.getAudioTracks()[0].stop();
 
 	//create the wav blob and pass it on to createDownloadLink
+
+	rec.exportWAV(upload_file_to_s3);
+	/*
 	if(this.musicassessr_state === "production") {
 	  rec.exportWAV(upload_file_to_s3);
   } else {
     console.log('upload local...');
     rec.exportWAV(upload_file_to_s3_local);
   }
+  */
 }
 
 
@@ -955,19 +959,28 @@ function upload_file_to_s3(blob) {
 
   var recordkey = create_recordkey();
 
-  var file_url = "/files/" + recordkey + ".wav"; // remote / production
-  console.log(file_url);
+  //var file_url = "/files/" + recordkey + ".wav"; // remote / production
+  //console.log(file_url);
 
 
 	var xhr = new XMLHttpRequest();
 	var filename = new Date().toISOString();
 	var fd = new FormData();
 	fd.append("audio_data",blob, recordkey);
-	xhr.open("POST","/api/store_audio",true); // production
+
+	if(this.musicassessr_state === "production") {
+	  console.log('upload production...');
+	  xhr.open("POST","/api/store_audio",true); // production
+  } else {
+    console.log('upload local...');
+    xhr.open("POST","http://localhost:3000/upload-audio",true); // local
+
+  }
+
 	xhr.send(fd);
 
-    Shiny.setInputValue("key", recordkey);
-    Shiny.setInputValue("file_url", file_url);
+  Shiny.setInputValue("key", recordkey);
+  //Shiny.setInputValue("file_url", file_url);
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
@@ -980,15 +993,15 @@ function upload_file_to_s3(blob) {
 	};
 }
 
-
+/*
 function upload_file_to_s3_local(blob) {
 
   console.log('upload_file_to_s3_local');
 
   var recordkey = create_recordkey();
 
-  var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // local
-  console.log(file_url);
+  //var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // local
+  //console.log(file_url);
 
 	var xhr=new XMLHttpRequest();
 	var filename = new Date().toISOString();
@@ -998,7 +1011,7 @@ function upload_file_to_s3_local(blob) {
 	xhr.send(fd);
 
   Shiny.setInputValue("key", recordkey);
-  Shiny.setInputValue("file_url", file_url);
+  //Shiny.setInputValue("file_url", file_url);
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
@@ -1011,3 +1024,5 @@ function upload_file_to_s3_local(blob) {
 		}
 	};
 }
+
+*/

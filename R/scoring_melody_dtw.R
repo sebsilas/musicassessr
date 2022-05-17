@@ -34,6 +34,16 @@ get_melody_dtw <- function(stimuli, stimuli_durations, pyin_pitch_track, pyin_re
   }
 }
 
+#' Plot a melody after being transformed into a representation for use with the dynamic time warp algorithm
+#'
+#' @param stimuli
+#' @param stimuli_durations
+#' @param pyin_smoothed_pitchtrack
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_dtw_melody <- function(stimuli, stimuli_durations, pyin_smoothed_pitchtrack) {
 
   stimuli <- tibble::tibble(freq = c(hrep::midi_to_freq(stimuli), NA), dur = c(stimuli_durations, NA), onset = c(0, cumsum(stimuli_durations)))
@@ -50,7 +60,8 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
   # participant entry to dtw
   pyin_notes <- pyin_res %>% dplyr::select(-dur)
 
-  res <- dplyr::full_join(pyin_notes, pyin_smoothed_pitchtrack, by = "onset") %>% dplyr::rename(quantized_note = freq.x, freq =  freq.y) %>%
+  res <- dplyr::full_join(pyin_notes, pyin_smoothed_pitchtrack, by = "onset") %>%
+    dplyr::rename(quantized_note = freq.x, freq =  freq.y) %>%
     dplyr::arrange(onset) %>% tidyr::fill(quantized_note)
 
   res$freq[!is.na(res$freq)]
@@ -58,14 +69,27 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
 }
 
 
-prepare_mel_stimuli_for_dtw <- function(melody, durations) {
+
+#' Convert a melody to a pseudo-timeseries representation
+#'
+#' @param melody
+#' @param durations
+#' @param convert_midi_to_freq
+#'
+#' @return
+#' @export
+#'
+#' @examples
+prepare_mel_stimuli_for_dtw <- function(melody, durations, convert_midi_to_freq = TRUE) {
 
   if(is.na(durations)) {
     warning('Manually setting durations to 5')
     durations <- 5
   }
 
-  melody <- hrep::midi_to_freq(melody)
+  if(convert_midi_to_freq) {
+    melody <- hrep::midi_to_freq(melody)
+  }
 
   end <- durations[length(durations)]
 

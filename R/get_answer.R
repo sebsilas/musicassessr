@@ -202,14 +202,7 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 
 get_audio_file_for_pyin <- function(input, state, ...) {
-
-  # print('get_audio_file_for_pyin')
-  #
-  # file_dir <- get_correct_app_dir(state)
-  # print(file_dir)
-
   audio_file <- paste0(system.file('node/files', package = 'musicassessr'), '/', input$key, '.wav')
-  print('get_audio_file_for_pyin')
   audio_file
 }
 
@@ -318,9 +311,6 @@ get_melconv <- function(melconv, pyin_res) {
 #' @examples
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
-  print('get_answer_midi_melodic_production')
-  print(input)
-
   if(is.null(input$user_response_midi_note_on)) {
 
     return(list(error = TRUE,
@@ -331,11 +321,6 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
   } else {
 
     midi_res <- get_answer_midi(input, state, ...)
-    print(midi_res)
-    print('da concat...')
-    print(c(diff(midi_res$onsets_noteon), midi_res$onsets_noteon[length(midi_res$onsets_noteon)]-midi_res$onsets_noteon[length(midi_res$onsets_noteon)]))
-    print(midi_res$user_response_midi_note_on)
-    print(midi_res$onsets_noteon)
 
     res <- concat_mel_prod_results(input,
                                    state,
@@ -362,10 +347,6 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 #'
 #' @examples
 get_answer_midi <- function(input, state, ...) {
-  print('get_answer_midi')
-  print(input$user_response_midi_note_on)
-  print(input$user_response_midi_note_off)
-  print(input$onsets_noteon)
   list(
     user_response_midi_note_on = as.numeric(rjson::fromJSON(input$user_response_midi_note_on)),
     user_response_midi_note_off =  as.numeric(rjson::fromJSON(input$user_response_midi_note_off)),
@@ -376,7 +357,6 @@ get_answer_midi <- function(input, state, ...) {
 
 
 get_answer_midi_note_mode <- function(input, state, ...) {
-  print('get_answer_midi_note_mode')
   if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
     list(note = NA)
   } else {
@@ -424,10 +404,6 @@ get_answer_save_aws_key <- function(input, ...) {
 concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input, user_duration_input,
                                     user_onset_input, pyin_pitch_track, ...) {
 
-  print('concat_mel_prod_results...')
-  print(input$stimuli)
-  print(input$stimuli_durations)
-
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
     onsets_noteoff <- NA
@@ -441,9 +417,6 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
     stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
     stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
   } else {
-    print('icaconlll...')
-    print(input$stimuli)
-    print(input$stimuli_durations)
     stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
     stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
   }

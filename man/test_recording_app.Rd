@@ -4,7 +4,7 @@
 \alias{test_recording_app}
 \title{A quick app to test recording functionality}
 \usage{
-test_recording_app()
+test_recording_app(copy_audio_to = NULL)
 }
 \value{
 

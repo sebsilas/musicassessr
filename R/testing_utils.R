@@ -24,14 +24,14 @@ fake_range <- function(bottom_range = 48, top_range = 72) {
 #' @export
 #'
 #' @examples
-test_recording_app <- function() {
+test_recording_app <- function(copy_audio_to = NULL) {
   psychTestR::make_test(
     psychTestR::new_timeline(
       psychTestR::join(
         musicassessr::musicassessr_init(),
         microphone_calibration_page(),
 
-        musicassessr::record_audio_block(no_pages = 10),
+        musicassessr::record_audio_block(no_pages = 10, copy_audio_to = copy_audio_to),
 
         psychTestR::final_page("Finished!")
       ), dict = musicassessr::dict(NULL)),

@@ -62,6 +62,8 @@ create_app_from_template <- function(dir) {
 }
 
 
+
+
 #' musicassessr scripts
 #'
 #' @param state
@@ -79,13 +81,6 @@ musicassessr_js <- function(state = "production",
   # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
   musicassessr_state <<- state
 
-  js_to_write <- paste0('const node_file_location = \"', system.file("node/files", package = "musicassessr"), '\";')
-
-  write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "/extra_js.js"))
-
-  write(create_app_from_template(system.file("node/files/", package = "musicassessr")),
-        file = paste0(system.file("node", package = "musicassessr"), "/app_gen.js"))
-
   c(
     get_musicassessr_state_js_script(state),
     "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
@@ -99,8 +94,26 @@ musicassessr_js <- function(state = "production",
     system.file("www/spinner/spin.js", package = "musicassessr"),
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
-    system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    system.file("www/js/extra_js.js", package = "musicassessr")
+    system.file("www/js/getMIDIin.js", package = "musicassessr")
+  )
+}
+
+
+#' Include musicassessr scripts in a webpage
+#'
+#' @return
+#' @export
+#'
+#' @examples
+include_musicassessr_js <- function(visual_notation = FALSE) {
+  htmltools::tagList(
+    lapply(musicassessr::musicassessr_js(visual_notation = visual_notation), function(x) {
+      if(base::startsWith(x, "http")) {
+        htmltools::tags$script(src = x)
+      } else {
+        htmltools::includeScript(x)
+      }
+    })
   )
 }
 
@@ -123,26 +136,6 @@ get_musicassessr_state_js_script <- function(state = "production") {
   }
 
 }
-
-
-#' Include musicassessr scripts in a webpage
-#'
-#' @return
-#' @export
-#'
-#' @examples
-include_musicassessr_js <- function(visual_notation = FALSE) {
-  htmltools::tagList(
-    lapply(musicassessr::musicassessr_js(visual_notation = visual_notation), function(x) {
-      if(base::startsWith(x, "http")) {
-        htmltools::tags$script(src = x)
-      } else {
-        htmltools::includeScript(x)
-      }
-    })
-  )
-}
-
 
 
 enable.cors <- '
@@ -187,4 +180,3 @@ alert(\'Woops, there was an error making the request.\');
 xhr.send();
 }
 '
-

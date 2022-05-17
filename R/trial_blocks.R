@@ -14,11 +14,15 @@
 #'
 #' @examples
 record_audio_block <- function(no_pages, feedback = NULL, get_answer = musicassessr::get_answer_pyin,
-                               page_text = " ", page_title = " ") {
+                               page_title = "Record audio", page_text = "Click record to record some audio",
+                               copy_audio_to = NULL) {
   pages <- psychTestR::join(
+
+    if(!is.null(copy_audio_to)) psychTestR::code_block(function(state, ...) psychTestR::set_global("copy_audio_to", copy_audio_to, state)),
+
     rep(list(record_audio_page(get_answer = get_answer,
-                                             page_text = page_text,
-                                             page_title = page_title)), no_pages)
+                               page_title = page_title,
+                               page_text = page_text)), no_pages)
   )
   if(!is.null(feedback)) {
     pages <- add_feedback(pages, feedback)

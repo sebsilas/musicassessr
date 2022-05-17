@@ -57,7 +57,7 @@ review_buffer <- function() {
                                    right_margin = 1L,
                                    css = system.file('www/css/style.css', package = "musicassessr")
                                  ),
-                                 additional_scripts = musicassessr::musicassessr_js(state = musicassessr_state, visual_notation = TRUE),
+                                 additional_scripts = musicassessr::musicassessr_js(musicassessr_aws = FALSE, visual_notation = TRUE),
                                  languages = c("en")))
 }
 

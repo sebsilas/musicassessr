@@ -2,7 +2,7 @@
 
 #' Make a musicassessr test
 #'
-#' @param musicassessr_state Production or test.
+#' @param musicassessr_aws Running on AWS?
 #' @param elts_before_setup_pages Timeline to go before setup pages.
 #' @param elts Timeline to go after setup pages.
 #' @param setup_pages Should there be setup pages.
@@ -18,7 +18,7 @@
 #' @export
 #'
 #' @examples
-make_musicassessr_test <- function(musicassessr_state = 'production',
+make_musicassessr_test <- function(musicassessr_aws = FALSE,
                                    elts_before_setup_pages = function() { psychTestR::join(psychTestR::code_block(function(state, ...) {})) },
                                    elts,
                                    setup_pages,
@@ -28,7 +28,7 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
                                    musicassessr_opt = musicassessr::musicassessr_opt(), ...) {
 
   stopifnot(
-    is.character(musicassessr_state) & length(musicassessr_state) == 1,
+    is.logical(musicassessr_aws),
     is.function(elts_before_setup_pages), is.function(elts),
     is.logical(setup_pages), is.function(setup_pages_options),
     is.null(additional_dict) | is.data.frame(additional_dict)
@@ -51,7 +51,7 @@ make_musicassessr_test <- function(musicassessr_state = 'production',
       title = title,
       admin_password = admin_password,
       languages = languages,
-      additional_scripts = musicassessr::musicassessr_js(musicassessr_state),
+      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws),
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,
@@ -116,8 +116,6 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
 #' @param test_username
 #' @param test
 #' @param store_results_in_db
-#' @param local_app_file_dir
-#' @param sonic_annotator_local_location
 #' @param copy_audio_to_location
 #'
 #' @return
@@ -127,15 +125,11 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
 musicassessr_opt <- function(test_username = NA,
                              test = NA,
                              store_results_in_db = FALSE,
-                             local_app_file_dir = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/",
-                             sonic_annotator_local_location = "/Users/sebsilas/sonic-annotator",
                              copy_audio_to_location = NULL) {
   musicassessr_init(
     test_username,
     test,
     store_results_in_db,
-    local_app_file_dir,
-    sonic_annotator_local_location,
     copy_audio_to_location
   )
 }

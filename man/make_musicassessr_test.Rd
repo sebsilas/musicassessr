@@ -5,7 +5,7 @@
 \title{Make a musicassessr test}
 \usage{
 make_musicassessr_test(
-  musicassessr_state = "production",
+  musicassessr_aws = FALSE,
   elts_before_setup_pages = function() {    
     psychTestR::join(psychTestR::code_block(function(state, ...) {     })) },
   elts,
@@ -20,7 +20,7 @@ make_musicassessr_test(
 )
 }
 \arguments{
-\item{musicassessr_state}{Production or test.}
+\item{musicassessr_aws}{Running on AWS?}
 
 \item{elts_before_setup_pages}{Timeline to go before setup pages.}
 

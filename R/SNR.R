@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-get_SNR_pages <- function(min_SNR = 14, absolute_url, report_SNR = FALSE) {
+get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR = FALSE) {
   psychTestR::join(
     record_background_page(),
     record_signal_page(),
@@ -21,7 +21,7 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url, report_SNR = FALSE) {
     )),
     psychTestR::reactive_page(function(state, ...) {
 
-      if(musicassessr_state == "production") {
+      if(length(absolute_url) > 0) {
         signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
         noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
 
@@ -71,7 +71,7 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url, report_SNR = FALSE) {
 #' @export
 #'
 #' @examples
-get_SNR_pages_loop <- function(min_SNR = 14, absolute_url, report_SNR) {
+get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_SNR) {
 
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
@@ -88,7 +88,7 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url, report_SNR) {
         )),
         psychTestR::reactive_page(function(state, ...) {
 
-          if(musicassessr_state == "production") {
+          if(length(absolute_url) > 0) {
             signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
             noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
 

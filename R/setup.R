@@ -32,7 +32,7 @@ setup_pages <- function(input = c("microphone",
                          get_user_info = TRUE,
                         demo = FALSE,
                         get_instrument_range = FALSE,
-                        absolute_url,
+                        absolute_url = character(),
                         select_instrument = FALSE,
                         get_instrument_range_musical_notation = FALSE,
                         adjust_range = FALSE,
@@ -71,9 +71,9 @@ setup_pages <- function(input = c("microphone",
 
       requirements_page(headphones = headphones, input = input),
 
-      if(get_user_info) musicassessr::get_user_info_page(),
+      if(get_user_info) get_user_info_page(),
 
-      if(headphones) musicassessr::test_headphones_page(concise_wording),
+      if(headphones) test_headphones_page(concise_wording),
 
       if(select_instrument) select_musical_instrument_page(),
 
@@ -192,12 +192,12 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE, concise_wording = FALSE) {
+microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE, concise_wording = FALSE) {
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
       microphone_type_page(),
-      musicassessr::microphone_calibration_page(concise_wording = concise_wording)
+      microphone_calibration_page(concise_wording = concise_wording)
     )
   } else {
     microphone_pages <- psychTestR::code_block(function(state, ...){}) # there needs to be the possibility of something resolving
@@ -205,8 +205,8 @@ microphone_setup <- function(SNR_test, absolute_url, microphone_test = TRUE, all
 
   psychTestR::join(
       microphone_pages,
-    if(SNR_test & !allow_repeat_SNR_tests) musicassessr::get_SNR_pages(absolute_url = absolute_url, report_SNR = report_SNR),
-    if(SNR_test & allow_repeat_SNR_tests) musicassessr::get_SNR_pages_loop(absolute_url = absolute_url, report_SNR = report_SNR)
+    if(SNR_test & !allow_repeat_SNR_tests) get_SNR_pages(absolute_url = absolute_url, report_SNR = report_SNR),
+    if(SNR_test & allow_repeat_SNR_tests) get_SNR_pages_loop(absolute_url = absolute_url, report_SNR = report_SNR)
   )
 }
 

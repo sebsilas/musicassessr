@@ -74,15 +74,13 @@ create_app_from_template <- function(dir) {
 #' @export
 #'
 #' @examples
-musicassessr_js <- function(state = "production",
+musicassessr_js <- function(musicassessr_aws = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE) {
 
   # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
-  musicassessr_state <<- state
-
   c(
-    get_musicassessr_state_js_script(state),
+    get_musicassessr_state_js_script(musicassessr_aws),
     "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
     "https://www.midijs.net/lib/midi.js",
     if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
@@ -118,11 +116,9 @@ include_musicassessr_js <- function(visual_notation = FALSE) {
 }
 
 
-get_musicassessr_state_js_script <- function(state = "production") {
+get_musicassessr_state_js_script <- function(musicassessr_aws = FALSE) {
 
-  musicassessr_state <<- state
-
-  if(state == "production") {
+  if(musicassessr_aws) {
     system.file("www/js/musicassessr_production.js", package = "musicassessr")
   } else {
 

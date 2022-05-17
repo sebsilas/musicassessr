@@ -477,10 +477,6 @@ copy_audio_file <- function(state, audio_file) {
 
   copy_location <- psychTestR::get_global("copy_audio_to", state)
 
-  # if(get_musicassessr_state() == "production") {
-  #  audio_file <- paste0('/srv/shiny-server/files/', audio_file)
-  # }
-
   if(!is.null(copy_location)) {
     file.copy(audio_file, copy_location)
   }

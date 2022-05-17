@@ -5,7 +5,7 @@
 \title{musicassessr scripts}
 \usage{
 musicassessr_js(
-  state = "production",
+  musicassessr_aws = FALSE,
   visual_notation = FALSE,
   midi_file_playback = FALSE
 )

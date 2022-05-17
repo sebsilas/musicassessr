@@ -9,3 +9,4 @@ inst/www/PBET_calibration_audio
 docs
 R/connect_to_AWS_RDS.R
 inst/node/node_modules/debug/.*
+inst/node/files/*.wav

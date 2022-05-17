@@ -50,26 +50,6 @@ long_note_pitch_metrics <- function(target_pitch, freq) {
   # note that note precision has no reference to target pitch and therefore thus independent of accuracy
   note.precision <- sqrt( sum(cents_vector_in_rel_to_mean^2)/length(freq) )
 
-  # cat(file=stderr())
-  #
-  # # now grab the PCA version
-  # long_tone_holder_df <- tibble::tibble(note_accuracy = note.accuracy,
-  #                                       note_precision = note.precision,
-  #                                       dtw_distance = dtw.distance)
-  #
-  # cat(file=stderr())
-  #
-  # agg_dv_long_note <- predict(musicassessr::long_note_pca, data = long_tone_holder_df, old.data = musicassessr::long_tone_dat_min) %>% as.vector()
-  # cat(file=stderr())
-  #
-  # item_df <- tibble::tibble(stimuli = target_pitch, agg_dv_long_note = agg_dv_long_note, p_id = psychTestR::p_id(state))
-  #
-  # cat(file=stderr())
-  #
-  # long_note_IRT <- predict(musicassessr::long_note_mod, newdata = item_df, re.form = NA) %>% as.vector() # predict without random fx
-  #
-  # cat(file=stderr())
-
   list("note_accuracy" = note.accuracy,
        "note_precision" = note.precision,
        "dtw_distance" = dtw.distance,
@@ -103,13 +83,18 @@ classify_whether_noise <- function(res, display_noise_trial_notificiation = FALS
     tidyr::pivot_longer(na_count_test:run_test_test, values_to = "prediction")
 
   failed_tests <- res %>% dplyr::filter(prediction == "noise") %>% dplyr::pull(name)
-  print('failed_tests...')
-  print(failed_tests)
+
+  if(length(failed_tests) == 0) {
+    failed_tests <- NA
+  }
 
   res_counts <- res %>% dplyr::count(prediction)
 
   if(any(grepl("noise", res_counts$prediction))) {
     no_tests_failed <- res_counts %>% dplyr::filter(prediction == "noise") %>% dplyr::pull(n)
+    if(length(no_tests_failed) == 0) {
+      no_tests_failed <- 0
+    }
     cat('no tests failed: ', no_tests_failed, '\n')
     if(no_tests_failed >= 2) {
       prediction <- "noise"

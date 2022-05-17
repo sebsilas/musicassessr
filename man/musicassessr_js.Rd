@@ -7,11 +7,12 @@
 musicassessr_js(
   musicassessr_aws = FALSE,
   visual_notation = FALSE,
-  midi_file_playback = FALSE
+  midi_file_playback = FALSE,
+  copy_audio_to_location
 )
 }
 \arguments{
-\item{midi_file_playback}{}
+\item{copy_app_to_location}{}
 }
 \value{
 

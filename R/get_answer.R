@@ -65,8 +65,6 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  copy_audio_file(state, audio_file)
-
   pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
 
@@ -146,9 +144,6 @@ get_answer_pyin <- function(input,
   # get file
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  # copy it to user-specified location
-  copy_audio_file(state, audio_file)
-
   # get pyin
   pyin_res <- get_pyin(audio_file, type, state)
 
@@ -178,8 +173,6 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  copy_audio_file(state, audio_file)
-
   pyin_res <- pyin::pyin(audio_file)
 
   if(is.na(pyin_res$note)) {
@@ -202,7 +195,15 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 
 get_audio_file_for_pyin <- function(input, state, ...) {
-  audio_file <- paste0(system.file('node/files', package = 'musicassessr'), '/', input$key, '.wav')
+
+  audio_file <- psychTestR::get_global("copy_to_location", state)
+
+  if(length(audio_file) == 0) {
+    audio_file <- paste0(system.file('node/files', package = 'musicassessr'), '/', input$key, '.wav')
+  } else {
+    audio_file <- paste0(audio_file, '/', input$key, '.wav')
+  }
+
   audio_file
 }
 
@@ -215,7 +216,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
-      copy_audio_file(state, audio_file)
       pyin_res <- pyin::pyin(audio_file)
       if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
@@ -229,7 +229,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
-      copy_audio_file(state, audio_file)
       pyin_res <- pyin::pyin(audio_file)
       if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
         list(user_response = NA)
@@ -245,7 +244,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
-      copy_audio_file(state, audio_file)
       pyin_res <- pyin::pyin(audio_file)
       if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         list(user_response = NA)
@@ -452,10 +450,7 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
 
 store_results_in_db <- function(state, res) {
 
-  print('store_results_in_db')
-
   store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
-  print(store_results_in_db)
 
   if(store_results_in_db) {
     session_info <- psychTestR::get_session_info(state, complete = FALSE)
@@ -473,14 +468,6 @@ store_results_in_db <- function(state, res) {
 }
 
 
-copy_audio_file <- function(state, audio_file) {
-
-  copy_location <- psychTestR::get_global("copy_audio_to", state)
-
-  if(!is.null(copy_location)) {
-    file.copy(audio_file, copy_location)
-  }
-}
 
 # test
 # #r <- melconv_from_pyin_res('/Users/sebsilas/true.wav')

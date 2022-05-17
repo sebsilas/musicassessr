@@ -204,6 +204,9 @@ get_audio_file_for_pyin <- function(input, state, ...) {
     audio_file <- paste0(audio_file, '/', input$key, '.wav')
   }
 
+  print('get_audio_file_for_pyin')
+  print(audio_file)
+
   audio_file
 }
 

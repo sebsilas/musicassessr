@@ -69,7 +69,7 @@ create_app_from_template <- function(dir) {
 #' @param state
 #' @param visual_notation
 #' @param midi_file_playback
-#' @param copy_app_to_location
+#' @param copy_audio_to_location
 #'
 #' @return
 #' @export
@@ -78,15 +78,20 @@ create_app_from_template <- function(dir) {
 musicassessr_js <- function(musicassessr_aws = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE,
-                            copy_audio_to_location = system.file("node/files/", package = "musicassessr")) {
+                            copy_audio_to_location = NULL) {
+
+  if(is.null(copy_audio_to_location)) {
+    copy_audio_to_location <- system.file("node/files/", package = "musicassessr")
+  }
+
+  print('musicasd')
+  print('write this...')
+  print(copy_audio_to_location)
 
   js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
   write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "/extra_js.js"))
 
-  print('musicasd')
-  print('write this...')
-  print(copy_audio_to_location)
 
   write(create_app_from_template(copy_audio_to_location),
         file = paste0(system.file("node", package = "musicassessr"), "/app_gen.js"))

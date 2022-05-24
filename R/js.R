@@ -80,7 +80,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
                             midi_file_playback = FALSE,
                             copy_audio_to_location = system.file("node/files/", package = "musicassessr")) {
 
-  js_to_write <- paste0('const node_file_location = \"', system.file("node/files", package = "musicassessr"), '\";')
+  js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
   write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "/extra_js.js"))
 

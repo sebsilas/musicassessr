@@ -959,8 +959,7 @@ function upload_file_to_s3(blob) {
 
   var recordkey = create_recordkey();
 
-  //var file_url = "/files/" + recordkey + ".wav"; // remote / production
-  //console.log(file_url);
+  var file_url = node_file_location + "/" + recordkey + ".wav";
 
 
 	var xhr = new XMLHttpRequest();
@@ -980,7 +979,7 @@ function upload_file_to_s3(blob) {
 	xhr.send(fd);
 
   Shiny.setInputValue("key", recordkey);
-  //Shiny.setInputValue("file_url", file_url);
+  Shiny.setInputValue("file_url", file_url);
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved

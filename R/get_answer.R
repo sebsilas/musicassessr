@@ -196,16 +196,10 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 get_audio_file_for_pyin <- function(input, state, ...) {
 
-  audio_file <- psychTestR::get_global("copy_to_location", state)
-
-  if(length(audio_file) == 0) {
-    audio_file <- paste0(system.file('node/files', package = 'musicassessr'), '/', input$key, '.wav')
-  } else {
-    audio_file <- paste0(audio_file, '/', input$key, '.wav')
-  }
-
   print('get_audio_file_for_pyin')
-  print(audio_file)
+  print(input$file_url)
+
+  audio_file <- input$file_url
 
   audio_file
 }

@@ -84,6 +84,10 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
 
   write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "/extra_js.js"))
 
+  print('musicasd')
+  print('write this...')
+  print(copy_audio_to_location)
+
   write(create_app_from_template(copy_audio_to_location),
         file = paste0(system.file("node", package = "musicassessr"), "/app_gen.js"))
 

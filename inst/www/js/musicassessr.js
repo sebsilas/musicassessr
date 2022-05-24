@@ -945,8 +945,8 @@ function create_recordkey() {
     recordkey = p_id + '.' + recordkey;
       console.log(p_id);
       console.log(recordkey);
-
-
+  } else {
+    recordkey = 'no_p_id.' + recordkey;
   }
 
 

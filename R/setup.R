@@ -53,6 +53,14 @@ setup_pages <- function(input = c("microphone",
             is.logical(allow_repeat_SNR_tests),
             is.logical(report_SNR), is.logical(concise_wording))
 
+  if(length(input) > 1) {
+    input <- input[1]
+  }
+
+  if(length(test_type) > 1) {
+    test_type <- test_type[1]
+  }
+
 
   if(demo) {
 

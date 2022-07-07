@@ -97,17 +97,17 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
 
   js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
-  extra_js_id <- paste0("tmp/extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+  extra_js_id <- paste0("extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
 
   if(!file.exists(extra_js_id)) {
-    write(js_to_write, file = extra_js_id)
+    write(js_to_write, file = paste0('tmp/', extra_js_id))
   }
 
-  app_gen_id <- paste0("tmp/app_gen_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+  app_gen_id <- paste0("app_gen_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
 
   if(!file.exists(app_gen_id)) {
     write(create_app_from_template(copy_audio_to_location),
-          file = app_gen_id)
+          file = paste0('tmp/', app_gen_id))
   }
 
 

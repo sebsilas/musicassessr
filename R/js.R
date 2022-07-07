@@ -90,7 +90,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
 
   js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
-  write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "/extra_js.js"))
+  write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "extra_js.js"))
 
 
   write(create_app_from_template(copy_audio_to_location),

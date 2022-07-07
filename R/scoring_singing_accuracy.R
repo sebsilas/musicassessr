@@ -207,6 +207,14 @@ long_tone_screening_v2 <- function(failure_page) {
 }
 
 
+#' Get note precision measure
+#'
+#' @param pyin_result
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_note_precision <- function(pyin_result) {
   note_precision <- pyin_result %>%
     dplyr::group_by(sci_notation) %>%

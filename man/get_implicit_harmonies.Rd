@@ -4,15 +4,10 @@
 \alias{get_implicit_harmonies}
 \title{get harmonies via the Krumhansl-Schmuckler algorithm}
 \usage{
-get_implicit_harmonies(
-  pitch_vec,
-  segmentation = NULL,
-  only_winner = TRUE,
-  segmentation_type = c("phrase_boundary_marker", "segment_id")
-)
+get_implicit_harmonies(pitch_vec, segmentation = NULL, only_winner = TRUE)
 }
 \arguments{
-\item{segmentation_type}{}
+\item{only_winner}{}
 }
 \value{
 

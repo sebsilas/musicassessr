@@ -26,20 +26,16 @@ ngrukkon <- function(x, y, N = 3){
 #' @param pitch_vec
 #' @param segmentation
 #' @param only_winner
-#' @param segmentation_type
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner = TRUE, segmentation_type = c("phrase_boundary_marker",
-                                                                                                             "segment_id")){
+get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner = TRUE){
 
-  if(segmentation_type == "phrase_boundary_marker") {
-    segmentation <- cumsum(segmentation)
-  }
+  warning('Segmentation format must be as segment ID')
 
-  #Krumhansl-Schmuckler algorithm
+  # Krumhansl-Schmuckler algorithm
   ks_weights_major <- c(6.33, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
   ks_weights_minor <- c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
   if(!is.null(segmentation)){
@@ -135,8 +131,8 @@ harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2
     }
   }
 
-  implicit_harm1 <- get_implicit_harmonies(pitch_vec1, segmentation1, segmentation_type = "segment_id") %>% dplyr::pull(key)
-  implicit_harm2 <- get_implicit_harmonies(pitch_vec2, segmentation2, segmentation_type = "segment_id") %>% dplyr::pull(key)
+  implicit_harm1 <- get_implicit_harmonies(pitch_vec1, segmentation1) %>% dplyr::pull(key)
+  implicit_harm2 <- get_implicit_harmonies(pitch_vec2, segmentation2) %>% dplyr::pull(key)
 
 
   common_keys <- levels(factor(union(implicit_harm1, implicit_harm2)))
@@ -329,11 +325,15 @@ opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winn
       v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
 
     }
+
+    opti3 <-  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146
+    opti3 <- max(min(opti3, 1), 0)
+
     tibble::tibble(transposition = th,
            ngrukkon = v_ngrukkon,
            rhythfuzz = v_rhythfuzz,
            harmcore = v_harmcore,
-           opti3 =  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146)
+           opti3 = opti3)
   })
   res <- sims %>% dplyr::arrange(dplyr::desc(opti3))
   if(return_winner) {

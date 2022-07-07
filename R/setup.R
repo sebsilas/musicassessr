@@ -74,7 +74,7 @@ setup_pages <- function(input = c("microphone",
 
   } else {
 
-    psychTestR::module("musicasssessr_setup",
+    psychTestR::module("musicassessr_setup",
       psychTestR::join(
 
       requirements_page(headphones = headphones, input = input),

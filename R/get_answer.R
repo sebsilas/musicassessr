@@ -254,9 +254,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
 get_pyin <- function(audio_file, type, state) {
 
-  print('get_pyin...')
-  print('audio_file...')
-  print(audio_file)
 
   if(type == "notes") {
     pyin_res <- pyin::pyin(audio_file)

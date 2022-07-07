@@ -84,6 +84,8 @@ score_melodic_production <- function(user_melody_input = numeric(),
 
   # fine-grained pitch measures (i.e singing style):
   note_precision <- get_note_precision(features_df)
+  print('TODO: is note_precision working?... ::')
+  print(note_precision)
   mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = features_df$note, stimuli = stimuli, freq = features_df$freq)
   mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(features_df$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
   melody_dtw <- get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, features_df)

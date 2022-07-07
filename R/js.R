@@ -78,12 +78,17 @@ create_app_from_template <- function(dir) {
 musicassessr_js <- function(musicassessr_aws = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE,
-                            copy_audio_to_location = NULL) {
+                            copy_audio_to_location = 'audio') {
 
-  if(is.null(copy_audio_to_location)) {
-    copy_audio_to_location <- system.file("node/files/", package = "musicassessr")
+  if(!dir.exists('tmp')) {
+    R.utils::mkdirs('tmp')
   }
 
+  if(copy_audio_to_location == "audio") {
+    if(!dir.exists('audio')) {
+      R.utils::mkdirs('audio')
+    }
+  }
 
   js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
@@ -116,7 +121,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    system.file(paste0("www/js/", extra_js_id), package = "musicassessr")
+    paste0("tmp_files/", extra_js_id)
   )
 }
 

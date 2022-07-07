@@ -8,7 +8,7 @@ musicassessr_js(
   musicassessr_aws = FALSE,
   visual_notation = FALSE,
   midi_file_playback = FALSE,
-  copy_audio_to_location = NULL
+  copy_audio_to_location = "audio"
 )
 }
 \arguments{

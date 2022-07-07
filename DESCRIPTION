@@ -52,11 +52,12 @@ Imports:
     lmerTest,
     randtests,
     stats,
-    pyin (>= 0.1.0)
+    pyin (>= 0.1.0),
+    R.utils
 Depends: 
     R (>= 2.10),
     itembankr (>= 0.1.0)
-Remotes:  
+Remotes: 
     sebsilas/psychTestR,
     sebsilas/itembankr,
     gaborcsardi/async,

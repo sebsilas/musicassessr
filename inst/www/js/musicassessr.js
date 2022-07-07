@@ -931,15 +931,9 @@ function create_recordkey() {
   var currentDate = new Date();
   var recordkey = currentDate.getDate().toString() + '-' + (currentDate.getMonth() + 1 ).toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
 
-  console.log('recordkey...');
-  console.log(recordkey);
   if (typeof page_label === 'string') {
     recordkey = page_label + '.' + recordkey;
   }
-
-  console.log(page_label);
-  console.log(recordkey);
-
 
   if (typeof p_id === 'string') {
     recordkey = p_id + '.' + recordkey;
@@ -960,7 +954,6 @@ function upload_file_to_s3(blob) {
   var recordkey = create_recordkey();
 
   var file_url = node_file_location + "/" + recordkey + ".wav";
-
 
 	var xhr = new XMLHttpRequest();
 	var filename = new Date().toISOString();

@@ -33,8 +33,20 @@ create_app_from_template <- function(dir) {
         //Use the name of the input field (i.e. 'avatar') to retrieve the uploaded file
         let file = req.files.audio_data;
 
+        var move_file_to = \'", dir, "/\'+ file.name+'.wav'
+
+        console.log('move to:');
+        console.log(move_file_to);
+
         //Use the mv() method to place the file in upload directory (i.e. 'uploads')
-        file.mv(\'", dir, "/\'+ file.name+'.wav');
+        file.mv(move_file_to);
+
+        if(musicassessr_state === 'production') { # always keep a copy in /files on the server
+          var move_file_to_aws = '/files/ + file.name+'.wav'
+          console.log('move_file_to_aws');
+          console.log(move_file_to_aws);
+          file.mv(move_file_to_aws);
+        }
 
         //send response
         res.send({
@@ -103,11 +115,11 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     write(js_to_write, file = paste0('tmp/', extra_js_id))
   }
 
-  app_gen_id <- paste0("app_gen_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+  app_id <- paste0("app_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
 
-  if(!file.exists(app_gen_id)) {
+  if(!file.exists(app_id)) {
     write(create_app_from_template(copy_audio_to_location),
-          file = paste0('tmp/', app_gen_id))
+          file = paste0('tmp/', app_id))
   }
 
 
@@ -115,7 +127,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
 
   # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
   c(
-    get_musicassessr_state_js_script(musicassessr_aws),
+    get_musicassessr_state_js_script(app_id, musicassessr_aws),
     "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
     "https://www.midijs.net/lib/midi.js",
     if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
@@ -152,7 +164,7 @@ include_musicassessr_js <- function(visual_notation = FALSE) {
 }
 
 
-get_musicassessr_state_js_script <- function(musicassessr_aws = FALSE) {
+get_musicassessr_state_js_script <- function(app_script, musicassessr_aws = FALSE) {
 
   if(musicassessr_aws) {
     system.file("www/js/musicassessr_production.js", package = "musicassessr")
@@ -160,9 +172,7 @@ get_musicassessr_state_js_script <- function(musicassessr_aws = FALSE) {
 
     system2(command = "npx", args = "kill-port 3000")
 
-    system2(command = "node",
-            args = system.file('node/app_gen.js', package = 'musicassessr'),
-            wait = FALSE)
+    system2(command = "node", args = app_script, wait = FALSE)
 
     system.file("www/js/musicassessr_test.js", package = "musicassessr")
   }

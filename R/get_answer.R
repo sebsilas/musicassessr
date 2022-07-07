@@ -18,6 +18,8 @@ get_answer_pyin_melodic_production <- function(input,
                                                state,
                                                melconv = FALSE, ...) {
 
+  cat('get_answer_pyin_melodic_production', file = stderr())
+
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
 

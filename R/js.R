@@ -97,9 +97,13 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
   }
 
   app_gen_id <- paste0("app_gen_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+  app_gen_loc <- paste0(system.file("node", package = "musicassessr"), "/", app_gen_id)
 
-  write(create_app_from_template(copy_audio_to_location),
-        file = paste0(system.file("node", package = "musicassessr"), app_gen_id))
+  if(!file.exists(extra_dir_loc)) {
+    write(create_app_from_template(copy_audio_to_location),
+          file = app_gen_loc)
+  }
+
 
   # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
   c(

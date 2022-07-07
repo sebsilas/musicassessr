@@ -128,7 +128,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    paste0("/tmp_files/", extra_js_id)
+    paste0("tmp/", extra_js_id)
   )
 }
 

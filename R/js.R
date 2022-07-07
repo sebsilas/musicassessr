@@ -99,11 +99,15 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     write(js_to_write, file = paste0('tmp/', extra_js_id))
   }
 
+  if(!dir.exists('node')) {
+    R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
+  }
+
   app_id <- paste0("app_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
 
   if(!file.exists(app_id)) {
     write(create_app_from_template(copy_audio_to_location),
-          file = paste0('tmp/', app_id))
+          file = paste0('node/', app_id))
   }
 
 
@@ -156,7 +160,7 @@ get_musicassessr_state_js_script <- function(app_script, musicassessr_aws = FALS
 
     system2(command = "npx", args = "kill-port 3000")
 
-    system2(command = "node", args = app_script, wait = FALSE)
+    system2(command = "node", args = paste0('node/', app_script), wait = FALSE)
 
     system.file("www/js/musicassessr_test.js", package = "musicassessr")
   }

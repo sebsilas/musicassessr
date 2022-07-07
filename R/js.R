@@ -84,6 +84,11 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     R.utils::mkdirs('tmp')
   }
 
+  shiny::addResourcePath(
+    prefix = "tmp_files", # custom prefix that will be used to reference your directory
+    directoryPath = 'tmp'
+  )
+
   if(copy_audio_to_location == "audio") {
     if(!dir.exists('audio')) {
       R.utils::mkdirs('audio')
@@ -104,6 +109,8 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     write(create_app_from_template(copy_audio_to_location),
           file = app_gen_id)
   }
+
+
 
 
   # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional

@@ -88,20 +88,16 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
   js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
   extra_js_id <- paste0("extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
-  # so there can be multiple configs per package
-
-  extra_dir_loc <- paste0(system.file("www/js/", package = "musicassessr"), extra_js_id)
 
   if(!file.exists(extra_dir_loc)) {
-    write(js_to_write, file = extra_dir_loc)
+    write(js_to_write, file = extra_js_id)
   }
 
   app_gen_id <- paste0("app_gen_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
-  app_gen_loc <- paste0(system.file("node", package = "musicassessr"), "/", app_gen_id)
 
   if(!file.exists(extra_dir_loc)) {
     write(create_app_from_template(copy_audio_to_location),
-          file = app_gen_loc)
+          file = app_gen_id)
   }
 
 

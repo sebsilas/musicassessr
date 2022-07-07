@@ -21,6 +21,8 @@ create_app_from_template <- function(dir) {
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(morgan('dev'));
 
+  console.log('heeeeey121');
+
 
   app.post('/upload-audio', async (req, res) => {
     try {

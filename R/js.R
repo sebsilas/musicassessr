@@ -84,13 +84,13 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     copy_audio_to_location <- system.file("node/files/", package = "musicassessr")
   }
 
-  print('musicasd')
-  print('write this...')
-  print(copy_audio_to_location)
 
   js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
 
-  write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), "extra_js.js"))
+  extra_js_id <- paste0("extra_js_", paste0(sample(1:9, 10, replace = TRUE), collapse = ""), ".js")
+  # so there can be multiple configs per package
+
+  write(js_to_write, file = paste0(system.file("www/js/", package = "musicassessr"), extra_js_id))
 
 
   write(create_app_from_template(copy_audio_to_location),
@@ -111,7 +111,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    system.file("www/js/extra_js.js", package = "musicassessr")
+    system.file(paste0("www/js/", extra_js_id), package = "musicassessr")
   )
 }
 

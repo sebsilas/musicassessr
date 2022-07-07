@@ -1,6 +1,6 @@
 
 create_app_from_template <- function(dir) {
-
+  # NB: this ONLY controls a local app
   paste0("const express = require('express');
   const fileUpload = require('express-fileupload');
   const cors = require('cors');
@@ -21,9 +21,6 @@ create_app_from_template <- function(dir) {
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(morgan('dev'));
 
-  console.log('heeeeey121');
-
-
   app.post('/upload-audio', async (req, res) => {
     try {
       if(!req.files) {
@@ -37,18 +34,8 @@ create_app_from_template <- function(dir) {
 
         var move_file_to = \'", dir, "/\'+ file.name+'.wav'
 
-        console.log('move to:');
-        console.log(move_file_to);
-
         //Use the mv() method to place the file in upload directory (i.e. 'uploads')
         file.mv(move_file_to);
-
-        if(musicassessr_state === 'production') { # always keep a copy in /files on the server
-          var move_file_to_aws = '/files/ + file.name+'.wav'
-          console.log('move_file_to_aws');
-          console.log(move_file_to_aws);
-          file.mv(move_file_to_aws);
-        }
 
         //send response
         res.send({
@@ -97,11 +84,6 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
   if(!dir.exists('tmp')) {
     R.utils::mkdirs('tmp')
   }
-
-  shiny::addResourcePath(
-    prefix = "tmp_files", # custom prefix that will be used to reference your directory
-    directoryPath = 'tmp'
-  )
 
   if(copy_audio_to_location == "audio") {
     if(!dir.exists('audio')) {

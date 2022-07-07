@@ -958,7 +958,7 @@ function upload_file_to_s3(blob) {
 	var xhr = new XMLHttpRequest();
 	var filename = new Date().toISOString();
 	var fd = new FormData();
-	fd.append("audio_data",blob, recordkey);
+	fd.append("audio_data", blob, recordkey);
 
 	if(this.musicassessr_state === "production") {
 	  console.log('upload production...');
@@ -966,7 +966,6 @@ function upload_file_to_s3(blob) {
   } else {
     console.log('upload local...');
     xhr.open("POST","http://localhost:3000/upload-audio",true); // local
-
   }
 
 	xhr.send(fd);
@@ -984,37 +983,3 @@ function upload_file_to_s3(blob) {
 		}
 	};
 }
-
-/*
-function upload_file_to_s3_local(blob) {
-
-  console.log('upload_file_to_s3_local');
-
-  var recordkey = create_recordkey();
-
-  //var file_url = "/Users/sebsilas/aws-musicassessr-local-file-upload/files/" + recordkey + ".wav"; // local
-  //console.log(file_url);
-
-	var xhr=new XMLHttpRequest();
-	var filename = new Date().toISOString();
-	var fd=new FormData();
-	fd.append("audio_data",blob, recordkey);
-	xhr.open("POST","http://localhost:3000/upload-audio",true); // local
-	xhr.send(fd);
-
-  Shiny.setInputValue("key", recordkey);
-  //Shiny.setInputValue("file_url", file_url);
-
-	xhr.onload = () => { console.log(xhr.responseText)
-		// call next page after credentials saved
-		spinner = document.getElementsByClassName("hollow-dots-spinner");
-		spinner[0].style.display="none";
-		file_is_ready = true;
-
-		if(auto_next_page) {
-			next_page();
-		}
-	};
-}
-
-*/

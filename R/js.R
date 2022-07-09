@@ -1,4 +1,121 @@
 
+
+#' Include musicassessr scripts in a webpage
+#'
+#' @return
+#' @export
+#'
+#' @examples
+include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE) {
+  htmltools::tagList(
+    lapply(musicassessr::musicassessr_js(visual_notation = visual_notation,
+                                         record_audio = record_audio), function(x) {
+                                           if(base::startsWith(x, "http")) {
+                                             htmltools::tags$script(src = x)
+                                           } else {
+                                             htmltools::includeScript(x)
+                                           }
+                                         })
+  )
+}
+
+
+#' musicassessr scripts
+#'
+#' @param state
+#' @param visual_notation
+#' @param midi_file_playback
+#' @param copy_audio_to_location
+#' @param record_audio
+#'
+#' @return
+#' @export
+#'
+#' @examples
+musicassessr_js <- function(musicassessr_aws = FALSE,
+                            visual_notation = FALSE,
+                            midi_file_playback = FALSE,
+                            copy_audio_to_location = 'audio',
+                            record_audio = TRUE) {
+
+  if(record_audio) {
+    record_audio_names <- record_audio_setup(copy_audio_to_location)
+  } else {
+    record_audio_names <- NULL
+  }
+
+  # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
+  c(
+    if(!is.null(record_audio_names$app_id)) get_musicassessr_state_js_script(record_audio_names$app_id, musicassessr_aws),
+    "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
+    "https://www.midijs.net/lib/midi.js",
+    if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
+    system.file("www/js/modernizr-custom.js", package = "musicassessr"),
+    "https://unpkg.com/tone@13.8.25/build/Tone.js",
+    system.file("www/js/Tonejs-Instruments.js", package = "musicassessr"),
+    if(visual_notation) "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@0.7.6/build/opensheetmusicdisplay.min.js", # only required when with visual notation
+    'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js',
+    system.file("www/spinner/spin.js", package = "musicassessr"),
+    system.file("www/js/musicassessr.js", package = "musicassessr"),
+    "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
+    system.file("www/js/getMIDIin.js", package = "musicassessr"),
+    if(!is.null(record_audio_names$extra_js_id)) paste0("tmp/", record_audio_names$extra_js_id)
+  )
+}
+
+
+
+
+get_musicassessr_state_js_script <- function(app_script, musicassessr_aws = FALSE) {
+
+  if(musicassessr_aws) {
+    system.file("www/js/musicassessr_production.js", package = "musicassessr")
+  } else {
+
+    system2(command = "npx", args = "kill-port 3000")
+
+    system2(command = "node", args = paste0('node/', app_script), wait = FALSE)
+
+    system.file("www/js/musicassessr_test.js", package = "musicassessr")
+  }
+
+}
+
+record_audio_setup <- function(copy_audio_to_location) {
+
+  if(!dir.exists('tmp')) {
+    R.utils::mkdirs('tmp')
+  }
+
+  if(copy_audio_to_location == "audio") {
+    if(!dir.exists('audio')) {
+      R.utils::mkdirs('audio')
+    }
+  }
+
+  js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
+
+  extra_js_id <- paste0("extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+
+  if(!file.exists(extra_js_id)) {
+    write(js_to_write, file = paste0('tmp/', extra_js_id))
+  }
+
+  if(!dir.exists('node')) {
+    R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
+  }
+
+  app_id <- paste0("app_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+
+  if(!file.exists(app_id)) {
+    write(create_app_from_template(copy_audio_to_location),
+          file = paste0('node/', app_id))
+  }
+
+  list(app_id = app_id,
+       extra_js_id = extra_js_id)
+}
+
 create_app_from_template <- function(dir) {
   # NB: this ONLY controls a local app
   paste0("const express = require('express');
@@ -61,110 +178,3 @@ create_app_from_template <- function(dir) {
   );
   ")
 }
-
-
-
-
-#' musicassessr scripts
-#'
-#' @param state
-#' @param visual_notation
-#' @param midi_file_playback
-#' @param copy_audio_to_location
-#'
-#' @return
-#' @export
-#'
-#' @examples
-musicassessr_js <- function(musicassessr_aws = FALSE,
-                            visual_notation = FALSE,
-                            midi_file_playback = FALSE,
-                            copy_audio_to_location = 'audio') {
-
-  if(!dir.exists('tmp')) {
-    R.utils::mkdirs('tmp')
-  }
-
-  if(copy_audio_to_location == "audio") {
-    if(!dir.exists('audio')) {
-      R.utils::mkdirs('audio')
-    }
-  }
-
-  js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
-
-  extra_js_id <- paste0("extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
-
-  if(!file.exists(extra_js_id)) {
-    write(js_to_write, file = paste0('tmp/', extra_js_id))
-  }
-
-  if(!dir.exists('node')) {
-    R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
-  }
-
-  app_id <- paste0("app_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
-
-  if(!file.exists(app_id)) {
-    write(create_app_from_template(copy_audio_to_location),
-          file = paste0('node/', app_id))
-  }
-
-
-
-
-  # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
-  c(
-    get_musicassessr_state_js_script(app_id, musicassessr_aws),
-    "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
-    "https://www.midijs.net/lib/midi.js",
-    if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
-    system.file("www/js/modernizr-custom.js", package = "musicassessr"),
-    "https://unpkg.com/tone@13.8.25/build/Tone.js",
-    system.file("www/js/Tonejs-Instruments.js", package = "musicassessr"),
-    if(visual_notation) "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@0.7.6/build/opensheetmusicdisplay.min.js", # only required when with visual notation
-    'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js',
-    system.file("www/spinner/spin.js", package = "musicassessr"),
-    system.file("www/js/musicassessr.js", package = "musicassessr"),
-    "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
-    system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    paste0("tmp/", extra_js_id)
-  )
-}
-
-
-#' Include musicassessr scripts in a webpage
-#'
-#' @return
-#' @export
-#'
-#' @examples
-include_musicassessr_js <- function(visual_notation = FALSE) {
-  htmltools::tagList(
-    lapply(musicassessr::musicassessr_js(visual_notation = visual_notation), function(x) {
-      if(base::startsWith(x, "http")) {
-        htmltools::tags$script(src = x)
-      } else {
-        htmltools::includeScript(x)
-      }
-    })
-  )
-}
-
-
-get_musicassessr_state_js_script <- function(app_script, musicassessr_aws = FALSE) {
-
-  if(musicassessr_aws) {
-    system.file("www/js/musicassessr_production.js", package = "musicassessr")
-  } else {
-
-    system2(command = "npx", args = "kill-port 3000")
-
-    system2(command = "node", args = paste0('node/', app_script), wait = FALSE)
-
-    system.file("www/js/musicassessr_test.js", package = "musicassessr")
-  }
-
-}
-
-

@@ -21,17 +21,7 @@ get_answer_pyin_melodic_production <- function(input,
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
 
-  print('get_answer_pyin_melodic_production')
-
-  print(pyin_res)
-
-  print(is.na(pyin_res))
-
-  print(is.na(pyin_res$pyin_res))
-
   if(is.na(pyin_res$pyin_res)) {
-
-    print('bobby tro')
 
     return(list(error = TRUE,
                 reason = "there was nothing in the pitch track",
@@ -39,8 +29,6 @@ get_answer_pyin_melodic_production <- function(input,
                 user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating)))
 
   } else {
-
-    print('dala')
 
     res <- concat_mel_prod_results(input,
                                    state,
@@ -157,13 +145,8 @@ get_answer_pyin <- function(input,
   # get file
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  print('before get_pyin')
   # get pyin
   pyin_res <- get_pyin(audio_file, type, state)
-  print('after get_pyin')
-
-  print('pyin_res:')
-  print(pyin_res)
 
   # melconv
   melconv_res <- get_melconv(melconv, pyin_res)
@@ -187,7 +170,6 @@ get_answer_pyin <- function(input,
 #'
 #' @examples
 get_answer_simple_pyin_summary <- function(input, state, ...) {
-  print('get_answer_simple_pyin_summary')
 
   audio_file <- get_audio_file_for_pyin(input, state)
 
@@ -213,9 +195,6 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 
 get_audio_file_for_pyin <- function(input, state, ...) {
-
-  print('get_audio_file_for_pyin')
-  print(input$file_url)
 
   audio_file <- input$file_url
 

@@ -23,7 +23,6 @@ sing_arrhythmic_melody_trials(
   rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
   max_goes = 3L,
   max_goes_forced = FALSE,
-  give_first_melody_note = FALSE,
   show_progress = TRUE,
   show_record_button = FALSE,
   module_name = "sing_arrhythmic_melodies"

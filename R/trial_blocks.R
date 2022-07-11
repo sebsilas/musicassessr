@@ -50,7 +50,6 @@ record_audio_block <- function(no_pages, feedback = NULL, get_answer = musicasse
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
-#' @param give_first_melody_note
 #' @param show_progress
 #' @param show_record_button
 #' @param module_name
@@ -71,7 +70,6 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
                                           rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                           max_goes = 3L,
                                           max_goes_forced = FALSE,
-                                          give_first_melody_note = FALSE,
                                           show_progress = TRUE,
                                           show_record_button = FALSE,
                                           module_name = "sing_arrhythmic_melodies") {
@@ -92,7 +90,6 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
                            rel_to_abs_mel_function,
                            max_goes,
                            max_goes_forced,
-                           give_first_melody_note,
                            display_modality,
                            show_record_button,
                            show_progress,
@@ -121,7 +118,6 @@ sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
-#' @param give_first_melody_note
 #' @param display_modality
 #' @param show_record_button
 #' @param show_progress
@@ -147,7 +143,6 @@ sing_rhythmic_melody_trials <- function(item_bank,
                                         rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                         max_goes = 3L,
                                         max_goes_forced = FALSE,
-                                        give_first_melody_note = FALSE,
                                         display_modality = "auditory",
                                         show_record_button = FALSE,
                                         show_progress = TRUE,
@@ -169,13 +164,14 @@ sing_rhythmic_melody_trials <- function(item_bank,
                          rel_to_abs_mel_function,
                          max_goes,
                          max_goes_forced,
-                         give_first_melody_note,
                          display_modality,
                          show_record_button,
                          show_progress,
                          module_name)
 
 }
+
+
 
 
 
@@ -197,11 +193,14 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
-#' @param give_first_melody_note
 #' @param display_modality
 #' @param show_record_button
 #' @param show_progress
 #' @param module_name
+#' @param start_hidden
+#' @param sound_only_first_melody_note
+#' @param show_sheet_music
+#' @param sheet_music_id
 #'
 #' @return
 #' @export
@@ -219,11 +218,14 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                      rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                      max_goes = 3L,
                                      max_goes_forced = FALSE,
-                                     give_first_melody_note = FALSE,
                                      display_modality = "auditory",
                                      show_record_button = FALSE,
                                      show_progress = TRUE,
-                                     module_name = "arrhythmic_melodies") {
+                                     module_name = "arrhythmic_melodies",
+                                     start_hidden = FALSE,
+                                     sound_only_first_melody_note = FALSE,
+                                     show_sheet_music = FALSE,
+                                     sheet_music_id = 'sheet_music') {
 
 
   if(num_items == 0) {
@@ -273,11 +275,14 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                get_trial_characteristics_function = get_trial_characteristics_function,
                                max_goes_forced = max_goes_forced,
                                max_goes = max_goes,
-                               give_first_melody_note = give_first_melody_note,
                                item_bank = item_bank,
                                display_modality = display_modality,
                                show_record_button = show_record_button,
-                               show_progress = show_progress),
+                               show_progress = show_progress,
+                               start_hidden = start_hidden,
+                               sound_only_first_melody_note = sound_only_first_melody_note,
+                               show_sheet_music = show_sheet_music,
+                               sheet_music_id = sheet_music_id),
                              ## sample
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -305,15 +310,19 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            get_trial_characteristics_function = get_trial_characteristics_function,
                            max_goes_forced = max_goes_forced,
                            max_goes = max_goes,
-                           give_first_melody_note = give_first_melody_note,
                            item_bank = item_bank,
                            display_modality = display_modality,
                            show_record_button = show_record_button,
-                           show_progress = show_progress)
+                           show_progress = show_progress,
+                           start_hidden = start_hidden,
+                           sound_only_first_melody_note = sound_only_first_melody_note,
+                           show_sheet_music = show_sheet_music,
+                           sheet_music_id = sheet_music_id)
                        )
     )
   }
 }
+
 
 
 
@@ -339,11 +348,14 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
-#' @param give_first_melody_note
 #' @param display_modality
 #' @param show_record_button
 #' @param show_progress
 #' @param module_name
+#' @param start_hidden
+#' @param sound_only_first_melody_note
+#' @param show_sheet_music
+#' @param sheet_music_id
 #'
 #' @return
 #' @export
@@ -365,11 +377,14 @@ rhythmic_melody_trials <- function(item_bank,
                                    rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
                                    max_goes = 3L,
                                    max_goes_forced = FALSE,
-                                   give_first_melody_note = FALSE,
                                    display_modality = "auditory",
                                    show_record_button = FALSE,
                                    show_progress = TRUE,
-                                   module_name = "rhythmic_melodies") {
+                                   module_name = "rhythmic_melodies",
+                                   start_hidden = FALSE,
+                                   sound_only_first_melody_note = FALSE,
+                                   show_sheet_music = FALSE,
+                                   sheet_music_id = 'sheet_music') {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -418,11 +433,14 @@ rhythmic_melody_trials <- function(item_bank,
                                get_trial_characteristics_function = get_trial_characteristics_function,
                                max_goes_forced = max_goes_forced,
                                max_goes = max_goes,
-                               give_first_melody_note = give_first_melody_note,
                                item_bank = item_bank,
                                display_modality = display_modality,
                                show_record_button = show_record_button,
-                               show_progress = show_progress),
+                               show_progress = show_progress,
+                               start_hidden = start_hidden,
+                               sound_only_first_melody_note = sound_only_first_melody_note,
+                               show_sheet_music = show_sheet_music,
+                               sheet_music_id = sheet_music_id),
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p("Now you're ready for the real thing!")))
@@ -451,11 +469,14 @@ rhythmic_melody_trials <- function(item_bank,
                            get_trial_characteristics_function = get_trial_characteristics_function,
                            max_goes_forced = max_goes_forced,
                            max_goes = max_goes,
-                           give_first_melody_note = give_first_melody_note,
                            item_bank = item_bank,
                            display_modality = display_modality,
                            show_record_button = show_record_button,
-                           show_progress = show_progress)
+                           show_progress = show_progress,
+                           start_hidden = start_hidden,
+                           sound_only_first_melody_note = sound_only_first_melody_note,
+                           show_sheet_music = show_sheet_music,
+                           sheet_music_id = sheet_music_id)
                        )
     )
   }

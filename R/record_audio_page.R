@@ -1,8 +1,4 @@
 
-
-
-
-
 #' Page to record audio in psychTestR
 #'
 #' @param body
@@ -97,8 +93,8 @@ record_audio_page <- function(body = " ",
 deploy_aws_pyin <- function(show_aws_controls = TRUE, stop_button_text = "Stop") {
 
   # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
-  shiny::tags$div(htmltools::HTML(
-  '<div id="spinnerContainer" class="spinner"></div>
+  shiny::tags$div(
+    htmltools::HTML('<div id="spinnerContainer" class="spinner"></div>
 
   <div id="controls">
 
@@ -108,7 +104,8 @@ deploy_aws_pyin <- function(show_aws_controls = TRUE, stop_button_text = "Stop")
   <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
   <p style="display: none;"><strong>Recordings:</strong></p>
   <ol id="recordingsList" style="display: none;"></ol>
-      <div id="csv_file" style="display: none;"></div>'), show_aws_buttons(show_aws_controls))
+      <div id="csv_file" style="display: none;"></div>'),
+  show_aws_buttons(show_aws_controls))
 }
 
 
@@ -117,8 +114,7 @@ show_aws_buttons <- function(show_aws_controls) {
     aws_controls <- shiny::tags$script('')
   } else {
     aws_controls <- shiny::tags$script('var controls = document.getElementById("controls");
-                                controls.style.visibility = \'hidden\'; // start hidden
-                                console.log("hide controls");')
+                                controls.style.visibility = \'hidden\'; // start hidden')
   }
   aws_controls
 }

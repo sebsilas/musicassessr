@@ -41,7 +41,6 @@ present_stimuli(
   hideOnPlay = FALSE,
   record_immediately = FALSE,
   max_goes_forced = FALSE,
-  give_first_melody_note = FALSE,
   transpose_first_melody_note = 0,
   clef = "auto",
   volume = 1,
@@ -50,6 +49,10 @@ present_stimuli(
   melody_no = 0,
   total_no_melodies = 0,
   show_progress = FALSE,
+  start_hidden = FALSE,
+  sound_only_first_melody_note = FALSE,
+  show_sheet_music = FALSE,
+  sheet_music_id = "sheet_music",
   ...
 )
 }

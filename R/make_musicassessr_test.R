@@ -12,6 +12,7 @@
 #' @param languages Languages for the test.
 #' @param additional_dict Additional dictionary for the test.
 #' @param musicassessr_opt Musicassessr options.
+#' @param visual_notation Will there be visual notation?
 #' @param ...
 #'
 #' @return
@@ -25,7 +26,8 @@ make_musicassessr_test <- function(musicassessr_aws = FALSE,
                                    setup_pages_options = musicassessr::setup_pages_options,
                                    title, admin_password, languages = "en",
                                    additional_dict = NULL,
-                                   musicassessr_opt = musicassessr::musicassessr_opt(), ...) {
+                                   musicassessr_opt = musicassessr::musicassessr_opt(),
+                                   visual_notation = FALSE, ...) {
 
   stopifnot(
     is.logical(musicassessr_aws),
@@ -51,7 +53,7 @@ make_musicassessr_test <- function(musicassessr_aws = FALSE,
       title = title,
       admin_password = admin_password,
       languages = languages,
-      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws),
+      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws, visual_notation = visual_notation),
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,

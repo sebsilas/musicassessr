@@ -12,14 +12,14 @@ present_stimuli_midi_notes_visual(
   id = "sheet_music",
   present_div = TRUE,
   clef = "auto",
-  give_first_melody_note = FALSE,
   transpose_first_melody_note = 0,
   show_first_melody_note_visual = FALSE,
-  audio_play_button_id = "playButton"
+  audio_play_button_id = "playButton",
+  start_hidden = FALSE
 )
 }
 \arguments{
-\item{audio_play_button_id}{}
+\item{start_hidden}{}
 }
 \value{
 

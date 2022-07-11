@@ -229,7 +229,10 @@ function playTones (note_list) {
 }
 
 
-function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound) {
+function playSingleNote(note_list, dur_list, hidePlay, id,
+                        page_type, stop_button_text, sound,
+                        show_sheet_music, sheet_music_id) {
+
 
   if(hidePlay) {
     hidePlayButton(id);
@@ -243,12 +246,15 @@ function playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_butto
 
   //auto_next_page = true;
   triggerNote(sound, freq_list, dur_list);
-  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, dur_list*1000);
+  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, dur_list*1000);
 
 }
 
 
-function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
+function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id) {
+
+  console.log('playSeqArrhythmic');
+  console.log(show_sheet_music);
 
   if(hidePlay) {
     hidePlayButton(id);
@@ -259,7 +265,7 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
         count = count + 1;
         if (count === last_note) {
           if(page_type === "record_audio_page" | page_type === "record_midi_page") {
-            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, 0.50); // delay to avoid catching stimuli in recording
+            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, 0.50); // delay to avoid catching stimuli in recording
           }
           pattern.stop();
           Tone.Transport.stop();
@@ -268,7 +274,9 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
       }, freq_list);
 }
 
-function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text) {
+function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type,
+                          hidePlay, id, stop_button_text, show_sheet_music = false,
+                          sheet_music_id = 'sheet_music') {
 
   if(hidePlay) {
     hidePlayButton(id);
@@ -287,7 +295,7 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
               count = count + 1;
                 if (count === last_note) {
                   if(page_type !== 'null') {
-                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text); }, value.duration*1000);
+                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, value.duration*1000);
                   }
 
                   pattern.stop();
@@ -299,12 +307,13 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
 }
 
 
-function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop", dur_list = null, auto_next_page) {
+function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop",
+                  dur_list = null, auto_next_page,
+                  show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
   console.log('playSeq');
-  console.log(note_list);
-  console.log('auto_next_page...');
-  console.log(auto_next_page);
+  console.log(show_sheet_music);
+
 
   if(hidePlay) {
     hidePlayButton(id);
@@ -326,7 +335,9 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
   // seems to be a bug with the piano sound where it plays an octave higher
 
   if(typeof note_list === 'number') {
-      playSingleNote(note_list, dur_list, hidePlay, id, page_type, stop_button_text, sound)
+      playSingleNote(note_list, dur_list, hidePlay, id,
+                    page_type, stop_button_text, sound,
+                    show_sheet_music, sheet_music_id)
   } else {
 
     if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
@@ -338,9 +349,11 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
     var count = 0;
 
     if(dur_list === null) {
-      playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text);
+      playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id,
+                        stop_button_text, show_sheet_music, sheet_music_id);
     } else {
-      playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text);
+      playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type,
+                      hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id);
     }
   }
 
@@ -604,7 +617,13 @@ function hideAudioFilePlayer() {
 }
 
 
-function recordAndStop (ms, showStop, hidePlay, id = null, type = "record_audio_page", stop_button_text = "Stop") {
+function recordAndStop(ms, showStop, hidePlay, id = null,
+                        type = "record_audio_page", stop_button_text = "Stop",
+                        show_sheet_music = false, sheet_music_id = 'sheet_music') {
+
+  console.log('recordAndStop');
+  console.log(show_sheet_music);
+  console.log(type);
 
   if(hidePlay) {
     hidePlayButton(id);
@@ -626,29 +645,44 @@ function recordAndStop (ms, showStop, hidePlay, id = null, type = "record_audio_
   }, record_delay);
 
   if (ms === null) {
-    console.log('ms null');
-    recordUpdateUI(showStop, hidePlay, type);
+    recordUpdateUI(showStop, hidePlay, type, stop_button_text, show_sheet_music, sheet_music_id);
   } else {
-    recordUpdateUI(showStop, hidePlay, type, stop_button_text);
+    recordUpdateUI(showStop, hidePlay, type, stop_button_text, show_sheet_music, sheet_music_id);
     setTimeout(() => { stopRecording();
     hideRecordImage(); }, ms);
   }
 
 }
 
-function recordUpdateUI(showStop, hidePlay, type = "record_audio_page", stop_button_text = "Stop") {
+function recordUpdateUI(showStop, hidePlay, type = "record_audio_page",
+                        stop_button_text = "Stop", show_sheet_music = false,
+                        sheet_music_id = 'sheet_music') {
+
 
     if(['record_audio_page', 'record_midi_page'].includes(type)) {
       // update the recording UI
       showRecordingIcon();
 
       if (showStop) {
-        showStopButton(type, stop_button_text);
+        showStopButton(type, stop_button_text, show_sheet_music);
+      }
+
+      if(show_sheet_music) {
+        showSheetMusic(sheet_music_id);
       }
     }
 
 }
 
+function showSheetMusic(sheet_music_id) {
+  var sm = document.getElementById(sheet_music_id);
+  sm.style.visibility = "visible";
+}
+
+function hideSheetMusic(sheet_music_id) {
+  var sm = document.getElementById(sheet_music_id);
+  sm.style.visibility = "hidden";
+}
 
 
 function hideLoading() {
@@ -658,7 +692,7 @@ function hideLoading() {
   }
 }
 
-function createCorrectStopButton(type) {
+function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
 
   stopButton.disabled = false;
   stopButton.style.visibility = 'visible';
@@ -666,6 +700,10 @@ function createCorrectStopButton(type) {
   stopButton.onclick = function () {
     if(show_happy_with_response) {
       show_happy_with_response_message();
+    }
+    if(show_sheet_music) {
+      // because we are hiding *after* stopping i.e., after it has already been shown
+      hideSheetMusic(sheet_music_id);
     }
     if(type === "record_audio_page") {
       stopRecording();
@@ -682,7 +720,7 @@ function createCorrectStopButton(type) {
   };
 }
 
-function showStopButton(type = 'record_audio_page', stop_button_text = "Stop") {
+function showStopButton(type = 'record_audio_page', stop_button_text = "Stop", show_sheet_music = false) {
 
   if(type === "record_audio_page") {
     startRecording(updateUI = false);
@@ -691,7 +729,7 @@ function showStopButton(type = 'record_audio_page', stop_button_text = "Stop") {
   var stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
-    createCorrectStopButton(type);
+    createCorrectStopButton(type, show_sheet_music);
   }
 
 }

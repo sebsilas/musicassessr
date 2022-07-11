@@ -30,15 +30,18 @@ play_melody_loop(
   sound = "piano",
   reactive_stimuli = NULL,
   get_trial_characteristics_function = NULL,
-  give_first_melody_note = FALSE,
   display_modality = "auditory",
   show_record_button = FALSE,
   total_no_melodies = 0,
-  show_progress = FALSE
+  show_progress = FALSE,
+  start_hidden = FALSE,
+  sound_only_first_melody_note = FALSE,
+  show_sheet_music = FALSE,
+  sheet_music_id = "sheet_music"
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{sheet_music_id}{}
 }
 \value{
 

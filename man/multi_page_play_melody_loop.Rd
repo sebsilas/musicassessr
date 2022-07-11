@@ -25,14 +25,17 @@ multi_page_play_melody_loop(
   sound = "piano",
   get_trial_characteristics_function = NULL,
   max_goes_forced = FALSE,
-  give_first_melody_note = FALSE,
   display_modality = "auditory",
   show_record_button = FALSE,
-  show_progress = TRUE
+  show_progress = TRUE,
+  start_hidden = FALSE,
+  sound_only_first_melody_note = FALSE,
+  show_sheet_music = FALSE,
+  sheet_music_id = "sheet_music"
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{sheet_music_id}{}
 }
 \value{
 

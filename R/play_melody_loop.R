@@ -21,10 +21,13 @@
 #' @param sound
 #' @param get_trial_characteristics_function
 #' @param max_goes_forced
-#' @param give_first_melody_note
 #' @param display_modality
 #' @param show_record_button
 #' @param show_progress
+#' @param start_hidden
+#' @param sound_only_first_melody_note
+#' @param show_sheet_music
+#' @param sheet_music_id
 #'
 #' @return
 #' @export
@@ -48,10 +51,14 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         feedback = FALSE,
                                         sound = "piano",
                                         get_trial_characteristics_function = NULL,
-                                        max_goes_forced = FALSE, give_first_melody_note = FALSE,
+                                        max_goes_forced = FALSE,
                                         display_modality = "auditory",
                                         show_record_button = FALSE,
-                                        show_progress = TRUE) {
+                                        show_progress = TRUE,
+                                        start_hidden = FALSE,
+                                        sound_only_first_melody_note = FALSE,
+                                        show_sheet_music = FALSE,
+                                        sheet_music_id = 'sheet_music') {
 
   if(is.null(presampled_items)) {
     # items should be a dataframe
@@ -72,12 +79,15 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                        sound = sound,
                        get_trial_characteristics_function = get_trial_characteristics_function,
                        max_goes_forced = max_goes_forced,
-                       give_first_melody_note = give_first_melody_note,
                        item_bank = item_bank,
                        display_modality = display_modality,
                        show_record_button = show_record_button,
                        total_no_melodies = n_items,
-                       show_progress = show_progress)
+                       show_progress = show_progress,
+                       start_hidden = start_hidden,
+                       sound_only_first_melody_note = sound_only_first_melody_note,
+                       show_sheet_music = show_sheet_music,
+                       sheet_music_id = sheet_music_id)
       })
 
       items
@@ -100,10 +110,13 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                          example = example,
                          sound = sound,
                          max_goes_forced = max_goes_forced,
-                         give_first_melody_note = give_first_melody_note,
                          item_bank = item_bank,
                          display_modality = display_modality,
-                         show_record_button = show_record_button)   })
+                         show_record_button = show_record_button,
+                         start_hidden = start_hidden,
+                         sound_only_first_melody_note = sound_only_first_melody_note,
+                         show_sheet_music = show_sheet_music,
+                         sheet_music_id = sheet_music_id)   })
 
     }
 
@@ -145,11 +158,14 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 #' @param sound
 #' @param reactive_stimuli
 #' @param get_trial_characteristics_function
-#' @param give_first_melody_note
 #' @param display_modality
 #' @param show_record_button
 #' @param total_no_melodies
 #' @param show_progress
+#' @param start_hidden
+#' @param sound_only_first_melody_note
+#' @param show_sheet_music
+#' @param sheet_music_id
 #'
 #' @return
 #' @export
@@ -163,8 +179,11 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = 0, var
                              rel_to_abs_mel_function = NULL, clip_stimuli_length = FALSE,
                              start_note = 1L, end_note = "end", durations = 'null', arrhythmic = FALSE, note_length = 0.5,
                              play_button_text = psychTestR::i18n("Play"), example = FALSE, sound = "piano",
-                             reactive_stimuli = NULL, get_trial_characteristics_function = NULL, give_first_melody_note = FALSE,
-                             display_modality = "auditory", show_record_button = FALSE, total_no_melodies = 0, show_progress = FALSE) {
+                             reactive_stimuli = NULL, get_trial_characteristics_function = NULL,
+                             display_modality = "auditory", show_record_button = FALSE, total_no_melodies = 0, show_progress = FALSE,
+                             start_hidden = FALSE, sound_only_first_melody_note = FALSE,
+                             show_sheet_music = FALSE,
+                             sheet_music_id = 'sheet_music') {
 
 
   save_answer <- example_save(example)
@@ -213,10 +232,13 @@ play_melody_loop <- function(item_bank = NULL, melody = NULL, melody_no = 0, var
                      reactive_stimuli = reactive_stimuli,
                      rel_to_abs_mel_function = rel_to_abs_mel_function,
                      max_goes_forced = max_goes_forced,
-                     give_first_melody_note = give_first_melody_note,
                      show_record_button = show_record_button,
                      total_no_melodies = total_no_melodies,
-                     show_progress = show_progress),
+                     show_progress = show_progress,
+                     start_hidden = start_hidden,
+                     sound_only_first_melody_note = sound_only_first_melody_note,
+                     show_sheet_music = show_sheet_music,
+                     sheet_music_id = sheet_music_id),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -230,8 +252,11 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                            page_type, answer_meta_data = data.frame(), get_answer,
                            save_answer, page_label, button_text, play_button_text, start_note = 1L,
                            end_note, durations, state, melody_no, var_name, sound = "piano",
-                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE, give_first_melody_note = FALSE,
-                           show_record_button = FALSE, show_progress = TRUE, total_no_melodies = 0, ...) {
+                           reactive_stimuli = NULL, rel_to_abs_mel_function = NULL, hideOnPlay = FALSE,
+                           show_record_button = FALSE, show_progress = TRUE, total_no_melodies = 0,
+                           start_hidden = FALSE, sound_only_first_melody_note = FALSE,
+                           show_sheet_music = FALSE,
+                           sheet_music_id = 'sheet_music', ...) {
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
     # then this presumes that the melody was transposed at test time, and therefore, should be grabbed
@@ -283,13 +308,16 @@ present_melody <- function(stimuli, stimuli_type, display_modality, page_title, 
                     hideOnPlay = hideOnPlay,
                     max_goes = max_goes,
                     max_goes_forced = max_goes_forced,
-                    give_first_melody_note = give_first_melody_note,
                     transpose_first_melody_note = transpose_first_melody_note,
                     clef = clef,
                     show_record_button = show_record_button,
                     melody_no = melody_no,
                     show_progress = show_progress,
-                    total_no_melodies = total_no_melodies)
+                    total_no_melodies = total_no_melodies,
+                    start_hidden = start_hidden,
+                    sound_only_first_melody_note = sound_only_first_melody_note,
+                    show_sheet_music = show_sheet_music,
+                    sheet_music_id = sheet_music_id)
 
   })
 }

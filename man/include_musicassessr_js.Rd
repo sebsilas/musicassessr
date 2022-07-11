@@ -4,7 +4,7 @@
 \alias{include_musicassessr_js}
 \title{Include musicassessr scripts in a webpage}
 \usage{
-include_musicassessr_js(visual_notation = FALSE)
+include_musicassessr_js(visual_notation = FALSE, record_audio = TRUE)
 }
 \value{
 

@@ -156,7 +156,7 @@ function parse_midi_notes_open_display(midi_notes) {
 
 function open_music_display_wrapper(xml) {
 
-  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("sheet-music", { drawingParameters: "compact",
+  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("sheet_music", { drawingParameters: "compact",
   drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false });
 
   var loadPromise = osmd.load(xml);

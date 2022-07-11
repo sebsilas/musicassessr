@@ -8,11 +8,12 @@ musicassessr_js(
   musicassessr_aws = FALSE,
   visual_notation = FALSE,
   midi_file_playback = FALSE,
-  copy_audio_to_location = "audio"
+  copy_audio_to_location = "audio",
+  record_audio = TRUE
 )
 }
 \arguments{
-\item{copy_audio_to_location}{}
+\item{record_audio}{}
 }
 \value{
 

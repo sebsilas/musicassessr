@@ -9,11 +9,12 @@ musicassessr_js(
   visual_notation = FALSE,
   midi_file_playback = FALSE,
   copy_audio_to_location = "audio",
-  record_audio = TRUE
+  record_audio = TRUE,
+  app_name = character()
 )
 }
 \arguments{
-\item{record_audio}{}
+\item{app_name}{}
 }
 \value{
 

@@ -27,6 +27,7 @@ include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE
 #' @param midi_file_playback
 #' @param copy_audio_to_location
 #' @param record_audio
+#' @param app_name
 #'
 #' @return
 #' @export
@@ -36,10 +37,11 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE,
                             copy_audio_to_location = 'audio',
-                            record_audio = TRUE) {
+                            record_audio = TRUE,
+                            app_name = character()) {
 
   if(record_audio) {
-    record_audio_names <- record_audio_setup(copy_audio_to_location)
+    record_audio_names <- record_audio_setup(copy_audio_to_location, app_name)
   } else {
     record_audio_names <- NULL
   }
@@ -81,7 +83,7 @@ get_musicassessr_state_js_script <- function(app_script, musicassessr_aws = FALS
 
 }
 
-record_audio_setup <- function(copy_audio_to_location) {
+record_audio_setup <- function(copy_audio_to_location, app_name) {
 
   if(!dir.exists('tmp')) {
     R.utils::mkdirs('tmp')
@@ -93,7 +95,9 @@ record_audio_setup <- function(copy_audio_to_location) {
     }
   }
 
-  js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";')
+  js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";
+                        const shiny_app_name = \"', app_name, '\";
+                        ')
 
   extra_js_id <- paste0("extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
 

@@ -401,14 +401,8 @@ grab_sampled_melody <- function(item_bank = NULL, melody_row, var_name, stimuli_
 
   if(melody_no > 1) {
     previous_melody <- psychTestR::get_global("previous_melody", state)
-    print('previous_melody')
-    print(previous_melody)
     if(arrhythmic) {
-      print('abs_melody..')
-      print(abs_melody)
       similarity_to_previous_melody <- ngrukkon(previous_melody, abs_melody)
-      print('arrhythmic similarity_to_previous_melody')
-      print(similarity_to_previous_melody)
     } else {
 
       previous_durations <- psychTestR::get_global("previous_durations", state)
@@ -428,13 +422,8 @@ grab_sampled_melody <- function(item_bank = NULL, melody_row, var_name, stimuli_
 
 
       similarity_to_previous_melody <- opti3_df(previous_df, current_df)$opti3
-
-      print('rhythmic similarity')
-      print(previous_durations)
-      print(similarity_to_previous_melody)
     }
   } else {
-    print('no previous melody..')
     similarity_to_previous_melody <- NA
   }
 

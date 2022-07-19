@@ -90,8 +90,13 @@ record_audio_setup <- function(copy_audio_to_location, app_name) {
   }
 
   if(copy_audio_to_location == "audio") {
-    if(!dir.exists('audio')) {
-      R.utils::mkdirs('audio')
+
+    if(!dir.exists('www')) {
+      R.utils::mkdirs('www')
+    }
+
+    if(!dir.exists('www/audio')) {
+      R.utils::mkdirs('www/audio')
     }
   }
 

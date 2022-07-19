@@ -158,11 +158,6 @@ create_app_from_template <- function(dir) {
         //Use the name of the input field (i.e. 'avatar') to retrieve the uploaded file
         let file = req.files.audio_data;
 
-        var move_file_to = \'", dir, "/\'+ file.name+'.wav'
-
-        //Use the mv() method to place the file in upload directory (i.e. 'uploads')
-        file.mv(move_file_to);
-
         //send response
         res.send({
           status: true,

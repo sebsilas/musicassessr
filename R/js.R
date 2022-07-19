@@ -41,7 +41,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
                             app_name = character()) {
 
   if(record_audio) {
-    record_audio_names <- record_audio_setup(copy_audio_to_location, app_name)
+    record_audio_names <- record_audio_setup(copy_audio_to_location, app_name, musicassessr_aws)
   } else {
     record_audio_names <- NULL
   }
@@ -83,7 +83,7 @@ get_musicassessr_state_js_script <- function(app_script, musicassessr_aws = FALS
 
 }
 
-record_audio_setup <- function(copy_audio_to_location, app_name) {
+record_audio_setup <- function(copy_audio_to_location, app_name, musicassessr_aws) {
 
   if(!dir.exists('tmp')) {
     R.utils::mkdirs('tmp')
@@ -100,9 +100,27 @@ record_audio_setup <- function(copy_audio_to_location, app_name) {
     }
   }
 
-  js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";
+  if(musicassessr_aws) {
+    js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";
                         const shiny_app_name = \"', app_name, '\";
                         ')
+    app_id <- app_name
+  } else {
+    js_to_write <- paste0('const shiny_app_name = \"', app_name, '\";')
+
+    if(!dir.exists('node')) {
+      R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
+    }
+
+    app_id <- paste0("app_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
+
+    if(!file.exists(app_id)) {
+      write(create_app_from_template(copy_audio_to_location),
+            file = paste0('node/', app_id))
+    }
+  }
+
+
 
   extra_js_id <- paste0("extra_js_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
 
@@ -110,16 +128,6 @@ record_audio_setup <- function(copy_audio_to_location, app_name) {
     write(js_to_write, file = paste0('tmp/', extra_js_id))
   }
 
-  if(!dir.exists('node')) {
-    R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
-  }
-
-  app_id <- paste0("app_", stringr::str_replace_all(copy_audio_to_location, "/", "_"), ".js")
-
-  if(!file.exists(app_id)) {
-    write(create_app_from_template(copy_audio_to_location),
-          file = paste0('node/', app_id))
-  }
 
   list(app_id = app_id,
        extra_js_id = extra_js_id)
@@ -157,6 +165,11 @@ create_app_from_template <- function(dir) {
       } else {
         //Use the name of the input field (i.e. 'avatar') to retrieve the uploaded file
         let file = req.files.audio_data;
+
+        var move_file_to = \'", dir, "/\'+ file.name+'.wav'
+
+        //Use the mv() method to place the file in upload directory (i.e. 'uploads')
+        file.mv(move_file_to);
 
         //send response
         res.send({

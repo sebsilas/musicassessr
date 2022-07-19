@@ -999,10 +999,11 @@ function upload_file_to_s3(blob) {
 	var filename = new Date().toISOString();
 	var fd = new FormData();
 	fd.append("audio_data", blob, recordkey);
+	fd.append("app_name", shiny_app_name);
 
 	if(this.musicassessr_state === "production") {
 	  console.log('upload production...');
-	  xhr.open("POST","/api/store_audio/" + shiny_app_name,true); // production
+	  xhr.open("POST","/api/store_audio/",true); // production
   } else {
     console.log('upload local...');
     xhr.open("POST","http://localhost:3000/upload-audio",true); // local

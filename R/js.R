@@ -101,12 +101,12 @@ record_audio_setup <- function(copy_audio_to_location, app_name, musicassessr_aw
   }
 
   if(musicassessr_aws) {
+    js_to_write <- paste0('const shiny_app_name = \"', app_name, '\";')
+    app_id <- app_name
+  } else {
     js_to_write <- paste0('const node_file_location = \"', copy_audio_to_location, '\";
                         const shiny_app_name = \"', app_name, '\";
                         ')
-    app_id <- app_name
-  } else {
-    js_to_write <- paste0('const shiny_app_name = \"', app_name, '\";')
 
     if(!dir.exists('node')) {
       R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')

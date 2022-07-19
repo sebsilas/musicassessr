@@ -13,7 +13,6 @@ present_stimuli_midi_notes_visual(
   present_div = TRUE,
   clef = "auto",
   transpose_first_melody_note = 0,
-  show_first_melody_note_visual = FALSE,
   audio_play_button_id = "playButton",
   start_hidden = FALSE
 )

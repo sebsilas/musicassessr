@@ -18,7 +18,8 @@ present_stimuli_midi_notes_both(
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
-  page_type = "null"
+  page_type = "null",
+  durations = NULL
 )
 }
 \arguments{

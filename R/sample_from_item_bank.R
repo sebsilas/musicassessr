@@ -44,7 +44,11 @@ item_sampler <- function(item_bank, no_items, replace = FALSE) {
 
 sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
   psychTestR::code_block(function(state, ...) {
+    print('sample_item_characteristics code')
+    print(item_characteristics_pars)
+    print(var_name)
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
+    print(item_chars)
     psychTestR::set_global(var_name, item_chars, state)
   })
 }

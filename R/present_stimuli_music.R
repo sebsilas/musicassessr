@@ -11,10 +11,9 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 play_button_id = "playButton", button_area_id = "button_area",
                                                 record_immediately = FALSE, transpose_first_melody_note = 0,
                                                 clef = "auto", sound_only_first_melody_note = FALSE,
-                                                show_sheet_music = FALSE, sheet_music_id = 'sheet_music', ...) {
+                                                show_sheet_music = FALSE, sheet_music_id = 'sheet_music',
+                                                give_first_melody_note = FALSE, ...) {
 
-  print('present_stimuli_midi_notes_auditory')
-  print(show_sheet_music)
 
   durations <- sort_durations(durations, note_length, stimuli)
   auto_next_page <- TRUE_to_js_true(auto_next_page)
@@ -35,6 +34,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
   }
 
   shiny::tags$div(
+    # should first note be shown?
+    show_first_melody_note(give_first_melody_note, stimuli, transpose_first_melody_note, clef = clef),
     set_melodic_stimuli(stimuli, durations),
     shiny::tags$div(id = button_area_id,
                     shiny::tags$button(play_button_text, id = play_button_id, onclick=js.script, class="btn btn-default")),
@@ -141,7 +142,9 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = 
   shiny::tags$div(return_stimuli_auditory, return_stimuli_visual)
 }
 
-present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
+present_stimuli_midi_notes <- function(stimuli,
+                                       display_modality,
+                                       note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
                                        durations = NULL, auto_next_page = FALSE,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                        button_area_id = "button_area", record_immediately = FALSE,
@@ -150,7 +153,8 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
                                        show_sheet_music = FALSE,
                                        sheet_music_id = 'sheet_music',
                                        page_type = 'null',
-                                       clef = 'auto', ...) {
+                                       clef = 'auto',
+                                       give_first_melody_note = FALSE, ...) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
@@ -159,7 +163,9 @@ present_stimuli_midi_notes <- function(stimuli, display_modality, note_length, s
                                                           auto_next_page = auto_next_page, play_button_id = play_button_id,
                                                           button_area_id = button_area_id, record_immediately = record_immediately,
                                                           transpose_first_melody_note = transpose_first_melody_note,
-                                                          sound_only_first_melody_note = sound_only_first_melody_note, ...)
+                                                          sound_only_first_melody_note = sound_only_first_melody_note,
+                                                          page_type = page_type,
+                                                          give_first_melody_note = give_first_melody_note, ...)
 
   } else if (display_modality == "visual") {
     return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
@@ -324,7 +330,9 @@ present_stimuli_music_xml_file <- function(stimuli,
 
   if(display_modality == "visual") {
     shiny::tags$div(
-      if(is.numeric(sound_only_first_melody_note)) present_stimuli_midi_notes_auditory(sound_only_first_melody_note, show_sheet_music = show_sheet_music, page_type = page_type),
+      if(is.numeric(sound_only_first_melody_note)) present_stimuli_midi_notes_auditory(sound_only_first_melody_note,
+                                                                                       show_sheet_music = show_sheet_music,
+                                                                                       page_type = page_type),
       open.music.display.wrapper(stimuli, start_hidden = start_hidden)
     )
   } else {
@@ -783,6 +791,19 @@ sort_durations <- function(durations, note_length, stimuli) {
   durations
 }
 
+show_first_melody_note <- function(give_first_melody_note, stimuli, transpose_first_melody_note = 0,
+                                   clef = "auto", show_first_melody_note_visual = FALSE, audio_play_button_id = "firstMelodyPlay") {
+  if(give_first_melody_note) {
+    shiny::tags$div(
+      shiny::tags$p(psychTestR::i18n("first_note_is")),
+      if(transpose_first_melody_note != 0) shiny::tags$p(psychTestR::i18n("transposed")),
+      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(stimuli[1] + transpose_first_melody_note, clef = clef, id = "firstMelodyNoteVisual"),
+      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = psychTestR::i18n("play_first_note"), play_button_id = audio_play_button_id, auto_next_page = FALSE)
+    )
+  } else {
+    return(" ")
+  }
+}
 
 
 # <accidental>natural</accidental>

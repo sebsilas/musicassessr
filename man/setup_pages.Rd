@@ -21,7 +21,8 @@ setup_pages(
   microphone_test = TRUE,
   allow_repeat_SNR_tests = TRUE,
   report_SNR = FALSE,
-  concise_wording = FALSE
+  concise_wording = FALSE,
+  skip_setup = FALSE
 )
 }
 \arguments{
@@ -56,6 +57,8 @@ setup_pages(
 \item{report_SNR}{Should the SNR be reported to the user.}
 
 \item{concise_wording}{Whether the wording should be concise or not.}
+
+\item{skip_setup}{Whether to skip setup.}
 }
 \value{
 

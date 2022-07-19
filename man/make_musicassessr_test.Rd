@@ -16,6 +16,7 @@ make_musicassessr_test(
   languages = "en",
   additional_dict = NULL,
   musicassessr_opt = musicassessr::musicassessr_opt(),
+  visual_notation = FALSE,
   ...
 )
 }
@@ -39,6 +40,8 @@ make_musicassessr_test(
 \item{additional_dict}{Additional dictionary for the test.}
 
 \item{musicassessr_opt}{Musicassessr options.}
+
+\item{visual_notation}{Will there be visual notation?}
 
 \item{...}{}
 }

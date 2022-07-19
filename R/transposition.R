@@ -1,5 +1,7 @@
 
 key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
+  print('key_rankings_for_inst')
+  print(inst)
   if(nchar(inst) > 4) {
     inst <- instrument_list[[inst]]
   }
@@ -15,6 +17,8 @@ easy_keys_for_inst <- function(instrument_name) {
   ranking <- key_rankings_for_inst(instrument_name)
   easy_keys <- ranking[1:floor(nrow(ranking)/2), ]
   warning('Manually adding easy keys for Piano: C, F,  G, D')
+  print('easy_keys_for_inst')
+  print(easy_keys_for_inst)
   if(instrument_name == "Piano") {
     easy_keys <- rbind(easy_keys,
                   tibble::tibble(instrument = rep("p", 4),
@@ -54,6 +58,9 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
 
 sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
 
+  print('sample_melody_in_key')
+  print(difficulty)
+
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
   } else {
@@ -66,7 +73,16 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
   # sample melody
 
+  print('just before item_bank_subset')
+  print(item_bank)
+  print(key_tonality)
+  print(user_span)
+  print(length)
+
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
+
+  print('nrow item_bank_subset')
+  print(item_bank_subset)
 
   if(nrow(item_bank_subset) == 0) {
     item_bank_subset <- itembankr::subset_item_bank(item_bank, span_max = user_span, item_length = length)
@@ -76,10 +92,6 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
     item_bank_subset <- itembankr::subset_item_bank(item_bank, item_length = length)
   }
   # failure for major, span == 24, length = 15
-  print('things..')
-  print(key_tonality)
-  print(user_span)
-  print(length)
 
   found_melody <- FALSE
   count <- 0
@@ -87,12 +99,9 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
   while(!found_melody) {
 
     count <- count + 1
-    print('count')
-    print(count)
 
     meta_data <- item_bank_subset %>% dplyr::slice_sample(n = 1)
-    print('metadata...')
-    print(meta_data)
+
     rel_mel <- meta_data$melody
     # now put it in a key
     key_centres <- itembankr::pitch_class_to_midi_notes(key_centre)
@@ -116,8 +125,6 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
     # check all notes in range
     if(check_all_notes_in_range(abs_mel, bottom_range, top_range)) {
-      print('heri23')
-      print(abs_mel)
       # in range
       found_melody <- TRUE
       return(cbind(tibble::tibble(abs_melody = paste0(abs_mel, collapse = ","), meta_data)))
@@ -132,22 +139,16 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
         # both in range, randomly select one
         snap <- sample(1:2, 1)
         if(snap == 1) {
-          print('her2323i23')
-          print(abs_mel_down)
           found_melody <- TRUE
           return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_down, collapse = ","), meta_data)))
         }
         else {
-          print('h23232eri23')
-          print(abs_mel_up)
           found_melody <- TRUE
           return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_up, collapse = ","), meta_data)))
         }
       }
       else if (check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & !check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
-        print('he2323r2323i23')
-        print(abs_mel_up)
         # only octave up in range, return that')
         return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_up, collapse = ","), meta_data)))
       }

@@ -17,6 +17,7 @@
 #' @param allow_repeat_SNR_tests Allow repeated SNR tests, if FALSE, then participant only gets one go and the test will fail if the SNR test fails.
 #' @param report_SNR Should the SNR be reported to the user.
 #' @param concise_wording Whether the wording should be concise or not.
+#' @param skip_setup Whether to skip setup.
 #'
 #' @return
 #' @export
@@ -40,7 +41,8 @@ setup_pages <- function(input = c("microphone",
                         microphone_test = TRUE,
                         allow_repeat_SNR_tests = TRUE,
                         report_SNR = FALSE,
-                        concise_wording = FALSE) {
+                        concise_wording = FALSE,
+                        skip_setup = FALSE) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
@@ -51,7 +53,8 @@ setup_pages <- function(input = c("microphone",
             is.character(test_type),
             is.logical(microphone_test),
             is.logical(allow_repeat_SNR_tests),
-            is.logical(report_SNR), is.logical(concise_wording))
+            is.logical(report_SNR), is.logical(concise_wording),
+            is.logical(skip_setup))
 
   if(length(input) > 1) {
     input <- input[1]
@@ -71,7 +74,19 @@ setup_pages <- function(input = c("microphone",
 
       fake_range()
     )
+  } else if(skip_setup) {
+    psychTestR::join(
+      fake_range(),
 
+      # fake instrument:
+      psychTestR::code_block(function(state, ...) {
+        psychTestR::set_global("inst", "Piano", state)
+        psychTestR::set_global("transpose_first_melody_note", 0, state)
+        psychTestR::set_global("clef", "auto", state)
+      }),
+
+      correct_setup(input, SNR_test = FALSE, absolute_url, microphone_test, concise_wording, skip_setup = skip_setup)
+    )
   } else {
 
     psychTestR::module("musicassessr_setup",
@@ -101,15 +116,15 @@ setup_pages <- function(input = c("microphone",
 
 
 correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
-                          concise_wording = FALSE) {
+                          concise_wording = FALSE, skip_setup = FALSE) {
 
   if(!sjmisc::str_contains(input, "midi_keyboard")) {
-    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording)
+    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup)
   } else if(!sjmisc::str_contains(input, "microphone")) {
     midi_setup()
   } else if(input == "midi_keyboard_and_microphone") {
     psychTestR::join(
-      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording),
+      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup),
       midi_setup()
     )
 
@@ -120,7 +135,7 @@ correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE,
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "Microphone"
-      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording)),
+      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup)),
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "MIDI"
@@ -200,11 +215,11 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE, concise_wording = FALSE) {
+microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE, concise_wording = FALSE, skip_setup = FALSE) {
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
-      microphone_type_page(),
+      if(!skip_setup) microphone_type_page(),
       microphone_calibration_page(concise_wording = concise_wording)
     )
   } else {

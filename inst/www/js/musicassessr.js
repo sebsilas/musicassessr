@@ -312,7 +312,9 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
                   show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
   console.log('playSeq');
-  console.log(show_sheet_music);
+  console.log(hidePlay);
+  console.log(page_type);
+  console.log(auto_next_page);
 
 
   if(hidePlay) {

@@ -201,6 +201,7 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param sound_only_first_melody_note
 #' @param show_sheet_music
 #' @param sheet_music_id
+#' @param give_first_melody_note
 #'
 #' @return
 #' @export
@@ -225,10 +226,14 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                      start_hidden = FALSE,
                                      sound_only_first_melody_note = FALSE,
                                      show_sheet_music = FALSE,
-                                     sheet_music_id = 'sheet_music') {
+                                     sheet_music_id = 'sheet_music',
+                                     give_first_melody_note = FALSE) {
 
 
-  if(num_items == 0) {
+  num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)
+
+
+  if(num_examples_flat == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
@@ -246,14 +251,14 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            shiny::tags$p(instruction_text)
                          )),
                          # examples
-                         if(is.numeric(num_examples) & num_examples > 0L) {
+                         if(is.numeric(num_examples_flat) & num_examples_flat > 0L) {
                            ## sample
                            c(
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+                               shiny::tags$p(paste0("First try ", num_examples_flat, " example trials.")))),
                              if(is.null(item_characteristics_sampler_function)) {
-                               sample_arrhythmic(item_bank, num_examples)
+                               sample_arrhythmic(item_bank, num_examples_flat)
                              } else {
                                sample_item_characteristics(var_name = "arrhythmic_melody",
                                                            item_characteristics_sampler_function,
@@ -261,7 +266,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                              },
                              # trials
                              musicassessr::multi_page_play_melody_loop(
-                               n_items = ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples),
+                               n_items = num_examples_flat,
                                var_name = "arrhythmic_melody",
                                page_type = page_type,
                                page_title = page_title,
@@ -282,7 +287,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                start_hidden = start_hidden,
                                sound_only_first_melody_note = sound_only_first_melody_note,
                                show_sheet_music = show_sheet_music,
-                               sheet_music_id = sheet_music_id),
+                               sheet_music_id = sheet_music_id,
+                               give_first_melody_note = give_first_melody_note),
                              ## sample
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -317,7 +323,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                            start_hidden = start_hidden,
                            sound_only_first_melody_note = sound_only_first_melody_note,
                            show_sheet_music = show_sheet_music,
-                           sheet_music_id = sheet_music_id)
+                           sheet_music_id = sheet_music_id,
+                           give_first_melody_note = give_first_melody_note)
                        )
     )
   }
@@ -356,6 +363,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param sound_only_first_melody_note
 #' @param show_sheet_music
 #' @param sheet_music_id
+#' @param give_first_melody_note
 #'
 #' @return
 #' @export
@@ -384,7 +392,8 @@ rhythmic_melody_trials <- function(item_bank,
                                    start_hidden = FALSE,
                                    sound_only_first_melody_note = FALSE,
                                    show_sheet_music = FALSE,
-                                   sheet_music_id = 'sheet_music') {
+                                   sheet_music_id = 'sheet_music',
+                                   give_first_melody_note = FALSE) {
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -440,7 +449,8 @@ rhythmic_melody_trials <- function(item_bank,
                                start_hidden = start_hidden,
                                sound_only_first_melody_note = sound_only_first_melody_note,
                                show_sheet_music = show_sheet_music,
-                               sheet_music_id = sheet_music_id),
+                               sheet_music_id = sheet_music_id,
+                               give_first_melody_note = give_first_melody_note),
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p("Now you're ready for the real thing!")))
@@ -476,7 +486,8 @@ rhythmic_melody_trials <- function(item_bank,
                            start_hidden = start_hidden,
                            sound_only_first_melody_note = sound_only_first_melody_note,
                            show_sheet_music = show_sheet_music,
-                           sheet_music_id = sheet_music_id)
+                           sheet_music_id = sheet_music_id,
+                           give_first_melody_note = give_first_melody_note)
                        )
     )
   }

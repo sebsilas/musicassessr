@@ -81,7 +81,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                             show_progress = FALSE, start_hidden = FALSE,
                             sound_only_first_melody_note = FALSE,
                             show_sheet_music = FALSE,
-                            sheet_music_id = 'sheet_music', ...) {
+                            sheet_music_id = 'sheet_music',
+                            give_first_melody_note = FALSE, ...) {
 
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
@@ -109,7 +110,8 @@ present_stimuli <- function(stimuli, stimuli_type,
             is.logical(start_hidden),
             is.logical(sound_only_first_melody_note) | is.numeric(sound_only_first_melody_note) & length(sound_only_first_melody_note) == 1,
             is.logical(show_sheet_music),
-            is.character(sheet_music_id) & length(sheet_music_id) == 1)
+            is.character(sheet_music_id) & length(sheet_music_id) == 1,
+            is.logical(give_first_melody_note))
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
@@ -126,7 +128,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                                                volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button,
                                                start_hidden = start_hidden,
                                                sound_only_first_melody_note = sound_only_first_melody_note,
-                                               show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id, ...)
+                                               show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
+                                               give_first_melody_note = give_first_melody_note, ...)
   } else {
     return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type,
                                              get_answer = get_answer,
@@ -143,7 +146,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                                              volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button,
                                              start_hidden = start_hidden,
                                              sound_only_first_melody_note = sound_only_first_melody_note,
-                                             show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id, ...)
+                                             show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
+                                             give_first_melody_note = give_first_melody_note, ...)
 
   }
 
@@ -214,7 +218,8 @@ present_stimuli_reactive <- function(stimuli_reactive_keyword, stimuli, stimuli_
                                      page_title = " ", start_note = start_note, end_note = end_note, auto_next_page = FALSE,
                                       transpose_first_melody_note = 0,  clef = "auto", audio_playback_as_single_play_button = FALSE,
                                      start_hidden = FALSE, sound_only_first_melody_note = FALSE,
-                                     show_sheet_music = FALSE, sheet_music_id = 'sheet_music', ...) {
+                                     show_sheet_music = FALSE, sheet_music_id = 'sheet_music',
+                                     give_first_melody_note = FALSE, ...) {
 
   # pass down the stimuli to be called at run time
   # stimuli_reactive_keyword defines the type of reactive stimuli
@@ -228,7 +233,8 @@ present_stimuli_reactive <- function(stimuli_reactive_keyword, stimuli, stimuli_
                            transpose_first_melody_note = transpose_first_melody_note,
                            audio_playback_as_single_play_button = audio_playback_as_single_play_button,
                            start_hidden = start_hidden, sound_only_first_melody_note = sound_only_first_melody_note,
-                           show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id)
+                           show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
+                           give_first_melody_note = give_first_melody_note)
   }
 
   list(stimuli_reactive_keyword, return_fun)
@@ -351,7 +357,8 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                    transpose_first_melody_note = 0, clef = "auto",
                                    volume = 1, audio_playback_as_single_play_button = FALSE,
                                    start_hidden = FALSE, sound_only_first_melody_note = FALSE,
-                                   show_sheet_music = FALSE, sheet_music_id = 'sheet_music', ...) {
+                                   show_sheet_music = FALSE, sheet_music_id = 'sheet_music',
+                                   give_first_melody_note = FALSE, ...) {
 
   # generic stimuli types
 
@@ -383,7 +390,9 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                                  transpose_first_melody_note = transpose_first_melody_note, clef = clef,
                                                  start_hidden = start_hidden,
                                                  sound_only_first_melody_note = sound_only_first_melody_note,
-                                                 show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id)
+                                                 show_sheet_music = show_sheet_music,
+                                                 sheet_music_id = sheet_music_id,
+                                                 give_first_melody_note = give_first_melody_note)
   } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)
   } else if (stimuli_type == "pitch_classes") {

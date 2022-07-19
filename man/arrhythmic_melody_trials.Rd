@@ -30,11 +30,12 @@ arrhythmic_melody_trials(
   start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
-  sheet_music_id = "sheet_music"
+  sheet_music_id = "sheet_music",
+  give_first_melody_note = FALSE
 )
 }
 \arguments{
-\item{sheet_music_id}{}
+\item{give_first_melody_note}{}
 }
 \value{
 

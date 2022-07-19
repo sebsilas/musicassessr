@@ -53,6 +53,7 @@ present_stimuli(
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
+  give_first_melody_note = FALSE,
   ...
 )
 }

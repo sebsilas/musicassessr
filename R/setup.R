@@ -95,7 +95,7 @@ setup_pages <- function(input = c("microphone",
     psychTestR::module("musicassessr_setup",
       psychTestR::join(
 
-      if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id(),
+      if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id() else pass_p_id_to_js(),
 
       requirements_page(headphones = headphones, input = input),
 

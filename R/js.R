@@ -40,8 +40,10 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
                             app_name = character(),
                             midi_input = FALSE) {
 
+  create_dir_if_doesnt_exist('tmp')
+
   if(record_audio) {
-    extra_js_id <- record_audio_setup(app_name, musicassessr_aws)
+    shiny_app_js_id <- record_audio_setup(app_name, musicassessr_aws)
   }
 
   c(
@@ -58,7 +60,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    if(record_audio & musicassessr_aws) paste0("tmp/", extra_js_id)
+    if(record_audio & musicassessr_aws) paste0("tmp/", shiny_app_js_id)
   )
 }
 
@@ -83,27 +85,27 @@ get_musicassessr_state_js_script <- function(musicassessr_aws = FALSE) {
 
 record_audio_setup <- function(app_name, musicassessr_aws) {
 
-  DIRS_TO_CREATE <- c('tmp', 'www', 'www/audio')
+  DIRS_TO_CREATE <- c('www', 'www/audio')
 
   purrr::map(DIRS_TO_CREATE, create_dir_if_doesnt_exist)
 
   if(musicassessr_aws) {
     js_to_write <- paste0('const shiny_app_name = \"', app_name, '\";')
 
-    extra_js_id <- paste0("extra_", stringr::str_replace_all(app_name, "/", "_"), ".js")
+    shiny_app_js_id <- paste0("shiny_app_", stringr::str_replace_all(app_name, "/", "_"), ".js")
 
-    if(!file.exists(extra_js_id)) {
-      write(js_to_write, file = paste0('tmp/', extra_js_id))
+    if(!file.exists(shiny_app_js_id)) {
+      write(js_to_write, file = paste0('tmp/', shiny_app_js_id))
     }
 
   } else {
     if(!dir.exists('node')) {
       R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
     }
-    extra_js_id <- NA
+    shiny_app_js_id <- NA
   }
 
-  extra_js_id
+  shiny_app_js_id
 }
 
 

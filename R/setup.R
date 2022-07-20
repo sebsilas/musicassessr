@@ -187,10 +187,13 @@ test_headphones_page <- function(concise_wording = FALSE) {
                     shiny::tags$p(psychTestR::i18n("headphone_test4")),
                     shiny::tags$p("Use your normal way of changing loudness on your computer to do this"))
   }
+
+
   psychTestR::volume_calibration_page(prompt = wording,
-                                      url = "https://adaptiveeartraining.com/magmaGold/audio/test_headphones.mp3",
+                                      url = "https://adaptiveeartraining.com/assets/audio/test_headphones.mp3",
                                       button_text = psychTestR::i18n("comfortable_volume"),
                                       show_controls = TRUE)
+
 }
 
 #' Microphone Type Page

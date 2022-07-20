@@ -993,7 +993,10 @@ function upload_file_to_s3(blob) {
 
   var recordkey = create_recordkey();
 
-  var file_url = recordkey + ".wav";
+  var file_url = shiny_app_name + "/" + recordkey + ".wav";
+
+  console.log('file_url');
+  console.log(file_url);
 
 	var xhr = new XMLHttpRequest();
 	var filename = new Date().toISOString();

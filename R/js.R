@@ -27,6 +27,7 @@ include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE
 #' @param midi_file_playback
 #' @param record_audio
 #' @param app_name
+#' @param midi_input
 #'
 #' @return
 #' @export
@@ -36,13 +37,13 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE,
                             record_audio = TRUE,
-                            app_name = character()) {
+                            app_name = character(),
+                            midi_input = FALSE) {
 
   if(record_audio) {
     extra_js_id <- record_audio_setup(app_name, musicassessr_aws)
   }
 
-  # TODO add midi_input argument. This would make importing https://cdn.jsdelivr.net/npm/webmidi@2.5.1 and getMIDIin.js optional
   c(
     if(record_audio) get_musicassessr_state_js_script(musicassessr_aws),
     "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
@@ -55,8 +56,8 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js',
     system.file("www/spinner/spin.js", package = "musicassessr"),
     system.file("www/js/musicassessr.js", package = "musicassessr"),
-    "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
-    system.file("www/js/getMIDIin.js", package = "musicassessr"),
+    if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
+    if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
     if(record_audio & musicassessr_aws) paste0("tmp/", extra_js_id)
   )
 }
@@ -69,7 +70,9 @@ get_musicassessr_state_js_script <- function(musicassessr_aws = FALSE) {
     system.file("www/js/musicassessr_production.js", package = "musicassessr")
   } else {
 
-    system2(command = "npx", args = "kill-port 3000")
+    if(check_port()) {
+      system2(command = "npx", args = "kill-port 3000", wait = TRUE)
+    }
 
     system2(command = "node", args = 'node/app.js', wait = FALSE)
 
@@ -110,3 +113,14 @@ create_dir_if_doesnt_exist <- function(dir) {
     R.utils::mkdirs(dir)
   }
 }
+
+check_port <- function(port = 300) {
+  # is something running on port xx?
+  res <- system2("lsof", args = c(paste0("-i :", port)), stdout = TRUE, stderr = TRUE, wait = TRUE)
+  if(is.null(attributes(res)$status)) {
+    TRUE
+  } else {
+    FALSE
+  }
+}
+

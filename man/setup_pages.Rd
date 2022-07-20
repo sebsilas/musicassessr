@@ -22,7 +22,8 @@ setup_pages(
   allow_repeat_SNR_tests = TRUE,
   report_SNR = FALSE,
   concise_wording = FALSE,
-  skip_setup = FALSE
+  skip_setup = FALSE,
+  get_self_chosen_anonymous_id = FALSE
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ setup_pages(
 \item{concise_wording}{Whether the wording should be concise or not.}
 
 \item{skip_setup}{Whether to skip setup.}
+
+\item{get_self_chosen_anonymous_id}{Whether to ask participant to provide an anonymous ID.}
 }
 \value{
 

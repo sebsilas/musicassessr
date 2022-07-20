@@ -18,6 +18,7 @@
 #' @param report_SNR Should the SNR be reported to the user.
 #' @param concise_wording Whether the wording should be concise or not.
 #' @param skip_setup Whether to skip setup.
+#' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
 #'
 #' @return
 #' @export
@@ -42,7 +43,8 @@ setup_pages <- function(input = c("microphone",
                         allow_repeat_SNR_tests = TRUE,
                         report_SNR = FALSE,
                         concise_wording = FALSE,
-                        skip_setup = FALSE) {
+                        skip_setup = FALSE,
+                        get_self_chosen_anonymous_id = FALSE) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
@@ -54,7 +56,8 @@ setup_pages <- function(input = c("microphone",
             is.logical(microphone_test),
             is.logical(allow_repeat_SNR_tests),
             is.logical(report_SNR), is.logical(concise_wording),
-            is.logical(skip_setup))
+            is.logical(skip_setup),
+            is.logical(get_self_chosen_anonymous_id))
 
   if(length(input) > 1) {
     input <- input[1]
@@ -91,6 +94,8 @@ setup_pages <- function(input = c("microphone",
 
     psychTestR::module("musicassessr_setup",
       psychTestR::join(
+
+      if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id(),
 
       requirements_page(headphones = headphones, input = input),
 

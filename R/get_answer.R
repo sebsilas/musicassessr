@@ -1,6 +1,4 @@
 
-# pyin-related
-
 #' Analyse a melody with pyin then compute melodic production scores
 #'
 #' @param input
@@ -450,11 +448,7 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
 
 store_results_in_db <- function(state, res, pyin_res) {
 
-  print('store_results_in_db')
-
   store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
-
-  print(store_results_in_db)
 
   if(store_results_in_db) {
     session_info <- psychTestR::get_session_info(state, complete = FALSE)

@@ -993,18 +993,16 @@ function upload_file_to_s3(blob) {
 
   var recordkey = create_recordkey();
 
-  if(typeof(node_file_location) === 'undefined') {
-    var file_url = recordkey + ".wav";
-  } else {
-    var file_url = node_file_location + "/" + recordkey + ".wav";
-  }
-
-
+  var file_url = recordkey + ".wav";
 
 	var xhr = new XMLHttpRequest();
 	var filename = new Date().toISOString();
 	var fd = new FormData();
 	fd.append("audio_data", blob, recordkey);
+	console.log('shiny_app_name?');
+	console.log(shiny_app_name);
+	console.log('musicassessr_state?');
+	console.log(musicassessr_state);
 	fd.append("app_name", shiny_app_name);
 
 	if(this.musicassessr_state === "production") {

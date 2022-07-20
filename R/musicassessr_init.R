@@ -4,7 +4,6 @@
 #' @param test_username
 #' @param test
 #' @param store_results_in_db
-#' @param copy_audio_to_location
 #'
 #' @return
 #' @export
@@ -12,8 +11,7 @@
 #' @examples
 musicassessr_init <- function(test_username = NA,
                               test = NA,
-                              store_results_in_db = FALSE,
-                              copy_audio_to_location = NULL) {
+                              store_results_in_db = FALSE) {
 
   psychTestR::code_block(function(state, ...) {
     psychTestR::set_global("store_results_in_db", store_results_in_db, state)
@@ -22,7 +20,5 @@ musicassessr_init <- function(test_username = NA,
     psychTestR::set_global("scores", c(), state)
     psychTestR::set_global("transpose_first_melody_note", 0, state)
     psychTestR::set_global("clef", "auto", state)
-    psychTestR::set_global("copy_audio_to", copy_audio_to_location, state)
-
   })
 }

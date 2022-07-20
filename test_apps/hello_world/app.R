@@ -91,7 +91,7 @@ psychTestR::make_test(
   opt = psychTestR::test_options(
     title = "Hello World",
     admin_password = "demo",
-    additional_scripts = musicassessr_js('test')
+    additional_scripts = musicassessr::musicassessr_js('test')
   )
 )
 

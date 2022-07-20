@@ -144,12 +144,9 @@ get_answer_pyin <- function(input,
                             state,
                             melconv = FALSE, ...) {
 
-  cat('get_answer_pyin')
 
   # get file
   audio_file <- get_audio_file_for_pyin(input, state)
-
-  print(audio_file)
 
   # get pyin
   pyin_res <- get_pyin(audio_file, type, state)

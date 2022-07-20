@@ -4,6 +4,7 @@
 #' @param test_username
 #' @param test
 #' @param store_results_in_db
+#' @param app_name
 #'
 #' @return
 #' @export
@@ -11,9 +12,11 @@
 #' @examples
 musicassessr_init <- function(test_username = NA,
                               test = NA,
-                              store_results_in_db = FALSE) {
+                              store_results_in_db = FALSE,
+                              app_name) {
 
   psychTestR::code_block(function(state, ...) {
+    psychTestR::set_global("app_name", app_name, state)
     psychTestR::set_global("store_results_in_db", store_results_in_db, state)
     psychTestR::set_global("test_username", test_username, state)
     psychTestR::set_global("test", test, state)

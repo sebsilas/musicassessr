@@ -197,7 +197,7 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 get_audio_file_for_pyin <- function(input, state, ...) {
 
-  audio_file <- input$file_url
+  audio_file <- paste0('/www/audio/', input$file_url)
 
   audio_file
 }
@@ -251,8 +251,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 }
 
 get_pyin <- function(audio_file, type, state) {
-
-  print('get_pyin')
 
   if(type == "notes") {
     pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)

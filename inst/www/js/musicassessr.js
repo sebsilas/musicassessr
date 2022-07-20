@@ -993,7 +993,7 @@ function upload_file_to_s3(blob) {
 
   var recordkey = create_recordkey();
 
-  var file_url = shiny_app_name + "/www/audio/" + recordkey + ".wav";
+  var file_url = recordkey + ".wav";
 
   console.log('file_url');
   console.log(file_url);
@@ -1020,6 +1020,7 @@ function upload_file_to_s3(blob) {
 
   Shiny.setInputValue("key", recordkey);
   Shiny.setInputValue("file_url", file_url);
+  Shiny.setInputValue("shiny_app_name", shiny_app_name);
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved

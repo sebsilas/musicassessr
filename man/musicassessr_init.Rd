@@ -4,10 +4,15 @@
 \alias{musicassessr_init}
 \title{Initiate a musicassessr test}
 \usage{
-musicassessr_init(test_username = NA, test = NA, store_results_in_db = FALSE)
+musicassessr_init(
+  test_username = NA,
+  test = NA,
+  store_results_in_db = FALSE,
+  app_name
+)
 }
 \arguments{
-\item{store_results_in_db}{}
+\item{app_name}{}
 }
 \value{
 

@@ -22,8 +22,15 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
     psychTestR::reactive_page(function(state, ...) {
 
       if(length(absolute_url) > 0) {
-        signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
-        noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
+
+        signal_file <- paste0(absolute_url,
+                              psychTestR::get_global("app_name", state), '/',
+                              psychTestR::get_global("SNR_signal", state))
+
+        noise_file <- paste0(absolute_url,
+                              psychTestR::get_global("app_name", state), '/',
+                              psychTestR::get_global("SNR_noise", state))
+
 
         valid_url <- FALSE
 
@@ -32,8 +39,13 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
         }
       } else {
 
-        signal_file <- psychTestR::get_global("SNR_signal", state)
-        noise_file <- psychTestR::get_global("SNR_noise", state)
+        signal_file <- paste0(absolute_url,
+                              psychTestR::get_global("app_name", state), '/',
+                              psychTestR::get_global("SNR_signal", state))
+
+        noise_file <- paste0(absolute_url,
+                             psychTestR::get_global("app_name", state), '/',
+                             psychTestR::get_global("SNR_noise", state))
 
         valid_file <- FALSE
 
@@ -42,10 +54,6 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
         }
 
       }
-
-
-      cat(signal_file)
-      cat(noise_file)
 
 
       SNR <- compute_SNR(signal_file = signal_file, noise_file = noise_file)
@@ -89,8 +97,14 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
         psychTestR::reactive_page(function(state, ...) {
 
           if(length(absolute_url) > 0) {
-            signal_file <- paste0(absolute_url, psychTestR::get_global("SNR_signal", state))
-            noise_file <- paste0(absolute_url, psychTestR::get_global("SNR_noise", state))
+
+            signal_file <- paste0(absolute_url,
+                                  psychTestR::get_global("app_name", state), '/',
+                                  psychTestR::get_global("SNR_signal", state))
+
+            noise_file <- paste0(absolute_url,
+                                 psychTestR::get_global("app_name", state), '/',
+                                 psychTestR::get_global("SNR_noise", state))
 
             valid_url <- FALSE
 
@@ -99,8 +113,13 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
             }
           } else {
 
-            signal_file <- psychTestR::get_global("SNR_signal", state)
-            noise_file <- psychTestR::get_global("SNR_noise", state)
+            signal_file <- paste0(absolute_url,
+                                  psychTestR::get_global("app_name", state), '/',
+                                  psychTestR::get_global("SNR_signal", state))
+
+            noise_file <- paste0(absolute_url,
+                                 psychTestR::get_global("app_name", state), '/',
+                                 psychTestR::get_global("SNR_noise", state))
 
             valid_file <- FALSE
 

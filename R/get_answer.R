@@ -197,7 +197,7 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 get_audio_file_for_pyin <- function(input, state, ...) {
 
-  audio_file <- paste0('/www/audio/', input$file_url)
+  audio_file <- paste0('www/audio/', input$file_url)
 
   audio_file
 }

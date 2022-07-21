@@ -181,7 +181,7 @@ test_headphones_page <- function(concise_wording = FALSE) {
     wording <- "Please make sure your headphones are working and adjust the volume to a good level."
   } else {
     wording <- shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Headphone_Test")),
-                    shiny::tags$p(psychTestR::i18n("headphone_test1"), shiny::tags$img(src = 'https://adaptiveeartraining.com/magmaGold/play_triangle.png', width = 30, height = 31, style = "margin: 0 0 5px 0;")),
+                    shiny::tags$p(psychTestR::i18n("headphone_test1"), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/play_triangle.png', width = 30, height = 31, style = "margin: 0 0 5px 0;")),
                     shiny::tags$p(psychTestR::i18n("headphone_test2")),
                     shiny::tags$p(psychTestR::i18n("headphone_test3")),
                     shiny::tags$p(psychTestR::i18n("headphone_test4")),

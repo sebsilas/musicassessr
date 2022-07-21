@@ -58,7 +58,7 @@ musicassessr_js <- function(musicassessr_aws = FALSE,
     'https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js',
     system.file("www/spinner/spin.js", package = "musicassessr"),
     system.file("www/js/musicassessr.js", package = "musicassessr"),
-    "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
+    if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
     if(record_audio & musicassessr_aws) paste0("tmp/", shiny_app_js_id)
   )

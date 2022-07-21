@@ -10,7 +10,7 @@ console.log("loaded Tonejs-instruments.js");
 var SampleLibrary = {
     minify: false,
     ext: '.[mp3|ogg]', // use setExt to change the extensions on all files // do not change this variable //
-    baseUrl: 'https://adaptiveeartraining.com/magmaGold/js/samples/',
+    baseUrl: 'https://adaptiveeartraining.com/assets/audio/samples/',
     list: ['bass-electric','bassoon','cello','clarinet','contrabass','flute','french-horn','guitar-acoustic','guitar-electric','guitar-nylon', 'harmonium','harp','organ','piano','saxophone','trombone','trumpet','tuba','violin', 'voice_daa', 'voice_doo', 'xylophone'],
     onload: null,
 

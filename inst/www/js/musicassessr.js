@@ -5,10 +5,10 @@ console.log("loaded musicassessr.js");
 toneJSInit();
 
 
-preloadImage("https://adaptiveeartraining.com/magmaGold/img/record.gif");
-preloadImage("https://adaptiveeartraining.com/magmaGold/img/intro.png");
-preloadImage("https://adaptiveeartraining.com/magmaGold/img/music.png");
-preloadImage("https://adaptiveeartraining.com/magmaGold/img/saxophone.png");
+preloadImage("https://adaptiveeartraining.com/assets/img/record.gif");
+preloadImage("https://adaptiveeartraining.com/assets/img/intro.png");
+preloadImage("https://adaptiveeartraining.com/assets/img/music.png");
+preloadImage("https://adaptiveeartraining.com/assets/img/saxophone.png");
 
 // constants
 // a little delay after playback finishes before hitting record
@@ -740,7 +740,7 @@ function showRecordingIcon() {
 
   var img = document.createElement("img");
   img.style.display = "block";
-  img.src =  "https://adaptiveeartraining.com/magmaGold/img/record.gif";
+  img.src =  "https://adaptiveeartraining.com/assets/img/record.gif";
   img.width = "280";
   img.height = "280";
 

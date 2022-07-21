@@ -1,5 +1,4 @@
 
-
 plot_normal_dist_plus_score <- function(data, highlighted_score) {
   std <- sd(data$score)
   m <- mean(data$score)
@@ -57,17 +56,12 @@ add_score_to_leaderboard <- function(username, score, leaderboard_name) {
     score = score
   )
 
-  print('new_score...')
-  print(new_score)
 
   leaderboard <- rbind(leaderboard, new_score) %>% dplyr::arrange(desc(score))
 
   leaderboard <- leaderboard[!is.na(leaderboard$score), ]
 
   save(leaderboard, file = paste0('output/', leaderboard_name))
-
-  print('l23929..')
-  print(leaderboard)
 
   # and present new leaderboard
   leaderboard

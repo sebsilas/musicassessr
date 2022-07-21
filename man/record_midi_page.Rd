@@ -29,6 +29,9 @@ record_midi_page(
   autoInstantiate = FALSE,
   midi_device,
   max_goes = 1,
+  show_progress = FALSE,
+  melody_no = 0,
+  total_no_melodies = 0,
   ...
 )
 }

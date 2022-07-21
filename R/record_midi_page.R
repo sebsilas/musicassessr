@@ -28,6 +28,9 @@
 #' @param autoInstantiate
 #' @param midi_device
 #' @param max_goes
+#' @param show_progress
+#' @param melody_no
+#' @param total_no_melodies
 #' @param ...
 #'
 #' @return
@@ -57,7 +60,10 @@ record_midi_page <- function(body = " ",
                              max_goes_forced = FALSE,
                              autoInstantiate = FALSE,
                              midi_device,
-                             max_goes = 1, ...) {
+                             max_goes = 1,
+                             show_progress = FALSE,
+                             melody_no = 0,
+                             total_no_melodies = 0, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -83,7 +89,10 @@ record_midi_page <- function(body = " ",
                           max_goes_forced,
                           autoInstantiate,
                           midi_device,
-                          max_goes)
+                          max_goes,
+                          show_progress,
+                          melody_no,
+                          total_no_melodies)
 
 }
 

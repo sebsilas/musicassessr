@@ -25,7 +25,7 @@ mar_requirements_list <- function(headphones, input, musical_instrument) {
                    if(input == "midi_keyboard_or_microphone") {
                                   shiny::tags$ul(class = "square",
                                   shiny::tags$li(paste0(psychTestR::i18n("mar_requirements_microphone"),
-                                                 if(musical_instrument) "Additionally, an acoustic musical instrument (e.g., saxophone, trumpet)"),
+                                                 if(musical_instrument) " and an acoustic musical instrument (e.g., saxophone)"),
                                                  shiny::tags$em(psychTestR::i18n("or"))),
                                   shiny::tags$li(psychTestR::i18n("MIDI_Keyboard")))
                    }

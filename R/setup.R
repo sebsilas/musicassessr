@@ -62,6 +62,9 @@ setup_pages <- function(input = c("microphone",
             is.logical(get_self_chosen_anonymous_id),
             is.logical(musical_instrument))
 
+  print('setup?')
+  print(musical_instrument)
+
   if(length(input) > 1) {
     input <- input[1]
   }
@@ -76,7 +79,7 @@ setup_pages <- function(input = c("microphone",
     psychTestR::join(
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument),
 
       fake_range()
     )
@@ -108,7 +111,7 @@ setup_pages <- function(input = c("microphone",
 
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument),
 
       record_instructions(),
 
@@ -126,6 +129,9 @@ setup_pages <- function(input = c("microphone",
 
 correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
                           concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE) {
+
+  print('cores?')
+  print(musical_instrument)
 
   if(!sjmisc::str_contains(input, "midi_keyboard")) {
     microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument)
@@ -230,6 +236,9 @@ microphone_type_page <- function() {
 microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE,
                              allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
                              concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE) {
+
+  print('micsetup')
+  print(musical_instrument)
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(

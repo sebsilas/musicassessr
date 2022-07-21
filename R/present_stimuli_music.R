@@ -792,7 +792,7 @@ sort_durations <- function(durations, note_length, stimuli) {
 }
 
 show_first_melody_note <- function(give_first_melody_note, stimuli, transpose_first_melody_note = 0,
-                                   clef = "auto", show_first_melody_note_visual = FALSE, audio_play_button_id = "firstMelodyPlay") {
+                                   clef = "auto", show_first_melody_note_visual = TRUE, audio_play_button_id = "firstMelodyPlay") {
   if(give_first_melody_note) {
     shiny::tags$div(
       shiny::tags$p(psychTestR::i18n("first_note_is")),

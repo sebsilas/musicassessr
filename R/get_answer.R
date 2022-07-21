@@ -303,6 +303,9 @@ get_melconv <- function(melconv, pyin_res) {
 #' @examples
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
+  print('get_answer_midi_mel')
+  print(input$user_response_midi_note_on)
+
   if(is.null(input$user_response_midi_note_on)) {
 
     print('no notes')
@@ -351,7 +354,8 @@ get_answer_midi <- function(input, state, ...) {
 
 
 get_answer_midi_note_mode <- function(input, state, ...) {
-  if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
+
+  if(is.null(input$user_response_midi_note_on)) {
     list(note = NA)
   } else {
     list(note = getmode(rjson::fromJSON(input$user_response_midi_note_on)))

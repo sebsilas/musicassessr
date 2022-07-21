@@ -6,11 +6,12 @@
 \usage{
 microphone_calibration_page(
   button_text = "Start test",
-  concise_wording = FALSE
+  concise_wording = FALSE,
+  musical_instrument = FALSE
 )
 }
 \arguments{
-\item{concise_wording}{}
+\item{musical_instrument}{}
 }
 \value{
 

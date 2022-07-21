@@ -20,7 +20,7 @@ user_info_check <- function(input, state, ...)  {
 get_user_info_page<- function(chrome_only = TRUE) {
 
   if(chrome_only) {
-    page_text <- shiny::tags$p("You should be running this test in Google Chrome.")
+    page_text <- shiny::tags$p("You should ideally be running this test in Google Chrome or Opera.")
   } else {
     page_text <- shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Browser_Requirements")),
                                  shiny::tags$p(psychTestR::i18n("browser_requirements")),

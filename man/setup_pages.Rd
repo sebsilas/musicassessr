@@ -23,7 +23,8 @@ setup_pages(
   report_SNR = FALSE,
   concise_wording = FALSE,
   skip_setup = FALSE,
-  get_self_chosen_anonymous_id = FALSE
+  get_self_chosen_anonymous_id = FALSE,
+  musical_instrument = FALSE
 )
 }
 \arguments{
@@ -62,6 +63,8 @@ setup_pages(
 \item{skip_setup}{Whether to skip setup.}
 
 \item{get_self_chosen_anonymous_id}{Whether to ask participant to provide an anonymous ID.}
+
+\item{musical_instrument}{Whether the participant is required to have a musical instrument.}
 }
 \value{
 

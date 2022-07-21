@@ -19,6 +19,7 @@
 #' @param concise_wording Whether the wording should be concise or not.
 #' @param skip_setup Whether to skip setup.
 #' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
+#' @param musical_instrument Whether the participant is required to have a musical instrument.
 #'
 #' @return
 #' @export
@@ -44,7 +45,8 @@ setup_pages <- function(input = c("microphone",
                         report_SNR = FALSE,
                         concise_wording = FALSE,
                         skip_setup = FALSE,
-                        get_self_chosen_anonymous_id = FALSE) {
+                        get_self_chosen_anonymous_id = FALSE,
+                        musical_instrument = FALSE) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
@@ -57,7 +59,8 @@ setup_pages <- function(input = c("microphone",
             is.logical(allow_repeat_SNR_tests),
             is.logical(report_SNR), is.logical(concise_wording),
             is.logical(skip_setup),
-            is.logical(get_self_chosen_anonymous_id))
+            is.logical(get_self_chosen_anonymous_id),
+            is.logical(musical_instrument))
 
   if(length(input) > 1) {
     input <- input[1]
@@ -73,7 +76,7 @@ setup_pages <- function(input = c("microphone",
     psychTestR::join(
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument),
 
       fake_range()
     )
@@ -88,7 +91,7 @@ setup_pages <- function(input = c("microphone",
         psychTestR::set_global("clef", "auto", state)
       }),
 
-      correct_setup(input, SNR_test = FALSE, absolute_url, microphone_test, concise_wording, skip_setup = skip_setup)
+      correct_setup(input, SNR_test = FALSE, absolute_url, microphone_test, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument)
     )
   } else {
 
@@ -97,7 +100,7 @@ setup_pages <- function(input = c("microphone",
 
       if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id() else pass_p_id_to_js(),
 
-      requirements_page(headphones = headphones, input = input),
+      requirements_page(headphones = headphones, input = input, musical_instrument = musical_instrument),
 
       if(get_user_info) get_user_info_page(),
 
@@ -105,11 +108,12 @@ setup_pages <- function(input = c("microphone",
 
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording),
+      correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument),
 
       record_instructions(),
 
-      get_instrument_range_pages(input, get_instrument_range,
+      get_instrument_range_pages(input,
+                                 get_instrument_range,
                                  show_musical_notation = get_instrument_range_musical_notation,
                                  adjust_range = adjust_range,
                                  test_type = test_type,
@@ -121,15 +125,15 @@ setup_pages <- function(input = c("microphone",
 
 
 correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
-                          concise_wording = FALSE, skip_setup = FALSE) {
+                          concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE) {
 
   if(!sjmisc::str_contains(input, "midi_keyboard")) {
-    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup)
+    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument)
   } else if(!sjmisc::str_contains(input, "microphone")) {
     midi_setup()
   } else if(input == "midi_keyboard_and_microphone") {
     psychTestR::join(
-      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup),
+      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument),
       midi_setup()
     )
 
@@ -140,7 +144,7 @@ correct_setup <- function(input, SNR_test, absolute_url, microphone_test = TRUE,
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "Microphone"
-      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup)),
+      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument)),
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "MIDI"
@@ -223,12 +227,14 @@ microphone_type_page <- function() {
 }
 
 
-microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE, concise_wording = FALSE, skip_setup = FALSE) {
+microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE,
+                             allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
+                             concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE) {
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
       if(!skip_setup) microphone_type_page(),
-      microphone_calibration_page(concise_wording = concise_wording)
+      microphone_calibration_page(concise_wording = concise_wording, musical_instrument = musical_instrument)
     )
   } else {
     microphone_pages <- psychTestR::code_block(function(state, ...){}) # there needs to be the possibility of something resolving

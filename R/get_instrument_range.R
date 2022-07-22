@@ -53,6 +53,7 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
 #' @examples
 get_instrument_range_pages <- function(type, get_range, show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), concise_wording = FALSE) {
 
+
   # a short multi-page protocol to get the user's frequency range
 
   stopifnot(is.character(type), is.logical(get_range) | is.character(get_range) & length(get_range) == 1, is.logical(show_musical_notation))
@@ -201,13 +202,18 @@ determine_span <- function(highest_user_note, lowest_user_note, adjust_range) {
   # ideally we want to have a span of at least an octave
   # if the user performs the range test properly the span is simply highest_user_note - lowest_user_note
   # however, if they don't perform the range test well, try and determine a sensible range
+
+  highest_user_note <- max(highest_user_note, lowest_user_note)
+  lowest_user_note <- min(highest_user_note, lowest_user_note)
+
   span <- highest_user_note - lowest_user_note
 
   if(adjust_range) {
     if(span < 12) {
-      highest_user_note <- highest_user_note + (6 - span)
-      lowest_user_note <- lowest_user_note - (6 - span)
-      span <- highest_user_note - lowest_user_note
+      m <- mean(lowest_user_note:highest_user_note)
+      highest_user_note <- m + 6
+      lowest_user_note <- m - 6
+      span <- 12
     }
   }
 
@@ -216,6 +222,7 @@ determine_span <- function(highest_user_note, lowest_user_note, adjust_range) {
        "lowest_user_note" = lowest_user_note)
 
 }
+
 
 present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument")) {
 
@@ -237,6 +244,8 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE, t
     range <- c(span_result$lowest_user_note, span_result$highest_user_note)
 
     psychTestR::set_global("span", span_result$span, state)
+    psychTestR::set_global("top_range", span_result$highest_user_note, state)
+    psychTestR::set_global("bottom_range", span_result$lowest_user_note, state)
 
     present_stimuli(stimuli = range,
                     stimuli_type = "midi_notes",

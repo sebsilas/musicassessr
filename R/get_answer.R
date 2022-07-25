@@ -204,6 +204,8 @@ get_audio_file_for_pyin <- function(input, state, ...) {
 
 get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
+  cat(file=stderr(), 'get_answer_average_frequency_ff')
+
   # function factory
   # either round up or down to not go too low or too high for the user when rounding
 
@@ -236,11 +238,13 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     }
 
   } else {
-
+    cat(file=stderr(), 'get_answer_average_frequency_ff2')
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
+      cat(file=stderr(), 'get_answer_average_frequency_ff3')
       if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
+        cat(file=stderr(), 'get_answer_average_frequency_ff4')
         list(user_response = NA)
       } else {
         freqs <- pyin_res$freq
@@ -303,8 +307,6 @@ get_melconv <- function(melconv, pyin_res) {
 #' @examples
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
-  print('get_answer_midi_mel')
-  print(input$user_response_midi_note_on)
 
   if(is.null(input$user_response_midi_note_on)) {
 

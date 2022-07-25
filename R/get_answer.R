@@ -239,8 +239,11 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     cat(file=stderr(), 'get_answer_average_frequency_ff2')
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
+      cat(file=stderr(), 'get_answer_average_frequency_ff2.2')
+      cat(file=stderr(), audio_file)
       cat(file=stderr(), 'get_answer_average_frequency_ff2.5')
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
+      cat(file=stderr(), pyin_res)
       cat(file=stderr(), 'get_answer_average_frequency_ff3')
       if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         cat(file=stderr(), 'get_answer_average_frequency_ff4')

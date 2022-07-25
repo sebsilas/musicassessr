@@ -204,8 +204,6 @@ get_audio_file_for_pyin <- function(input, state, ...) {
 
 get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
 
-  cat(file=stderr(), 'get_answer_average_frequency_ff')
-
   # function factory
   # either round up or down to not go too low or too high for the user when rounding
 
@@ -241,6 +239,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     cat(file=stderr(), 'get_answer_average_frequency_ff2')
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
+      cat(file=stderr(), 'get_answer_average_frequency_ff2.5')
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
       cat(file=stderr(), 'get_answer_average_frequency_ff3')
       if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {

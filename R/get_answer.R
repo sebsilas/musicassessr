@@ -19,10 +19,6 @@ get_answer_pyin_melodic_production <- function(input,
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
 
-  print('get_answer_pyin_melodic_production')
-
-  print(pyin_res)
-
   if(is.na(pyin_res$pyin_res)) {
 
     return(list(error = TRUE,
@@ -449,7 +445,11 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
 
 store_results_in_db <- function(state, res, pyin_res) {
 
+  print('store_results_in_db')
+
   store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
+
+  print(store_results_in_db)
 
   if(store_results_in_db) {
     session_info <- psychTestR::get_session_info(state, complete = FALSE)

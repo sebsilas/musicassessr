@@ -1,9 +1,10 @@
 
 key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
-  print('key_rankings_for_inst')
-  print(inst)
   if(nchar(inst) > 4) {
     inst <- instrument_list[[inst]]
+  }
+  if(is.null(inst)) { # i.e., allow non WJD instruments through and pretend they are piano
+    inst <- "p"
   }
   res <- dplyr::filter(key_rankings, instrument == inst) %>% dplyr::arrange(dplyr::desc(n))
   if (remove_atonal) {
@@ -56,10 +57,21 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
   res
 }
 
+#' Sample melody in key
+#'
+#' @param item_bank
+#' @param inst
+#' @param bottom_range
+#' @param top_range
+#' @param difficulty
+#' @param length
+#'
+#' @return
+#' @export
+#'
+#' @examples
 sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
 
-  print('sample_melody_in_key')
-  print(difficulty)
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -73,11 +85,6 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
   # sample melody
 
-  print('just before item_bank_subset')
-  print(item_bank)
-  print(key_tonality)
-  print(user_span)
-  print(length)
 
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
 

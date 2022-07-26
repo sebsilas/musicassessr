@@ -135,6 +135,10 @@ get_note_until_satisfied_loop_midi <- function(show_musical_notation = FALSE, ad
 
 check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
 
+  cat(file=stderr(), 'check_note_ok')
+  cat(file=stderr(), var_name)
+  cat(file=stderr(), page_type)
+
 
   stopifnot(is.character(var_name), is.character(page_type), is.logical(show_musical_notation))
 
@@ -142,6 +146,10 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
 
     transpose <- psychTestR::get_global("transpose_first_melody_note", state)
     clef <- psychTestR::get_global("clef", state)
+
+    print('transpose')
+
+    print(transpose)
 
     if(transpose != 0) {
       transposed_note_message <- psychTestR::i18n("transposed")
@@ -154,6 +162,8 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
     } else {
       note <- answer$note
     }
+
+    cat(file=stderr(), 'note:', note)
 
     if(is.na(note)) {
       psychTestR::one_button_page(shiny::tags$div(

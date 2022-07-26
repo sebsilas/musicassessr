@@ -1,14 +1,20 @@
 
 
+
 #' Include musicassessr scripts in a webpage
+#'
+#' @param visual_notation
+#' @param record_audio
+#' @param midi_input
 #'
 #' @return
 #' @export
 #'
 #' @examples
-include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE) {
+include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE, midi_input = FALSE) {
   htmltools::tagList(
     lapply(musicassessr::musicassessr_js(visual_notation = visual_notation,
+                                         midi_input = midi_input,
                                          record_audio = record_audio), function(x) {
                                            if(base::startsWith(x, "http")) {
                                              htmltools::tags$script(src = x)

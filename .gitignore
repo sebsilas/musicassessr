@@ -8,6 +8,7 @@ R/app.R
 inst/www/PBET_calibration_audio
 docs
 R/DB_AWS.R
+R/DB.R
 inst/node/node_modules/debug/.*
 inst/node/files/*.wav
 test_apps

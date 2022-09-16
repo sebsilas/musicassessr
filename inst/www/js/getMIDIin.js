@@ -1,5 +1,7 @@
 //
 
+console.log('getMIDIin.js loaded');
+
 function generateDeviceDropdown(){
 	WebMidi.enable(function(err) {
 	//error collector
@@ -37,13 +39,16 @@ function instantiateMIDI(midi_device, interactive_midi) {
   console.log(midi_device);
 
   // empty previous buffer
-  if (user_response_midi_note_on) {
-    user_response_midi_note_on = [];
-    user_response_midi_note_off = [];
-    user_response_midi_note_on = [];
-    onsets_noteon = [];
-    onsets_noteoff = [];
-  }
+  user_response_midi_note_on = [];
+  user_response_midi_note_off = [];
+  user_response_midi_note_on = [];
+  onsets_noteon = [];
+  onsets_noteoff = [];
+
+  Shiny.setInputValue("user_response_midi_note_on", JSON.stringify(user_response_midi_note_on));
+  Shiny.setInputValue("onsets_noteon", JSON.stringify(onsets_noteon));
+  Shiny.setInputValue("user_response_midi_note_off", JSON.stringify(user_response_midi_note_off));
+  Shiny.setInputValue("onsets_noteoff", JSON.stringify(onsets_noteoff));
 
   console.log(user_response_midi_note_on);
 
@@ -78,7 +83,6 @@ function instantiateMIDI(midi_device, interactive_midi) {
               console.log(midi_note_on);
 
               user_response_midi_note_on.push(midi_note_on);
-
 
               // play note
 
@@ -120,12 +124,16 @@ function instantiateMIDI(midi_device, interactive_midi) {
 
               console.log(midi_note_off);
 
-              user_response_midi_note_off.push(midi_note_off);
 
               var responseTime = new Date().getTime();
               var timeElapsed = Math.abs(startTime - responseTime);
 
-              onsets_noteoff.push(timeElapsed);
+              // only push note off if it has a corresponding note on
+
+              if(onsets_noteoff.length === onsets_noteon.length-1) {
+                user_response_midi_note_off.push(midi_note_off);
+                onsets_noteoff.push(timeElapsed);
+              }
 
               // send to shiny
               Shiny.setInputValue("user_response_midi_note_off", JSON.stringify(user_response_midi_note_off));

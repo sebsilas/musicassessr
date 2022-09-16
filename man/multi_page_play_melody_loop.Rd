@@ -11,7 +11,7 @@ multi_page_play_melody_loop(
   var_name = "melody",
   stimuli_type = "midi_notes",
   page_type = "record_audio_page",
-  max_goes = 3L,
+  max_goes = 4L,
   page_title = psychTestR::i18n("copy_melody_title"),
  
     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",

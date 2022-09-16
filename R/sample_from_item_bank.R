@@ -202,6 +202,16 @@ sample_from_user_range <- function(no_to_sample) {
 }
 
 
+#' Sample arrhythmic
+#'
+#' @param item_bank
+#' @param num_items_arrhythmic
+#' @param id
+#'
+#' @return
+#' @export
+#'
+#' @examples
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
@@ -224,16 +234,24 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
   })
 }
 
+#' Sample rhythmic
+#'
+#' @param item_bank
+#' @param num_items_rhythmic
+#' @param id
+#'
+#' @return
+#' @export
+#'
+#' @examples
 sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
-    #cat(file=stderr(), "\n")
+
     span <- psychTestR::get_global("span", state)
     span_warning(span)
     if(is.null(span) | span < 10) {
       span <- 10
     }
-    cat("span: \n")
-    cat(file=stderr(), str(span), "\n")
     # sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     if(nrow(rhythmic_item_bank_subset) <= 1) {
@@ -250,6 +268,22 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
     #cat(file=stderr(), str(rhythmic_sample), "\n")
     psychTestR::set_global(id, rhythmic_sample, state)
   })
+}
+
+
+#' Randomly sample num_items per dataframe
+#'
+#' @param item_bank
+#' @param num_items
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sample_random <- function(item_bank, num_items) {
+  print('sample_random')
+
+  item_bank %>% dplyr::slice_sample(n = num_items)
 }
 
 span_warning <- function(span) {

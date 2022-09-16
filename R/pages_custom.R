@@ -24,11 +24,16 @@ select_musical_instrument_page <- function() {
 
                   psychTestR::set_global("inst", answer, state)
 
-                  trans_first_note <- insts_table %>% dplyr::filter(en == answer) %>% dplyr::pull(transpose)
+                  trans_first_note <- insts_table %>%
+                    dplyr::filter(en == answer) %>%
+                    dplyr::pull(transpose)
+
                   if(length(trans_first_note) == 0) {
                     trans_first_note <- 0
                   }
-                  clef <- insts_table %>% dplyr::filter(en == answer) %>% dplyr::pull(clef)
+                  clef <- insts_table %>%
+                    dplyr::filter(en == answer) %>%
+                    dplyr::pull(clef)
                   if(length(clef) == 0) {
                     clef <- "auto"
                   }
@@ -164,3 +169,23 @@ redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 
 }
 
 
+
+
+#' An empty page (with trigger button hidden and possible to show on demand.)
+#'
+#' @param body
+#' @param admin_ui
+#' @param button_text
+#' @param on_complete
+#' @param page_title
+#'
+#' @return
+#' @export
+#'
+#' @examples
+empty_page <- function(body = "", admin_ui = NULL, button_text = "Next", on_complete = NULL, page_title = "") {
+  body <- tagify(body)
+  stopifnot(is.scalar.character(button_text))
+  ui <- shiny::div(page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))
+  page(ui = ui, admin_ui = admin_ui, on_complete = on_complete)
+}

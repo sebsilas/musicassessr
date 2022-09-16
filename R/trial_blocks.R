@@ -1,6 +1,4 @@
 
-
-
 #' A block of record audio pages
 #'
 #' @param no_pages
@@ -58,7 +56,10 @@ record_audio_block <- function(no_pages, feedback = NULL, get_answer = musicasse
 #' @export
 #'
 #' @examples
-sing_arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
+sing_arrhythmic_melody_trials <- function(item_bank,
+                                          num_items,
+                                          num_examples = 0L,
+                                          feedback = FALSE,
                                           get_answer = get_answer_pyin_melodic_production, sound = "piano",
                                           page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
                                           page_title = "Sing the Melody",
@@ -202,13 +203,19 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param show_sheet_music
 #' @param sheet_music_id
 #' @param give_first_melody_note
+#' @param sampler_function
+#' @param presampled
 #'
 #' @return
 #' @export
 #'
 #' @examples
-arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
-                                     get_answer = get_answer_pyin_melodic_production, sound = "piano",
+arrhythmic_melody_trials <- function(item_bank,
+                                     num_items,
+                                     num_examples = 0L,
+                                     feedback = FALSE,
+                                     get_answer = get_answer_pyin_melodic_production,
+                                     sound = "piano",
                                      page_text = "Click below to hear the melody. Play back the melody. Click Stop when finished.",
                                      page_title = "Play the Melody",
                                      page_type = "record_audio_page",
@@ -227,13 +234,16 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                      sound_only_first_melody_note = FALSE,
                                      show_sheet_music = FALSE,
                                      sheet_music_id = 'sheet_music',
-                                     give_first_melody_note = FALSE) {
+                                     give_first_melody_note = FALSE,
+                                     sampler_function = sample_arrhythmic,
+                                     presampled = FALSE) {
 
 
   num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)
+  num_items_flat <- ifelse(is.list(num_items), sum(unlist(num_items)), num_items)
 
 
-  if(num_examples_flat == 0) {
+  if(num_items_flat == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
@@ -258,7 +268,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                shiny::tags$h2(page_title),
                                shiny::tags$p(paste0("First try ", num_examples_flat, " example trials.")))),
                              if(is.null(item_characteristics_sampler_function)) {
-                               sample_arrhythmic(item_bank, num_examples_flat)
+                               if(!is.null(sampler_function)) sampler_function(item_bank, num_examples_flat)
                              } else {
                                sample_item_characteristics(var_name = "arrhythmic_melody",
                                                            item_characteristics_sampler_function,
@@ -295,7 +305,7 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                                shiny::tags$p("Now you're ready for the real thing!")))
                            )},
                          if(is.null(item_characteristics_sampler_function)) {
-                           sample_arrhythmic(item_bank, num_items)
+                           if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat)
                          } else {
                            sample_item_characteristics(var_name = "arrhythmic_melody",
                                                        item_characteristics_sampler_function,
@@ -303,7 +313,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
                          },
                          ## trials
                          musicassessr::multi_page_play_melody_loop(
-                           n_items = ifelse(is.list(num_items), sum(unlist(num_items)), num_items),
+                           presampled_items = if(presampled) item_bank else NULL,
+                           n_items = num_items_flat,
                            var_name = "arrhythmic_melody",
                            page_type = page_type,
                            page_title = page_title,
@@ -364,6 +375,8 @@ arrhythmic_melody_trials <- function(item_bank, num_items, num_examples = 0L, fe
 #' @param show_sheet_music
 #' @param sheet_music_id
 #' @param give_first_melody_note
+#' @param sampler_function
+#' @param presampled
 #'
 #' @return
 #' @export
@@ -393,9 +406,15 @@ rhythmic_melody_trials <- function(item_bank,
                                    sound_only_first_melody_note = FALSE,
                                    show_sheet_music = FALSE,
                                    sheet_music_id = 'sheet_music',
-                                   give_first_melody_note = FALSE) {
+                                   give_first_melody_note = FALSE,
+                                   sampler_function = sample_rhythmic,
+                                   presampled = FALSE) {
 
-  if(num_items == 0) {
+  num_items_flat <- ifelse(is.list(num_items), sum(unlist(num_items)), num_items)
+  num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)
+
+
+  if(num_items_flat == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
@@ -421,16 +440,17 @@ rhythmic_melody_trials <- function(item_bank,
                                shiny::tags$p(paste0("First try ", num_examples, " example trials."))
                              )),
                              if(is.null(item_characteristics_sampler_function)) {
-                               sample_rhythmic(item_bank, num_examples)
+                               if(!is.null(sampler_function)) sampler_function(item_bank, num_examples_flat)
                              } else {
                                sample_item_characteristics(var_name = "rhythmic_melody",
                                                            item_characteristics_sampler_function,
                                                            item_characteristics_pars)
                              },
                              musicassessr::multi_page_play_melody_loop(
+                               presampled_items = if(presampled) item_bank else NULL,
                                stimuli_type = "midi_notes",
                                var_name = "rhythmic_melody",
-                               n_items = ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples),
+                               n_items = num_examples_flat,
                                page_title = page_title,
                                page_text = page_text,
                                page_type = page_type,
@@ -458,7 +478,7 @@ rhythmic_melody_trials <- function(item_bank,
                          },
                          # sample
                          if(is.null(item_characteristics_sampler_function)) {
-                           sample_rhythmic(item_bank, num_items)
+                           if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat)
                          } else {
                            sample_item_characteristics(var_name = "rhythmic_melody",
                                                        item_characteristics_sampler_function,
@@ -468,7 +488,7 @@ rhythmic_melody_trials <- function(item_bank,
                          musicassessr::multi_page_play_melody_loop(
                            stimuli_type = "midi_notes",
                            var_name = "rhythmic_melody",
-                           n_items = ifelse(is.list(num_items), sum(unlist(num_items)), num_items),
+                           n_items = num_items_flat,
                            page_title = page_title,
                            page_text = page_text,
                            page_type = page_type,
@@ -855,15 +875,10 @@ audio_melodic_production_trials <- function(audio_directory,
     file <- files_list[i]
 
     if(grab_meta_data) {
-      print('grab_md')
       base_file <- basename(file)
-      print(base_file)
       md <- grab_meta_data(meta_data_df, meta_data_lookup_column, base_file)
-      print(md)
       md_note <- md %>% dplyr::pull(note) %>% itembankr::str_mel_to_vector()
-      print(md_note)
       md_durations <- md %>% dplyr::pull(durations) %>% itembankr::str_mel_to_vector()
-      print(md_durations)
 
     } else {
       md <- " "

@@ -9,9 +9,12 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 stop_button_text = "Stop",
                                                 asChord = FALSE, durations = numeric(), auto_next_page = FALSE,
                                                 play_button_id = "playButton", button_area_id = "button_area",
-                                                record_immediately = FALSE, transpose_first_melody_note = 0,
-                                                clef = "auto", sound_only_first_melody_note = FALSE,
-                                                show_sheet_music = FALSE, sheet_music_id = 'sheet_music',
+                                                record_immediately = FALSE,
+                                                transpose_first_melody_note = 0,
+                                                clef = "auto",
+                                                sound_only_first_melody_note = FALSE,
+                                                show_sheet_music = FALSE,
+                                                sheet_music_id = 'sheet_music',
                                                 give_first_melody_note = FALSE, ...) {
 
 
@@ -791,8 +794,11 @@ sort_durations <- function(durations, note_length, stimuli) {
   durations
 }
 
-show_first_melody_note <- function(give_first_melody_note, stimuli, transpose_first_melody_note = 0,
-                                   clef = "auto", show_first_melody_note_visual = TRUE, audio_play_button_id = "firstMelodyPlay") {
+show_first_melody_note <- function(give_first_melody_note,
+                                   stimuli,
+                                   transpose_first_melody_note = 0,
+                                   clef = "auto",
+                                   show_first_melody_note_visual = TRUE, audio_play_button_id = "firstMelodyPlay") {
   if(give_first_melody_note) {
     shiny::tags$div(
       shiny::tags$p(psychTestR::i18n("first_note_is")),

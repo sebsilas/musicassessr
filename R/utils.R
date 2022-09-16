@@ -1,5 +1,30 @@
 
 
+is.scalar.character <- function(x) {
+  is.character(x) && is.scalar(x)
+}
+
+is.scalar.numeric <- function(x) {
+  is.numeric(x) && is.scalar(x)
+}
+
+is.scalar.logical <- function(x) {
+  is.logical(x) && is.scalar(x)
+}
+
+is.scalar <- function(x) {
+  identical(length(x), 1L)
+}
+
+
+tagify <- function(x) {
+  stopifnot(is.character(x) || is(x, "shiny.tag"))
+  if (is.character(x)) {
+    stopifnot(is.scalar(x))
+    shiny::p(x)
+  } else x
+}
+
 #' Allow the experimenter to set a condition at the beginning of the test
 #'
 #' @param block1
@@ -97,6 +122,21 @@ to_string_df <- function(df, exclude_cols = character()) {
 }
 
 
+#' Set response type for a test manually
+#'
+#' @param type
+#'
+#' @return
+#' @export
+#'
+#' @examples
+set_response_type <- function(type = c("Microphone", "MIDI")) {
+  psychTestR::code_block(function(state, ...) {
+    psychTestR::set_global("response_type", type, state)
+  })
+}
+
+
 # d <- data.frame(
 #   a = 1:10,
 #   b = LETTERS[1:10]
@@ -191,6 +231,10 @@ expand_string_df_row <- function(df, row_id = NULL) {
 }
 
 set_answer_meta_data <- function(meta_data) {
+
+  if(is.data.frame(meta_data)) {
+    meta_data <- rjson::toJSON(meta_data)
+  }
   paste0('Shiny.setInputValue(\"answer_meta_data\", ', meta_data, ');')
 }
 

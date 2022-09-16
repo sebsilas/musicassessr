@@ -21,10 +21,15 @@ get_answer_pyin_melodic_production <- function(input,
 
   if(is.na(pyin_res$pyin_res)) {
 
-    return(list(error = TRUE,
-                reason = "there was nothing in the pitch track",
-                user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-                user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating)))
+    res <- list(
+      error = TRUE,
+      reason = "there was nothing in the pitch track",
+      user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
+      user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
+      attempt = ifelse(length(input$attempt) == 0, NA, as.numeric(input$attempt)),
+      opti3 = NA,
+      answer_meta_data = tibble::as_tibble(input$answer_meta_data),
+      stimuli = as.numeric(rjson::fromJSON(input$stimuli)))
 
   } else {
 
@@ -36,8 +41,9 @@ get_answer_pyin_melodic_production <- function(input,
                                    pyin_res$pyin_res$onset,
                                    pyin_res$pyin_pitch_track)
 
-    store_results_in_db(state, res, pyin_res)
   }
+
+  store_results_in_db(state, res, pyin_res)
 
   res
 
@@ -96,7 +102,7 @@ get_answer_pyin_long_note <- function(input, state, ...) {
          freq = pyin_res$freq,
          noise_classification = noise.classification$prediction,
          failed_tests = noise.classification$failed_tests),
-          long_note_pitch_measures
+    long_note_pitch_measures
 
   )
 
@@ -301,29 +307,53 @@ get_melconv <- function(melconv, pyin_res) {
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
 
-  if(is.null(input$user_response_midi_note_on)) {
+  length1 <- length(rjson::fromJSON(input$user_response_midi_note_on))
+  length2 <- length(rjson::fromJSON(input$user_response_midi_note_off))
+  length3 <- length(rjson::fromJSON(input$onsets_noteon))
+  length4 <- length(rjson::fromJSON(input$onsets_noteoff))
 
-    print('no notes')
+  equal_lengths <- length1 == length2 & length2 == length3 & length3 == length4
 
-    return(list(error = TRUE,
-                reason = "no midi notes",
+
+  if(length1 == 0 | length2 == 0 | length3 == 0 | length4 == 0 | !equal_lengths) {
+
+    midi_res <- list(
+      pyin_style_res = tibble::tibble(
+      file_name = NA,
+      onset = NA,
+      dur = NA,
+      freq = NA,
+      note = NA))
+
+
+    res <- list(error = TRUE,
+                reason = "no midi notes / lengths unequal",
                 user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-                user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating)))
+                user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
+                attempt = ifelse(length(input$attempt) == 0, NA, as.numeric(input$attempt)),
+                opti3 = NA,
+                answer_meta_data = tibble::as_tibble(input$answer_meta_data),
+                stimuli = as.numeric(rjson::fromJSON(input$stimuli)))
 
-  } else {
+     } else {
 
-    midi_res <- get_answer_midi(input, state, ...)
+       midi_res <- get_answer_midi(input, state, ...)
 
-    res <- concat_mel_prod_results(input,
-                                   state,
-                                    melconv_res = list(notes = NA, durations = NA),
-                                    midi_res$user_response_midi_note_on,
-                                    c(diff(midi_res$onsets_noteon), midi_res$onsets_noteon[length(midi_res$onsets_noteon)]-midi_res$onsets_noteon[length(midi_res$onsets_noteon)]),
-                                    midi_res$onsets_noteon,
-                                    tibble::tibble())
 
-    store_results_in_db(state, res)
-  }
+       res <- concat_mel_prod_results(input,
+                                      state,
+                                      melconv_res = list(notes = NA, durations = NA),
+                                      user_melody_input = midi_res$user_response_midi_note_on,
+                                      user_duration_input = midi_res$pyin_style_res$dur,
+                                      user_onset_input = midi_res$onsets_noteon,
+                                      pyin_pitch_track = midi_res$pyin_style_res)
+
+     }
+
+  print('storesss')
+  print(midi_res)
+
+  store_results_in_db(state, res, midi_res$pyin_style_res)
   res
 
 }
@@ -339,11 +369,44 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 #'
 #' @examples
 get_answer_midi <- function(input, state, ...) {
-  list(
-    user_response_midi_note_on = as.numeric(rjson::fromJSON(input$user_response_midi_note_on)),
-    user_response_midi_note_off =  as.numeric(rjson::fromJSON(input$user_response_midi_note_off)),
-    onsets_noteon =  as.numeric(rjson::fromJSON(input$onsets_noteon))
-  )
+
+
+  if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
+
+    list(
+      user_response_midi_note_on = NA,
+      user_response_midi_note_off =  NA,
+      onsets_noteon =  NA,
+      onsets_off = NA,
+      pyin_style_res = NA)
+
+  } else {
+
+    notes <- as.numeric(rjson::fromJSON(input$user_response_midi_note_on))
+    notes_off <- as.numeric(rjson::fromJSON(input$user_response_midi_note_off))
+    onsets <- as.numeric(rjson::fromJSON(input$onsets_noteon))/1000
+    onsets_off <- as.numeric(rjson::fromJSON(input$onsets_noteoff))/1000
+
+
+    durs <- onsets_off - onsets
+
+    pyin_style_res <- tibble::tibble(
+      onset = onsets,
+      dur = durs,
+      freq = hrep::midi_to_freq(notes),
+      note = notes,
+      file_name = NA
+    ) %>%
+      dplyr::relocate(file_name)
+
+
+    list(
+      user_response_midi_note_on = notes,
+      user_response_midi_note_off =  notes_off,
+      onsets_noteon =  onsets,
+      onsets_off = onsets_off,
+      pyin_style_res = pyin_style_res)
+  }
 
 }
 
@@ -368,7 +431,7 @@ get_answer_interval_page <- function(input, state, ...) {
   c(
     list(
       user_choice = input$dropdown),
-      as.list(answer_meta_data)
+    as.list(answer_meta_data)
   )
 }
 
@@ -394,8 +457,13 @@ get_answer_save_aws_key <- function(input, ...) {
 
 # generic
 
-concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input, user_duration_input,
-                                    user_onset_input, pyin_pitch_track, ...) {
+concat_mel_prod_results <- function(input,
+                                    state,
+                                    melconv_res,
+                                    user_melody_input,
+                                    user_duration_input,
+                                    user_onset_input,
+                                    pyin_pitch_track, ...) {
 
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
@@ -430,36 +498,46 @@ concat_mel_prod_results <- function(input, state, melconv_res, user_melody_input
   ongoing_scores <- psychTestR::get_global("scores", state)
   psychTestR::set_global("scores", c(ongoing_scores, scores$opti3), state)
 
+
   c(
 
     list(file = get_audio_file_for_pyin(input, state),
+         attempt = ifelse(length(input$attempt) == 0, NA, as.numeric(input$attempt)),
          user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
          user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
          melconv_notes = melconv_res$notes,
          melconv_durations = melconv_res$durations),
 
-        scores)
+    scores)
 }
 
 
 
 store_results_in_db <- function(state, res, pyin_res) {
 
-  print('store_results_in_db')
-
   store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
 
-  print(store_results_in_db)
-
   if(store_results_in_db) {
-    session_info <- psychTestR::get_session_info(state, complete = FALSE)
 
-    add_trial_to_db(test_username = psychTestR::get_global("test_username", state),
-                    test = psychTestR::get_global("test", state),
+    session_info <- psychTestR::get_session_info(state, complete = FALSE)
+    test_username <- psychTestR::get_global("test_username", state)
+    test <- psychTestR::get_local("test", state)
+
+    if(is.null(test)) {
+      test <- psychTestR::get_global("test", state)
+    }
+
+    add_trial_to_db(test_username = test_username,
+                    test = test,
                     session_id = session_info$p_id,
                     melody = paste0(res$stimuli, collapse = ","),
                     res$opti3,
-                    pyin_res)
+                    pyin_res,
+                    res$answer_meta_data$N,
+                    res$answer_meta_data$step.cont.loc.var,
+                    res$answer_meta_data$tonalness,
+                    res$answer_meta_data$log_freq,
+                    res$attempt)
   }
 }
 

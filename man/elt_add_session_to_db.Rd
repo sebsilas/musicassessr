@@ -4,7 +4,14 @@
 \alias{elt_add_session_to_db}
 \title{Add session to postgres db}
 \usage{
-elt_add_session_to_db()
+elt_add_session_to_db(
+  take_scores_from = c("db_table", "session_variable"),
+  get_local = FALSE,
+  test = NULL
+)
+}
+\arguments{
+\item{test}{}
 }
 \value{
 

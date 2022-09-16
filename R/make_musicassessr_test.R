@@ -2,7 +2,6 @@
 
 #' Make a musicassessr test
 #'
-#' @param musicassessr_aws Running on AWS?
 #' @param elts_before_setup_pages Timeline to go before setup pages.
 #' @param elts Timeline to go after setup pages.
 #' @param setup_pages Should there be setup pages.
@@ -12,22 +11,32 @@
 #' @param languages Languages for the test.
 #' @param additional_dict Additional dictionary for the test.
 #' @param musicassessr_opt Musicassessr options.
+#' @param musicassessr_aws Running on AWS?
 #' @param visual_notation Will there be visual notation?
+#' @param midi_file_playback Is MIDI file playback required?
+#' @param record_audio Is audio recording required?
+#' @param app_name App name for audio recording apps.
+#' @param midi_input Is MIDI input required?
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-make_musicassessr_test <- function(musicassessr_aws = FALSE,
-                                   elts_before_setup_pages = function() { psychTestR::join(psychTestR::code_block(function(state, ...) {})) },
+make_musicassessr_test <- function(elts_before_setup_pages = function() { psychTestR::join(psychTestR::code_block(function(state, ...) {})) },
                                    elts,
                                    setup_pages,
                                    setup_pages_options = musicassessr::setup_pages_options,
                                    title, admin_password, languages = "en",
                                    additional_dict = NULL,
                                    musicassessr_opt = musicassessr::musicassessr_opt(),
-                                   visual_notation = FALSE, ...) {
+                                   musicassessr_aws = FALSE,
+                                   visual_notation = FALSE,
+                                   midi_file_playback = FALSE,
+                                   record_audio = TRUE,
+                                   app_name = character(),
+                                   midi_input = FALSE,
+                                   ...) {
 
   stopifnot(
     is.logical(musicassessr_aws),
@@ -53,7 +62,12 @@ make_musicassessr_test <- function(musicassessr_aws = FALSE,
       title = title,
       admin_password = admin_password,
       languages = languages,
-      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws, visual_notation = visual_notation),
+      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws,
+                                                         visual_notation,
+                                                         midi_file_playback,
+                                                         record_audio,
+                                                         app_name,
+                                                         midi_input),
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,

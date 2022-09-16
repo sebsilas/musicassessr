@@ -30,11 +30,13 @@ rhythmic_melody_trials(
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
-  give_first_melody_note = FALSE
+  give_first_melody_note = FALSE,
+  sampler_function = sample_rhythmic,
+  presampled = FALSE
 )
 }
 \arguments{
-\item{give_first_melody_note}{}
+\item{presampled}{}
 }
 \value{
 

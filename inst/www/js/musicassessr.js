@@ -244,14 +244,13 @@ function playSingleNote(note_list, dur_list, hidePlay, id,
 
   var freq_list = Tone.Frequency(note_list, "midi").toNote();
 
-  //auto_next_page = true;
   triggerNote(sound, freq_list, dur_list);
   setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, dur_list*1000);
 
 }
 
 
-function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id) {
+function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id, auto_next_page) {
 
   console.log('playSeqArrhythmic');
   console.log(show_sheet_music);
@@ -264,11 +263,21 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
         triggerNote(sound, note, 0.50);
         count = count + 1;
         if (count === last_note) {
-          if(page_type === "record_audio_page" | page_type === "record_midi_page") {
-            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, 0.50); // delay to avoid catching stimuli in recording
-          }
           pattern.stop();
           Tone.Transport.stop();
+
+          if(page_type === "record_audio_page" | page_type === "record_midi_page") {
+            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, 0.50); // delay to avoid catching stimuli in recording
+          } else {
+            setTimeout(() => {
+
+                      if(auto_next_page) {
+                      next_page();
+                    }
+
+                    }, 0.50);
+          }
+
         }
 
       }, freq_list);
@@ -276,7 +285,7 @@ function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_ty
 
 function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type,
                           hidePlay, id, stop_button_text, show_sheet_music = false,
-                          sheet_music_id = 'sheet_music') {
+                          sheet_music_id = 'sheet_music', auto_next_page) {
 
   if(hidePlay) {
     hidePlayButton(id);
@@ -294,13 +303,27 @@ function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type
               }
               count = count + 1;
                 if (count === last_note) {
-                  if(page_type !== 'null') {
-                    setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, value.duration*1000);
-                  }
-
                   pattern.stop();
                   Tone.Transport.stop();
+
+                  if(page_type === "record_audio_page" | page_type === "record_midi_page") {
+
+                    setTimeout(() => {
+                      recordAndStop(null, true, hidePlay,
+                                   id, page_type, stop_button_text,
+                                   show_sheet_music, sheet_music_id); }, value.duration*1000);
+                  } else {
+
+                    setTimeout(() => {
+
+                      if(auto_next_page) {
+                        next_page();
+                    }
+
+                    }, value.duration*1000);
+
                 }
+            }
               }, notesAndDurations);
     pattern.start(0).loop = false;
     Tone.Transport.start();
@@ -311,10 +334,6 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
                   dur_list = null, auto_next_page,
                   show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
-  console.log('playSeq');
-  console.log(hidePlay);
-  console.log(page_type);
-  console.log(auto_next_page);
 
 
   if(hidePlay) {
@@ -352,10 +371,10 @@ function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "
 
     if(dur_list === null) {
       playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id,
-                        stop_button_text, show_sheet_music, sheet_music_id);
+                        stop_button_text, show_sheet_music, sheet_music_id, auto_next_page);
     } else {
       playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type,
-                      hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id);
+                      hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id, auto_next_page);
     }
   }
 
@@ -713,7 +732,6 @@ function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet
       WebMidi.disable();
       hideButtonAreaShowUserRating();
       if(auto_next_page) {
-        console.log('papp!!');
         next_page();
       }
     } else {
@@ -1002,11 +1020,11 @@ function upload_file_to_s3(blob) {
 	var filename = new Date().toISOString();
 	var fd = new FormData();
 	fd.append("audio_data", blob, recordkey);
-	console.log('shiny_app_name?');
-	console.log(shiny_app_name);
-	console.log('musicassessr_state?');
-	console.log(musicassessr_state);
-	fd.append("app_name", shiny_app_name);
+
+	if (typeof shiny_app_name !== 'undefined') {
+	  fd.append("app_name", shiny_app_name);
+	   Shiny.setInputValue("shiny_app_name", shiny_app_name);
+	}
 
 	if(this.musicassessr_state === "production") {
 	  console.log('upload production...');
@@ -1020,7 +1038,6 @@ function upload_file_to_s3(blob) {
 
   Shiny.setInputValue("key", recordkey);
   Shiny.setInputValue("file_url", file_url);
-  Shiny.setInputValue("shiny_app_name", shiny_app_name);
 
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved

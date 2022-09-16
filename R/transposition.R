@@ -6,7 +6,8 @@ key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
   if(is.null(inst)) { # i.e., allow non WJD instruments through and pretend they are piano
     inst <- "p"
   }
-  res <- dplyr::filter(key_rankings, instrument == inst) %>% dplyr::arrange(dplyr::desc(n))
+  res <- dplyr::filter(key_rankings, instrument == inst) %>%
+    dplyr::arrange(dplyr::desc(n))
   if (remove_atonal) {
     res <- res %>% dplyr::filter(key != "")
   }
@@ -18,8 +19,7 @@ easy_keys_for_inst <- function(instrument_name) {
   ranking <- key_rankings_for_inst(instrument_name)
   easy_keys <- ranking[1:floor(nrow(ranking)/2), ]
   warning('Manually adding easy keys for Piano: C, F,  G, D')
-  print('easy_keys_for_inst')
-  print(easy_keys_for_inst)
+
   if(instrument_name == "Piano") {
     easy_keys <- rbind(easy_keys,
                   tibble::tibble(instrument = rep("p", 4),
@@ -87,9 +87,6 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
 
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
-
-  print('nrow item_bank_subset')
-  print(item_bank_subset)
 
   if(nrow(item_bank_subset) == 0) {
     item_bank_subset <- itembankr::subset_item_bank(item_bank, span_max = user_span, item_length = length)
@@ -161,13 +158,10 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
       }
       else if (!check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
-        print('asd829')
-        print(abs_mel_down)
         # only octave down in range, return that
         return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_down, collapse = ","), meta_data)))
       }
       else {
-        print('asd923olll')
         if(count > 10) {
           return(cbind(tibble::tibble(abs_melody = paste0(abs_mel, collapse = ","), meta_data)))
         }

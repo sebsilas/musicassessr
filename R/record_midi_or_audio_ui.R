@@ -44,6 +44,10 @@ record_midi_or_audio_ui <- function(body = " ",
 
     shiny::tags$head(
 
+      shiny::tags$script( # set attempts
+        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', rjson::toJSON(max_goes - attempts_left), ');'))
+      ),
+
       shiny::tags$script(paste0('console.log(\"this is a ', page_type, '\");')),
       if(page_type == "record_midi_page") autoInstantiateMidi(instantiate = autoInstantiate, midi_device, interactive),
 

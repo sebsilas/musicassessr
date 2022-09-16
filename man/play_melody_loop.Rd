@@ -10,7 +10,7 @@ play_melody_loop(
   melody_no = 0,
   var_name = "melody",
   stimuli_type = "midi_notes",
-  max_goes = 3L,
+  max_goes = 4L,
   max_goes_forced = FALSE,
   page_type = "record_audio_page",
   page_title = "Copy The Melody",
@@ -33,16 +33,18 @@ play_melody_loop(
   display_modality = "auditory",
   show_record_button = FALSE,
   total_no_melodies = 0,
-  show_progress = FALSE,
+  show_progress = TRUE,
   start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
-  give_first_melody_note = FALSE
+  give_first_melody_note = FALSE,
+  psychTestRCAT = FALSE,
+  melody_row = NULL
 )
 }
 \arguments{
-\item{give_first_melody_note}{}
+\item{psychTestRCAT}{}
 }
 \value{
 

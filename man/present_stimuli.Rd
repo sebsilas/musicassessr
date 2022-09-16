@@ -54,6 +54,9 @@ present_stimuli(
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
+  slider_value = 5,
+  slider_min = 1,
+  slider_max = 10,
   ...
 )
 }

@@ -82,12 +82,15 @@ present_stimuli <- function(stimuli, stimuli_type,
                             sound_only_first_melody_note = FALSE,
                             show_sheet_music = FALSE,
                             sheet_music_id = 'sheet_music',
-                            give_first_melody_note = FALSE, ...) {
-
+                            give_first_melody_note = FALSE,
+                            slider_value = 5,
+                            slider_min = 1,
+                            slider_max = 10, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
-            is.character(answer_meta_data), is.function(get_answer), is.logical(save_answer),
+            is.character(answer_meta_data) | is.data.frame(answer_meta_data),
+            is.function(get_answer), is.logical(save_answer),
             is.logical(stimuli_reactive), is.character(midi_device),
             is.logical(show_aws_controls), is.character(page_label),
             is.character(button_text), is.character(play_button_text),
@@ -207,7 +210,8 @@ present_stimuli <- function(stimuli, stimuli_type,
     } else {
       full_page <- shiny::tags$div(shiny::tags$h2(page_title), return_stimuli, shiny::tags$p(page_text))
     }
-    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, ...)
+    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, slider_value = slider_value,
+                              slider_min = slider_min, slider_max = slider_max, ...)
   }
 
   res
@@ -254,7 +258,7 @@ page_types = c("one_button_page",
 
 get_page_function <- function(page_type) {
   if(page_type %in% c("record_audio_page", "record_midi_page", "record_key_presses_page",
-                      "record_spoken_words_page", "play_text_page")) {
+                      "record_spoken_words_page", "play_text_page", "empty_page")) {
     page.fun <- get(page_type, asNamespace("musicassessr"))
   } else{
     page.fun <- get(page_type, asNamespace("psychTestR"))
@@ -270,12 +274,15 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                                show_record_button = FALSE, save_answer = TRUE, auto_next_page = FALSE,
                                choices = character(), user_rating = FALSE, page_text_first = TRUE,
                                happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, max_goes = 1,
-                               melody_no = 0, total_no_melodies = 0, show_progress = FALSE, ...) {
+                               melody_no = 0, total_no_melodies = 0, show_progress = FALSE,
+                               slider_value = 5, slider_min = 0, slider_max = 10, ...) {
 
 
   stopifnot(is.character(page_type), class(stimuli_wrapped) == "shiny.tag",
             is.character(page_text) | class (page_text) == "shiny.tag", is.character(page_title), is.logical(interactive),
-            is.logical(stimuli_reactive), is.character(answer_meta_data), is.character(midi_device),
+            is.logical(stimuli_reactive),
+            is.character(answer_meta_data) | is.data.frame(answer_meta_data),
+            is.character(midi_device),
             is.logical(show_aws_controls), is.character(page_label), is.character(button_text),
             is.character(play_button_text), is.function(get_answer),
             is.logical(show_record_button), is.logical(save_answer), is.logical(auto_next_page),
@@ -284,7 +291,11 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
             is.numeric(max_goes),
             is.numeric(melody_no) & length(melody_no) == 1,
             is.numeric(total_no_melodies) & length(total_no_melodies) == 1,
-            is.logical(show_progress))
+            is.logical(show_progress),
+            assertthat::is.scalar(slider_value) & is.numeric(slider_value),
+            assertthat::is.scalar(slider_min) & is.numeric(slider_min),
+            assertthat::is.scalar(slider_max) & is.numeric(slider_max)
+            )
 
 
   # the stimuli should already be wrapped by one of the present_stimuli functions
@@ -298,8 +309,12 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
   # i.e some pages accept "body" whilst others accept "prompt"
   args <- check_correct_argument_for_body(page_type, args, stimuli_wrapped)
 
-  if (page_type == "one_button_page") {
+  if (page_type == "one_button_page" | page_type == "empty_page") {
     args$button_text <- button_text
+  } else if(page_type == "slider_page") {
+      args$min <- slider_min
+      args$max <- slider_max
+      args$value <- slider_value
   } else if(page_type == "NAFC_page" | page_type == "dropdown_page") {
     args$choices <- choices
   } else if(page_type == "play_text_page") {
@@ -308,7 +323,6 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
     args$page_text <- page_text
     args$page_title <- page_title
   } else if(page_type == "record_audio_page" | page_type == "record_midi_page") {
-
     args <- c(args,
               list(
                 "page_text" = page_text,
@@ -436,7 +450,7 @@ reactive_stimuli <- function(stimuli_function, stimuli_reactive, prepared_stimul
 check_correct_argument_for_body <- function(page_type_string, args, stimuli_wrapped) {
   # feed the body to the page, but using the correct argument
   # i.e some pages accept "body" whilst others accept "prompt"
-  if (page_type_string %in% c("one_button_page", "record_audio_page", "record_midi_page",  "record_key_presses_page")) {
+  if (page_type_string %in% c("one_button_page", "record_audio_page", "record_midi_page",  "record_key_presses_page", "empty_page")) {
     args[["body"]] <- stimuli_wrapped
   } else if (page_type_string %in% c("NAFC_page", "dropdown_page", "slider_page", "text_input_page")) {
     args[["prompt"]] <- stimuli_wrapped

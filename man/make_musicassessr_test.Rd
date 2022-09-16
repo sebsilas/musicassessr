@@ -5,7 +5,6 @@
 \title{Make a musicassessr test}
 \usage{
 make_musicassessr_test(
-  musicassessr_aws = FALSE,
   elts_before_setup_pages = function() {    
     psychTestR::join(psychTestR::code_block(function(state, ...) {     })) },
   elts,
@@ -16,13 +15,16 @@ make_musicassessr_test(
   languages = "en",
   additional_dict = NULL,
   musicassessr_opt = musicassessr::musicassessr_opt(),
+  musicassessr_aws = FALSE,
   visual_notation = FALSE,
+  midi_file_playback = FALSE,
+  record_audio = TRUE,
+  app_name = character(),
+  midi_input = FALSE,
   ...
 )
 }
 \arguments{
-\item{musicassessr_aws}{Running on AWS?}
-
 \item{elts_before_setup_pages}{Timeline to go before setup pages.}
 
 \item{elts}{Timeline to go after setup pages.}
@@ -41,7 +43,17 @@ make_musicassessr_test(
 
 \item{musicassessr_opt}{Musicassessr options.}
 
+\item{musicassessr_aws}{Running on AWS?}
+
 \item{visual_notation}{Will there be visual notation?}
+
+\item{midi_file_playback}{Is MIDI file playback required?}
+
+\item{record_audio}{Is audio recording required?}
+
+\item{app_name}{App name for audio recording apps.}
+
+\item{midi_input}{Is MIDI input required?}
 
 \item{...}{}
 }

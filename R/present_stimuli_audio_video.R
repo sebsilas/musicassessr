@@ -7,11 +7,20 @@ present_stimuli_video <- function(video_url, ...) {
 }
 
 
-present_stimuli_audio <- function(audio_url, hideOnPlay = FALSE, page_type = 'null',
+present_stimuli_audio <- function(audio_url,
+                                  hideOnPlay = FALSE,
                                   stop_button_text = "Stop",
+                                  page_type = 'null',
                                   answer_meta_data = data.frame(),
-                                  volume = 1, audio_playback_as_single_play_button = FALSE, ...) {
+                                  volume = 1,
+                                  audio_playback_as_single_play_button = FALSE,
+                                  auto_next_page = FALSE, ...) {
 
+  if(page_type == "record_audio_page") {
+    on_finish <- paste0('recordAndStop(ms = null, showStop = true, hidePlay = false, id = null, type = \"record_audio_page\", stop_button_text = \"', stop_button_text, '\");')
+  } else {
+    on_finish <- '0'
+  }
 
   shiny::tags$div(
     shiny::tags$audio(src = audio_url, type = "audio/mp3",
@@ -29,22 +38,42 @@ present_stimuli_audio <- function(audio_url, hideOnPlay = FALSE, page_type = 'nu
       shiny::tags$script(paste0('var player = document.getElementById("player");
                                  player.volume = ', volume, ';'))
     },
+    if(auto_next_page) {
+      shiny::tags$script(
+        'var player = document.getElementById("player");
+        if(typeof player !== "undefined") {
+          console.log(\'in this if\');
+            player.addEventListener("play", function () {
+            hideAudioFilePlayer();
+            var audio_duration = player.duration * 1000; // to ms
+            setTimeout(function() {
+              next_page();
+            }, audio_duration);
+        })
+        }')
+    },
     if(hideOnPlay) {
       shiny::tags$script(paste0('
         function hide_spinner(){
                       spinner=document.getElementsByClassName(\"hollow-dots-spinner\");
-		                  spinner[0].style.display=\"none\";
+                      if(typeof spinner[0] !== "undefined") {
+                        spinner[0].style.display = "none";
                       }
+          }
         spinner = document.getElementsByClassName("hollow-dots-spinner");
-        spinner[0].style.display = "block";
+        if(typeof spinner[0] !== "undefined") {
+          spinner[0].style.display = "block";
+        }
         var player = document.getElementById("player");
         if(typeof player !== "undefined") {
             console.log(\'in this if\');
             player.addEventListener("play", function () {
             hideAudioFilePlayer();
             var audio_duration = player.duration * 1000; // to ms
-            setTimeout(function(){  recordAndStop(ms = null, showStop = true, hidePlay = false, id = null, type = \"record_audio_page\", stop_button_text = \"', stop_button_text, '\") }, audio_duration);
-        }); }'))
+            setTimeout(function() {', on_finish, '
+
+        }); audio_duration})
+        }'))
     }
   )
 }

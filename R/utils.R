@@ -306,6 +306,24 @@ urlFileExist <- function(url){
 }
 
 
+#' List official musicassessr tests
+#'
+#' @param include_PDT
+#'
+#' @return
+#' @export
+#'
+#' @examples
+list_official_tests <- function(include_PDT = TRUE) {
+
+  list(
+    "Singing Ability Assessment (SAA)" = "SAA::SAA_standalone",
+    "Play By Ear Test (PBET)"  = "PBET::PBET_standalone",
+    "Sight Singing Test (SST)" = "SST::SST_standalone",
+    "Sight Reading Test (SRT)" = "SRT::SRT_standalone") %>%
+    { if(include_PDT) c(., list("Pitch Discrimination Test (PDT)" = "PDT::PDT_standalone")) else . }
+}
+
 # tests
 
 #g <- as.list(1:10)

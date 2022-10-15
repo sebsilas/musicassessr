@@ -6,15 +6,14 @@
 \usage{
 empty_page(
   body = "",
-  page_title = "",
-  label = "",
-  get_answer = function() { },
-  save_answer = FALSE,
-  button_text = "Next"
+  admin_ui = NULL,
+  button_text = "Next",
+  on_complete = NULL,
+  page_title = ""
 )
 }
 \arguments{
-\item{button_text}{}
+\item{page_title}{}
 }
 \value{
 

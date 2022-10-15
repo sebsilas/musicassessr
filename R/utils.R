@@ -324,6 +324,21 @@ list_official_tests <- function(include_PDT = TRUE) {
     { if(include_PDT) c(., list("Pitch Discrimination Test (PDT)" = "PDT::PDT_standalone")) else . }
 }
 
+
+#' List tone sound types
+#'
+#' @return
+#' @export
+#'
+#' @examples
+list_tone_sound_types <- function() {
+  # These come from Tone.js-instruments
+  c('bass-electric','bassoon','cello','clarinet','contrabass','flute',
+    'french-horn','guitar-acoustic','guitar-electric','guitar-nylon',
+    'harmonium','harp','organ','piano','saxophone','trombone','trumpet',
+    'tuba','violin', 'voice_daa', 'voice_doo', 'xylophone')
+}
+
 # tests
 
 #g <- as.list(1:10)

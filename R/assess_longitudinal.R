@@ -175,6 +175,10 @@ flick_through_plots <- function(n = 1) {
 
 
 
+# NB, there was some bug in the experiment which meant that sometimes the experiment
+# Would end after 2 conditions (rather than 3), so I had to manually run the 3rd
+# condition and then update the DB appropriately afterwards, using the below code:
+
 
 
 
@@ -182,6 +186,16 @@ flick_through_plots <- function(n = 1) {
 # trials <- get_table("trials")
 # sessions <- get_table("sessions")
 # production <- get_table("production")
+
+
+
+# save the backup for the Seb/Sylvia experiment:
+# save(production, sessions, trials, file = 'data-raw/longitudinal_study_backup.rda')
+#load(file = 'data-raw/longitudinal_study_backup.rda')
+
+
+
+
 
 # CAREFUL. This is for editing the DBs manually!
 # trials <- get_table("trials")

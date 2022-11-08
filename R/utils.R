@@ -325,6 +325,26 @@ list_official_tests <- function(include_PDT = TRUE) {
 }
 
 
+#' Test acronym to its full name
+#'
+#' @param acronym
+#'
+#' @return
+#' @export
+#'
+#' @examples
+test_acronym_to_name <- function(acronym) {
+  l <- list(
+    "SAA" = "Singing Ability Assessment",
+    "PBET" = "Play By Ear Test",
+    "SST" = "Sight Singing Test",
+    "SRT" = "Sight Reading Test",
+    "PDT" = "Pitch Discrimination Test"
+  )
+  l[[acronym]]
+}
+
+
 #' List tone sound types
 #'
 #' @return

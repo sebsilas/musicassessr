@@ -369,3 +369,17 @@ leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_ra
 #
 # da3 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
 # da4 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
+
+
+
+
+# test for perf:
+
+# Normal WJD:
+# system.time({ da1 <- sample_melody_in_key(WJD::WJD("ngram"), inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15) })
+
+# dbplyr:
+# con <- musicassessr::connect_to_db()
+# dbplyr_WJD <- dplyr::tbl(con, "WJD_ngram")
+# system.time({ da2 <- sample_melody_in_key(dbplyr_WJD, inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15) })
+

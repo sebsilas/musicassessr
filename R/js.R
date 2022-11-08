@@ -122,7 +122,7 @@ create_dir_if_doesnt_exist <- function(dir) {
   }
 }
 
-check_port <- function(port = 300) {
+check_port <- function(port = 3000) {
   # is something running on port xx?
   res <- system2("lsof", args = c(paste0("-i :", port)), stdout = TRUE, stderr = TRUE, wait = TRUE)
   if(is.null(attributes(res)$status)) {

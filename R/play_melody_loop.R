@@ -551,6 +551,7 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
     melody_row <- trials %>% dplyr::slice(melody_no)
     rel_melody <- melody_row %>% dplyr::pull(melody) %>% itembankr::str_mel_to_vector()
     item_number <- NA
+    abs_melody <- NA
   }
 
   list("rel_melody" = rel_melody,

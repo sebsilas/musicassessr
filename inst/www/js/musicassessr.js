@@ -1023,7 +1023,7 @@ function upload_file_to_s3(blob) {
 
 	if (typeof shiny_app_name !== 'undefined') {
 	  fd.append("app_name", shiny_app_name);
-	   Shiny.setInputValue("shiny_app_name", shiny_app_name);
+	  Shiny.setInputValue("shiny_app_name", shiny_app_name);
 	}
 
 	if(this.musicassessr_state === "production") {

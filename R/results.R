@@ -176,15 +176,25 @@ collapse_results <- function(res) {
 
 #' Tidy melodies from psychTestR results object
 #'
-#' @param melody_results
+#' @param melody_results The melody results from psychTestR.
+#' @param use_for_production Which get_answer output to use for production (the other will be removed).
 #'
 #' @return
 #' @export
 #'
 #' @examples
-tidy_melodies <- function(melody_results) {
+tidy_melodies <- function(melody_results, use_for_production = c("production", "pyin_pitch_track")) {
 
   melody_results <- lapply(melody_results, function(x) {
+
+    if(use_for_production == "production") {
+      x$pyin_pitch_track <- NULL
+    } else if(use_for_production == "pyin_pitch_track") {
+      x$production <- NULL
+    } else {
+      stop('use_for_production must be "production" or "pyin_pitch_trach"')
+    }
+
     lapply(x, function(y) {
       if(is.list(y)) {
         lapply(y, as.character)

@@ -66,7 +66,8 @@ adaptive_arrhythmic_melody_trials <- function(label,
                                 continuous_response = TRUE,
                                 dv_name = "opti3",
                                 fixed_effects = fixed_effects,
-                                demo = demo))
+                                demo = demo,
+                                predict_based_on_mixed_effects_model_function = psychTestRCATME::predict_based_on_mixed_effects_arrhythmic_model))
 
 }
 

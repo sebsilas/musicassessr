@@ -9,6 +9,7 @@ get_answer_pyin_melodic_production(
   type = c("both", "notes", "pitch_track"),
   state,
   melconv = FALSE,
+  additional_scoring_measures = NULL,
   ...
 )
 }

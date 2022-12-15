@@ -55,10 +55,13 @@ Imports:
     pyin (>= 0.1.0),
     R.utils,
     xml2,
-    assertthat
+    assertthat,
+    logging,
+    changepoint
 Depends: 
     R (>= 2.10),
-    itembankr (>= 0.1.0)
+    itembankr (>= 0.1.0),
+    psych
 Remotes: 
     sebsilas/psychTestR,
     sebsilas/itembankr,

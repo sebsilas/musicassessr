@@ -17,6 +17,11 @@ is.scalar <- function(x) {
 }
 
 
+is_midi_note <- function(n) {
+  n %in% 0:127
+}
+
+
 tagify <- function(x) {
   stopifnot(is.character(x) || is(x, "shiny.tag"))
   if (is.character(x)) {

@@ -5,11 +5,11 @@
 \title{musicassessr scripts}
 \usage{
 musicassessr_js(
+  app_name,
   musicassessr_aws = FALSE,
   visual_notation = FALSE,
   midi_file_playback = FALSE,
   record_audio = TRUE,
-  app_name = character(),
   midi_input = FALSE
 )
 }

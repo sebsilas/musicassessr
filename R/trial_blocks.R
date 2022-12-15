@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-record_audio_block <- function(no_pages, feedback = NULL, get_answer = musicassessr::get_answer_pyin,
+record_audio_block <- function(no_pages, feedback = NULL, get_answer = get_answer_pyin,
                                page_title = "Record audio", page_text = "Click record to record some audio",
                                copy_audio_to = NULL) {
   pages <- psychTestR::join(
@@ -60,7 +60,8 @@ sing_arrhythmic_melody_trials <- function(item_bank,
                                           num_items,
                                           num_examples = 0L,
                                           feedback = FALSE,
-                                          get_answer = get_answer_pyin_melodic_production, sound = "piano",
+                                          get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                          sound = "piano",
                                           page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
                                           page_title = "Sing the Melody",
                                           page_type = "record_audio_page",
@@ -68,7 +69,7 @@ sing_arrhythmic_melody_trials <- function(item_bank,
                                           get_trial_characteristics_function = NULL,
                                           item_characteristics_sampler_function = NULL,
                                           item_characteristics_pars = NULL,
-                                          rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
+                                          rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
                                           max_goes = 3L,
                                           max_goes_forced = FALSE,
                                           show_progress = TRUE,
@@ -132,7 +133,7 @@ sing_rhythmic_melody_trials <- function(item_bank,
                                         num_items,
                                         num_examples = 0L,
                                         feedback = FALSE,
-                                        get_answer = get_answer_pyin_melodic_production,
+                                        get_answer = get_answer_pyin_melodic_production_additional_measures,
                                         sound = "piano",
                                         page_text = psychTestR::i18n("sing_melody_trial"),
                                         page_title = "Sing This Melody Plus Rhythm",
@@ -141,7 +142,7 @@ sing_rhythmic_melody_trials <- function(item_bank,
                                         get_trial_characteristics_function = NULL,
                                         item_characteristics_sampler_function = NULL,
                                         item_characteristics_pars = NULL,
-                                        rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
+                                        rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
                                         max_goes = 3L,
                                         max_goes_forced = FALSE,
                                         display_modality = "auditory",
@@ -205,6 +206,7 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param give_first_melody_note
 #' @param sampler_function
 #' @param presampled
+#' @param additional_scoring_measures
 #'
 #' @return
 #' @export
@@ -214,7 +216,7 @@ arrhythmic_melody_trials <- function(item_bank,
                                      num_items,
                                      num_examples = 0L,
                                      feedback = FALSE,
-                                     get_answer = get_answer_pyin_melodic_production,
+                                     get_answer = get_answer_pyin_melodic_production_additional_measures,
                                      sound = "piano",
                                      page_text = "Click below to hear the melody. Play back the melody. Click Stop when finished.",
                                      page_title = "Play the Melody",
@@ -223,7 +225,7 @@ arrhythmic_melody_trials <- function(item_bank,
                                      get_trial_characteristics_function = NULL,
                                      item_characteristics_sampler_function = NULL,
                                      item_characteristics_pars = NULL,
-                                     rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
+                                     rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
                                      max_goes = 3L,
                                      max_goes_forced = FALSE,
                                      display_modality = "auditory",
@@ -236,7 +238,8 @@ arrhythmic_melody_trials <- function(item_bank,
                                      sheet_music_id = 'sheet_music',
                                      give_first_melody_note = FALSE,
                                      sampler_function = sample_arrhythmic,
-                                     presampled = FALSE) {
+                                     presampled = FALSE,
+                                     additional_scoring_measures = NULL) {
 
 
   num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)
@@ -275,7 +278,7 @@ arrhythmic_melody_trials <- function(item_bank,
                                                            item_characteristics_pars)
                              },
                              # trials
-                             musicassessr::multi_page_play_melody_loop(
+                             multi_page_play_melody_loop(
                                n_items = num_examples_flat,
                                var_name = "arrhythmic_melody",
                                page_type = page_type,
@@ -312,7 +315,7 @@ arrhythmic_melody_trials <- function(item_bank,
                                                        item_characteristics_pars)
                          },
                          ## trials
-                         musicassessr::multi_page_play_melody_loop(
+                         multi_page_play_melody_loop(
                            presampled_items = if(presampled) item_bank else NULL,
                            n_items = num_items_flat,
                            var_name = "arrhythmic_melody",
@@ -386,7 +389,7 @@ rhythmic_melody_trials <- function(item_bank,
                                    num_items,
                                    num_examples = 0L,
                                    feedback = FALSE,
-                                   get_answer = get_answer_pyin_melodic_production,
+                                   get_answer = get_answer_pyin_melodic_production_additional_measures,
                                    sound = "piano",
                                    page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
                                    page_title = "Play This Melody Plus Rhythm",
@@ -395,7 +398,7 @@ rhythmic_melody_trials <- function(item_bank,
                                    get_trial_characteristics_function = NULL,
                                    item_characteristics_sampler_function = NULL,
                                    item_characteristics_pars = NULL,
-                                   rel_to_abs_mel_function = musicassessr:: rel_to_abs_mel_mean_centred,
+                                   rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
                                    max_goes = 3L,
                                    max_goes_forced = FALSE,
                                    display_modality = "auditory",
@@ -446,7 +449,7 @@ rhythmic_melody_trials <- function(item_bank,
                                                            item_characteristics_sampler_function,
                                                            item_characteristics_pars)
                              },
-                             musicassessr::multi_page_play_melody_loop(
+                             multi_page_play_melody_loop(
                                presampled_items = if(presampled) item_bank else NULL,
                                stimuli_type = "midi_notes",
                                var_name = "rhythmic_melody",
@@ -485,7 +488,7 @@ rhythmic_melody_trials <- function(item_bank,
                                                        item_characteristics_pars)
                          },
                          ## trials
-                         musicassessr::multi_page_play_melody_loop(
+                         multi_page_play_melody_loop(
                            stimuli_type = "midi_notes",
                            var_name = "rhythmic_melody",
                            n_items = num_items_flat,
@@ -493,7 +496,7 @@ rhythmic_melody_trials <- function(item_bank,
                            page_text = page_text,
                            page_type = page_type,
                            get_answer = get_answer,
-                           rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
+                           rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
                            feedback = feedback,
                            sound = sound,
                            get_trial_characteristics_function = get_trial_characteristics_function,
@@ -577,21 +580,21 @@ long_tone_trials <- function(num_items,
                            psychTestR::join(psychTestR::one_button_page(shiny::div(
                              shiny::tags$h2(page_title),
                              shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
-                             musicassessr::sample_from_user_range(num_examples),
+                             sample_from_user_range(num_examples),
                              if(page_type == "reactive") {
                                psychTestR::conditional(function(state, ...) {
                                  psychTestR::get_global("response_type", state) == "MIDI"
-                               }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
+                               }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
                                                                                                 example = TRUE, feedback = feedback,
                                                                                                 get_answer = get_answer_midi_melodic_production,
                                                                                                 page_text = page_text, page_title = page_title))
 
                                psychTestR::conditional(function(state, ...){
                                  psychTestR::get_global("response_type", state) == "Microphone"
-                               }, logic = musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer_pyin_melodic_production))
+                               }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer))
 
                              } else {
-                               musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
+                               multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
                                                                                      example = TRUE, feedback = feedback, get_answer = get_answer,
                                                                                      page_text = page_text, page_title = page_title)
                              },
@@ -600,9 +603,9 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p("Now you're ready for the real thing!")))
                            )},
                          # sample
-                         musicassessr::sample_from_user_range(num_items),
+                         sample_from_user_range(num_items),
                          # build pages
-                         musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items,
+                         multi_play_long_tone_record_audio_pages(no_items = num_items,
                                                                                page_type = page_type,
                                                                                feedback = feedback,
                                                                                get_answer = get_answer,
@@ -639,7 +642,7 @@ long_tone_trials <- function(num_items,
 find_this_note_trials <- function(num_items, num_examples = 0L,
                                   feedback = FALSE,
                                   page_title = "Find This Note",
-                                  get_answer = get_answer_pyin_melodic_production,
+                                  get_answer = get_answer_pyin_melodic_production_additional_measures,
                                   page_type = "record_audio_page",
                                   page_text = "Press play to hear the note. Try and play it on your instrument when you can.") {
 
@@ -666,8 +669,8 @@ find_this_note_trials <- function(num_items, num_examples = 0L,
                            c(psychTestR::one_button_page(shiny::div(
                              shiny::tags$h2(page_title),
                              shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
-                             musicassessr::sample_from_user_range(num_examples),
-                             musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
+                             sample_from_user_range(num_examples),
+                             multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
                                                                                    page_text = page_text, page_title = page_title,
                                                                                    example = TRUE, feedback = feedback, get_answer = get_answer),
                              psychTestR::one_button_page(shiny::div(
@@ -675,9 +678,9 @@ find_this_note_trials <- function(num_items, num_examples = 0L,
                                shiny::tags$p("Now you're ready for the real thing!")))
                            )},
                          # sample
-                         musicassessr::sample_from_user_range(num_items),
+                         sample_from_user_range(num_items),
                          # build pages
-                         musicassessr::multi_play_long_tone_record_audio_pages(no_items = num_items,
+                         multi_play_long_tone_record_audio_pages(no_items = num_items,
                                                                                page_text = page_text,
                                                                                page_title = page_title,
                                                                                page_type = "record_audio_page",
@@ -708,7 +711,7 @@ find_this_note_trials <- function(num_items, num_examples = 0L,
 #'
 #' @examples
 wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
-                                    item_length = c(3,15), get_answer = get_answer_pyin_melodic_production, sound = "piano",
+                                    item_length = c(3,15), get_answer = get_answer_pyin_melodic_production_additional_measures, sound = "piano",
                                     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                     page_title = "Play the Melody And Rhythm from Audio",
                                     instruction_text = "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can.") {
@@ -743,7 +746,7 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, fee
           shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
 
         # trials
-        musicassessr::multi_page_play_melody_loop(
+        multi_page_play_melody_loop(
           presampled_items = examples,
           var_name = "wjd_audio_melody",
           page_type = "record_audio_page",
@@ -768,7 +771,7 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, fee
     ## trials
     trials <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = item_length), sum(unlist(num_items)))
 
-    trials_tl <- musicassessr::multi_page_play_melody_loop(
+    trials_tl <- multi_page_play_melody_loop(
       presampled_items = trials,
       var_name = "wjd_audio_melody",
       stimuli_type = "audio_WJD",
@@ -776,7 +779,7 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, fee
       page_title = page_title,
       page_text = page_text,
       get_answer = get_answer,
-      rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
+      rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
       arrhythmic = TRUE,
       feedback = feedback,
       sound = sound)
@@ -848,7 +851,7 @@ audio_melodic_production_trials <- function(audio_directory,
                                             grab_meta_data,
                                             meta_data_df,
                                             meta_data_lookup_column,
-                                            get_answer = musicassessr::get_answer_pyin_melodic_production,
+                                            get_answer = get_answer_pyin_melodic_production_additional_measures,
                                             feedback = FALSE) {
 
   shiny_prefix <- paste0("audio_", paste(sample(1:9, 20, replace = TRUE), sep="", collapse="")) # NB: for cases where multiple blocks with different directories are used
@@ -893,7 +896,7 @@ audio_melodic_production_trials <- function(audio_directory,
       psychTestR::set_global("stimuli", rjson::toJSON(md_note), state)
       psychTestR::set_global("stimuli_durations", rjson::toJSON(md_durations), state)
 
-      musicassessr::present_stimuli(
+      present_stimuli(
         stimuli = shiny_file,
         stimuli_type = "audio",
         display_modality = "auditory",

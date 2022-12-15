@@ -1,10 +1,34 @@
 
+
+#' Wrapper to add user-specified additional scoring measures to pYIN melodic production
+#'
+#' @param additional_scoring_measures
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_pyin_melodic_production_additional_measures <- function(input,
+                                                                   type = c("both", "notes", "pitch_track"),
+                                                                   state,
+                                                                   melconv = FALSE,
+                                                                   additional_scoring_measures = NULL, ...) {
+
+    get_answer_pyin_melodic_production(input = input,
+                                       type = type,
+                                       state = state,
+                                       melconv = melconv,
+                                       additional_scoring_measures = additional_scoring_measures, ...)
+
+}
+
 #' Analyse a melody with pyin then compute melodic production scores
 #'
 #' @param input
 #' @param type
 #' @param state
 #' @param melconv
+#' @param additional_scoring_measures
 #' @param ...
 #'
 #' @return
@@ -14,7 +38,8 @@
 get_answer_pyin_melodic_production <- function(input,
                                                type = c("both", "notes", "pitch_track"),
                                                state,
-                                               melconv = FALSE, ...) {
+                                               melconv = FALSE,
+                                               additional_scoring_measures = NULL, ...) {
 
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
@@ -36,10 +61,12 @@ get_answer_pyin_melodic_production <- function(input,
     res <- concat_mel_prod_results(input,
                                    state,
                                    pyin_res$melconv_res,
+                                   pyin_res$pyin_res$freq,
                                    pyin_res$pyin_res$note,
                                    pyin_res$pyin_res$dur,
                                    pyin_res$pyin_res$onset,
-                                   pyin_res$pyin_pitch_track)
+                                   pyin_res$pyin_pitch_track,
+                                   additional_scoring_measures)
 
   }
 
@@ -72,19 +99,22 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 
 
   if(is.na(pyin_res$onset)) {
-    long_note_pitch_measures <- list("note_accuracy" = NA,
-                                     "note_precision" = NA,
-                                     "dtw_distance" = NA,
-                                     "agg_dv_long_note" = NA,
-                                     "na_count" = NA,
-                                     "dtw_distance_max" = NA,
-                                     "note_accuracy_max" = NA,
-                                     "note_precision_max" = NA,
-                                     "var" = NA,
-                                     "run_test" = NA,
-                                     "freq_max" = NA,
-                                     "freq_min" = NA,
-                                     "autocorrelation_mean" = NA)
+
+    long_note_pitch_measures <- list(
+      "long_note_accuracy" = NA,
+      "long_note_var" = NA,
+      "long_note_dtw_distance" = NA,
+      "long_note_autocorrelation_mean" = NA,
+      "long_note_run_test" = NA,
+      "long_note_no_cpts" = NA,
+      "long_note_beginning_of_second_cpt" = NA,
+      "long_note_na_count" = NA,
+      "long_note_dtw_distance_max" = NA,
+      "long_note_accuracy_max" = NA,
+      "long_note_freq_max" = NA,
+      "long_note_freq_min" = NA
+    )
+
     noise.classification <- list(prediction = "noise", failed_tests = 'na_count')
 
   } else {
@@ -293,6 +323,21 @@ get_melconv <- function(melconv, pyin_res) {
 
 # midi-related
 
+check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
+                                             user_response_midi_note_off,
+                                             onsets_noteon,
+                                             onsets_noteoff) {
+
+  length1 <- length(rjson::fromJSON(user_response_midi_note_on))
+  length2 <- length(rjson::fromJSON(user_response_midi_note_off))
+  length3 <- length(rjson::fromJSON(onsets_noteon))
+  length4 <- length(rjson::fromJSON(onsets_noteoff))
+
+  equal_lengths <- length1 == length2 & length2 == length3 & length3 == length4
+
+  length1 == 0 | length2 == 0 | length3 == 0 | length4 == 0 | !equal_lengths
+}
+
 
 #' Get a MIDI result and compute melodic production scores
 #'
@@ -307,15 +352,11 @@ get_melconv <- function(melconv, pyin_res) {
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
 
-  length1 <- length(rjson::fromJSON(input$user_response_midi_note_on))
-  length2 <- length(rjson::fromJSON(input$user_response_midi_note_off))
-  length3 <- length(rjson::fromJSON(input$onsets_noteon))
-  length4 <- length(rjson::fromJSON(input$onsets_noteoff))
 
-  equal_lengths <- length1 == length2 & length2 == length3 & length3 == length4
-
-
-  if(length1 == 0 | length2 == 0 | length3 == 0 | length4 == 0 | !equal_lengths) {
+  if(check_midi_melodic_production_lengths(input$user_response_midi_note_on,
+                                      input$user_response_midi_note_off,
+                                      input$onsets_noteon,
+                                      input$onsets_noteoff)) {
 
     midi_res <- list(
       pyin_style_res = tibble::tibble(
@@ -343,6 +384,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
        res <- concat_mel_prod_results(input,
                                       state,
                                       melconv_res = list(notes = NA, durations = NA),
+                                      user_melody_freq = pyin_res$pyin_res$freq,
                                       user_melody_input = midi_res$user_response_midi_note_on,
                                       user_duration_input = midi_res$pyin_style_res$dur,
                                       user_onset_input = midi_res$onsets_noteon,
@@ -350,8 +392,6 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
      }
 
-  print('storesss')
-  print(midi_res)
 
   store_results_in_db(state, res, midi_res$pyin_style_res)
   res
@@ -460,10 +500,12 @@ get_answer_save_aws_key <- function(input, ...) {
 concat_mel_prod_results <- function(input,
                                     state,
                                     melconv_res,
+                                    user_melody_freq = NULL, # Can be null if MIDI
                                     user_melody_input,
                                     user_duration_input,
                                     user_onset_input,
-                                    pyin_pitch_track, ...) {
+                                    pyin_pitch_track,
+                                    additional_scoring_measures = NULL, ...) {
 
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
@@ -483,7 +525,8 @@ concat_mel_prod_results <- function(input,
   }
 
 
-  scores <- score_melodic_production(user_melody_input,
+  scores <- score_melodic_production(user_melody_freq,
+                                     user_melody_input,
                                      user_duration_input,
                                      user_onset_input,
                                      stimuli,
@@ -491,7 +534,9 @@ concat_mel_prod_results <- function(input,
                                      pyin_pitch_track,
                                      user_response_midi_note_off,
                                      onsets_noteoff,
-                                     tibble::as_tibble(input$answer_meta_data))
+                                     tibble::as_tibble(input$answer_meta_data),
+                                     as_tb = FALSE,
+                                     additional_scoring_measures)
 
   # for final scores at end of test - currently not in usage,
   # but could be useful to standardise final scores across tests (i.e., so each test doesn't need it's own final_results function)

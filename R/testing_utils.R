@@ -43,3 +43,21 @@ test_recording_app <- function(copy_audio_to = NULL) {
     )
   )
 }
+
+log_scores <- function(onset, dur, freq, note, stimuli, stimuli_durations) {
+
+  print(onset)
+
+  tibble::tibble(log_onset = log(onset),
+                 log_dur = log(dur),
+                 freq_2 = freq * 2,
+                 stimuli_durations = log(stimuli_durations))
+
+}
+
+check_no_notes_above_c4 <- function(onset, dur, freq, note, stimuli, stimuli_durations) {
+
+  # C4 is MIDI note number 60
+  sum(note > 60)
+
+}

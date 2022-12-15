@@ -1,7 +1,6 @@
-library(dplyr)
+library(tidyverse)
 library(readxl)
-library(dplyr)
-
+library(psych)
 
 # grab WJD meta info
 wjd_meta <- read.csv2('data-raw/wjd_meta.csv')
@@ -63,12 +62,46 @@ key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")
 musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
 
-use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df, overwrite = TRUE)
+
+# make sure to get all objects
+
+load('data-raw/Berkowitz_arrhythmic_mixed_effects_model.rda')
+load('data-raw/Berkowitz_rhythmic_mixed_effects_model.rda')
+load('data-raw/long_note_pca.rda')
+load('data-raw/long_note_agg.rda')
+load('data-raw/melody_pca2_data.rda')
+load('data-raw/melody_pca2.rda')
+
+use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df,
+         lm2.2, lm3.2, long_note_pca2, long_note_agg, melody_pca2,
+         melody_pca2_data,
+         overwrite = TRUE)
+
+
+# test the long note predict method
+predict(long_note_pca2,
+        data = tibble::tibble(long_note_accuracy = 300,
+                              long_note_dtw_distance = 100,
+                              long_note_autocorrelation_mean = .44,
+                              long_note_run_test = -23,
+                              long_note_no_cpts = 6,
+                              long_note_beginning_of_second_cpt = 200),
+        old.data = long_note_agg %>%
+          select(long_note_accuracy, long_note_dtw_distance, long_note_autocorrelation_mean,
+                 long_note_run_test, long_note_no_cpts, long_note_beginning_of_second_cpt)
+        # you need to pass this for standardization or you will get NaNs
+        # https://stackoverflow.com/questions/27534968/dimension-reduction-using-psychprincipal-does-not-work-for-smaller-data
+) %>%
+  as_tibble() %>%
+  dplyr::rename(pca_long_note_randomness = RC1,
+                pca_long_note_accuracy = RC2,
+                pca_long_note_scoop = RC3)
 
 
 # NB, run the other file for the musicassessr dict
 
 usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
-                  instrument_list, key_rankings, keys_table, overwrite = TRUE, internal = TRUE)
+                  instrument_list, key_rankings, keys_table,
+                  overwrite = TRUE, internal = TRUE)
 
 

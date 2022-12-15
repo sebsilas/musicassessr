@@ -14,7 +14,7 @@ audio_melodic_production_trials(
   grab_meta_data,
   meta_data_df,
   meta_data_lookup_column,
-  get_answer = musicassessr::get_answer_pyin_melodic_production,
+  get_answer = get_answer_pyin_melodic_production_additional_measures,
   feedback = FALSE
 )
 }

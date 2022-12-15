@@ -7,7 +7,7 @@
 record_audio_block(
   no_pages,
   feedback = NULL,
-  get_answer = musicassessr::get_answer_pyin,
+  get_answer = get_answer_pyin,
   page_title = "Record audio",
   page_text = "Click record to record some audio",
   copy_audio_to = NULL

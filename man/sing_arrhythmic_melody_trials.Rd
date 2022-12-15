@@ -9,7 +9,7 @@ sing_arrhythmic_melody_trials(
   num_items,
   num_examples = 0L,
   feedback = FALSE,
-  get_answer = get_answer_pyin_melodic_production,
+  get_answer = get_answer_pyin_melodic_production_additional_measures,
   sound = "piano",
  
     page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
@@ -20,7 +20,7 @@ sing_arrhythmic_melody_trials(
   get_trial_characteristics_function = NULL,
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
-  rel_to_abs_mel_function = musicassessr::rel_to_abs_mel_mean_centred,
+  rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
   max_goes = 3L,
   max_goes_forced = FALSE,
   show_progress = TRUE,

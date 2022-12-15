@@ -13,40 +13,51 @@
 #' @examples
 include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE, midi_input = FALSE) {
   htmltools::tagList(
-    lapply(musicassessr::musicassessr_js(visual_notation = visual_notation,
-                                         midi_input = midi_input,
-                                         record_audio = record_audio), function(x) {
-                                           if(base::startsWith(x, "http")) {
-                                             htmltools::tags$script(src = x)
-                                           } else {
-                                             htmltools::includeScript(x)
-                                           }
-                                         })
+    lapply(musicassessr_js(visual_notation = visual_notation,
+                           midi_input = midi_input,
+                           record_audio = record_audio), function(x) {
+                             if(base::startsWith(x, "http")) {
+                               htmltools::tags$script(src = x)
+                             } else {
+                               htmltools::includeScript(x)
+                             }
+                           })
   )
 }
 
 
 #' musicassessr scripts
 #'
-#' @param state
+#' @param app_name
+#' @param musicassessr_aws
 #' @param visual_notation
 #' @param midi_file_playback
 #' @param record_audio
-#' @param app_name
 #' @param midi_input
 #'
 #' @return
 #' @export
 #'
 #' @examples
-musicassessr_js <- function(musicassessr_aws = FALSE,
+musicassessr_js <- function(app_name,
+                            musicassessr_aws = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE,
                             record_audio = TRUE,
-                            app_name = character(),
                             midi_input = FALSE) {
 
-  create_dir_if_doesnt_exist('tmp')
+  stopifnot(
+    is.logical(musicassessr_aws),
+    is.logical(visual_notation),
+    is.logical(midi_file_playback),
+    is.logical(record_audio),
+    assertthat::is.string(app_name),
+    is.logical(midi_input)
+  )
+
+  logging::loginfo(paste0('The current app directory is ', getwd(), '. Is that correct?'))
+
+  if(musicassessr_aws) create_dir_if_doesnt_exist('tmp')
 
   if(record_audio) {
     shiny_app_js_id <- record_audio_setup(app_name, musicassessr_aws)

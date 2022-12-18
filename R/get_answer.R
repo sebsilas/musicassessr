@@ -99,10 +99,10 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  pyin_res <- pyin::pyin(audio_file, type = "pitch_track", if_bad_result_return_single_na = FALSE)
+  pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
 
-  if(is.na(pyin_res$onset)) {
+  if(is.na(pyin_res)) {
 
     long_note_pitch_measures <- list(
       "long_note_accuracy" = NA,
@@ -132,8 +132,8 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   c(
     list(file = audio_file,
          stimuli = as.numeric(input$stimuli),
-         onset = pyin_res$onset,
-         freq = pyin_res$freq,
+         onset = if(is.na(pyin_res)) NA else pyin_res$onset,
+         freq = if(is.na(pyin_res)) NA else pyin_res$freq,
          noise_classification = noise.classification$prediction,
          failed_tests = noise.classification$failed_tests),
     long_note_pitch_measures

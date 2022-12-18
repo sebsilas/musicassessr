@@ -552,7 +552,7 @@ concat_mel_prod_results <- function(input,
   c(
 
     list(file = get_audio_file_for_pyin(input, state),
-         attempt = if(length(input$attempt) == 0) NA,  else as.numeric(input$attempt),
+         attempt = if(length(input$attempt) == 0) NA  else as.numeric(input$attempt),
          user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
          user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
          melconv_notes = melconv_res$notes,

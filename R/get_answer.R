@@ -48,7 +48,7 @@ get_answer_pyin_melodic_production <- function(input,
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
 
-  if(is_null_or_na_length_1(pyin_res$pyin_res)) {
+  if(is_null_or_na_length_1(pyin_res$pyin_res) | is_null_or_na_length_1(pyin_res$pyin_res$freq)) {
 
     res <- list(
       error = TRUE,

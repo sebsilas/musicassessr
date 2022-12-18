@@ -49,7 +49,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
 
   # features df
   features_df <- tibble::tibble(
-    freq = if(is.null(user_melody_freq)) hrep::midi_to_freq(user_melody_input) else user_melody_freq,
+    freq = if(is_null_length_1(user_melody_freq)) hrep::midi_to_freq(user_melody_input) else user_melody_freq,
     note = user_melody_input,
     onset = user_onset_input,
     dur = user_duration_input

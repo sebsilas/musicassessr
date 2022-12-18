@@ -53,9 +53,9 @@ get_answer_pyin_melodic_production <- function(input,
     res <- list(
       error = TRUE,
       reason = "there was nothing in the pitch track",
-      user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-      user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
-      attempt = ifelse(length(input$attempt) == 0, NA, as.numeric(input$attempt)),
+      user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
+      user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
+      attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt)),
       opti3 = NA,
       answer_meta_data = tibble::as_tibble(input$answer_meta_data),
       stimuli = as.numeric(rjson::fromJSON(input$stimuli)))
@@ -552,9 +552,9 @@ concat_mel_prod_results <- function(input,
   c(
 
     list(file = get_audio_file_for_pyin(input, state),
-         attempt = ifelse(length(input$attempt) == 0, NA, as.numeric(input$attempt)),
-         user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-         user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
+         attempt = if(length(input$attempt) == 0) NA,  else as.numeric(input$attempt),
+         user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
+         user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
          melconv_notes = melconv_res$notes,
          melconv_durations = melconv_res$durations),
 

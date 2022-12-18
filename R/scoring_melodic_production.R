@@ -258,7 +258,7 @@ get_proportion_of_correct_note_events <- function(stimuli, user_melody_input, no
 }
 
 get_durations <- function(result) {
-  if(is.null(result$dur)) {
+  if(is_null_length_1(result$dur)) {
     durations <- diff(onsets_noteon)
   } else {
     durations <- result$dur
@@ -271,7 +271,7 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
   if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {
     list(opti3 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA)
   } else {
-    if(is.na(stimuli_durations)) {
+    if(is_na_length_1(stimuli_durations)) {
       stimuli_durations <- rep(0.5, stimuli_length)
     }
 

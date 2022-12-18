@@ -48,7 +48,7 @@ get_answer_pyin_melodic_production <- function(input,
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
 
-  if(is.na(pyin_res$pyin_res)) {
+  if(is_null_or_na_length_1(pyin_res$pyin_res)) {
 
     res <- list(
       error = TRUE,
@@ -102,7 +102,7 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
 
-  if(is_na_length_1(pyin_res)) {
+  if(is_null_or_na_length_1(pyin_res)) {
 
     long_note_pitch_measures <- list(
       "long_note_accuracy" = NA,
@@ -132,8 +132,8 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   c(
     list(file = audio_file,
          stimuli = as.numeric(input$stimuli),
-         onset = if(is_na_length_1(pyin_res)) NA else pyin_res$onset,
-         freq = if(is_na_length_1(pyin_res)) NA else pyin_res$freq,
+         onset = if(is_null_or_na_length_1(pyin_res)) NA else pyin_res$onset,
+         freq = if(is_null_or_na_length_1(pyin_res)) NA else pyin_res$freq,
          noise_classification = noise.classification$prediction,
          failed_tests = noise.classification$failed_tests),
     long_note_pitch_measures
@@ -212,7 +212,7 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
   pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
 
-  if(is.na(pyin_res$note)) {
+  if(is_na_length_1(pyin_res$note)) {
     res <- list("Min." = NA,
                 "1st Qu." = NA,
                 "Median" = NA,
@@ -248,7 +248,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
-      if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
+      if(is_null_length_1(pyin_res$freq) | is_na_length_1(pyin_res$freq)) {
         list(user_response = NA)
       } else {
         freqs <- pyin_res$freq
@@ -261,7 +261,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
-      if(is.null(pyin_res$freq) | is.na(pyin_res$freq)) {
+      if(is_null_length_1(pyin_res$freq) | is_na_length_1(pyin_res$freq)) {
         list(user_response = NA)
       } else {
         audio_file <- get_audio_file_for_pyin(input, state)
@@ -276,8 +276,8 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
-      if(is.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
-        cat(file=stderr(), 'get_answer_average_frequency_ff4')
+      if(is_null_length_1(pyin_res$freq) | is.logical(pyin_res$freq)) {
+        cat(file=stderr(), 'get_answer_average_frequency_ff')
         list(user_response = NA)
       } else {
         freqs <- pyin_res$freq
@@ -457,7 +457,8 @@ get_answer_midi <- function(input, state, ...) {
 
 get_answer_midi_note_mode <- function(input, state, ...) {
 
-  if(is.null(input$user_response_midi_note_on)) {
+  if(is_na_length_1(input$user_response_midi_note_on) |
+     is_null_length_1(input$user_response_midi_note_on)) {
     list(note = NA)
   } else {
     list(note = getmode(rjson::fromJSON(input$user_response_midi_note_on)))
@@ -520,7 +521,7 @@ concat_mel_prod_results <- function(input,
   }
 
 
-  if(is.null(input$stimuli)) {
+  if(is_null_length_1(input$stimuli)) {
     stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
     stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
   } else {

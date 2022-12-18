@@ -14,7 +14,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(is.null(answer$error)) {
+    if(is_null_length_1(answer$error)) {
 
       # plots
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)

@@ -206,7 +206,6 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param give_first_melody_note
 #' @param sampler_function
 #' @param presampled
-#' @param additional_scoring_measures
 #'
 #' @return
 #' @export
@@ -238,8 +237,7 @@ arrhythmic_melody_trials <- function(item_bank,
                                      sheet_music_id = 'sheet_music',
                                      give_first_melody_note = FALSE,
                                      sampler_function = sample_arrhythmic,
-                                     presampled = FALSE,
-                                     additional_scoring_measures = NULL) {
+                                     presampled = FALSE) {
 
 
   num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)

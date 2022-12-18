@@ -5,16 +5,14 @@
 \title{Wrapper to add user-specified additional scoring measures to pYIN melodic production}
 \usage{
 get_answer_pyin_melodic_production_additional_measures(
-  input,
   type = c("both", "notes", "pitch_track"),
-  state,
   melconv = FALSE,
   additional_scoring_measures = NULL,
   ...
 )
 }
 \arguments{
-\item{additional_scoring_measures}{}
+\item{...}{}
 }
 \value{
 

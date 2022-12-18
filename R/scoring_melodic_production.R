@@ -168,6 +168,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
 
 apply_additional_scoring_measures <- function(additional_scoring_measures, onset, dur, freq, note, stimuli, stimuli_durations) {
 
+
   stopifnot(is.null(additional_scoring_measures) |
               is.function(additional_scoring_measures) |
               is.list(additional_scoring_measures))

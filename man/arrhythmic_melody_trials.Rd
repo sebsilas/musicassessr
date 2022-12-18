@@ -33,12 +33,11 @@ arrhythmic_melody_trials(
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
   sampler_function = sample_arrhythmic,
-  presampled = FALSE,
-  additional_scoring_measures = NULL
+  presampled = FALSE
 )
 }
 \arguments{
-\item{additional_scoring_measures}{}
+\item{presampled}{}
 }
 \value{
 

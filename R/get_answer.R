@@ -1,24 +1,28 @@
 
 
+
 #' Wrapper to add user-specified additional scoring measures to pYIN melodic production
 #'
+#' @param type
+#' @param melconv
 #' @param additional_scoring_measures
+#' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_answer_pyin_melodic_production_additional_measures <- function(input,
-                                                                   type = c("both", "notes", "pitch_track"),
-                                                                   state,
+get_answer_pyin_melodic_production_additional_measures <- function(type = c("both", "notes", "pitch_track"),
                                                                    melconv = FALSE,
                                                                    additional_scoring_measures = NULL, ...) {
 
-    get_answer_pyin_melodic_production(input = input,
-                                       type = type,
-                                       state = state,
+    function(input, state, ...) {
+      get_answer_pyin_melodic_production(input = input,
+                                         state = state,
+                                         type = type,
                                        melconv = melconv,
                                        additional_scoring_measures = additional_scoring_measures, ...)
+    }
 
 }
 

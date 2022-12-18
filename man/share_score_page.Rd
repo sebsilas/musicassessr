@@ -9,11 +9,13 @@ share_score_page(
   url,
   hashtag = "CanISing",
   socials = TRUE,
-  leaderboard_name = "leaderboard.rda"
+  leaderboard_name = "leaderboard.rda",
+  distribution_mean = NULL,
+  distribution_sd = NULL
 )
 }
 \arguments{
-\item{hashtag}{}
+\item{distribution_sd}{}
 }
 \value{
 

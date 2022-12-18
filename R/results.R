@@ -1,13 +1,17 @@
 
-plot_normal_dist_plus_score <- function(data, highlighted_score) {
-  std <- sd(data$score)
-  m <- mean(data$score)
-  highlighted_score_y <- pnorm(highlighted_score + 1, mean = m, sd = std) - pnorm(highlighted_score, mean = m, sd = std)
+plot_normal_dist_plus_score <- function(data = NULL, mean = NULL, sd = NULL, highlighted_score) {
+
+  if(!is.null(data)) {
+    sd <- sd(data$score)
+    mean <- mean(data$score)
+  }
+
+  highlighted_score_y <- pnorm(highlighted_score + 1, mean = mean, sd = sd) - pnorm(highlighted_score, mean = mean, sd = sd)
   ggplot2::ggplot(data=data, ggplot2::aes(x = score)) +
-    ggplot2::stat_function(fun = dnorm, args = c(mean = m, sd = std), alpha = .4) +
+    ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), alpha = .4) +
     ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
-    ggplot2::geom_vline(xintercept = m, color = "orange", alpha = .8) +
-    ggplot2::xlim(0, m + std * 5) +
+    ggplot2::geom_vline(xintercept = mean, color = "orange", alpha = .8) +
+    ggplot2::xlim(0, mean + sd * 5) +
     ggplot2::theme(panel.background = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
 }
@@ -72,17 +76,28 @@ add_score_to_leaderboard <- function(username, score, leaderboard_name) {
 
 
 
+
 #' A page for sharing scores.
 #'
 #' @param test_name
 #' @param url
 #' @param hashtag
+#' @param socials
+#' @param leaderboard_name
+#' @param distribution_mean
+#' @param distribution_sd
 #'
 #' @return
 #' @export
 #'
 #' @examples
-share_score_page <- function(test_name, url, hashtag = "CanISing", socials = TRUE, leaderboard_name = 'leaderboard.rda') {
+share_score_page <- function(test_name,
+                             url,
+                             hashtag = "CanISing",
+                             socials = TRUE,
+                             leaderboard_name = 'leaderboard.rda',
+                             distribution_mean = NULL,
+                             distribution_sd = NULL) {
 
   hashtag <- paste0("%23", hashtag)
 
@@ -98,7 +113,9 @@ share_score_page <- function(test_name, url, hashtag = "CanISing", socials = TRU
     head(updated_leaderboard, 10)
   }, rownames = TRUE, colnames = FALSE, width = "50%")
 
-  dist_plot <- shiny::renderPlot({ plot_normal_dist_plus_score(updated_leaderboard, score)  }, width = 500)
+  dist_plot <- shiny::renderPlot({
+    plot_normal_dist_plus_score(updated_leaderboard, score, mean = distribution_mean, sd = distribution_sd)
+    }, width = 500)
 
   if(socials) {
 
@@ -186,6 +203,10 @@ collapse_results <- function(res) {
 tidy_melodies <- function(melody_results, use_for_production = c("production", "pyin_pitch_track")) {
 
   melody_results <- lapply(melody_results, function(x) {
+
+    x$additional_scoring_measures <- NULL
+    warning('Currently, tidy_melodies removes any additional_scoring_measures.')
+
 
     if(use_for_production == "production") {
       x$pyin_pitch_track <- NULL

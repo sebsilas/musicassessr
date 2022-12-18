@@ -121,6 +121,10 @@ rhythfuzz <- function(dur_vec1, dur_vec2){
 harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2 = NULL, segmentation_type = c("phrase_boundary_marker",
                                                                                                                "segment_id")){
 
+  if(length(segmentation_type) > 1) {
+    segmentation_type <- segmentation_type[1]
+  }
+
   # phrase_boundary_marker e.g., c(0, 0, 0, 1, 0 0, 1)
   # segment_id e.g., c(1, 1, 1, 2, 2, 2, 3)
 

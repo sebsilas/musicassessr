@@ -55,7 +55,7 @@ get_answer_pyin_melodic_production <- function(input,
       reason = "there was nothing in the pitch track",
       user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
       user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
-      attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt)),
+      attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
       opti3 = NA,
       answer_meta_data = tibble::as_tibble(input$answer_meta_data),
       stimuli = as.numeric(rjson::fromJSON(input$stimuli)))

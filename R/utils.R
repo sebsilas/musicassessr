@@ -16,6 +16,10 @@ is.scalar <- function(x) {
   identical(length(x), 1L)
 }
 
+is_na_length_1 <- function(x) {
+  all(is.na(x)) & length(x) == 1
+}
+
 
 is_midi_note <- function(n) {
   n %in% 0:127

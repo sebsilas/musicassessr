@@ -102,7 +102,7 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
 
-  if(all(is.na(pyin_res)) & length(pyin) == 1) {
+  if(all(is.na(pyin_res)) & length(pyin_res) == 1) {
 
     long_note_pitch_measures <- list(
       "long_note_accuracy" = NA,

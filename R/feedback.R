@@ -147,7 +147,7 @@ feedback_mel_plot <- function(onsets, pitch_plot, error_plot, stimuli) {
                             "pitch" = c(NA, pitch_plot),
                             "error" = factor(c(NA, as.numeric(error_plot))))
 
-  target.notes.other.octaves <- unlist(lapply(stimuli, function(x) get_all_octaves_in_gamut (x, midi.gamut.min, midi.gamut.max)))
+  target.notes.other.octaves <- as.integer(sort(as.vector(get_all_octaves_in_gamut(stimuli))))
 
   plot <- plot_prod(prod.df, stimuli, target.notes.other.octaves, pitchOctaveIndependent = FALSE)
 

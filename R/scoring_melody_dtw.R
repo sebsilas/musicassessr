@@ -82,7 +82,7 @@ prepare_mel_trial_user_prod_for_dtw <- function(pyin_smoothed_pitchtrack, pyin_r
 #' @examples
 prepare_mel_stimuli_for_dtw <- function(melody, durations, convert_midi_to_freq = TRUE) {
 
-  if(is.na(durations)) {
+  if(is_na_length_1(durations)) {
     warning('Manually setting durations to 5')
     durations <- 5
   }

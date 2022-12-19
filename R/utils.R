@@ -28,6 +28,10 @@ is_null_or_na_length_1 <- function(x) {
   is_na_length_1(x) | is.null(x)
 }
 
+is_equal_to_length_1 <- function(x, equal_to) {
+  all(x == equal_to) & length(x) == 1
+}
+
 
 
 is_midi_note <- function(n) {

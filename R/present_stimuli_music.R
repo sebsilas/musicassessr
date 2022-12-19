@@ -85,13 +85,11 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
                                               audio_play_button_id = "playButton",
                                               start_hidden = FALSE) {
 
-  if (stimuli == "interactive") {
+  if(is_equal_to_length_1(stimuli, "interactive")) {
     res <- shiny::tags$div(
       shiny::tags$div(id=id),
     )
-  }
-
-  else {
+  } else {
     xml <- wrap.xml.template(type = "midi_notes", notes = stimuli, asChord = asChord, clef = clef)
     res <- shiny::tags$div(open.music.display.wrapper(xml, id, present_div, start_hidden))
   }

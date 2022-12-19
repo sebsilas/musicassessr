@@ -208,11 +208,10 @@ find_closest_stimuli_pitch_to_user_production_pitches <-
   function(stimuli_pitches, user_production_pitches, allOctaves = TRUE) {
 
     stimuli_pitches <- as.integer(stimuli_pitches)
-
     # if allOctaves is true, get the possible pitches in all other octaves. this should therefore resolve issues
     # where someone was presented stimuli out of their range and is penalised for it
     if (allOctaves) {
-      stimuli_pitches_in_all_octaves <- as.integer(sort(as.vector(get_all_octaves_in_gamut(stimuli_pitches))))
+      stimuli_pitches_in_all_octaves <- as.integer(sort(as.vector(unlist(get_all_octaves_in_gamut(stimuli_pitches)))))
       res <- purrr::map_int(user_production_pitches, find_closest_value, vector = stimuli_pitches_in_all_octaves, return_value = TRUE)
 
     } else {

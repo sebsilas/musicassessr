@@ -14,7 +14,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(is_null_length_1(answer$error)) {
+    if(is.null(answer$error)) {
 
       # plots
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
@@ -117,8 +117,8 @@ feedback_long_tone <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(is_na_length_1(answer$onset) | is_null_length_1(answer$onset) |
-       is_na_length_1(answer$freq) | is_null_length_1(answer$freq)) {
+    if(is_na_length_1(answer$onset) | is.null(answer$onset) |
+       is_na_length_1(answer$freq) | is.null(answer$freq)) {
       plot <- "Sorry, but we cannot provide feedback for this trial. Did you sing?"
   } else {
     # plot
@@ -146,8 +146,7 @@ feedback_mel_plot <- function(onsets, pitch_plot, error_plot, stimuli) {
   prod.df <- tibble::tibble("onset" = c(0, onsets),
                             "pitch" = c(NA, pitch_plot),
                             "error" = factor(c(NA, as.numeric(error_plot))))
-
-  target.notes.other.octaves <- as.integer(sort(as.vector(get_all_octaves_in_gamut(stimuli))))
+  target.notes.other.octaves <- as.integer(sort(as.vector(unlist(get_all_octaves_in_gamut(stimuli)))))
 
   plot <- plot_prod(prod.df, stimuli, target.notes.other.octaves, pitchOctaveIndependent = FALSE)
 

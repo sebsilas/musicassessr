@@ -25,7 +25,7 @@ is_null_length_1 <- function(x) {
 }
 
 is_null_or_na_length_1 <- function(x) {
-  is_na_length_1(x) | is_null_length_1(x)
+  is_na_length_1(x) | is.null(x)
 }
 
 

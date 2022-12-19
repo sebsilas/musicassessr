@@ -633,8 +633,7 @@ format.notes.scientific_music_notation <- function(notes, asChord = FALSE) {
 
 
     else {
-      print('hey')
-      print(notes[i-1])
+
       res <- paste0(res, '<note>',
                     ifelse(asChord, '<chord/>', ' '), # format as chord
                     '<pitch>

@@ -14,7 +14,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(is.null(answer$error)) {
+    if(answer$error == FALSE) {
 
       # plots
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
@@ -43,6 +43,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
       answer$answer_meta_data <- NULL
       answer$pyin_pitch_track <- NULL
+      answer$production <- NULL
 
       # produce scores table
       scores_tab <- list_to_shiny_table(answer)

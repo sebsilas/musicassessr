@@ -33,7 +33,7 @@ is_equal_to_length_1 <- function(x, equal_to) {
 }
 
 
-#' Is NULL or all TRUE?
+#' Is NULL or not all TRUE?
 #'
 #' @param x
 #'
@@ -41,8 +41,8 @@ is_equal_to_length_1 <- function(x, equal_to) {
 #' @export
 #'
 #' @examples
-is_null_or_all_TRUE <- function(x) {
-  all(x) | is.null(x)
+is_null_or_not_TRUE <- function(x) {
+  !all(x) | is.null(x)
 }
 
 is_midi_note <- function(n) {

@@ -46,12 +46,16 @@ musicassessr_js <- function(app_name,
                             record_audio = TRUE,
                             midi_input = FALSE) {
 
+  if(record_audio == FALSE) {
+    app_name <- ""
+  } # This allows us to both make sure that users using musicassessr provide an app name (most use cases) by default, but allow through cases where record audio isn't used (like with the PDT)
+
   stopifnot(
     is.logical(musicassessr_aws),
     is.logical(visual_notation),
     is.logical(midi_file_playback),
     is.logical(record_audio),
-    assertthat::is.string(app_name) | record_audio == FALSE,
+    assertthat::is.string(app_name),
     is.logical(midi_input)
   )
 

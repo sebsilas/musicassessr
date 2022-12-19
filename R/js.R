@@ -51,7 +51,7 @@ musicassessr_js <- function(app_name,
     is.logical(visual_notation),
     is.logical(midi_file_playback),
     is.logical(record_audio),
-    assertthat::is.string(app_name),
+    assertthat::is.string(app_name) | record_audio == FALSE,
     is.logical(midi_input)
   )
 

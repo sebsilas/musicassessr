@@ -98,7 +98,8 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = features_df$note, allOctaves = TRUE)
 
   if(!"note" %in% names(pyin_pitch_track)) {
-    pyin_pitch_track <- pyin_pitch_track %>% dplyr::mutate(note = round(hrep::freq_to_midi(freq)))
+    pyin_pitch_track <- pyin_pitch_track %>%
+      dplyr::mutate(note = dplyr::case_when(is.na(freq) ~ NA, TRUE ~ round(hrep::freq_to_midi(freq))))
   }
 
   nearest_pitches_pyin_track <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = pyin_pitch_track$note, allOctaves = TRUE)

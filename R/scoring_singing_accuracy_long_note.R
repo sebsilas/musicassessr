@@ -171,7 +171,9 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 
 
 
-get_all_octaves_in_gamut <- function(note, gamut_min = midi.gamut.min, gamut_max = midi.gamut.max) {
+get_all_octaves_in_gamut <- Vectorize(function(note, gamut_min = midi.gamut.min, gamut_max = midi.gamut.max) {
+
+  stopifnot(length(note) == 1)
 
   # given a note and a range/gamut, find all midi octaves of that note within the specified range/gamut
   res <- c(note)
@@ -189,7 +191,7 @@ get_all_octaves_in_gamut <- function(note, gamut_min = midi.gamut.min, gamut_max
   res <- res[!duplicated(res)]
   res <- res[order(res)]
   res
-}
+})
 
 
 #' Find the closest pitch(s) in a stimulus, to the notes a user produced
@@ -205,13 +207,16 @@ get_all_octaves_in_gamut <- function(note, gamut_min = midi.gamut.min, gamut_max
 find_closest_stimuli_pitch_to_user_production_pitches <-
   function(stimuli_pitches, user_production_pitches, allOctaves = TRUE) {
 
+    stimuli_pitches <- as.integer(stimuli_pitches)
+
     # if allOctaves is true, get the possible pitches in all other octaves. this should therefore resolve issues
     # where someone was presented stimuli out of their range and is penalised for it
     if (allOctaves) {
-      res <- sapply(user_production_pitches, find_closest_value,
-                    get_all_octaves_in_gamut(stimuli_pitches), return_value = TRUE)
+      stimuli_pitches_in_all_octaves <- as.integer(sort(as.vector(get_all_octaves_in_gamut(stimuli_pitches))))
+      res <- purrr::map_int(user_production_pitches, find_closest_value, vector = stimuli_pitches_in_all_octaves, return_value = TRUE)
+
     } else {
-      res <- sapply(user_production_pitches, find_closest_value, stimuli_pitches, return_value = TRUE)
+      res <- purrr::map_int(user_production_pitches, find_closest_value, vector = stimuli_pitches, return_value = TRUE)
     }
     res
   }
@@ -221,8 +226,8 @@ find_closest_stimuli_pitch_to_user_production_pitches <-
 # dd <- calculate_stable_part(test_long_note_scoop, plot = FALSE)
 
 
-#as <- get_all_octaves_in_gamut(41, midi.gamut.min, midi.gamut.max)
-
-#as2 <- unlist(lapply(c(51, 39, 41, 43), function(x) get_all_octaves_in_gamut(x, midi.gamut.min, midi.gamut.max)))
-
+# as <- get_all_octaves_in_gamut(41, midi.gamut.min, midi.gamut.max)
+# as2 <- get_all_octaves_in_gamut(41:42, midi.gamut.min, midi.gamut.max) # should be stopped
+# tt <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = c(60, 62, 65, 64), user_production_pitches = c(50, 60, 70, 80, 76))
+# tt2 <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = c(60, 62, 65, 64), user_production_pitches = c(50, 60, 70, 80, 76), allOctaves = FALSE)
 

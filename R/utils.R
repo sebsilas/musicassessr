@@ -41,7 +41,7 @@ is_equal_to_length_1 <- function(x, equal_to) {
 #' @export
 #'
 #' @examples
-is_null_or_not_TRUE <- function(x) {
+is_null_or_not_all_TRUE <- function(x) {
   !all(x) | is.null(x)
 }
 

@@ -1,12 +1,13 @@
 
 plot_normal_dist_plus_score <- function(data = NULL, mean = NULL, sd = NULL, highlighted_score) {
 
-  if(!is.null(data)) {
+  if(!is.null(data) & is.null(mean) & is.null(sd)) {
     sd <- sd(data$score)
     mean <- mean(data$score)
   }
 
   highlighted_score_y <- pnorm(highlighted_score + 1, mean = mean, sd = sd) - pnorm(highlighted_score, mean = mean, sd = sd)
+
   ggplot2::ggplot(data=data, ggplot2::aes(x = score)) +
     ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), alpha = .4) +
     ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
@@ -86,6 +87,7 @@ add_score_to_leaderboard <- function(username, score, leaderboard_name) {
 #' @param leaderboard_name
 #' @param distribution_mean
 #' @param distribution_sd
+#' @param data_not_from_leaderboard
 #'
 #' @return
 #' @export
@@ -97,62 +99,40 @@ share_score_page <- function(test_name,
                              socials = TRUE,
                              leaderboard_name = 'leaderboard.rda',
                              distribution_mean = NULL,
-                             distribution_sd = NULL) {
+                             distribution_sd = NULL,
+                             data_not_from_leaderboard = NULL) {
 
   hashtag <- paste0("%23", hashtag)
 
   psychTestR::reactive_page(function(state, answer, ...) {
 
-  score <- psychTestR::get_local("final_score", state)
+    score <- psychTestR::get_local("final_score", state)
 
-  username <- answer
+    username <- answer
 
-  updated_leaderboard <- add_score_to_leaderboard(username, score, leaderboard_name = leaderboard_name)
+    updated_leaderboard <- add_score_to_leaderboard(username, score, leaderboard_name = leaderboard_name)
 
-  leaderboard_table <- shiny::renderTable({
-    head(updated_leaderboard, 10)
-  }, rownames = TRUE, colnames = FALSE, width = "50%")
-
-  dist_plot <- shiny::renderPlot({
-    plot_normal_dist_plus_score(updated_leaderboard, score, mean = distribution_mean, sd = distribution_sd)
-    }, width = 500)
-
-  if(socials) {
-
-    text <- paste0("I just completed the " , test_name, " and got a score of ", score, ". See what you got now!", hashtag, collapse = "_")
-    text2 <- paste0("I just completed the " , test_name, " and got a score of ", score, ". See what you got now! ", hashtag, collapse = "%20")
-
-    socials <- tibble::tibble(img = c("telegram.png", "facebook.png", "mail.png", "reddit.png", "whatsapp.png", "twitter.png"),
-                      url = c(
-                        paste0("https://telegram.me/share/url?url=", url, "&text=", text2),
-                        paste0('https://www.facebook.com/sharer.php?u=', url, '&quote=', text),
-                        paste0("mailto:%7Bemail_address%7D?subject=Check%20out%20my%20", test_name, " score!&body=", text2),
-                        paste0("https://reddit.com/submit?url=", url, "&title=", text),
-                        paste0('whatsapp://send?text=', text, ' ', url),
-                        paste0('https://twitter.com/intent/tweet?url=', url, '&text=', text2)))
-
-    socials_html <- shiny::tags$div(
-      shiny::tags$h1(" Please share your score!"),
-      shiny::tags$br(),
-      shiny::tags$table(style = " border-spacing: 10px; border-collapse: separate;",
-                      shiny::tags$tr(
-                        purrr::pmap(socials, function(img, url){
-                          create_share_button(img, url)
-                        })
-
-                      ),
-                      shiny::tags$br()))
-  } else {
-    socials_html <- shiny::tags$div()
-  }
+    leaderboard_table <- shiny::renderTable({
+      head(updated_leaderboard, 10)
+    }, rownames = TRUE, colnames = FALSE, width = "50%")
 
 
-  psychTestR::one_button_page(shiny::tags$div(
-    shiny::tags$h1("Leaderboard"),
-    shiny::tags$div(leaderboard_table),
-    shiny::tags$div(dist_plot),
-    socials_html
-  ))
+    data_to_use <- if(!is.null(data_not_from_leaderboard)) data_not_from_leaderboard else updated_leaderboard
+
+    dist_plot <- shiny::renderPlot({
+      plot_normal_dist_plus_score(data_to_use, score, mean = distribution_mean, sd = distribution_sd)
+      }, width = 500)
+
+
+    socials_html <- create_socials(socials, test_name, score, hashtag, test, url)
+
+
+    psychTestR::one_button_page(shiny::tags$div(
+      shiny::tags$h1("Leaderboard"),
+      shiny::tags$div(leaderboard_table),
+      shiny::tags$div(dist_plot),
+      socials_html
+    ))
 
   })
 
@@ -166,6 +146,38 @@ create_share_button <- function(img, url) {
                   target="_blank",
                   rel="nofollow noopener")
   )
+}
+
+
+create_socials <- function(socials, test_name, score, hashtag, test, url) {
+  if(socials) {
+
+    text <- paste0("I just completed the " , test_name, " and got a score of ", score, ". See what you got now!", hashtag, collapse = "_")
+    text2 <- paste0("I just completed the " , test_name, " and got a score of ", score, ". See what you got now! ", hashtag, collapse = "%20")
+
+    socials <- tibble::tibble(img = c("telegram.png", "facebook.png", "mail.png", "reddit.png", "whatsapp.png", "twitter.png"),
+                              url = c(
+                                paste0("https://telegram.me/share/url?url=", url, "&text=", text2),
+                                paste0('https://www.facebook.com/sharer.php?u=', url, '&quote=', text),
+                                paste0("mailto:%7Bemail_address%7D?subject=Check%20out%20my%20", test_name, " score!&body=", text2),
+                                paste0("https://reddit.com/submit?url=", url, "&title=", text),
+                                paste0('whatsapp://send?text=', text, ' ', url),
+                                paste0('https://twitter.com/intent/tweet?url=', url, '&text=', text2)))
+
+    socials_html <- shiny::tags$div(
+      shiny::tags$h1(" Please share your score!"),
+      shiny::tags$br(),
+      shiny::tags$table(style = " border-spacing: 10px; border-collapse: separate;",
+                        shiny::tags$tr(
+                          purrr::pmap(socials, function(img, url){
+                            create_share_button(img, url)
+                          })
+
+                        ),
+                        shiny::tags$br()))
+  } else {
+    socials_html <- shiny::tags$div()
+  }
 }
 
 

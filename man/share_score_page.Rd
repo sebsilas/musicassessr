@@ -11,11 +11,12 @@ share_score_page(
   socials = TRUE,
   leaderboard_name = "leaderboard.rda",
   distribution_mean = NULL,
-  distribution_sd = NULL
+  distribution_sd = NULL,
+  data_not_from_leaderboard = NULL
 )
 }
 \arguments{
-\item{distribution_sd}{}
+\item{data_not_from_leaderboard}{}
 }
 \value{
 

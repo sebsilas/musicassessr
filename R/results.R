@@ -1,21 +1,55 @@
 
+#' Plot a normal distribution with a certain score highlighted
+#'
+#' @param data
+#' @param mean
+#' @param sd
+#' @param highlighted_score
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_normal_dist_plus_score <- function(data = NULL, mean = NULL, sd = NULL, highlighted_score) {
 
   if(!is.null(data) & is.null(mean) & is.null(sd)) {
     sd <- sd(data$score)
     mean <- mean(data$score)
+  } else if(is.null(data) & !is.null(mean) & !is.null(sd)) {
+    data <- tibble::tibble(score = highlighted_score)
+  } else {
+    stop("Unsupported combination.")
   }
 
   highlighted_score_y <- pnorm(highlighted_score + 1, mean = mean, sd = sd) - pnorm(highlighted_score, mean = mean, sd = sd)
 
+  if(highlighted_score < mean) {
+    hjust <- "left"
+  } else {
+    hjust <- "right"
+  }
+
+  if(highlighted_score > 75 | highlighted_score < 25) {
+    vjust <- -1
+  } else {
+    vjust <- 0
+  }
+
   ggplot2::ggplot(data=data, ggplot2::aes(x = score)) +
-    ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), alpha = .4) +
+    ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), geom = "polygon", color = "blue", fill = "blue", alpha = 0.1) +
     ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
-    ggplot2::geom_vline(xintercept = mean, color = "orange", alpha = .8) +
+    ggplot2::geom_vline(xintercept = mean, color = "orange") +
     ggplot2::xlim(0, mean + sd * 5) +
     ggplot2::theme(panel.background = ggplot2::element_blank(),
-                   axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
+                   axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank()) +
+    ggplot2::annotate(geom = "text", x = highlighted_score, y = highlighted_score_y, label = "Your Score!", hjust = hjust, vjust = vjust) +
+    ggplot2::labs(
+      x = "Population Score"
+    )
+
 }
+
+# plot_normal_dist_plus_score(mean = 50, sd = 10, highlighted_score = 100)
 
 
 #' Render scores in a shiny table
@@ -149,6 +183,19 @@ create_share_button <- function(img, url) {
 }
 
 
+#' Create an interface to share test score on socials
+#'
+#' @param socials
+#' @param test_name
+#' @param score
+#' @param hashtag
+#' @param test
+#' @param url
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create_socials <- function(socials, test_name, score, hashtag, test, url) {
   if(socials) {
 
@@ -165,7 +212,7 @@ create_socials <- function(socials, test_name, score, hashtag, test, url) {
                                 paste0('https://twitter.com/intent/tweet?url=', url, '&text=', text2)))
 
     socials_html <- shiny::tags$div(
-      shiny::tags$h1(" Please share your score!"),
+      shiny::tags$h3(" Please share your score!"),
       shiny::tags$br(),
       shiny::tags$table(style = " border-spacing: 10px; border-collapse: separate;",
                         shiny::tags$tr(

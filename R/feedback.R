@@ -1,209 +1,270 @@
 
-#' Simple melodic production feedback
+plot_normal_dist_plus_score <- function(data = NULL, mean = NULL, sd = NULL, highlighted_score) {
+
+  if(!is.null(data) & is.null(mean) & is.null(sd)) {
+    sd <- sd(data$score)
+    mean <- mean(data$score)
+  }
+
+  highlighted_score_y <- pnorm(highlighted_score + 1, mean = mean, sd = sd) - pnorm(highlighted_score, mean = mean, sd = sd)
+
+  ggplot2::ggplot(data=data, ggplot2::aes(x = score)) +
+    ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), alpha = .4) +
+    ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
+    ggplot2::geom_vline(xintercept = mean, color = "orange", alpha = .8) +
+    ggplot2::xlim(0, mean + sd * 5) +
+    ggplot2::theme(panel.background = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
+}
+
+
+#' Render scores in a shiny table
+#'
+#' @param res
 #'
 #' @return
 #' @export
 #'
 #' @examples
-feedback_melodic_production_simple <- function() {
-  feedback_melodic_production(melody_dtw = FALSE, answer_meta_data = FALSE)
-}
-
-
-feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TRUE) {
-
-  psychTestR::reactive_page(function(state, answer, ...) {
-
-    if(answer$error == FALSE) {
-
-      # plots
-      plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
-
-
-      if(melody_dtw) {
-        melody_dtw_plot <- plot_dtw_melody(answer$stimuli, answer$stimuli_durations, answer$pyin_pitch_track)
-        melody_dtw_head <- "Melody DTW Plot"
-      } else {
-        melody_dtw_plot <- " "
-        melody_dtw_head <- " "
-      }
-
-      if(answer_meta_data) {
-        stimuli_info <- 'Stimuli Info'
-      } else {
-        stimuli_info <- " "
-      }
-
-      # get then remove necessary vars
-      amd <- answer$answer_meta_data
-
-      if(is.character(amd)) {
-        amd <- rjson::fromJSON(amd)
-      }
-
-      answer$answer_meta_data <- NULL
-      answer$pyin_pitch_track <- NULL
-      answer$production <- NULL
-
-      # produce scores table
-      scores_tab <- list_to_shiny_table(answer)
-
-      # make meta data table
-      if(answer_meta_data & is.data.frame(amd)) {
-        t_names <- names(amd)
-        amd <- amd %>% dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>% base::t() %>% as.data.frame()
-        row.names(amd) <- t_names
-        answer_meta_data_tab <- shiny_table(amd)
-      } else if (answer_meta_data & is.list(answer_meta_data) &! is.data.frame(answer_meta_data)) {
-        print('else iff')
-        answer_meta_data_tab <- list_to_shiny_table(amd)
-      } else {
-        answer_meta_data_tab <- " "
-      }
-
-      present_stimuli(answer$user_response_note,
-                      stimuli_type = "midi_notes",
-                      display_modality = "both",
-                      page_title = "Your Response",
-                      page_type = 'one_button_page',
-                      page_text = shiny::tags$div(shiny::tags$p(plot),
-                                                  shiny::tags$h3(melody_dtw_head),
-                                                  shiny::tags$p(melody_dtw_plot),
-                                                  shiny::tags$h3('Response Data'),
-                                                  scores_tab,
-                                                  shiny::tags$h3(stimuli_info),
-                                                  answer_meta_data_tab
-                                                  ),
-                      page_text_first = FALSE,
-                      play_button_id = "playButtonFeedback",
-                      button_area_id = "buttonArea3")
-
-    } else {
-      psychTestR::one_button_page("Unfortunately a valid response was not recorded.")
-    }
-  })
-}
-
-shiny_table <- function(content, rownames = TRUE, colnames = FALSE) {
+render_scores_table <- function(res) {
   shiny::renderTable({
-    content
-  }, rownames = rownames, colnames = colnames, width = "50%")
+    df <- res
+    df_names <- names(df)
+    df <- base::t(df)
+    row.names(df) <- df_names
+    df
+  }, rownames = TRUE, colnames = FALSE, width = "50%")
 }
 
-list_to_shiny_table <- function(l, rownames = TRUE, colnames = FALSE) {
+# leaderboard stuff
 
-  l <- l[!is.na(l) & lengths(l) > 0]
-  l_names <- names(l)
-  l <- lapply(1:length(l), function(x) {
-
-    if (length(l[[x]]) > 1) {
-      paste0(l[[x]], collapse = ",")
-    } else {
-      l[[x]]
-    }
-  })
-  l <- l[!is.na(l)]
-  r <- as.data.frame(base::t(as.data.frame(l)))
-  row.names(r) <- l_names
-  r <- r %>% dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
-  shiny_table(r)
-
-}
-
-
-
-
-
-feedback_long_tone <- function() {
-  # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
-  psychTestR::reactive_page(function(state, answer, ...) {
-
-    if(is_na_length_1(answer$onset) | is.null(answer$onset) |
-       is_na_length_1(answer$freq) | is.null(answer$freq)) {
-      plot <- "Sorry, but we cannot provide feedback for this trial. Did you sing?"
+load_leaderboard <- function(leaderboard_name = 'leaderboard.rda') {
+  if(file.exists(paste0('output/', leaderboard_name))) {
+    load(paste0('output/', leaderboard_name))
   } else {
-    # plot
-    plot <- feedback_long_note_plot(answer$onset, answer$freq, answer$stimuli)
+    # or create if doesn't exist
+    leaderboard <- tibble::tibble(
+      username = character(0),
+      score = numeric(0)
+    )
+    save(leaderboard, file = paste0('output/', leaderboard_name))
   }
-
-    answer$stimuli <- NULL
-    answer$onset <- NULL
-    answer$freq <- NULL
-
-    tab <- list_to_shiny_table(answer)
-
-
-    psychTestR::one_button_page(
-      shiny::tags$div(shiny::tags$p(plot),
-                      tags$h3('Response Data'),
-                      tab))
-
-  })
+  leaderboard
 }
 
-feedback_mel_plot <- function(onsets, pitch_plot, error_plot, stimuli) {
+add_score_to_leaderboard <- function(username, score, leaderboard_name) {
 
-  # create df
-  prod.df <- tibble::tibble("onset" = c(0, onsets),
-                            "pitch" = c(NA, pitch_plot),
-                            "error" = factor(c(NA, as.numeric(error_plot))))
-  target.notes.other.octaves <- as.integer(sort(as.vector(unlist(get_all_octaves_in_gamut(stimuli)))))
+  leaderboard <- load_leaderboard()
 
-  plot <- plot_prod(prod.df, stimuli, target.notes.other.octaves, pitchOctaveIndependent = FALSE)
-
-  rendered_plot <- shiny::renderPlot({ plot }, width = 500)
-}
+  new_score <- tibble::tibble(
+    username = username,
+    score = score
+  )
 
 
-feedback_long_note_plot <- function(onsets, freqs, stimuli) {
+  leaderboard <- rbind(leaderboard, new_score) %>% dplyr::arrange(desc(score))
 
-  stimuli <- hrep::midi_to_freq(stimuli)
+  leaderboard <- leaderboard[!is.na(leaderboard$score), ]
 
-  # create df
-  prod_df <- tibble::tibble("onset" = c(0, onsets),
-                            "freq" = c(NA, freqs))
+  save(leaderboard, file = paste0('output/', leaderboard_name))
 
-
-  plot <- ggplot2::ggplot(prod_df, ggplot2::aes(x=onset, y=freq)) +
-    ggplot2::theme(panel.grid.major = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
-                   panel.background = ggplot2::element_blank(), axis.line = ggplot2::element_line(colour = "black"),
-                   axis.ticks.x=ggplot2::element_blank()) +
-    ggplot2::geom_hline(yintercept = stimuli, color = magma.colors[3], size = 4, alpha = 0.7) +
-    ggplot2::geom_line( color=magma.colors[5])
-
-  rendered_plot <- shiny::renderPlot({ plot }, width = 500)
+  # and present new leaderboard
+  leaderboard
 }
 
 
 
-#' Helper for adding a feedback function to a timeline of pages
+
+
+
+
+#' A page for sharing scores.
 #'
-#' @param items
-#' @param feedback
-#' @param after
+#' @param test_name
+#' @param url
+#' @param hashtag
+#' @param socials
+#' @param leaderboard_name
+#' @param distribution_mean
+#' @param distribution_sd
+#' @param data_not_from_leaderboard
 #'
 #' @return
 #' @export
 #'
 #' @examples
-add_feedback <- function(items, feedback, after = 2) {
-  if(is.null(feedback) | !is.function(feedback)) {
-    unlist(items)
+share_score_page <- function(test_name,
+                             url,
+                             hashtag = "CanISing",
+                             socials = TRUE,
+                             leaderboard_name = 'leaderboard.rda',
+                             distribution_mean = NULL,
+                             distribution_sd = NULL,
+                             data_not_from_leaderboard = NULL) {
+
+  hashtag <- paste0("%23", hashtag)
+
+  psychTestR::reactive_page(function(state, answer, ...) {
+
+    score <- psychTestR::get_local("final_score", state)
+
+    username <- answer
+
+    updated_leaderboard <- add_score_to_leaderboard(username, score, leaderboard_name = leaderboard_name)
+
+    leaderboard_table <- shiny::renderTable({
+      head(updated_leaderboard, 10)
+    }, rownames = TRUE, colnames = FALSE, width = "50%")
+
+
+    data_to_use <- if(!is.null(data_not_from_leaderboard)) data_not_from_leaderboard else updated_leaderboard
+
+    dist_plot <- shiny::renderPlot({
+      plot_normal_dist_plus_score(data_to_use, score, mean = distribution_mean, sd = distribution_sd)
+    }, width = 500)
+
+
+    socials_html <- create_socials(socials, test_name, score, hashtag, test, url)
+
+
+    psychTestR::one_button_page(shiny::tags$div(
+      shiny::tags$h1("Leaderboard"),
+      shiny::tags$div(leaderboard_table),
+      shiny::tags$div(dist_plot),
+      socials_html
+    ))
+
+  })
+
+}
+
+
+create_share_button <- function(img, url) {
+  shiny::tags$td(
+    shiny::tags$a(img(src = paste0("musicassessr-assets/img/", img)),
+                  href = url,
+                  target="_blank",
+                  rel="nofollow noopener")
+  )
+}
+
+
+create_socials <- function(socials, test_name, score, hashtag, test, url) {
+  if(socials) {
+
+    text <- paste0("I just completed the " , test_name, " and got a score of ", score, ". See what you got now!", hashtag, collapse = "_")
+    text2 <- paste0("I just completed the " , test_name, " and got a score of ", score, ". See what you got now! ", hashtag, collapse = "%20")
+
+    socials <- tibble::tibble(img = c("telegram.png", "facebook.png", "mail.png", "reddit.png", "whatsapp.png", "twitter.png"),
+                              url = c(
+                                paste0("https://telegram.me/share/url?url=", url, "&text=", text2),
+                                paste0('https://www.facebook.com/sharer.php?u=', url, '&quote=', text),
+                                paste0("mailto:%7Bemail_address%7D?subject=Check%20out%20my%20", test_name, " score!&body=", text2),
+                                paste0("https://reddit.com/submit?url=", url, "&title=", text),
+                                paste0('whatsapp://send?text=', text, ' ', url),
+                                paste0('https://twitter.com/intent/tweet?url=', url, '&text=', text2)))
+
+    socials_html <- shiny::tags$div(
+      shiny::tags$h1(" Please share your score!"),
+      shiny::tags$br(),
+      shiny::tags$table(style = " border-spacing: 10px; border-collapse: separate;",
+                        shiny::tags$tr(
+                          purrr::pmap(socials, function(img, url){
+                            create_share_button(img, url)
+                          })
+
+                        ),
+                        shiny::tags$br()))
   } else {
-    res <- insert_item_into_every_other_n_position_in_list(items, feedback(), n = after)
-    res <- lapply(res, function(x) {
-      if(is.list(x)) {
-        unlist(x)
-      } else { x } })
-    unlist(res)
+    socials_html <- shiny::tags$div()
   }
 }
 
-# tl <- psychTestR::join(
-#   lapply(LETTERS, psychTestR::one_button_page)
-# )
-#
-# tl2 <- add_feedback(tl, function() 'feedback_melodic_production', after = 4)
 
+collapse_results <- function(res) {
+
+  results <- lapply(res, function(x) {
+    lapply(x, function(y) {
+      if(is.list(y)) {
+        lapply(y, as.character)
+      } else {
+        if(length(y) > 1) {
+          paste0(y, collapse = ",")
+        } else {
+          as.character(y)
+        }
+      }
+    })
+  })
+
+  results <- lapply(results, unlist, recursive = FALSE)
+
+  #dplyr::bind_rows(results)
+
+}
+
+#' Tidy melodies from psychTestR results object
+#'
+#' @param melody_results The melody results from psychTestR.
+#' @param use_for_production Which get_answer output to use for production (the other will be removed).
+#'
+#' @return
+#' @export
+#'
+#' @examples
+tidy_melodies <- function(melody_results, use_for_production = c("production", "pyin_pitch_track")) {
+
+  melody_results <- lapply(melody_results, function(x) {
+
+    x$additional_scoring_measures <- NULL
+    warning('Currently, tidy_melodies removes any additional_scoring_measures.')
+
+
+    if(use_for_production == "production") {
+      x$pyin_pitch_track <- NULL
+    } else if(use_for_production == "pyin_pitch_track") {
+      x$production <- NULL
+    } else {
+      stop('use_for_production must be "production" or "pyin_pitch_trach"')
+    }
+
+    lapply(x, function(y) {
+      if(is.list(y)) {
+        lapply(y, as.character)
+      } else {
+        if(length(y) > 1) {
+          paste0(y, collapse = ",")
+        } else {
+          as.character(y)
+        }
+      }
+    })
+  })
+
+  melody_results <- lapply(melody_results, unlist, recursive = FALSE)
+
+  dplyr::bind_rows(melody_results)
+
+}
+
+
+
+# # dummy data for testing
+# t_res <- readRDS('/Users/sebsilas/Downloads/results.rds')
+#
+#
+# processed_results$long_tone
+# processed_results$arrhythmic
+# processed_results$rhythmic
+
+# l <- list.files('/Users/sebsilas/Downloads/results 3/', full.names = TRUE)
+#
+# r <- lapply(l, function(x) as.list(readRDS(x)))
+#
+#
+# r2 <- lapply(r, collapse_results)
+#
+# test <- data.frame(r2[[1]])
+# test2 <- as.data.frame(r2[[2]])
 
 

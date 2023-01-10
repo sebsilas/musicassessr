@@ -85,7 +85,6 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
   # sample melody
 
-
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
 
   if(nrow(item_bank_subset) == 0) {
@@ -131,7 +130,8 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
     if(check_all_notes_in_range(abs_mel, bottom_range, top_range)) {
       # in range
       found_melody <- TRUE
-      return(cbind(tibble::tibble(abs_melody = paste0(abs_mel, collapse = ","), meta_data)))
+      meta_data$abs_melody <- paste0(abs_mel, collapse = ",")
+      return(meta_data)
     }
     else {
       # not in range!
@@ -144,26 +144,31 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
         snap <- sample(1:2, 1)
         if(snap == 1) {
           found_melody <- TRUE
-          return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_down, collapse = ","), meta_data)))
+          meta_data$abs_melody <- paste0(abs_mel_down, collapse = ",")
+          return(meta_data)
         }
         else {
           found_melody <- TRUE
-          return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_up, collapse = ","), meta_data)))
+          meta_data$abs_melody <- paste0(abs_mel_up, collapse = ",")
+          return(meta_data)
         }
       }
       else if (check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & !check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
         # only octave up in range, return that')
-        return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_up, collapse = ","), meta_data)))
+        meta_data$abs_melody <- paste0(abs_mel_up, collapse = ",")
+        return(meta_data)
       }
       else if (!check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
         # only octave down in range, return that
-        return(cbind(tibble::tibble(abs_melody = paste0(abs_mel_down, collapse = ","), meta_data)))
+        meta_data$abs_melody <- paste0(abs_mel_down, collapse = ",")
+        return(meta_data)
       }
       else {
         if(count > 10) {
-          return(cbind(tibble::tibble(abs_melody = paste0(abs_mel, collapse = ","), meta_data)))
+          meta_data$abs_melody <- paste0(abs_mel, collapse = ",")
+          return(meta_data)
         }
         found_melody <- FALSE
         # neither is in range, try a new melody

@@ -3,6 +3,7 @@
 
 #' Include musicassessr scripts in a webpage
 #'
+#' @param app_name
 #' @param visual_notation
 #' @param record_audio
 #' @param midi_input
@@ -11,9 +12,10 @@
 #' @export
 #'
 #' @examples
-include_musicassessr_js <- function(visual_notation = FALSE, record_audio = TRUE, midi_input = FALSE) {
+include_musicassessr_js <- function(app_name = "", visual_notation = FALSE, record_audio = TRUE, midi_input = FALSE) {
   htmltools::tagList(
-    lapply(musicassessr_js(visual_notation = visual_notation,
+    lapply(musicassessr_js(app_name = app_name,
+                           visual_notation = visual_notation,
                            midi_input = midi_input,
                            record_audio = record_audio), function(x) {
                              if(base::startsWith(x, "http")) {
@@ -69,7 +71,7 @@ musicassessr_js <- function(app_name,
 
   c(
     if(record_audio) get_musicassessr_state_js_script(musicassessr_aws),
-    "https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js",
+    "https://cdn.jsdelivr.net/gh/mattdiamond/Recorderjs@08e7abd9/dist/recorder.js",
     "https://www.midijs.net/lib/midi.js",
     if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
     system.file("www/js/modernizr-custom.js", package = "musicassessr"),

@@ -10,11 +10,12 @@ get_instrument_range_pages(
   show_musical_notation = FALSE,
   adjust_range = FALSE,
   test_type = c("voice", "instrument"),
-  concise_wording = FALSE
+  concise_wording = FALSE,
+  default_range = list(bottom_range = 48, top_range = 72)
 )
 }
 \arguments{
-\item{concise_wording}{}
+\item{default_range}{}
 }
 \value{
 

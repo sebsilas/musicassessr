@@ -20,7 +20,7 @@
 #' @param skip_setup Whether to skip setup.
 #' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
 #' @param musical_instrument Whether the participant is required to have a musical instrument.
-#' @param default_range A list of the range that stimuli should be presented in, if not collected at test time.
+#' @param default_range A length 2 named list of the range that stimuli should be presented in, if not collected at test time.
 #'
 #' @return
 #' @export

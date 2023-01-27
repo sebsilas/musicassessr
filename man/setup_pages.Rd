@@ -24,7 +24,8 @@ setup_pages(
   concise_wording = FALSE,
   skip_setup = FALSE,
   get_self_chosen_anonymous_id = FALSE,
-  musical_instrument = FALSE
+  musical_instrument = FALSE,
+  default_range = list(bottom_range = 48, top_range = 72)
 )
 }
 \arguments{
@@ -65,6 +66,8 @@ setup_pages(
 \item{get_self_chosen_anonymous_id}{Whether to ask participant to provide an anonymous ID.}
 
 \item{musical_instrument}{Whether the participant is required to have a musical instrument.}
+
+\item{default_range}{A list of the range that stimuli should be presented in, if not collected at test time.}
 }
 \value{
 

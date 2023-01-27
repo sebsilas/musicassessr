@@ -46,20 +46,30 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
 #' @param adjust_range
 #' @param test_type
 #' @param concise_wording
+#' @param default_range
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_instrument_range_pages <- function(type, get_range, show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), concise_wording = FALSE) {
+get_instrument_range_pages <- function(type, get_range,
+                                       show_musical_notation = FALSE,
+                                       adjust_range = FALSE,
+                                       test_type = c("voice", "instrument"),
+                                       concise_wording = FALSE,
+                                       default_range = list('bottom_range' = 48, 'top_range' = 72)) {
 
 
   # a short multi-page protocol to get the user's frequency range
 
-  stopifnot(is.character(type), is.logical(get_range) | is.character(get_range) & length(get_range) == 1, is.logical(show_musical_notation))
+  stopifnot(assertthat::is.string(type),
+            is.logical(get_range) | assertthat::is.string(get_range),
+            is.logical(show_musical_notation),
+            is.list(default_range) & length(2))
 
   if(get_range == "test" | get_range == FALSE) {
-    fake_range()
+    fake_range(bottom_range = default_range$bottom_range,
+               top_range = default_range$top_range)
   } else {
     if (type == "microphone") {
       get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording)

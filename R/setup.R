@@ -20,6 +20,7 @@
 #' @param skip_setup Whether to skip setup.
 #' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
 #' @param musical_instrument Whether the participant is required to have a musical instrument.
+#' @param default_range A list of the range that stimuli should be presented in, if not collected at test time.
 #'
 #' @return
 #' @export
@@ -46,7 +47,8 @@ setup_pages <- function(input = c("microphone",
                         concise_wording = FALSE,
                         skip_setup = FALSE,
                         get_self_chosen_anonymous_id = FALSE,
-                        musical_instrument = FALSE) {
+                        musical_instrument = FALSE,
+                        default_range = list('bottom_range' = 48, 'top_range' = 72)) {
 
   stopifnot(is.character(input), is.logical(headphones), is.logical(SNR_test),
             is.numeric(min_SNR), is.logical(get_user_info), is.logical(demo),
@@ -60,7 +62,8 @@ setup_pages <- function(input = c("microphone",
             is.logical(report_SNR), is.logical(concise_wording),
             is.logical(skip_setup),
             is.logical(get_self_chosen_anonymous_id),
-            is.logical(musical_instrument))
+            is.logical(musical_instrument),
+            is.list(default_range) & length(default_range) == 2)
 
 
   if(length(input) > 1) {
@@ -79,11 +82,14 @@ setup_pages <- function(input = c("microphone",
 
       correct_setup(input, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument),
 
-      fake_range()
+      fake_range(bottom_range = default_range$bottom_range,
+                 top_range = default_range$top_range)
     )
   } else if(skip_setup) {
     psychTestR::join(
-      fake_range(),
+
+      fake_range(bottom_range = default_range$bottom_range,
+                 top_range = default_range$top_range),
 
       # fake instrument:
       psychTestR::code_block(function(state, ...) {
@@ -118,7 +124,8 @@ setup_pages <- function(input = c("microphone",
                                  show_musical_notation = get_instrument_range_musical_notation,
                                  adjust_range = adjust_range,
                                  test_type = test_type,
-                                 concise_wording = concise_wording)
+                                 concise_wording = concise_wording,
+                                 default_range = default_range)
     ))
 
   }

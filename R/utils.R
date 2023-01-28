@@ -1,5 +1,12 @@
 
 
+flatten_no_item_list <- function(x) if(is.list(x)) sum(unlist(x)) else x
+
+
+is.null.or <- function(x, f) {
+  is.null(x) || f(x)
+}
+
 is.scalar.character <- function(x) {
   is.character(x) && is.scalar(x)
 }
@@ -392,10 +399,5 @@ list_tone_sound_types <- function() {
     'tuba','violin', 'voice_daa', 'voice_doo', 'xylophone')
 }
 
-# tests
 
-#g <- as.list(1:10)
-# g2 <- insert_item_into_every_other_position_in_list(g, "a")
-# g3 <- insert_item_into_every_other_position_in_list(g, "a", n = 3)
-# g4 <- insert_item_into_every_other_position_in_list(g, "a", n = 4)
 

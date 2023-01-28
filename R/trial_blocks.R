@@ -467,7 +467,7 @@ melody_trials <- function(var_name,
   }
 
   stopifnot(
-    is(item_bank, "item_bank"),
+    #is(item_bank, "item_bank"),
     is.scalar.numeric(num_items) | is.list(num_items) | presampled,
     is.scalar.numeric(num_examples) | is.list(num_examples),
     is.function(feedback) | is.scalar.logical(feedback),

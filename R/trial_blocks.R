@@ -11,12 +11,11 @@
 #' @export
 #'
 #' @examples
-record_audio_block <- function(no_pages, feedback = NULL, get_answer = get_answer_pyin,
-                               page_title = "Record audio", page_text = "Click record to record some audio",
-                               copy_audio_to = NULL) {
+record_audio_block <- function(no_pages, feedback = NULL,
+                               get_answer = get_answer_pyin,
+                               page_title = "Record audio",
+                               page_text = "Click record to record some audio") {
   pages <- psychTestR::join(
-
-    if(!is.null(copy_audio_to)) psychTestR::code_block(function(state, ...) psychTestR::set_global("copy_audio_to", copy_audio_to, state)),
 
     rep(list(record_audio_page(get_answer = get_answer,
                                page_title = page_title,
@@ -48,6 +47,7 @@ record_audio_block <- function(no_pages, feedback = NULL, get_answer = get_answe
 #' @param rel_to_abs_mel_function
 #' @param max_goes
 #' @param max_goes_forced
+#' @param display_modality
 #' @param show_progress
 #' @param show_record_button
 #' @param module_name
@@ -56,36 +56,42 @@ record_audio_block <- function(no_pages, feedback = NULL, get_answer = get_answe
 #' @export
 #'
 #' @examples
-sing_arrhythmic_melody_trials <- function(item_bank,
-                                          num_items,
+sing_arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
+                                          module_name = "sing_arrhythmic_melodies",
+                                          page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+                                          page_title = "Sing the Melody",
+                                          instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
+                                          sampler_function = sample_arrhythmic,
+                                          item_bank,
+                                          num_items = integer(),
                                           num_examples = 0L,
                                           feedback = FALSE,
                                           get_answer = get_answer_pyin_melodic_production_additional_measures,
                                           sound = "piano",
-                                          page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
-                                          page_title = "Sing the Melody",
                                           page_type = "record_audio_page",
-                                          instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
                                           get_trial_characteristics_function = NULL,
                                           item_characteristics_sampler_function = NULL,
                                           item_characteristics_pars = NULL,
                                           rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
                                           max_goes = 3L,
                                           max_goes_forced = FALSE,
+                                          display_modality = "auditory",
                                           show_progress = TRUE,
-                                          show_record_button = FALSE,
-                                          module_name = "sing_arrhythmic_melodies") {
+                                          show_record_button = FALSE) {
 
-  arrhythmic_melody_trials(item_bank,
+  arrhythmic_melody_trials(var_name,
+                           module_name,
+                           page_text,
+                           page_title,
+                           instruction_text,
+                           sampler_function,
+                           item_bank,
                            num_items,
                            num_examples,
                            feedback,
                            get_answer,
                            sound,
-                           page_text,
-                           page_title,
                            page_type,
-                           instruction_text,
                            get_trial_characteristics_function,
                            item_characteristics_sampler_function,
                            item_characteristics_pars,
@@ -95,7 +101,12 @@ sing_arrhythmic_melody_trials <- function(item_bank,
                            display_modality,
                            show_record_button,
                            show_progress,
-                           module_name)
+                           start_hidden,
+                           sound_only_first_melody_note,
+                           show_sheet_music,
+                           sheet_music_id,
+                           give_first_melody_note,
+                           presampled)
 
 }
 
@@ -129,16 +140,19 @@ sing_arrhythmic_melody_trials <- function(item_bank,
 #' @export
 #'
 #' @examples
-sing_rhythmic_melody_trials <- function(item_bank,
-                                        num_items,
+sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
+                                        module_name = "sing_rhythmic_melodies",
+                                        page_text = "Click below to hear the melody. Sing back the melody plus rhythm. Click Stop when finished.",
+                                        page_title = "Sing the melody and the rhythms",
+                                        instruction_text = "Now you will hear some melodies with rhythms. Please try and sing the melodies with their rhythms.",
+                                        sampler_function = sample_arrhythmic,
+                                        item_bank,
+                                        num_items = integer(),
                                         num_examples = 0L,
                                         feedback = FALSE,
                                         get_answer = get_answer_pyin_melodic_production_additional_measures,
                                         sound = "piano",
-                                        page_text = psychTestR::i18n("sing_melody_trial"),
-                                        page_title = "Sing This Melody Plus Rhythm",
                                         page_type = "record_audio_page",
-                                        instruction_text = "Now you will hear melodies with rhythms. Please try and sing the melodies with the correct rhythm.",
                                         get_trial_characteristics_function = NULL,
                                         item_characteristics_sampler_function = NULL,
                                         item_characteristics_pars = NULL,
@@ -146,30 +160,37 @@ sing_rhythmic_melody_trials <- function(item_bank,
                                         max_goes = 3L,
                                         max_goes_forced = FALSE,
                                         display_modality = "auditory",
-                                        show_record_button = FALSE,
                                         show_progress = TRUE,
-                                        module_name = "sing_rhythmic_melodies") {
+                                        show_record_button = FALSE) {
 
-  rhythmic_melody_trials(item_bank,
+  rhythmic_melody_trials(var_name,
+                         module_name,
+                         page_text,
+                         page_title,
+                         instruction_text,
+                         sampler_function,
+                         item_bank,
                          num_items,
                          num_examples,
                          feedback,
                          get_answer,
                          sound,
-                         page_text,
-                         page_title,
                          page_type,
-                         instruction_text,
                          get_trial_characteristics_function,
                          item_characteristics_sampler_function,
-                         item_characteristics_pars ,
+                         item_characteristics_pars,
                          rel_to_abs_mel_function,
                          max_goes,
                          max_goes_forced,
                          display_modality,
                          show_record_button,
                          show_progress,
-                         module_name)
+                         start_hidden,
+                         sound_only_first_melody_note,
+                         show_sheet_music,
+                         sheet_music_id,
+                         give_first_melody_note,
+                         presampled)
 
 }
 
@@ -177,18 +198,21 @@ sing_rhythmic_melody_trials <- function(item_bank,
 
 
 
-#' Arrhythmic Melody Trials Block
+#' Arrhythmic melody trials block
 #'
+#' @param var_name
+#' @param module_name
+#' @param page_text
+#' @param page_title
+#' @param instruction_text
+#' @param sampler_function
 #' @param item_bank
 #' @param num_items
 #' @param num_examples
 #' @param feedback
 #' @param get_answer
 #' @param sound
-#' @param page_text
-#' @param page_title
 #' @param page_type
-#' @param instruction_text
 #' @param get_trial_characteristics_function
 #' @param item_characteristics_sampler_function
 #' @param item_characteristics_pars
@@ -198,201 +222,30 @@ sing_rhythmic_melody_trials <- function(item_bank,
 #' @param display_modality
 #' @param show_record_button
 #' @param show_progress
-#' @param module_name
 #' @param start_hidden
 #' @param sound_only_first_melody_note
 #' @param show_sheet_music
 #' @param sheet_music_id
 #' @param give_first_melody_note
-#' @param sampler_function
 #' @param presampled
 #'
 #' @return
 #' @export
 #'
 #' @examples
-arrhythmic_melody_trials <- function(item_bank,
-                                     num_items,
-                                     num_examples = 0L,
-                                     feedback = FALSE,
-                                     get_answer = get_answer_pyin_melodic_production_additional_measures,
-                                     sound = "piano",
-                                     page_text = "Click below to hear the melody. Play back the melody. Click Stop when finished.",
-                                     page_title = "Play the Melody",
-                                     page_type = "record_audio_page",
-                                     instruction_text = "Now you will hear some melodies. Please try and play the melodies.",
-                                     get_trial_characteristics_function = NULL,
-                                     item_characteristics_sampler_function = NULL,
-                                     item_characteristics_pars = NULL,
-                                     rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
-                                     max_goes = 3L,
-                                     max_goes_forced = FALSE,
-                                     display_modality = "auditory",
-                                     show_record_button = FALSE,
-                                     show_progress = TRUE,
-                                     module_name = "arrhythmic_melodies",
-                                     start_hidden = FALSE,
-                                     sound_only_first_melody_note = FALSE,
-                                     show_sheet_music = FALSE,
-                                     sheet_music_id = 'sheet_music',
-                                     give_first_melody_note = FALSE,
-                                     sampler_function = sample_arrhythmic,
-                                     presampled = FALSE) {
-
-
-  num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)
-  num_items_flat <- ifelse(is.list(num_items), sum(unlist(num_items)), num_items)
-
-
-  if(num_items_flat == 0) {
-    return(psychTestR::code_block(function(state, ...) { }))
-  } else {
-
-    if(!is.function(feedback)) {
-      if(feedback) {
-        feedback <- feedback_melodic_production
-      }
-    }
-
-    psychTestR::module(module_name,
-                       c(
-                         # instructions
-                         psychTestR::one_button_page(shiny::tags$div(
-                           shiny::tags$h2(page_title),
-                           shiny::tags$p(instruction_text)
-                         )),
-                         # examples
-                         if(is.numeric(num_examples_flat) & num_examples_flat > 0L) {
-                           ## sample
-                           c(
-                             psychTestR::one_button_page(shiny::tags$div(
-                               shiny::tags$h2(page_title),
-                               shiny::tags$p(paste0("First try ", num_examples_flat, " example trials.")))),
-                             if(is.null(item_characteristics_sampler_function)) {
-                               if(!is.null(sampler_function)) sampler_function(item_bank, num_examples_flat)
-                             } else {
-                               sample_item_characteristics(var_name = "arrhythmic_melody",
-                                                           item_characteristics_sampler_function,
-                                                           item_characteristics_pars)
-                             },
-                             # trials
-                             multi_page_play_melody_loop(
-                               n_items = num_examples_flat,
-                               var_name = "arrhythmic_melody",
-                               page_type = page_type,
-                               page_title = page_title,
-                               page_text = page_text,
-                               get_answer = get_answer,
-                               rel_to_abs_mel_function = rel_to_abs_mel_function,
-                               arrhythmic = TRUE,
-                               example = TRUE,
-                               feedback = feedback,
-                               sound = sound,
-                               get_trial_characteristics_function = get_trial_characteristics_function,
-                               max_goes_forced = max_goes_forced,
-                               max_goes = max_goes,
-                               item_bank = item_bank,
-                               display_modality = display_modality,
-                               show_record_button = show_record_button,
-                               show_progress = show_progress,
-                               start_hidden = start_hidden,
-                               sound_only_first_melody_note = sound_only_first_melody_note,
-                               show_sheet_music = show_sheet_music,
-                               sheet_music_id = sheet_music_id,
-                               give_first_melody_note = give_first_melody_note),
-                             ## sample
-                             psychTestR::one_button_page(shiny::tags$div(
-                               shiny::tags$h2(page_title),
-                               shiny::tags$p("Now you're ready for the real thing!")))
-                           )},
-                         if(is.null(item_characteristics_sampler_function)) {
-                           if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat)
-                         } else {
-                           sample_item_characteristics(var_name = "arrhythmic_melody",
-                                                       item_characteristics_sampler_function,
-                                                       item_characteristics_pars)
-                         },
-                         ## trials
-                         multi_page_play_melody_loop(
-                           presampled_items = if(presampled) item_bank else NULL,
-                           n_items = num_items_flat,
-                           var_name = "arrhythmic_melody",
-                           page_type = page_type,
-                           page_title = page_title,
-                           page_text = page_text,
-                           get_answer = get_answer,
-                           rel_to_abs_mel_function = rel_to_abs_mel_function,
-                           arrhythmic = TRUE,
-                           feedback = feedback,
-                           sound = sound,
-                           get_trial_characteristics_function = get_trial_characteristics_function,
-                           max_goes_forced = max_goes_forced,
-                           max_goes = max_goes,
-                           item_bank = item_bank,
-                           display_modality = display_modality,
-                           show_record_button = show_record_button,
-                           show_progress = show_progress,
-                           start_hidden = start_hidden,
-                           sound_only_first_melody_note = sound_only_first_melody_note,
-                           show_sheet_music = show_sheet_music,
-                           sheet_music_id = sheet_music_id,
-                           give_first_melody_note = give_first_melody_note)
-                       )
-    )
-  }
-}
-
-
-
-
-
-
-
-
-#' Rhythmic melody trials block
-#'
-#' @param item_bank
-#' @param num_items
-#' @param num_examples
-#' @param feedback
-#' @param get_answer
-#' @param sound
-#' @param page_text
-#' @param page_title
-#' @param page_type
-#' @param instruction_text
-#' @param get_trial_characteristics_function
-#' @param item_characteristics_sampler_function
-#' @param item_characteristics_pars
-#' @param rel_to_abs_mel_function
-#' @param max_goes
-#' @param max_goes_forced
-#' @param display_modality
-#' @param show_record_button
-#' @param show_progress
-#' @param module_name
-#' @param start_hidden
-#' @param sound_only_first_melody_note
-#' @param show_sheet_music
-#' @param sheet_music_id
-#' @param give_first_melody_note
-#' @param sampler_function
-#' @param presampled
-#'
-#' @return
-#' @export
-#'
-#' @examples
-rhythmic_melody_trials <- function(item_bank,
-                                   num_items,
+arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
+                                    module_name = "arrhythmic_melodies",
+                                   page_text = "Press play to hear the melody. Play back the melody.",
+                                   page_title = "Play this melody.",
+                                   instruction_text = "Now you will hear some melodies. Please try and play back the melodies.",
+                                   sampler_function = sample_arrhythmic,
+                                   item_bank,
+                                   num_items = integer(),
                                    num_examples = 0L,
                                    feedback = FALSE,
                                    get_answer = get_answer_pyin_melodic_production_additional_measures,
                                    sound = "piano",
-                                   page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
-                                   page_title = "Play This Melody Plus Rhythm",
                                    page_type = "record_audio_page",
-                                   instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
                                    get_trial_characteristics_function = NULL,
                                    item_characteristics_sampler_function = NULL,
                                    item_characteristics_pars = NULL,
@@ -402,17 +255,250 @@ rhythmic_melody_trials <- function(item_bank,
                                    display_modality = "auditory",
                                    show_record_button = FALSE,
                                    show_progress = TRUE,
-                                   module_name = "rhythmic_melodies",
                                    start_hidden = FALSE,
                                    sound_only_first_melody_note = FALSE,
                                    show_sheet_music = FALSE,
                                    sheet_music_id = 'sheet_music',
                                    give_first_melody_note = FALSE,
-                                   sampler_function = sample_rhythmic,
                                    presampled = FALSE) {
 
-  num_items_flat <- ifelse(is.list(num_items), sum(unlist(num_items)), num_items)
-  num_examples_flat <- ifelse(is.list(num_examples), sum(unlist(num_examples)), num_examples)
+
+  melody_trials(var_name,
+                module_name,
+                page_text,
+                page_title,
+                instruction_text,
+                sampler_function,
+                item_bank,
+                num_items,
+                num_examples,
+                feedback,
+                get_answer,
+                sound,
+                page_type,
+                get_trial_characteristics_function,
+                item_characteristics_sampler_function,
+                item_characteristics_pars,
+                rel_to_abs_mel_function,
+                max_goes,
+                max_goes_forced,
+                display_modality,
+                show_record_button,
+                show_progress,
+                start_hidden,
+                sound_only_first_melody_note,
+                show_sheet_music,
+                sheet_music_id,
+                give_first_melody_note,
+                presampled)
+
+}
+
+
+
+
+#' Rhythmic melody trials block
+#'
+#' @param var_name
+#' @param module_name
+#' @param page_text
+#' @param page_title
+#' @param instruction_text
+#' @param sampler_function
+#' @param item_bank
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param get_answer
+#' @param sound
+#' @param page_type
+#' @param get_trial_characteristics_function
+#' @param item_characteristics_sampler_function
+#' @param item_characteristics_pars
+#' @param rel_to_abs_mel_function
+#' @param max_goes
+#' @param max_goes_forced
+#' @param display_modality
+#' @param show_record_button
+#' @param show_progress
+#' @param start_hidden
+#' @param sound_only_first_melody_note
+#' @param show_sheet_music
+#' @param sheet_music_id
+#' @param give_first_melody_note
+#' @param presampled
+#'
+#' @return
+#' @export
+#'
+#' @examples
+rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
+                                   module_name = "rhythmic_melodies",
+                                   page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
+                                   page_title = "Play this melody plus rhythm",
+                                   instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
+                                   sampler_function = sample_rhythmic,
+                                   item_bank,
+                                   num_items = integer(),
+                                   num_examples = 0L,
+                                   feedback = FALSE,
+                                   get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                   sound = "piano",
+                                   page_type = "record_audio_page",
+                                   get_trial_characteristics_function = NULL,
+                                   item_characteristics_sampler_function = NULL,
+                                   item_characteristics_pars = NULL,
+                                   rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
+                                   max_goes = 3L,
+                                   max_goes_forced = FALSE,
+                                   display_modality = "auditory",
+                                   show_record_button = FALSE,
+                                   show_progress = TRUE,
+                                   start_hidden = FALSE,
+                                   sound_only_first_melody_note = FALSE,
+                                   show_sheet_music = FALSE,
+                                   sheet_music_id = 'sheet_music',
+                                   give_first_melody_note = FALSE,
+                                   presampled = FALSE) {
+
+
+  melody_trials(var_name,
+                module_name,
+                page_text,
+                page_title,
+                instruction_text,
+                sampler_function,
+               item_bank,
+               num_items,
+               num_examples,
+               feedback,
+               get_answer,
+               sound,
+               page_type,
+               get_trial_characteristics_function,
+               item_characteristics_sampler_function,
+               item_characteristics_pars,
+               rel_to_abs_mel_function,
+               max_goes,
+               max_goes_forced,
+               display_modality,
+               show_record_button,
+               show_progress,
+               start_hidden,
+               sound_only_first_melody_note,
+               show_sheet_music,
+               sheet_music_id,
+               give_first_melody_note,
+               presampled)
+
+}
+
+
+
+
+
+#' Melody trials constructor
+#'
+#' @param var_name
+#' @param module_name
+#' @param page_text
+#' @param page_title
+#' @param instruction_text
+#' @param sampler_function
+#' @param item_bank
+#' @param num_items
+#' @param num_examples
+#' @param feedback
+#' @param get_answer
+#' @param sound
+#' @param page_type
+#' @param get_trial_characteristics_function
+#' @param item_characteristics_sampler_function
+#' @param item_characteristics_pars
+#' @param rel_to_abs_mel_function
+#' @param max_goes
+#' @param max_goes_forced
+#' @param display_modality
+#' @param show_record_button
+#' @param show_progress
+#' @param start_hidden
+#' @param sound_only_first_melody_note
+#' @param show_sheet_music
+#' @param sheet_music_id
+#' @param give_first_melody_note
+#' @param presampled
+#'
+#' @return
+#' @export
+#'
+#' @examples
+melody_trials <- function(var_name,
+                          module_name,
+                          page_text,
+                          page_title,
+                          instruction_text,
+                          sampler_function,
+                          item_bank,
+                           num_items = integer(),
+                           num_examples = 0L,
+                           feedback = FALSE,
+                           get_answer = get_answer_pyin_melodic_production_additional_measures,
+                           sound = "piano",
+                           page_type = "record_audio_page",
+                           get_trial_characteristics_function = NULL,
+                           item_characteristics_sampler_function = NULL,
+                           item_characteristics_pars = NULL,
+                           rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
+                           max_goes = 3L,
+                           max_goes_forced = FALSE,
+                           display_modality = "auditory",
+                           show_record_button = FALSE,
+                           show_progress = TRUE,
+                           start_hidden = FALSE,
+                           sound_only_first_melody_note = FALSE,
+                           show_sheet_music = FALSE,
+                           sheet_music_id = 'sheet_music',
+                           give_first_melody_note = FALSE,
+                           presampled = FALSE) {
+
+
+  if(presampled) {
+    num_items <- nrow(item_bank)
+  }
+
+  stopifnot(
+    is(item_bank, "item_bank"),
+    is.scalar.numeric(num_items) | is.list(num_items) | presampled,
+    is.scalar.numeric(num_examples) | is.list(num_examples),
+    is.function(feedback) | is.scalar.logical(feedback),
+    is.function(get_answer),
+    assertthat::is.string(sound),
+    assertthat::is.string(page_text),
+    assertthat::is.string(page_title),
+    assertthat::is.string(page_type),
+    assertthat::is.string(instruction_text),
+    is.null.or(get_trial_characteristics_function, is.function),
+    is.null.or(item_characteristics_sampler_function, is.function),
+    is.null.or(item_characteristics_pars, function(x) is.list(x) && length(x) == 2L),
+    is.function(rel_to_abs_mel_function),
+    is.scalar.numeric(max_goes),
+    is.scalar.logical(max_goes_forced),
+    display_modality %in% c("auditory", "visual"),
+    is.scalar.logical(show_record_button),
+    is.scalar.logical(show_progress),
+    assertthat::is.string(module_name),
+    is.scalar.logical(start_hidden),
+    is.scalar.logical(sound_only_first_melody_note),
+    is.scalar.logical(show_sheet_music),
+    assertthat::is.string(sheet_music_id),
+    is.scalar.logical(give_first_melody_note),
+    is.function(sampler_function),
+    is.scalar.logical(presampled)
+  )
+
+
+  num_examples_flat <- flatten_no_item_list(num_examples)
+  num_items_flat <- flatten_no_item_list(num_items)
 
 
   if(num_items_flat == 0) {
@@ -443,14 +529,14 @@ rhythmic_melody_trials <- function(item_bank,
                              if(is.null(item_characteristics_sampler_function)) {
                                if(!is.null(sampler_function)) sampler_function(item_bank, num_examples_flat)
                              } else {
-                               sample_item_characteristics(var_name = "rhythmic_melody",
+                               sample_item_characteristics(var_name = var_name,
                                                            item_characteristics_sampler_function,
                                                            item_characteristics_pars)
                              },
                              multi_page_play_melody_loop(
                                presampled_items = if(presampled) item_bank else NULL,
                                stimuli_type = "midi_notes",
-                               var_name = "rhythmic_melody",
+                               var_name = var_name,
                                n_items = num_examples_flat,
                                page_title = page_title,
                                page_text = page_text,
@@ -481,14 +567,14 @@ rhythmic_melody_trials <- function(item_bank,
                          if(is.null(item_characteristics_sampler_function)) {
                            if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat)
                          } else {
-                           sample_item_characteristics(var_name = "rhythmic_melody",
+                           sample_item_characteristics(var_name = var_name,
                                                        item_characteristics_sampler_function,
                                                        item_characteristics_pars)
                          },
                          ## trials
                          multi_page_play_melody_loop(
                            stimuli_type = "midi_notes",
-                           var_name = "rhythmic_melody",
+                           var_name = var_name,
                            n_items = num_items_flat,
                            page_title = page_title,
                            page_text = page_text,
@@ -935,38 +1021,3 @@ grab_meta_data <- function(meta_data_df, lookup_column, value) {
   meta_data_df %>% dplyr::filter(!!lookup_column == !!value)
 }
 
-
-# abstracted way of defining trials:: WIP
-
-# arrhythmic_melody_trials <- function(item_bank,
-#                                      num_items,
-#                                      num_examples = 2,
-#                                      feedback) {
-#   music_module(module_name = "arrhythmic_melody_trials",
-#                intro_text = "Now you will hear some melodies. Please try and sing the melodies.",
-#                build_page_fun = multi_page_play_melody_until_satisfied_loop,
-#                sample_fun = sample_arrhythmic,
-#                feedback_fun = feedback_melodic_production, ...)
-# }
-
-# music_module <- function(module_name, intro_text, build_page_fun, sample_fun, feedback_fun, ...) {
-#
-#     if(feedback & !is.function(feedback)) {
-#       feedback <- feedback_fun
-#     }
-#
-#     psychTestR::module(module_name,
-#                        c(
-#                          # instructions
-#                          psychTestR::one_button_page(intro_text),
-#                          # examples
-#                          if(!is.null(num_examples)) {
-#                            build_page_fun(...)
-#                          },
-#                          ## sample
-#                          sample_fun(...),
-#                          ## trials
-#                          build_page_fun(...)
-#                        )
-#     )
-# }

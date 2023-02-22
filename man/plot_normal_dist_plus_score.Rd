@@ -8,11 +8,16 @@ plot_normal_dist_plus_score(
   data = NULL,
   mean = NULL,
   sd = NULL,
-  highlighted_score
+  highlighted_score,
+  title = ggplot2::waiver(),
+  colour = "purple",
+  plot_point = FALSE,
+  alpha = 0.1,
+  vertical_line_colour = "orange"
 )
 }
 \arguments{
-\item{highlighted_score}{}
+\item{vertical_line_colour}{}
 }
 \value{
 

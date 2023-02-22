@@ -5,12 +5,25 @@
 #' @param mean
 #' @param sd
 #' @param highlighted_score
+#' @param title
+#' @param color
+#' @param plot_point
+#' @param alpha
+#' @param vertical_line_colour
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot_normal_dist_plus_score <- function(data = NULL, mean = NULL, sd = NULL, highlighted_score) {
+plot_normal_dist_plus_score <- function(data = NULL,
+                                        mean = NULL,
+                                        sd = NULL,
+                                        highlighted_score,
+                                        title = ggplot2::waiver(),
+                                        colour = "purple",
+                                        plot_point = FALSE,
+                                        alpha = 0.1,
+                                        vertical_line_colour = "orange") {
 
   if(!is.null(data) & is.null(mean) & is.null(sd)) {
     sd <- sd(data$score)
@@ -36,21 +49,23 @@ plot_normal_dist_plus_score <- function(data = NULL, mean = NULL, sd = NULL, hig
   }
 
   ggplot2::ggplot(data=data, ggplot2::aes(x = score)) +
-    ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), geom = "polygon", color = "blue", fill = "blue", alpha = 0.1) +
+    { if(plot_point) ggplot2::geom_point(ggplot2::aes(y = pnorm(score + 1, mean = mean(score, na.rm = TRUE), sd = sd(score, na.rm = TRUE)) - pnorm(score, mean = mean(score, na.rm = TRUE), sd = sd(score, na.rm = TRUE))), alpha = 0.6, size = 0.2, position = ggplot2::position_jitter(w = 0.0010, h = 0.0010)) } +
+    ggplot2::stat_function(fun = dnorm, args = c(mean = mean, sd = sd), geom = "polygon", color = colour, fill = colour, alpha = alpha) +
     ggplot2::geom_point(ggplot2::aes(x=highlighted_score, y = highlighted_score_y), colour="purple") +
-    ggplot2::geom_vline(xintercept = mean, color = "orange") +
-    ggplot2::xlim(0, mean + sd * 5) +
+    ggplot2::geom_vline(xintercept = mean, color = vertical_line_colour) +
+    ggplot2::xlim(0, 100) +
     ggplot2::theme(panel.background = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank()) +
     ggplot2::annotate(geom = "text", x = highlighted_score, y = highlighted_score_y, label = "Your Score!", hjust = hjust, vjust = vjust) +
     ggplot2::labs(
+      title = title,
       x = "Population Score"
     )
 
 }
 
 # plot_normal_dist_plus_score(mean = 50, sd = 10, highlighted_score = 100)
-
+# plot_normal_dist_plus_score(data = tibble::tibble(score = 1:100), highlighted_score = 50, plot_point = TRUE)
 
 #' Render scores in a shiny table
 #'
@@ -294,25 +309,6 @@ tidy_melodies <- function(melody_results, use_for_production = c("production", "
 
 }
 
-
-
-# # dummy data for testing
-# t_res <- readRDS('/Users/sebsilas/Downloads/results.rds')
-#
-#
-# processed_results$long_tone
-# processed_results$arrhythmic
-# processed_results$rhythmic
-
-# l <- list.files('/Users/sebsilas/Downloads/results 3/', full.names = TRUE)
-#
-# r <- lapply(l, function(x) as.list(readRDS(x)))
-#
-#
-# r2 <- lapply(r, collapse_results)
-#
-# test <- data.frame(r2[[1]])
-# test2 <- as.data.frame(r2[[2]])
 
 
 

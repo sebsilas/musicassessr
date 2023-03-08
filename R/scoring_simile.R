@@ -11,7 +11,6 @@
 #'
 #' @examples
 ngrukkon <- function(x, y, N = 3){
-  #browser()
   x <- itembankr::get_all_ngrams(x, N = N) %>% dplyr::pull(value)
   y <- itembankr::get_all_ngrams(y, N = N) %>% dplyr::pull(value)
   joint <- c(x, y) %>% table()
@@ -45,7 +44,6 @@ get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner =
     s <- unique(segmentation)
     return(
       purrr::map_dfr(s, function(x){
-        #browser()
         pv <- pitch_vec[segmentation == x]
         tidyr::tibble(segment = x, key = get_implicit_harmonies(pv, NULL, only_winner = only_winner) %>% dplyr::pull(key))
       })
@@ -54,7 +52,6 @@ get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner =
   }
   pitch_freq <- table(factor(pitch_vec  %% 12, levels = 0:11))
   correlations <- purrr::map_dfr(0:11, function(t){
-      #browser()
       w_major <- cor.test(pitch_freq, ks_weights_major[((0:11 - t) %% 12) + 1]) %>% broom::tidy() %>% dplyr::pull(estimate)
       w_minor <- cor.test(pitch_freq, ks_weights_minor[((0:11 - t) %% 12) + 1]) %>% broom::tidy() %>% dplyr::pull(estimate)
       dplyr::bind_rows(tidyr::tibble(transposition = t,  match = w_major, type = "major", key = sprintf("%s-maj", itembankr::pc_labels_flat[t+1])),
@@ -200,7 +197,6 @@ get_transposition_hints <- function(pitch_vec1, pitch_vec2){
 find_best_transposition <- function(pitch_vec1, pitch_vec2){
   trans_hints <- get_transposition_hints(pitch_vec1, pitch_vec2)
   sims <- purrr:map_dfr(trans_hints, function(x){
-    #browser()
     tidyr::tibble(transposition = x, sim = edit_dist(intToUtf8(pitch_vec1), intToUtf8(pitch_vec2 + x)))
   })
   sims %>% dplyr::arrange(sim) %>% head(1) %>% dplyr::pull(transposition)
@@ -285,13 +281,11 @@ opti3 <- function(pitch_vec1, onset_vec1,
 read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
   warning("Have you specified whether it is a Sonic Annotator vs. Tony pitch track correctly?")
   melody <-
-    read.csv(fname, header = F) %>%
+    read.csv(fname, header = FALSE) %>%
     tidyr::as_tibble() %>%
     {if(style == "sonic_annotator") dplyr::rename(., onset = V1, freq = V3, dur = V2) else dplyr::rename(.,onset = V1, freq = V2, dur = V3)} %>%
     itembankr::produce_extra_melodic_features() ## NB! sonic annotator and tony output different column orders, hence the above
 
-
-  #browser()
   if(any(is.na(melody$note)) || any(is.infinite(melody$note))){
     stop("Warning: Melody (%s) contains invalid pitches", fname)
   }
@@ -399,40 +393,5 @@ edit_sim <- function(s, t){
 }
 
 
-
-#
-# melody_1 <- read_melody('/Users/sebsilas/Downloads/K_S/HBD_test/seb.csv', style = "tony")
-# melody_2 <- read_melody('/Users/sebsilas/Downloads/K_S/HBD_test/sylvia.csv', style = "tony")
-#
-# da <- opti3_df(melody_1, melody_2)
-# da1 <- opti3_df(melody_1, melody_2, only_winner = FALSE)
-#
-# da2 <- opti3(melody_1$note, melody_1$onset, melody_2$note, melody_2$onset)
-#
-# da3 <- opti3(melody_1$note, melody_1$onset,
-#              melody_2$note, melody_2$onset, return_components = TRUE)
-#
-# da4 <- opti3(melody_1$note, melody_1$onset,
-#              melody_2$note, melody_2$onset,
-#              segmentation1 = melody_1$phrasbeg, segmentation2 = melody_2$phrasbeg,
-#              return_components = TRUE)
-#
-# da5 <- opti3(melody_1$note, melody_1$onset,
-#              melody_2$note, melody_2$onset,
-#              segmentation1 = melody_1$phrasbeg, segmentation2 = melody_2$phrasbeg,
-#              return_components = TRUE, use_bootstrap = TRUE)
-#
-# harmcore(melody_1$note, melody_2$note,
-#          segmentation1 = melody_1$phrasbeg,
-#          segmentation2 = melody_2$phrasbeg)
-#
-# harmcore2(melody_1$note,
-#           melody_2$note,
-#           segmentation1 = melody_1$phrasbeg,
-#           segmentation2 = melody_2$phrasbeg)
-
-
-
-# opti3(50:60, 1:10, 50:60, 1:10, use_bootstrap = F)
 
 

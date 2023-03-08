@@ -36,20 +36,32 @@ make_musicassessr_test <- function(elts_before_setup_pages = function() { psychT
                                    record_audio = TRUE,
                                    app_name = character(),
                                    midi_input = FALSE,
+                                   test_username = NA,
+                                   test = NA,
+                                   store_results_in_db = FALSE,
+                                   fake_range = TRUE,
                                    ...) {
 
   stopifnot(
-    is.logical(musicassessr_aws),
+    is.scalar.logical(musicassessr_aws),
+    is.scalar.logical(record_audio),
     is.function(elts_before_setup_pages), is.function(elts),
-    is.logical(setup_pages), is.function(setup_pages_options),
-    is.null(additional_dict) | is.data.frame(additional_dict)
+    is.scalar.logical(setup_pages), is.function(setup_pages_options),
+    is.null(additional_dict) | is.data.frame(additional_dict),
+    is.scalar.logical(fake_range)
   )
 
   psychTestR::make_test(
     psychTestR::new_timeline(
     psychTestR::join(
 
-      musicassessr::musicassessr_opt(),
+
+      if(fake_range) fake_range(),
+
+      musicassessr::musicassessr_opt(test_username,
+                                     test,
+                                     store_results_in_db,
+                                     app_name),
 
       elts_before_setup_pages(),
 
@@ -62,11 +74,11 @@ make_musicassessr_test <- function(elts_before_setup_pages = function() { psychT
       title = title,
       admin_password = admin_password,
       languages = languages,
-      additional_scripts = musicassessr::musicassessr_js(musicassessr_aws,
+      additional_scripts = musicassessr::musicassessr_js(app_name,
+                                                         musicassessr_aws,
                                                          visual_notation,
                                                          midi_file_playback,
                                                          record_audio,
-                                                         app_name,
                                                          midi_input),
       display = psychTestR::display_options(
         left_margin = 1L,
@@ -132,7 +144,7 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
 #' @param test_username
 #' @param test
 #' @param store_results_in_db
-#' @param copy_audio_to_location
+#' @param app_name
 #'
 #' @return
 #' @export
@@ -141,11 +153,11 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
 musicassessr_opt <- function(test_username = NA,
                              test = NA,
                              store_results_in_db = FALSE,
-                             copy_audio_to_location = NULL) {
+                             app_name = "") {
   musicassessr_init(
     test_username,
     test,
     store_results_in_db,
-    copy_audio_to_location
+    app_name
   )
 }

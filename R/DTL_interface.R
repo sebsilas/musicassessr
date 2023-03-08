@@ -35,8 +35,7 @@ DTL_similarity_search <- function(search_pattern = "1,2,1,2,1,2,1,2",
                                                         max_edit_distance = max_edit_distance,
                                                         max_length_difference = max_length_difference, filter_category = 0),
                                       encode = "form"))
-  #browser()
-  #print(httr::content(resp, "text"))
+
   if (httr::http_error(resp)) {
     messagef(
       "[DTL API]  Similarity Search  request failed [%s]\n%s\n<%s>",
@@ -66,15 +65,12 @@ DTL_get_results <- function(search_id) {
     return(NULL)
   }
   print(httr::content(resp, "text"))
-  #browser()
-
   parsed <- jsonlite::fromJSON(httr::content(resp, "text"), simplifyVector = FALSE)
   messagef("[DTL API] Retrieved %s lines for search_id %s", length(parsed), search_id)
   purrr::map_dfr(parsed, function(x){
     if(is.null(x$within_single_phrase)){
       x$within_single_phrase <- FALSE
     }
-    #browser()
     tibble::as_tibble(x) %>% dplyr::mutate(melid = as.character(melid))
   })
 }
@@ -115,7 +111,6 @@ DTL_similarity_search_results <- function(search_patterns = "1,2,1,2,1,2,1,2",
 
 
   }
-  #browser()
   if(nrow(results))
     results %>% dplyr::distinct(melid, start, length, .keep_all = T)
 }
@@ -153,7 +148,6 @@ DTL_similarity_search_results_fast <- function(search_patterns = "1,2,1,2,1,2,1,
     ret
   })
 
-  #browser()
   results %>% dplyr::distinct(melid, start, length, .keep_all = TRUE)
 }
 

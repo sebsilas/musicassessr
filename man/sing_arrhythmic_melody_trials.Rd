@@ -5,27 +5,30 @@
 \title{Sing arrhythmic melody trial block}
 \usage{
 sing_arrhythmic_melody_trials(
+  var_name = "arrhythmic_melody",
+  module_name = "sing_arrhythmic_melodies",
+ 
+    page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+  page_title = "Sing the Melody",
+ 
+    instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
+  sampler_function = sample_arrhythmic,
   item_bank,
-  num_items,
+  num_items = integer(),
   num_examples = 0L,
   feedback = FALSE,
   get_answer = get_answer_pyin_melodic_production_additional_measures,
   sound = "piano",
- 
-    page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
-  page_title = "Sing the Melody",
   page_type = "record_audio_page",
- 
-    instruction_text = "Now you will hear some melodies. Please try and sing the melodies.",
   get_trial_characteristics_function = NULL,
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
   rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
   max_goes = 3L,
   max_goes_forced = FALSE,
+  display_modality = "auditory",
   show_progress = TRUE,
-  show_record_button = FALSE,
-  module_name = "sing_arrhythmic_melodies"
+  show_record_button = FALSE
 )
 }
 \arguments{

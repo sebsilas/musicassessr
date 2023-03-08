@@ -1,10 +1,12 @@
 Package: musicassessr
 Title: musicassessr; develop music psychology tests and assess musicological/psychological data
 Version: 0.0.0.9000
-Author@R: 
-    person("Seb", "Silas", email = "sebsilas@gmail.com", 
-       role = c("aut", "cre").
-       comment = ("ORCID" = "0000-0001-8140-6528"))
+Authors@R: 
+    person(given = "Sebastian",
+           family = "Silas",
+           role = c("aut", "cre"),
+           email = "sebsilas@gmail.com",
+           comment = c(ORCID = "0000-0001-8140-6528"))
 Maintainer: Seb Silas <sebsilas@gmail.com>
 Description: musicassessr helps build different types of psychological tests via the psychTestR package. There is a particular emphasis on deploying musical stimuli (e.g., musical notation, melody playback) and musical response data collection (e.g., audio and MIDI) as well as testing psychological phenomenon more generally. 
 License: MIT + file LICENSE

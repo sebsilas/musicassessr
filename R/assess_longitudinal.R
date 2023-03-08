@@ -235,3 +235,71 @@ flick_through_plots <- function(n = 1) {
 #
 # DBI::dbDisconnect(con)
 
+
+plot_single_melody <- function(melody_no) {
+
+  trials <- get_table("trials")
+  sessions <- get_table("sessions")
+  production <- get_table("production")
+
+
+  joint <- trials %>%
+    dplyr::left_join(sessions, by = c("test_username", "session_id", "test")) %>%
+    dplyr::group_by(test_username) %>%
+    dplyr::mutate(session_no = as.numeric(factor(session_id))) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(test_username, session_id, test) %>%
+    dplyr::mutate(trial_no = dplyr::row_number()) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(session_by_attempt = (10*session_no) + attempt)
+
+
+  melodies_which_appear_more_than_once <- joint %>%
+    dplyr::count(abs_melody, session_no, test_username) %>%
+    dplyr::count(abs_melody, test_username) %>%
+    dplyr::filter(n > 1)
+
+  seb_mels <- melodies_which_appear_more_than_once %>%
+    dplyr::filter(test_username == "Seb") %>%
+    dplyr::pull(abs_melody)
+
+  sylvia_mels <- melodies_which_appear_more_than_once %>%
+    dplyr::filter(test_username == "Sylvia") %>%
+    dplyr::pull(abs_melody)
+
+
+  mels <- joint %>%
+    dplyr::rename(Test = test) %>%
+    dplyr::filter(abs_melody %in% seb_mels & test_username == "Seb" |
+                    abs_melody %in% sylvia_mels & test_username == "Sylvia")
+
+  holder <- tibble::tibble(abs_melody = c(seb_mels, sylvia_mels),
+                           username = c(rep("Seb", length(seb_mels)), rep("Sylvia", length(sylvia_mels))),
+                           melody_no = 1:length(abs_melody))
+
+  selection <-  holder %>% dplyr::filter(melody_no == !! melody_no)
+
+
+  mel <- as.name(selection$abs_melody)
+  user <- as.name(selection$username)
+
+  mels %>%
+    dplyr::filter(abs_melody == mel, test_username == user) %>%
+      ggplot2::ggplot(ggplot2::aes(x = session_by_attempt, y = opti3, group = abs_melody, color = as.factor(session_no))) +
+      ggplot2::geom_point() +
+      ggplot2::geom_line() +
+      ggplot2::labs(
+        x = 'Time Completed',
+        y = 'opti3'
+      ) + ggplot2::theme(legend.position = "none") +
+      ggplot2::ylim(0:1)
+}
+
+#no <- 13
+
+run_da <- function() {
+ no <<- no+1
+ plot_single_melody(no)
+}
+
+# # 75 is a good example

@@ -1,10 +1,5 @@
 
-play_words <- function(words_vector, voice) {
-  words_string <- paste0(words_vector, collapse = ' ')
-  js.function <- paste0('var words = "',words_string, '\"; ',
-                        'var voice = "', voice, '\"; ', collapse = "")
-  shiny::tags$script(js.function)
-}
+
 
 #' A page for selecting a voice before a play words page
 #'
@@ -93,3 +88,10 @@ record_spoken_words_page <- function() {
   )
 }
 
+
+play_words <- function(words_vector, voice) {
+  words_string <- paste0(words_vector, collapse = ' ')
+  js.function <- paste0('var words = "',words_string, '\"; ',
+                        'var voice = "', voice, '\"; ', collapse = "")
+  shiny::tags$script(js.function)
+}

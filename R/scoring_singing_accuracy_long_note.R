@@ -221,12 +221,3 @@ find_closest_stimuli_pitch_to_user_production_pitches <-
   }
 
 
-
-# dd <- calculate_stable_part(test_long_note_scoop, plot = FALSE)
-
-
-# as <- get_all_octaves_in_gamut(41, midi.gamut.min, midi.gamut.max)
-# as2 <- get_all_octaves_in_gamut(41:42, midi.gamut.min, midi.gamut.max) # should be stopped
-# tt <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = c(60, 62, 65, 64), user_production_pitches = c(50, 60, 70, 80, 76))
-# tt2 <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = c(60, 62, 65, 64), user_production_pitches = c(50, 60, 70, 80, 76), allOctaves = FALSE)
-

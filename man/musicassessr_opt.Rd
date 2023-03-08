@@ -8,11 +8,11 @@ musicassessr_opt(
   test_username = NA,
   test = NA,
   store_results_in_db = FALSE,
-  copy_audio_to_location = NULL
+  app_name = ""
 )
 }
 \arguments{
-\item{copy_audio_to_location}{}
+\item{app_name}{}
 }
 \value{
 

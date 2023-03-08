@@ -65,7 +65,9 @@ get_instrument_range_pages <- function(type, get_range,
   stopifnot(assertthat::is.string(type),
             is.logical(get_range) | assertthat::is.string(get_range),
             is.logical(show_musical_notation),
-            is.list(default_range) & length(2))
+            is.list(default_range) & length(2),
+            assertthat::is.string(test_type),
+            is.scalar.logical(concise_wording))
 
   if(get_range == "test" | get_range == FALSE) {
     fake_range(bottom_range = default_range$bottom_range,
@@ -230,7 +232,7 @@ determine_span <- function(highest_user_note, lowest_user_note, adjust_range) {
 
   if(adjust_range) {
     if(span < 12) {
-      m <- mean(lowest_user_note:highest_user_note)
+      m <- round(mean(lowest_user_note:highest_user_note))
       highest_user_note <- m + 6
       lowest_user_note <- m - 6
       span <- 12
@@ -256,6 +258,7 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE, t
   }
 
   psychTestR::reactive_page(function(state, ...) {
+
     lowest_user_note <- psychTestR::get_global("bottom_range", state)
     highest_user_note <- psychTestR::get_global("top_range", state)
 

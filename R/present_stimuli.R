@@ -49,6 +49,7 @@
 #' @param sound_only_first_melody_note
 #' @param show_sheet_music
 #' @param sheet_music_id
+#' @param octave
 #' @param ...
 #'
 #' @return
@@ -85,7 +86,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                             give_first_melody_note = FALSE,
                             slider_value = 5,
                             slider_min = 1,
-                            slider_max = 10, ...) {
+                            slider_max = 10,
+                            octave = 4, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -114,7 +116,8 @@ present_stimuli <- function(stimuli, stimuli_type,
             is.logical(sound_only_first_melody_note) | is.numeric(sound_only_first_melody_note) & length(sound_only_first_melody_note) == 1,
             is.logical(show_sheet_music),
             is.character(sheet_music_id) & length(sheet_music_id) == 1,
-            is.logical(give_first_melody_note))
+            is.logical(give_first_melody_note),
+            octave %in% 0:9)
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
@@ -132,7 +135,7 @@ present_stimuli <- function(stimuli, stimuli_type,
                                                start_hidden = start_hidden,
                                                sound_only_first_melody_note = sound_only_first_melody_note,
                                                show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
-                                               give_first_melody_note = give_first_melody_note, ...)
+                                               give_first_melody_note = give_first_melody_note, octave = octave, ...)
   } else {
     return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type,
                                              get_answer = get_answer,
@@ -150,7 +153,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                                              start_hidden = start_hidden,
                                              sound_only_first_melody_note = sound_only_first_melody_note,
                                              show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
-                                             give_first_melody_note = give_first_melody_note, ...)
+                                             give_first_melody_note = give_first_melody_note,
+                                             octave = octave, ...)
 
   }
 
@@ -266,8 +270,10 @@ get_page_function <- function(page_type) {
   page.fun
 }
 
-retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
-                               page_text = "Click to hear the stimuli", page_title = " ", interactive = FALSE,
+retrieve_page_type <- function(page_type = character(),
+                               stimuli_wrapped,
+                               page_text = "Click to hear the stimuli",
+                               page_title = " ", interactive = FALSE,
                                stimuli_reactive = FALSE, answer_meta_data = character(), midi_device = " ",
                                show_aws_controls = FALSE, page_label = " ",
                                button_text = "Next", play_button_text = "Play", get_answer = function() {},
@@ -277,8 +283,11 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                                melody_no = 0, total_no_melodies = 0, show_progress = FALSE,
                                slider_value = 5, slider_min = 0, slider_max = 10, ...) {
 
+  print(page_type)
 
-  stopifnot(is.character(page_type), class(stimuli_wrapped) == "shiny.tag",
+
+  stopifnot(assertthat::is.string(page_type),
+            class(stimuli_wrapped) == "shiny.tag",
             is.character(page_text) | class (page_text) == "shiny.tag", is.character(page_title), is.logical(interactive),
             is.logical(stimuli_reactive),
             is.character(answer_meta_data) | is.data.frame(answer_meta_data),
@@ -347,6 +356,8 @@ retrieve_page_type <- function(page_type = character(), stimuli_wrapped,
                 "melody_no" = melody_no,
                 "total_no_melodies" = total_no_melodies,
                 "show_progress" = show_progress))
+  } else if(page_type == "record_key_presses_page") {
+    args$body <- page_text
   } else {
     stop('Unknown page type.')
   }
@@ -372,7 +383,8 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
                                    volume = 1, audio_playback_as_single_play_button = FALSE,
                                    start_hidden = FALSE, sound_only_first_melody_note = FALSE,
                                    show_sheet_music = FALSE, sheet_music_id = 'sheet_music',
-                                   give_first_melody_note = FALSE, ...) {
+                                   give_first_melody_note = FALSE,
+                                   octave = 4, ...) {
 
   # generic stimuli types
 
@@ -410,7 +422,7 @@ present_stimuli_static <- function(stimuli, stimuli_type, display_modality, page
   } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)
   } else if (stimuli_type == "pitch_classes") {
-    return_stimuli <- present_stimuli_pitch_classes(stimuli, display_modality, ...)
+    return_stimuli <- present_stimuli_pitch_classes(stimuli, display_modality, octave = octave, ...)
   } else if (stimuli_type == "scientific_music_notation") {
     return_stimuli <- present_stimuli_scientific_music_notation(stimuli, display_modality, ...)
   } else if (stimuli_type == "rhythms") {
@@ -460,5 +472,3 @@ check_correct_argument_for_body <- function(page_type_string, args, stimuli_wrap
   args
 }
 
-
-# present_stimuli_music_xml_file(stimuli, display_modality = "visual")

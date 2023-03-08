@@ -1,9 +1,14 @@
 
 
-#WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
-#WJD_mini$correct <- 0
+
+# review_buffer()
+
 
 review_buffer <- function() {
+
+  WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
+  WJD_mini$correct <- 0
+
   psychTestR::make_test(
     elts = psychTestR::join(
       psychTestR::code_block(function(state, ...) {
@@ -61,4 +66,3 @@ review_buffer <- function() {
                                  languages = c("en")))
 }
 
-# review_buffer()

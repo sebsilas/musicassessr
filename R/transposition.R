@@ -72,6 +72,12 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
 #' @examples
 sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
 
+  stopifnot(tibble::is_tibble(item_bank),
+            assertthat::is.string(inst),
+            is_midi_note(bottom_range),
+            is_midi_note(top_range),
+            difficulty == "easy" || difficulty == "hard",
+            is.null.or(length, is.scalar.numeric))
 
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
@@ -278,113 +284,3 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
 leave_relative <- function(rel_melody, range = NULL, bottom_range = NULL, top_range = NULL, transpose = NULL) {
   rel_melody
 }
-
-
-
-
-
-
-## tests
-
-
-# d <- WJD::WJD("main")
-# item_bank_subset <- itembankr::subset_item_bank(WJD::WJD("main"),
-#                                                 tonality = "major",
-#                                                 span_max = 24, item_length = 11L)
-# dd <- sample_melody_in_key(item_bank = WJD::WJD("phrases"),
-#                      inst = "Piano",
-#                      bottom_range = 48, top_range = 72,
-#                      difficulty =  "easy", length = 3)
-
-
-# sample_keys_by_difficulty("Piano", n_easy = 4, n_hard = 4)
-
-#rel_to_abs_mel_mean_centred(Berkowitz::Berkowitz[1000, "melody"], 40, 65, TRUE)
-
-# sampled_keys <- sample_keys_by_difficulty("Alto Saxophone", 10, 10)
-
-#
-# sample_melody_in_hard_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
-# sample_melody_in_easy_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
-#
-
-
-# sample_easy_key("Piano")
-# key_rankings_for_inst("Piano")
-# tt <- hard_keys_for_inst("Piano")
-# tt <- hard_keys_for_inst("Alto Saxophone")
-# tt <- hard_keys_for_inst("Tenor Saxophone")
-#
-# key_rankings_for_inst("Alto Saxophone")
-# easy_keys_for_inst("Alto Saxophone")
-# easy_keys_for_inst("Piano")
-#
-# hard_keys_for_inst("Alto Saxophone")
-#
-# key_rankings_for_inst("Clarinet")
-# easy_keys_for_inst("Clarinet")
-# hard_keys_for_inst("Clarinet")
-#
-# sample_easy_key("Alto Saxophone")
-#
-# sample_melody_in_easy_key("Tenor Saxophone",  44, 76)
-
-# key_rankings_for_inst("Alto Saxophone")
-#
-# alto_range <- 58:89
-# tenor_range <- 44:76
-# sample_melody_in_easy_key("Alto Saxophone", 58, 89)
-# sample_melody_in_hard_key("Alto Saxophone", 58, 89)
-# sample_melody_in_hard_key("Tenor Saxophone", 44, 76)
-# sample_melody_in_easy_key("Tenor Saxophone",  44, 76)
-# hi <- sample_melody_in_easy_key("Piano", 48, 79)
-#
-#
-# ts_hard <- hard_keys_for_inst("Tenor Saxophone")
-# ts_easy <- easy_keys_for_inst("Tenor Saxophone")
-# easy_keys_for_inst("Tenor Saxophone")
-#
-# sample_melody_in_easy_key("Piano", 48, 79)
-
-
-#sample_melody_in_easy_key("Piano", 48, 79)
-
-
-
-#test_sub <- itembankr::subset_item_bank(WJD::WJD("phrases"), N_range = c(3, NULL))
-#test_sub[1000, "melody"]
-
-
-
-# key_difficulty("C-maj", "Tenor Saxophone")
-# key_difficulty("Ab-min", "Tenor Saxophone")
-#
-# hard_keys_for_inst("Piano")
-
-
-###
-
-# sample_melody_in_easy_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
-# sample_melody_in_hard_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89)
-
-# da1 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15)
-# da2 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "hard", length = 15)
-#
-# trial_char <- get_trial_characteristics(trial_df = pra, trial_no = 20)
-#
-# da3 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
-# da4 <- sample_melody_in_key(inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = trial_char$difficulty, length = trial_char$melody_length)
-
-
-
-
-# test for perf:
-
-# Normal WJD:
-# system.time({ da1 <- sample_melody_in_key(WJD::WJD("ngram"), inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15) })
-
-# dbplyr:
-# con <- musicassessr::connect_to_db()
-# dbplyr_WJD <- dplyr::tbl(con, "WJD_ngram")
-# system.time({ da2 <- sample_melody_in_key(dbplyr_WJD, inst = "Alto Saxophone", bottom_range = 58, top_range = 89, difficulty = "easy", length = 15) })
-

@@ -15,6 +15,7 @@ musicassessr_init <- function(test_username = NA,
                               store_results_in_db = FALSE,
                               app_name) {
 
+
   psychTestR::code_block(function(state, ...) {
     psychTestR::set_global("app_name", app_name, state)
     psychTestR::set_global("store_results_in_db", store_results_in_db, state)

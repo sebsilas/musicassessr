@@ -57,30 +57,6 @@ check_opti3 <- function(user_response, correct_answer, reverse = FALSE) {
   }
 }
 
-# tests
-# check_answer("a", "b", type = "single_letters")
-# check_answer("a", "a", type = "single_letters")
-# check_answer("aaa", "bbb", reverse = FALSE, type = "chunk_letters")
-# check_answer("aaa", "aaa", type = "chunk_letters")
-# check_answer(11, 22, type = "single_numbers")
-# check_answer(11, 11, type = "single_numbers")
-# check_answer(11, 11, reverse = TRUE,  type = "chunk_digits")
-# check_answer(123, 123, reverse = TRUE, type = "chunk_digits")
-# check_answer(123, 321, reverse = TRUE, type = "chunk_digits")
-#
-# check_answer(1:3, 3:1, reverse = TRUE, type = "chunk_digits")
-# check_answer(1:3, 3:1, reverse = FALSE, type = "chunk_digits")
-# check_answer(1:3, 1:3, reverse = TRUE, type = "chunk_digits")
-# check_answer(1:3, 1:4, reverse = TRUE, type = "chunk_digits")
-#
-# check_answer(c(10,50,60), c(10,50,60), type = "midi_pitches")
-# check_answer(c(10,50,60), c(10,50,60), reverse = TRUE, type = "midi_pitches")
-# check_answer(c(10,50,60), c(60,50,10), reverse = TRUE, type = "midi_pitches")
-#
 
-
-# t <- itembankr::midi_file_to_notes_and_durations('/Users/sebsilas/true.mid', string_df = FALSE)
-# t2 <- itembankr::midi_file_to_notes_and_durations('/Users/sebsilas/true.mid', string_df = TRUE, itembankr::produce_extra_melodic_features = TRUE)
-# t3 <- t2 %>% to_string_df()
 
 

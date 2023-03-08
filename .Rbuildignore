@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^musicassessr\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$

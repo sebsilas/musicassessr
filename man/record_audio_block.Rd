@@ -9,8 +9,7 @@ record_audio_block(
   feedback = NULL,
   get_answer = get_answer_pyin,
   page_title = "Record audio",
-  page_text = "Click record to record some audio",
-  copy_audio_to = NULL
+  page_text = "Click record to record some audio"
 )
 }
 \arguments{

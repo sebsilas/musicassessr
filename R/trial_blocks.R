@@ -290,7 +290,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 show_sheet_music,
                 sheet_music_id,
                 give_first_melody_note,
-                presampled)
+                presampled,
+                arrhythmic = TRUE)
 
 }
 
@@ -389,7 +390,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                show_sheet_music,
                sheet_music_id,
                give_first_melody_note,
-               presampled)
+               presampled,
+               arrhythmic = FALSE)
 
 }
 
@@ -427,6 +429,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param presampled
+#' @param arrhythmic
 #'
 #' @return
 #' @export
@@ -459,7 +462,8 @@ melody_trials <- function(var_name,
                            show_sheet_music = FALSE,
                            sheet_music_id = 'sheet_music',
                            give_first_melody_note = FALSE,
-                           presampled = FALSE) {
+                           presampled = FALSE,
+                          arrhythmic = FALSE) {
 
 
   if(presampled) {
@@ -467,7 +471,7 @@ melody_trials <- function(var_name,
   }
 
   stopifnot(
-    #is(item_bank, "item_bank"),
+    is(item_bank, "item_bank"),
     is.scalar.numeric(num_items) | is.list(num_items) | presampled,
     is.scalar.numeric(num_examples) | is.list(num_examples),
     is.function(feedback) | is.scalar.logical(feedback),
@@ -479,7 +483,7 @@ melody_trials <- function(var_name,
     assertthat::is.string(instruction_text),
     is.null.or(get_trial_characteristics_function, is.function),
     is.null.or(item_characteristics_sampler_function, is.function),
-    is.null.or(item_characteristics_pars, function(x) is.list(x) && length(x) == 2L),
+    is.null.or(item_characteristics_pars, is.list),
     is.function(rel_to_abs_mel_function),
     is.scalar.numeric(max_goes),
     is.scalar.logical(max_goes_forced),
@@ -493,12 +497,16 @@ melody_trials <- function(var_name,
     assertthat::is.string(sheet_music_id),
     is.scalar.logical(give_first_melody_note),
     is.function(sampler_function),
-    is.scalar.logical(presampled)
+    is.scalar.logical(presampled),
+    is.scalar.logical(arrhythmic)
   )
 
 
   num_examples_flat <- flatten_no_item_list(num_examples)
   num_items_flat <- flatten_no_item_list(num_items)
+
+  # Unclass item bank, so it can work with dplyr
+  item_bank <- item_bank %>% tibble::as_tibble()
 
 
   if(num_items_flat == 0) {
@@ -537,7 +545,7 @@ melody_trials <- function(var_name,
                                presampled_items = if(presampled) item_bank else NULL,
                                stimuli_type = "midi_notes",
                                var_name = var_name,
-                               n_items = num_examples_flat,
+                               num_items = num_items_flat,
                                page_title = page_title,
                                page_text = page_text,
                                page_type = page_type,
@@ -557,7 +565,8 @@ melody_trials <- function(var_name,
                                sound_only_first_melody_note = sound_only_first_melody_note,
                                show_sheet_music = show_sheet_music,
                                sheet_music_id = sheet_music_id,
-                               give_first_melody_note = give_first_melody_note),
+                               give_first_melody_note = give_first_melody_note,
+                               arrhythmic = arrhythmic),
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p("Now you're ready for the real thing!")))
@@ -575,7 +584,7 @@ melody_trials <- function(var_name,
                          multi_page_play_melody_loop(
                            stimuli_type = "midi_notes",
                            var_name = var_name,
-                           n_items = num_items_flat,
+                           num_items = num_items_flat,
                            page_title = page_title,
                            page_text = page_text,
                            page_type = page_type,
@@ -594,7 +603,8 @@ melody_trials <- function(var_name,
                            sound_only_first_melody_note = sound_only_first_melody_note,
                            show_sheet_music = show_sheet_music,
                            sheet_music_id = sheet_music_id,
-                           give_first_melody_note = give_first_melody_note)
+                           give_first_melody_note = give_first_melody_note,
+                           arrhythmic = arrhythmic)
                        )
     )
   }
@@ -723,7 +733,8 @@ long_tone_trials <- function(num_items,
 #' @export
 #'
 #' @examples
-find_this_note_trials <- function(num_items, num_examples = 0L,
+find_this_note_trials <- function(num_items,
+                                  num_examples = 0L,
                                   feedback = FALSE,
                                   page_title = "Find This Note",
                                   get_answer = get_answer_pyin_melodic_production_additional_measures,
@@ -794,12 +805,20 @@ find_this_note_trials <- function(num_items, num_examples = 0L,
 #' @export
 #'
 #' @examples
-wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, feedback = FALSE,
-                                    item_length = c(3,15), get_answer = get_answer_pyin_melodic_production_additional_measures, sound = "piano",
+wjd_audio_melody_trials <- function(item_bank,
+                                    num_items,
+                                    num_examples = 0L,
+                                    feedback = FALSE,
+                                    item_length = c(3,15),
+                                    get_answer = get_answer_pyin_melodic_production_additional_measures, sound = "piano",
                                     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                     page_title = "Play the Melody And Rhythm from Audio",
                                     instruction_text = "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can.") {
 
+  stopifnot(is(item_bank, "item_bank"))
+
+  # Declass item bank to work with tidyverse
+  item_bank <- tibble::as_tibble(item_bank)
 
   if(num_items == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -831,6 +850,7 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, fee
 
         # trials
         multi_page_play_melody_loop(
+          num_items = num_items,
           presampled_items = examples,
           var_name = "wjd_audio_melody",
           page_type = "record_audio_page",
@@ -876,7 +896,7 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, fee
 
 #' A block which test a participant's perception of intervals
 #'
-#' @param n_items
+#' @param num_items
 #' @param sound
 #' @param page_title
 #' @param instruction_text
@@ -885,11 +905,12 @@ wjd_audio_melody_trials <- function(item_bank, num_items, num_examples = 0L, fee
 #' @export
 #'
 #' @examples
-interval_perception_trials <- function(n_items = 26L, sound = "piano",
+interval_perception_trials <- function(num_items = 26L,
+                                       sound = "piano",
                                        page_title = "What's that interval?",
                                        instruction_text = "In the next set of trials, you will hear a musical interval. You must try and say what the interval is. There are no practice rounds, you will begin immediately.") {
 
-  if(is.numeric(n_items) & n_items > 0L) {
+  if(is.numeric(num_items) & num_items > 0L) {
     psychTestR::module("interval_perception",
                        # no examples (too self explanatory/easy)
                        psychTestR::join(
@@ -897,8 +918,8 @@ interval_perception_trials <- function(n_items = 26L, sound = "piano",
                            shiny::tags$h2(page_title),
                            shiny::tags$p(instruction_text)
                          )),
-                         sample_intervals(num_items = n_items),
-                         multi_interval_page(n_items)))
+                         sample_intervals(num_items = num_items),
+                         multi_interval_page(num_items)))
   } else {
     c()
   }

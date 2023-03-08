@@ -67,7 +67,7 @@ setup_pages(
 
 \item{musical_instrument}{Whether the participant is required to have a musical instrument.}
 
-\item{default_range}{A list of the range that stimuli should be presented in, if not collected at test time.}
+\item{default_range}{A length 2 named list of the range that stimuli should be presented in, if not collected at test time.}
 }
 \value{
 

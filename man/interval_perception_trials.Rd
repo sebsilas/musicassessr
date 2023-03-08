@@ -5,7 +5,7 @@
 \title{A block which test a participant's perception of intervals}
 \usage{
 interval_perception_trials(
-  n_items = 26L,
+  num_items = 26L,
   sound = "piano",
   page_title = "What's that interval?",
  

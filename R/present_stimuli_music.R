@@ -808,8 +808,3 @@ show_first_melody_note <- function(give_first_melody_note,
   }
 }
 
-
-# <accidental>natural</accidental>
-
-# format.notes.scientific_music_notation(c("C3", "C#3", "D3", "Eb3"))
-

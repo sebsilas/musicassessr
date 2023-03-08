@@ -49,7 +49,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
 
   # features df
   features_df <- tibble::tibble(
-    freq = if(is_null_length_1(user_melody_freq)) hrep::midi_to_freq(user_melody_input) else user_melody_freq,
+    freq = if(length(user_melody_freq) == 0) hrep::midi_to_freq(user_melody_input) else user_melody_freq,
     note = user_melody_input,
     onset = user_onset_input,
     dur = user_duration_input
@@ -97,7 +97,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   # fine-grained pitch measures (i.e singing style):
   nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = features_df$note, allOctaves = TRUE)
 
-  if(!"note" %in% names(pyin_pitch_track)) {
+  if(length(pyin_pitch_track) > 0 & !"note" %in% names(pyin_pitch_track)) {
     pyin_pitch_track <- pyin_pitch_track %>%
       dplyr::rowwise() %>%
       dplyr::mutate(note = if(is.na(freq)) NA else round(hrep::freq_to_midi(freq))) %>%
@@ -110,10 +110,12 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   melody_dtw <- get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, features_df)
   features_df$nearest_stimuli_note <- nearest_pitches
 
-  pyin_pitch_track <- pyin_pitch_track %>%
-    dplyr::mutate(interval = c(NA, diff(note)),
-                  interval_cents = itembankr::cents(dplyr::lag(freq), freq),
-                  nearest_stimuli_note = nearest_pitches_pyin_track)
+  if(length(pyin_pitch_track) > 0) {
+    pyin_pitch_track <- pyin_pitch_track %>%
+      dplyr::mutate(interval = c(NA, diff(note)),
+                    interval_cents = itembankr::cents(dplyr::lag(freq), freq),
+                    nearest_stimuli_note = nearest_pitches_pyin_track)
+  }
 
   # additional (user-defined)
   additional_scoring_measures <- apply_additional_scoring_measures(additional_scoring_measures, features_df$onset, features_df$dur, features_df$freq, features_df$note, stimuli, stimuli_durations)
@@ -216,38 +218,6 @@ test_additional_measures_fun_failure <- function(onset, dur, freq2, note, stimul
   # freq is misspelled
 }
 
-# check_additional_measures_args(test_additional_measures_fun_success)
-# check_additional_measures_args(test_additional_measures_fun_failure)
-
-
-# (t <- score_melodic_production(user_melody_input = c(60, 62, 64, 65),
-#                                user_duration_input = rep(1, 4),
-#                                user_onset_input = c(0, cumsum(rep(1, 3))),
-#                                stimuli = c(60, 62, 64, 65),
-#                                stimuli_duration = rep(1, 4)))
-#
-# (t2 <- score_melodic_production(user_melody_input = c(60, 67, 64, 65),
-#                                 user_duration_input = rep(1, 4),
-#                                 user_onset_input = c(0, cumsum(rep(1, 3))),
-#                                 stimuli = c(60, 62, 64, 65),
-#                                 stimuli_duration = rep(1, 4)))
-#
-#
-# (t3 <- score_melodic_production(user_melody_input = c(60, 67, 64, 65, 60, 60),
-#                                 user_duration_input = rep(1, 6),
-#                                 user_onset_input = c(0, cumsum(rep(1, 5))),
-#                                 stimuli = c(60, 62, 64, 65),
-#                                 stimuli_duration = rep(1, 4)))
-#
-# # octave
-#
-# (t4 <- score_melodic_production(user_melody_input = c(72, 62, 64, 65),
-#                                user_duration_input = rep(1, 4),
-#                                user_onset_input = c(0, cumsum(rep(1, 3))),
-#                                stimuli = c(60, 62, 64, 65),
-#                                stimuli_duration = rep(1, 4)))
-
-
 
 
 # helper functions / mainly for dealing with presence of NAs when scoring methods used at test time
@@ -296,39 +266,4 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
 
 
 
-
-
-# t <- score_melodic_production(user_melody_input = c(60, 61, 63, 64, 65),
-#                          user_duration_input = c(1, 1.5, 1, 1.2, 1),
-#                          user_onset_input = cumsum(c(1, 1, 1, 1, 1)),
-#                          stimuli = c(60, 62, 63, 64, 65),
-#                          stimuli_durations = c(1, 1, 1, 1, 1))
-
-
-# with additional measures
-
-
-
-
-
-# t1 <- score_melodic_production(user_melody_input = c(60, 61, 63, 64, 65),
-#                          user_duration_input = c(1, 1.5, 1, 1.2, 1),
-#                          user_onset_input = cumsum(c(1, 1, 1, 1, 1)),
-#                          stimuli = c(60, 62, 63, 64, 65),
-#                          stimuli_durations = c(1, 1, 1, 1, 1),
-#                          additional_scoring_measures = log_scores)
-#
-# t2 <- score_melodic_production(user_melody_input = c(60, 61, 63, 64, 65),
-#                                user_duration_input = c(1, 1.5, 1, 1.2, 1),
-#                                user_onset_input = cumsum(c(1, 1, 1, 1, 1)),
-#                                stimuli = c(60, 62, 63, 64, 65),
-#                                stimuli_durations = c(1, 1, 1, 1, 1),
-#                                additional_scoring_measures = check_no_notes_above_c4)
-
-# t3 <- score_melodic_production(user_melody_input = c(60, 61, 63, 64, 65),
-#                                user_duration_input = c(1, 1.5, 1, 1.2, 1),
-#                                user_onset_input = cumsum(c(1, 1, 1, 1, 1)),
-#                                stimuli = c(60, 62, 63, 64, 65),
-#                                stimuli_durations = c(1, 1, 1, 1, 1),
-#                                additional_scoring_measures = list(log_scores, check_no_notes_above_c4))
 

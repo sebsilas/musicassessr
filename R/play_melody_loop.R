@@ -4,7 +4,7 @@
 #'
 #' @param item_bank
 #' @param presampled_items
-#' @param n_items
+#' @param num_items
 #' @param var_name
 #' @param stimuli_type
 #' @param page_type
@@ -36,7 +36,7 @@
 #' @examples
 multi_page_play_melody_loop <- function(item_bank = NULL,
                                         presampled_items = NULL,
-                                        n_items,
+                                        num_items = NULL, # Can be null if presampled
                                         var_name = "melody",
                                         stimuli_type = "midi_notes",
                                         page_type = "record_audio_page",
@@ -63,10 +63,39 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         give_first_melody_note = FALSE) {
 
 
+  stopifnot(is.null.or(item_bank, tibble::is_tibble),
+            is.null.or(presampled_items, is.data.frame),
+            is.null.or(num_items, is.scalar.numeric),
+            assertthat::is.string(var_name),
+            assertthat::is.string(stimuli_type),
+            assertthat::is.string(page_type),
+            is.scalar.numeric(max_goes),
+            is(page_title, "html") || is.character(page_title),
+            assertthat::is.string(page_text),
+            is.function(get_answer),
+            is.null.or(rel_to_abs_mel_function, is.function),
+            is.scalar.numeric(start_from_trial_no),
+            is.scalar.logical(clip_stimuli_length),
+            is.scalar.logical(arrhythmic),
+            is.scalar.logical(example),
+            is.function(feedback) | is.scalar.logical(feedback),
+            assertthat::is.string(sound),
+            is.null.or(get_trial_characteristics_function, is.function),
+            is.scalar.logical(max_goes_forced),
+            assertthat::is.string(display_modality),
+            is.scalar.logical(show_record_button),
+            is.scalar.logical(show_progress),
+            is.scalar.logical(start_hidden),
+            is.scalar.logical(sound_only_first_melody_note),
+            is.scalar.logical(show_sheet_music),
+            assertthat::is.string(sheet_music_id),
+            is.scalar.logical(give_first_melody_note))
+
+
   if(is.null(presampled_items)) {
     # items should be a dataframe
     # this will return a sequence of test items
-    items <- lapply(start_from_trial_no:n_items, function(melody_no) {
+    items <- lapply(start_from_trial_no:num_items, function(melody_no) {
       play_melody_loop(melody_no = melody_no,
                        var_name = var_name,
                        max_goes = max_goes,
@@ -85,7 +114,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                        item_bank = item_bank,
                        display_modality = display_modality,
                        show_record_button = show_record_button,
-                       total_no_melodies = n_items,
+                       total_no_melodies = num_items,
                        show_progress = show_progress,
                        start_hidden = start_hidden,
                        sound_only_first_melody_note = sound_only_first_melody_note,
@@ -522,6 +551,20 @@ grab_sampled_melody <- function(item_bank = NULL,
   psychTestR::set_global("melody", list("melody" = abs_melody,
                                         "durations" = durations), state)
   psychTestR::set_global("answer_meta_data", rjson::toJSON(answer_meta_data), state)
+
+
+  # if(keep_session_trial_log) {
+  #   # keep a record of the trials running, in case they need to be retrieved later (easier than accessing the results object)
+  #
+  #   previous_trials <- psychTestR::get_global("trials_completed_this_session")
+  #
+  #   if(is.null(previous_trials)) {
+  #     psychTestR::set_global("trials_completed_this_session", answer_meta_data)
+  #   } else {
+  #     psychTestR::set_global("trials_completed_this_session", rbind(previous_trials, answer_meta_data) )
+  #   }
+  # }
+
 
 }
 

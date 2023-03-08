@@ -125,13 +125,4 @@ produce_stimuli_in_range <- function(rel_melody, bottom_range = 21, top_range = 
 
 
 
-#find.closest.value(14, c(1, 6, 12, 28, 33), TRUE)
-
-#as <- get.all.octaves.in.gamut(41, midi.gamut.min, midi.gamut.max)
-
-#as2 <- unlist(lapply(c(51, 39, 41, 43), function(x) get.all.octaves.in.gamut(x, midi.gamut.min, midi.gamut.max)))
-
-
-# get_instrument_range("Alto Saxophone")
-
 

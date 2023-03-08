@@ -59,11 +59,10 @@ end_of_long_note_trial_screening <- function(failure_page = 'http://www.google.c
     psychTestR::code_block(function(state, answer, ...) {
       print('end_of_long_note_trial_screening')
       res <- as.list(psychTestR::get_results(state, complete = FALSE))$long_tone_trials
-      print(res)
+
       if(is.null(res)) {
         res <- as.list(psychTestR::get_results(state, complete = FALSE))$SAA.long_tone_trials
       }
-      print(res)
       no_trials <- length(res)
       res <- purrr:::map_chr(res, function(trial) {
         as.vector(unlist(trial['noise_classification']))
@@ -72,9 +71,6 @@ end_of_long_note_trial_screening <- function(failure_page = 'http://www.google.c
       no_noise <- as.numeric(t['noise'])
       no_long_notes <- as.numeric(t['long_notes'])
 
-      print(no_noise)
-      print(no_long_notes)
-
       if(is.null(no_noise) | is.na(no_noise)) {
         no_noise <- 0
       }
@@ -82,10 +78,6 @@ end_of_long_note_trial_screening <- function(failure_page = 'http://www.google.c
       if(is.null(no_long_notes) | is.na(no_long_notes)) {
         no_long_notes <- 0
       }
-      print('post')
-      print(no_noise)
-      print(no_long_notes)
-
 
       if(no_noise == 0 | no_long_notes == 6) {
         final_prediction <- "long_notes"

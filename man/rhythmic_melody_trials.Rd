@@ -5,17 +5,20 @@
 \title{Rhythmic melody trials block}
 \usage{
 rhythmic_melody_trials(
+  var_name = "rhythmic_melody",
+  module_name = "rhythmic_melodies",
+  page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
+  page_title = "Play this melody plus rhythm",
+ 
+    instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
+  sampler_function = sample_rhythmic,
   item_bank,
-  num_items,
+  num_items = integer(),
   num_examples = 0L,
   feedback = FALSE,
   get_answer = get_answer_pyin_melodic_production_additional_measures,
   sound = "piano",
-  page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
-  page_title = "Play This Melody Plus Rhythm",
   page_type = "record_audio_page",
- 
-    instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
   get_trial_characteristics_function = NULL,
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
@@ -25,13 +28,11 @@ rhythmic_melody_trials(
   display_modality = "auditory",
   show_record_button = FALSE,
   show_progress = TRUE,
-  module_name = "rhythmic_melodies",
   start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
-  sampler_function = sample_rhythmic,
   presampled = FALSE
 )
 }

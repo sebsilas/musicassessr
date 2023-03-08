@@ -1,10 +1,10 @@
 
+
+# review_buffer_timebound()
+
+
 # NB: completely decouple the visualising table stuff from the main functionality
 # i.e., the main functionality shouldn't be based around the table displaying at all
-
-#WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
-#WJD_mini$correct <- 0
-#WJD_mini$time_next_due <- Sys.time() + lubridate::minutes(1)
 
 
 sample_from_item_bank_and_remove <- function(state) {
@@ -65,6 +65,13 @@ grab_review <- function(review_items, state) {
 
 
 review_buffer_timebound <- function(minimum_complete = 5) {
+
+
+  WJD_mini <- WJD::WJD("phrases")  %>% dplyr::slice_sample(n = 10)
+  WJD_mini$correct <- 0
+  WJD_mini$time_next_due <- Sys.time() + lubridate::minutes(1)
+
+
   psychTestR::make_test(
     elts = psychTestR::join(
 
@@ -172,4 +179,3 @@ if_null_return_empty_text <- function(x) {
   }
 }
 
-#review_buffer_timebound()

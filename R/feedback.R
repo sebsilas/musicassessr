@@ -112,8 +112,6 @@ list_to_shiny_table <- function(l, rownames = TRUE, colnames = FALSE) {
 
 
 
-
-
 feedback_long_tone <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
@@ -199,10 +197,5 @@ add_feedback <- function(items, feedback, after = 2) {
   }
 }
 
-# tl <- psychTestR::join(
-#   lapply(LETTERS, psychTestR::one_button_page)
-# )
-#
-# tl2 <- add_feedback(tl, function() 'feedback_melodic_production', after = 4)
 
 

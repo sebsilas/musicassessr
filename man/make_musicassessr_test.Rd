@@ -21,6 +21,10 @@ make_musicassessr_test(
   record_audio = TRUE,
   app_name = character(),
   midi_input = FALSE,
+  test_username = NA,
+  test = NA,
+  store_results_in_db = FALSE,
+  fake_range = TRUE,
   ...
 )
 }

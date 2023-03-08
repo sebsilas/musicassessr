@@ -11,6 +11,12 @@
 #' @examples
 item_sampler <- function(item_bank, no_items, replace = FALSE) {
 
+  stopifnot(
+    tibble::is_tibble(item_bank),
+    is.scalar.numeric(no_items),
+    is.scalar.logical(replace)
+  )
+
   item_bank <- item_bank %>% dplyr::arrange(N)
 
   # what values are there?
@@ -44,9 +50,6 @@ item_sampler <- function(item_bank, no_items, replace = FALSE) {
 
 sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
   psychTestR::code_block(function(state, ...) {
-    print('sample_item_characteristics code')
-    print(item_characteristics_pars)
-    print(var_name)
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
     print(item_chars)
     psychTestR::set_global(var_name, item_chars, state)
@@ -292,52 +295,6 @@ span_warning <- function(span) {
   }
 }
 
-#rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = itembankr::Berkowitz("main"), item_length = c(3,7))
-#rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, 6)
 
 
 
-
-#pra <- item_characteristics_sampler()
-
-
-#get_trial_characteristics(trial_df = pra, trial_no = 20)
-
-# tests
-
-
-# dada <- item_sampler_rds(berkowitz.rds.abs, list("3" = 2L,
-#                                                   "4" = 1L))
-
-
-
-# doda <- item_sampler_simple(item_bank = berkowitz.midi,
-#                             no_items = list("3" = 4,
-#                                             "4" = 3,
-#                                             "5" = 2,
-#                                             "6" = 2,
-#                                             "7" = 2,
-#                                             "8" = 2,
-#                                             "9" = 2,
-#                                             "10" = 2,
-#                                             "11" = 2))
-#
-#
-#
-#
-#
-
-
-# tests::
-
-
-# test duplicate
-#fake.duplicate <- rbind(user.sample, user.sample[1, ], user.sample[11, ])
-#out <- remove.duplicates.and.resample(fake.duplicate, berkowitz.item.bank)
-
-
-
-#ja <- item_sampler(DTL_1000, 23)
-
-
-# item_bank_sample <- item_sampler(item_bank_sub, 20)

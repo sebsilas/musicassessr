@@ -594,7 +594,3 @@ store_results_in_db <- function(state, res, pyin_res) {
 
 
 
-# test
-# #r <- melconv_from_pyin_res('/Users/sebsilas/true.wav')
-
-

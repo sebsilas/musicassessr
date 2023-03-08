@@ -2,21 +2,23 @@
 % Please edit documentation in R/trial_blocks.R
 \name{arrhythmic_melody_trials}
 \alias{arrhythmic_melody_trials}
-\title{Arrhythmic Melody Trials Block}
+\title{Arrhythmic melody trials block}
 \usage{
 arrhythmic_melody_trials(
+  var_name = "arrhythmic_melody",
+  module_name = "arrhythmic_melodies",
+  page_text = "Press play to hear the melody. Play back the melody.",
+  page_title = "Play this melody.",
+ 
+    instruction_text = "Now you will hear some melodies. Please try and play back the melodies.",
+  sampler_function = sample_arrhythmic,
   item_bank,
-  num_items,
+  num_items = integer(),
   num_examples = 0L,
   feedback = FALSE,
   get_answer = get_answer_pyin_melodic_production_additional_measures,
   sound = "piano",
- 
-    page_text = "Click below to hear the melody. Play back the melody. Click Stop when finished.",
-  page_title = "Play the Melody",
   page_type = "record_audio_page",
- 
-    instruction_text = "Now you will hear some melodies. Please try and play the melodies.",
   get_trial_characteristics_function = NULL,
   item_characteristics_sampler_function = NULL,
   item_characteristics_pars = NULL,
@@ -26,13 +28,11 @@ arrhythmic_melody_trials(
   display_modality = "auditory",
   show_record_button = FALSE,
   show_progress = TRUE,
-  module_name = "arrhythmic_melodies",
   start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
-  sampler_function = sample_arrhythmic,
   presampled = FALSE
 )
 }
@@ -43,5 +43,5 @@ arrhythmic_melody_trials(
 
 }
 \description{
-Arrhythmic Melody Trials Block
+Arrhythmic melody trials block
 }

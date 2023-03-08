@@ -37,6 +37,23 @@ adaptive_arrhythmic_melody_trials <- function(label,
                                               answer_column = "melody",
                                               feedback = FALSE) {
 
+  stopifnot(
+    assertthat::is.string(label),
+    is.scalar.numeric(num_items),
+    is(item_bank, "item_bank"),
+    is(model, "lmerModLmerTest"),
+    is.character(fixed_effects) & length(fixed_effects) > 0,
+    is.logical(demo),
+    assertthat::is.string(page_type),
+    assertthat::is.string(page_title),
+    assertthat::is.string(page_text),
+    is.function(get_answer),
+    is.logical(give_first_melody_note),
+    is.logical(play_melody_loop),
+    assertthat::is.string(melody),
+    is.logical(feedback)
+  )
+
   item_bank <- item_bank %>%
     dplyr::rename(answer = answer_column) %>%
     dplyr::mutate(discrimination = 1, guessing = 1, inattention = 1)

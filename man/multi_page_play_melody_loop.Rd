@@ -7,7 +7,7 @@
 multi_page_play_melody_loop(
   item_bank = NULL,
   presampled_items = NULL,
-  n_items,
+  num_items = NULL,
   var_name = "melody",
   stimuli_type = "midi_notes",
   page_type = "record_audio_page",

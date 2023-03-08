@@ -6,8 +6,6 @@ test_showcase <- function() {
 
     psychTestR::one_button_page(
       shiny::tags$div(
-        set_musicassessr_state("test"),
-        musicassessr_js_scripts("test"),
         shiny::tags$h2("musicassessr Test Showcase"))
     ),
 
@@ -44,6 +42,7 @@ test_showcase <- function() {
     musicassessr::present_stimuli(stimuli = list('8n', '8n', list('2n', '4n'), '8n', '4t', '4t', '4t', '4t', '4t', '4t', '8n'),
                                   stimuli_type = "rhythms",
                                   page_title = "Present Rhythms",
+                                  display_modality = "auditory",
                                   page_type = "one_button_page",
                                   page_text = shiny::tags$code(musicassessr_tl_code[[5]])),
 
@@ -251,7 +250,14 @@ test_showcase <- function() {
     psychTestR::final_page("The end")
   ), dict = musicassessr::dict(NULL)))
 
-  psychTestR::make_test(timeline)
+  psychTestR::make_test(timeline,
+
+                        opt = psychTestR::test_options(
+                          title = "musicassessr Test Showcase",
+                          admin_password = "test",
+                          additional_scripts = musicassessr::musicassessr_js(visual_notation = TRUE)
+                        )
+                        )
 
 }
 

@@ -80,29 +80,32 @@ plot_prod <- function(prod_df, target_notes, target_notes_other_octaves, pitchOc
 # main
 
 
-results_explorer <- function(results_df = PBET_calibration_results,
-                            errorsOctaveAllowed = TRUE,
-                            pitchOctaveIndependent = TRUE) {
+results_explorer <- function(app_name = "",
+                             results_df = PBET_calibration_results,
+                             errorsOctaveAllowed = TRUE,
+                             pitchOctaveIndependent = TRUE) {
 
   contin_cols <- results_df %>% dplyr::select(where(is.numeric))
 
   ui <- shiny::basicPage(
 
-    musicassessr_js_scripts(),
+    include_musicassessr_js(app_name = "", record_audio = FALSE, visual_notation = TRUE),
 
     shiny::tags$h2("Trials Explorer"),
 
+    shiny::checkboxInput('filter_trials_with_no_audio', 'Filter trials with no audio?', value = TRUE),
+
     shiny::checkboxInput('playbackwithStimuli', 'Playback with Stimuli?', value = FALSE),
 
-    shiny::actionButton("playSelectedTrial", "Play Selected Trial"),
+    # shiny::actionButton("playSelectedTrial", "Play Selected Trial"),
 
     shiny::actionButton('saveDisqualifiedTrials', 'Save Disqualified Trials'),
 
     shiny::plotOutput('histograms'),
 
-    htmlOutput('melodyNotation'),
+    shiny::uiOutput('melodyNotation'),
 
-    shiny::htmlOutput('audio'),
+    shiny::uiOutput('audio'),
 
     shiny::plotOutput('trialPlot'),
 
@@ -116,7 +119,20 @@ results_explorer <- function(results_df = PBET_calibration_results,
     # hide some columns (although leave them in the dataframe for plotting)
     columns2hide <- c("prod")
 
-    output$trials <- DT::renderDataTable(results_df, selection = 'single', escape = FALSE,
+
+    filtered_df <- shiny::reactive({
+      if(input$filter_trials_with_no_audio) {
+        results_df %>% dplyr::filter(nchar(key) > 0)
+      } else {
+        results_df
+      }
+    })
+
+    output$trials <- DT::renderDataTable({
+
+      filtered_df()
+
+      }, selection = 'single', escape = FALSE,
                                          options = list(searching = TRUE, pageLength = 20,
                                                         columnDefs = list(list(visible=FALSE, targets=match(columns2hide, colnames(results_df))))
                                          ), callback = DT::JS("table.rows().every(function(i, tab, row) {
@@ -146,18 +162,18 @@ results_explorer <- function(results_df = PBET_calibration_results,
       }
     })
 
-    observeEvent(input$playSelectedTrial, {
-
-      stimuli_selected <- input$trials_rows_selected
-
-      if (is.null(stimuli_selected)) {
-        trial_no <- 1
-      }
-      else {
-        play_trial_wav(results_df, stimuli_selected, input$playbackwithStimuli)
-      }
-
-    })
+    # observeEvent(input$playSelectedTrial, {
+    #
+    #   stimuli_selected <- input$trials_rows_selected
+    #
+    #   if (is.null(stimuli_selected)) {
+    #     trial_no <- 1
+    #   }
+    #   else {
+    #     play_trial_wav(results_df, stimuli_selected, input$playbackwithStimuli)
+    #   }
+    #
+    # })
 
     output$melodyNotation <- renderUI({
 
@@ -173,20 +189,21 @@ results_explorer <- function(results_df = PBET_calibration_results,
 
     output$audio <- renderUI({
       row <- input$trials_rows_selected
-      if(length(row) < 1) {
-        row <- 1
-      }
-      if(row < 1) {
-        row <- 1
-      }
 
-      file_name <- results_df %>% dplyr::slice(row) %>% dplyr::pull(key)
+      req(row)
+
+      file_name <- filtered_df() %>% dplyr::slice(row) %>% dplyr::pull(key)
+
+      file_path <- paste0('musicassessr-assets/PBET_calibration_audio/', file_name)
+
+      print(file_path)
+
 
       if (is.null(file_name) | is.na(file_name)) {
         shiny::tags$p("No corresponding audio")
       }
       else {
-        shiny::tags$audio(src = paste0('musicassessr-assets/PBET_calibration_audio/', file_name), type="audio/wav", controls = TRUE)
+        shiny::tags$audio(src = file_path, type="audio/wav", controls = TRUE)
       }
     })
 
@@ -194,6 +211,7 @@ results_explorer <- function(results_df = PBET_calibration_results,
 
   shiny::shinyApp(ui, server)
 }
+
 
 download_results_from_S3 <- function() {
   # used for downloading results:
@@ -211,5 +229,5 @@ download_results_from_S3 <- function() {
 }
 
 # need internet
-#results_explorer(PBET_calibration_results)
+# results_explorer(PBET_calibration_results)
 #results_explorer(errorsOctaveAllowed = T, pitchOctaveIndependent = T)

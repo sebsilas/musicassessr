@@ -234,22 +234,3 @@ display_SNR_result <- function(report_SNR, SNR, page) {
 }
 
 
-
-# valid_url <- FALSE
-#
-# while(!valid_url) {
-#   valid_url <- urlFileExist(noise_file)$exists
-
-# do_SNR <- function(signal_file, noise_file) {
-#  async::http_get(noise_file)$
-#     then(async::http_stop_for_status)$
-#     then(function(x) {
-#
-#
-#       SNR <- compute_SNR(signal_file = signal_file,
-#                         noise_file = noise_file)
-#
-#       SNR
-#
-#     })
-# }

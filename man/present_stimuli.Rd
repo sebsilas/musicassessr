@@ -57,6 +57,7 @@ present_stimuli(
   slider_value = 5,
   slider_min = 1,
   slider_max = 10,
+  octave = 4,
   ...
 )
 }

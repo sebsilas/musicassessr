@@ -5,6 +5,7 @@
 \title{Include musicassessr scripts in a webpage}
 \usage{
 include_musicassessr_js(
+  app_name = "",
   visual_notation = FALSE,
   record_audio = TRUE,
   midi_input = FALSE

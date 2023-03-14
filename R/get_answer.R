@@ -85,8 +85,6 @@ get_answer_pyin_melodic_production <- function(input,
 
   }
 
-  logging::loginfo(paste0("Results size in bytes: ", lobstr::obj_size(res)))
-
   store_results_in_db(state, res, pyin_res)
 
   res

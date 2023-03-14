@@ -218,9 +218,9 @@ sample_keys_by_difficulty <- function(inst, n_easy, n_hard) {
 
 mean_of_stimuli <- function(rel_melody) {
   if(class(rel_melody) == "character") {
-    rel_melody <- itembankr::str_mel_to_vector(rel_melody, ",")
+    rel_melody <- itembankr::str_mel_to_vector(rel_melody)
   }
-  res <- round(mean(itembankr::rel_to_abs_mel(0, rel_melody)))
+  round(mean(itembankr::rel_to_abs_mel(rel_melody, start_note = 0)))
 }
 
 plot_mean_centred_to_range <- function(stimuli_centred_to_user_mean, user_mean_corrected_to_stimuli, user_mean_note, min_range, max_range) {

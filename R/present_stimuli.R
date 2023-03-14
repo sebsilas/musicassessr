@@ -283,8 +283,6 @@ retrieve_page_type <- function(page_type = character(),
                                melody_no = 0, total_no_melodies = 0, show_progress = FALSE,
                                slider_value = 5, slider_min = 0, slider_max = 10, ...) {
 
-  print(page_type)
-
 
   stopifnot(assertthat::is.string(page_type),
             class(stimuli_wrapped) == "shiny.tag",

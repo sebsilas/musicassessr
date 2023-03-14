@@ -29,6 +29,7 @@
 #' @param show_sheet_music
 #' @param sheet_music_id
 #' @param give_first_melody_note
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -60,7 +61,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         sound_only_first_melody_note = FALSE,
                                         show_sheet_music = FALSE,
                                         sheet_music_id = 'sheet_music',
-                                        give_first_melody_note = FALSE) {
+                                        give_first_melody_note = FALSE,
+                                        get_similarity_to_previous_melody = FALSE) {
 
 
   stopifnot(is.null.or(item_bank, tibble::is_tibble),
@@ -89,7 +91,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.logical(sound_only_first_melody_note),
             is.scalar.logical(show_sheet_music),
             assertthat::is.string(sheet_music_id),
-            is.scalar.logical(give_first_melody_note))
+            is.scalar.logical(give_first_melody_note),
+            is.scalar.logical(get_similarity_to_previous_melody)
+            )
 
 
   if(is.null(presampled_items)) {
@@ -120,7 +124,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                        sound_only_first_melody_note = sound_only_first_melody_note,
                        show_sheet_music = show_sheet_music,
                        sheet_music_id = sheet_music_id,
-                       give_first_melody_note = give_first_melody_note)
+                       give_first_melody_note = give_first_melody_note,
+                       get_similarity_to_previous_melody = get_similarity_to_previous_melody)
     })
 
     items
@@ -153,7 +158,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                        sound_only_first_melody_note = sound_only_first_melody_note,
                        show_sheet_music = show_sheet_music,
                        sheet_music_id = sheet_music_id,
-                       give_first_melody_note = give_first_melody_note)   })
+                       give_first_melody_note = give_first_melody_note,
+                       get_similarity_to_previous_melody = get_similarity_to_previous_melody)   })
 
   }
 
@@ -211,6 +217,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param psychTestRCAT
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -250,7 +257,8 @@ play_melody_loop <- function(item_bank = NULL,
                              sheet_music_id = 'sheet_music',
                              give_first_melody_note = FALSE,
                              psychTestRCAT = FALSE,
-                             melody_row = NULL) {
+                             melody_row = NULL,
+                             get_similarity_to_previous_melody = FALSE) {
 
 
   save_answer <- example_save(example)
@@ -259,16 +267,16 @@ play_melody_loop <- function(item_bank = NULL,
     # set the user satisfied state to false
 
     psychTestR::code_block(function(state, ...) {
-      # repeat melody logic stuff
+      # Repeat melody logic stuff
       psychTestR::set_global("user_satisfied", "Try Again", state)
       psychTestR::set_global("number_attempts", 1, state)
       psychTestR::set_global("max_goes", max_goes, state)
       psychTestR::set_global("attempts_left", max_goes, state)
-      # grab sampled melody for this trial (if one not specified)
-      if(is.null(melody)) grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT)
+      # Grab sampled melody for this trial (if one not specified)
+      if(is.null(melody)) grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT, get_similarity_to_previous_melody)
     }),
 
-    # keep in loop until the participant confirms they are happy with their entry
+    # Keep in loop until the participant confirms they are happy with their entry
     psychTestR::while_loop(test = function(state, ...) {
       number_attempts <- psychTestR::get_global("number_attempts", state)
       user_answer <- psychTestR::get_global("user_satisfied", state)
@@ -442,7 +450,11 @@ grab_sampled_melody <- function(item_bank = NULL,
                                 rel_to_abs_mel_function = NULL,
                                 note_length = 0.5,
                                 get_trial_characteristics_function = NULL,
-                                psychTestRCAT = FALSE,...) {
+                                psychTestRCAT = FALSE,
+                                get_similarity_to_previous_melody = FALSE, ...) {
+
+
+  logging::loginfo("Grab sampled melody")
 
   # not all trials will need the range, inst. etc but grab it here anyway
   bottom_range <- psychTestR::get_global("bottom_range", state)
@@ -509,33 +521,8 @@ grab_sampled_melody <- function(item_bank = NULL,
     abs_melody <- rel_to_abs_mel_function(rel_melody = rel_melody, bottom_range = bottom_range, top_range = top_range, range = range, transpose = transpose)
   }
 
-  if(melody_no > 1) {
-    previous_melody <- psychTestR::get_global("previous_melody", state)
-    if(arrhythmic) {
-      similarity_to_previous_melody <- ngrukkon(previous_melody, abs_melody)
-    } else {
-
-      previous_durations <- psychTestR::get_global("previous_durations", state)
-
-      previous_df <- tibble::tibble(note = previous_melody,
-                                    freq = hrep::midi_to_freq(previous_melody), # doesn't matter, we don't use it here, but req for produce_extra_melodic_features
-                                    dur = previous_durations,
-                                    onset = cumsum(previous_durations)) %>%
-        itembankr::produce_extra_melodic_features()
-
-      current_df <- tibble::tibble(note = abs_melody,
-                                   freq = hrep::midi_to_freq(abs_melody), # doesn't matter, we don't use it here, but req for produce_extra_melodic_features
-                                   dur = durations,
-                                   onset = cumsum(durations)) %>%
-        itembankr::produce_extra_melodic_features()
-
-
-
-      similarity_to_previous_melody <- opti3_df(previous_df, current_df)$opti3
-    }
-  } else {
-    similarity_to_previous_melody <- NA
-  }
+  # Get similarity to previous melody
+  similarity_to_previous_melody <- get_similarity_to_previous_melody(get_similarity_to_previous_melody, melody_no, state, abs_melody)
 
   psychTestR::set_global("previous_melody", abs_melody, state)
   psychTestR::set_global("previous_durations", durations, state)
@@ -627,13 +614,16 @@ sort_sampled_midi_file <- function(trials, melody_no, clip_stimuli_length, state
 
 update_play_melody_loop_and_save <- function(state, max_goes) {
   psychTestR::code_block(function(state, answer, opt, ...) {
+    logging::loginfo('Update play melody loop and save')
     psychTestR::set_global("user_satisfied", answer$user_satisfied, state)
     number_attempts <- psychTestR::get_global("number_attempts", state)
     attempts_left <- max_goes - number_attempts
     psychTestR::set_global("attempts_left", attempts_left, state)
     number_attempts <- number_attempts + 1L
     psychTestR::set_global("number_attempts", number_attempts, state)
+    logging::loginfo('Save results to disk...')
     psychTestR::save_results_to_disk(complete = FALSE, state, opt)
+    logging::loginfo('...save results to disk complete.')
   })
 }
 
@@ -694,7 +684,44 @@ midi_device_check <- function(page_type, state, midi_device = " ") {
 }
 
 
+get_similarity_to_previous_melody <- function(get_similarity_to_previous_melody, melody_no, state, abs_melody) {
 
+  if(get_similarity_to_previous_melody) {
+    logging::loginfo("Get similarity to previous melody.")
+    if(melody_no > 1) {
+      previous_melody <- psychTestR::get_global("previous_melody", state)
+      if(arrhythmic) {
+        similarity_to_previous_melody <- ngrukkon(previous_melody, abs_melody)
+      } else {
+
+        previous_durations <- psychTestR::get_global("previous_durations", state)
+
+        previous_df <- tibble::tibble(note = previous_melody,
+                                      freq = hrep::midi_to_freq(previous_melody), # doesn't matter, we don't use it here, but req for produce_extra_melodic_features
+                                      dur = previous_durations,
+                                      onset = cumsum(previous_durations)) %>%
+          itembankr::produce_extra_melodic_features()
+
+        current_df <- tibble::tibble(note = abs_melody,
+                                     freq = hrep::midi_to_freq(abs_melody), # doesn't matter, we don't use it here, but req for produce_extra_melodic_features
+                                     dur = durations,
+                                     onset = cumsum(durations)) %>%
+          itembankr::produce_extra_melodic_features()
+
+
+
+        similarity_to_previous_melody <- opti3_df(previous_df, current_df)$opti3
+      }
+    } else {
+      similarity_to_previous_melody <- NA
+    }
+  } else {
+    logging::loginfo("Don't get similarity to previous melody.")
+    similarity_to_previous_melody <- NA
+  }
+
+  similarity_to_previous_melody
+}
 
 
 

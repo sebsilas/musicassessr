@@ -446,9 +446,6 @@ display_previous_answer_music_notation_pitch_class2 <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    print('display_previous_answer_music_notation_pitch_class2!!')
-    print(answer)
-
     stimuli <- answer$stimuli
     user_response <- answer$user_response_notes
     user_response_timecodes <- 1:length(user_response)

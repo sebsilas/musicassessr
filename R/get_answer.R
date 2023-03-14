@@ -45,20 +45,28 @@ get_answer_pyin_melodic_production <- function(input,
                                                melconv = FALSE,
                                                additional_scoring_measures = NULL, ...) {
 
+  logging::loginfo("Get pyin melodic production")
+
 
   pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
+
+  logging::loginfo("Got pyin")
+
 
   if(is_null_or_na_length_1(pyin_res$pyin_res) | is_null_or_na_length_1(pyin_res$pyin_res$freq)) {
 
     res <- list(
       error = TRUE,
-      reason = "there was nothing in the pitch track",
+      reason = "There was nothing in the pitch track",
       user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
       user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
       attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
       opti3 = NA,
       answer_meta_data = tibble::as_tibble(input$answer_meta_data),
       stimuli = as.numeric(rjson::fromJSON(input$stimuli)))
+
+    logging::loginfo("There was nothing in the pitch track")
+
 
   } else {
 
@@ -72,7 +80,12 @@ get_answer_pyin_melodic_production <- function(input,
                                    pyin_res$pyin_pitch_track,
                                    additional_scoring_measures)
 
+    logging::loginfo("Concatenated melodic production results")
+
+
   }
+
+  logging::loginfo(paste0("Results size in bytes: ", lobstr::obj_size(res)))
 
   store_results_in_db(state, res, pyin_res)
 
@@ -178,6 +191,7 @@ get_answer_pyin <- function(input,
                             state,
                             melconv = FALSE, ...) {
 
+  type <- match.arg(type)
 
   # get file
   audio_file <- get_audio_file_for_pyin(input, state)
@@ -520,7 +534,6 @@ concat_mel_prod_results <- function(input,
     onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
   }
 
-
   if(is_null_length_1(input$stimuli)) {
     stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
     stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
@@ -569,6 +582,8 @@ store_results_in_db <- function(state, res, pyin_res) {
   store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
 
   if(store_results_in_db) {
+
+    logging::loginfo("Store results in SQL database")
 
     session_info <- psychTestR::get_session_info(state, complete = FALSE)
     test_username <- psychTestR::get_global("test_username", state)

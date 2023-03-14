@@ -32,11 +32,12 @@ multi_page_play_melody_loop(
   sound_only_first_melody_note = FALSE,
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
-  give_first_melody_note = FALSE
+  give_first_melody_note = FALSE,
+  get_similarity_to_previous_melody = FALSE
 )
 }
 \arguments{
-\item{give_first_melody_note}{}
+\item{get_similarity_to_previous_melody}{}
 }
 \value{
 

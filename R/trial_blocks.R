@@ -51,6 +51,7 @@ record_audio_block <- function(no_pages, feedback = NULL,
 #' @param show_progress
 #' @param show_record_button
 #' @param module_name
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -77,7 +78,8 @@ sing_arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                           max_goes_forced = FALSE,
                                           display_modality = "auditory",
                                           show_progress = TRUE,
-                                          show_record_button = FALSE) {
+                                          show_record_button = FALSE,
+                                          get_similarity_to_previous_melody = FALSE) {
 
   arrhythmic_melody_trials(var_name,
                            module_name,
@@ -106,7 +108,8 @@ sing_arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                            show_sheet_music,
                            sheet_music_id,
                            give_first_melody_note,
-                           presampled)
+                           presampled,
+                           get_similarity_to_previous_melody)
 
 }
 
@@ -135,6 +138,7 @@ sing_arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param show_record_button
 #' @param show_progress
 #' @param module_name
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -161,7 +165,8 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                         max_goes_forced = FALSE,
                                         display_modality = "auditory",
                                         show_progress = TRUE,
-                                        show_record_button = FALSE) {
+                                        show_record_button = FALSE,
+                                        get_similarity_to_previous_melody = FALSE) {
 
   rhythmic_melody_trials(var_name,
                          module_name,
@@ -190,7 +195,8 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                          show_sheet_music,
                          sheet_music_id,
                          give_first_melody_note,
-                         presampled)
+                         presampled,
+                         get_similarity_to_previous_melody)
 
 }
 
@@ -228,6 +234,7 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param presampled
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -260,7 +267,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                    show_sheet_music = FALSE,
                                    sheet_music_id = 'sheet_music',
                                    give_first_melody_note = FALSE,
-                                   presampled = FALSE) {
+                                   presampled = FALSE,
+                                   get_similarity_to_previous_melody = FALSE) {
 
 
   melody_trials(var_name,
@@ -291,7 +299,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 sheet_music_id,
                 give_first_melody_note,
                 presampled,
-                arrhythmic = TRUE)
+                arrhythmic = TRUE,
+                get_similarity_to_previous_melody)
 
 }
 
@@ -328,6 +337,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param presampled
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -360,7 +370,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    show_sheet_music = FALSE,
                                    sheet_music_id = 'sheet_music',
                                    give_first_melody_note = FALSE,
-                                   presampled = FALSE) {
+                                   presampled = FALSE,
+                                   get_similarity_to_previous_melody = FALSE) {
 
 
   melody_trials(var_name,
@@ -391,7 +402,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                sheet_music_id,
                give_first_melody_note,
                presampled,
-               arrhythmic = FALSE)
+               arrhythmic = FALSE,
+               get_similarity_to_previous_melody)
 
 }
 
@@ -430,6 +442,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param give_first_melody_note
 #' @param presampled
 #' @param arrhythmic
+#' @param get_similarity_to_previous_melody
 #'
 #' @return
 #' @export
@@ -463,7 +476,8 @@ melody_trials <- function(var_name,
                            sheet_music_id = 'sheet_music',
                            give_first_melody_note = FALSE,
                            presampled = FALSE,
-                          arrhythmic = FALSE) {
+                           arrhythmic = FALSE,
+                          get_similarity_to_previous_melody = FALSE) {
 
 
   if(presampled) {
@@ -498,7 +512,8 @@ melody_trials <- function(var_name,
     is.scalar.logical(give_first_melody_note),
     is.function(sampler_function),
     is.scalar.logical(presampled),
-    is.scalar.logical(arrhythmic)
+    is.scalar.logical(arrhythmic),
+    is.scalar.logical(get_similarity_to_previous_melody)
   )
 
 
@@ -566,7 +581,8 @@ melody_trials <- function(var_name,
                                show_sheet_music = show_sheet_music,
                                sheet_music_id = sheet_music_id,
                                give_first_melody_note = give_first_melody_note,
-                               arrhythmic = arrhythmic),
+                               arrhythmic = arrhythmic,
+                               get_similarity_to_previous_melody = get_similarity_to_previous_melody),
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p("Now you're ready for the real thing!")))
@@ -604,7 +620,8 @@ melody_trials <- function(var_name,
                            show_sheet_music = show_sheet_music,
                            sheet_music_id = sheet_music_id,
                            give_first_melody_note = give_first_melody_note,
-                           arrhythmic = arrhythmic)
+                           arrhythmic = arrhythmic,
+                           get_similarity_to_previous_melody = get_similarity_to_previous_melody)
                        )
     )
   }
@@ -737,7 +754,7 @@ find_this_note_trials <- function(num_items,
                                   num_examples = 0L,
                                   feedback = FALSE,
                                   page_title = "Find This Note",
-                                  get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                  get_answer = get_answer_pyin_melodic_production,
                                   page_type = "record_audio_page",
                                   page_text = "Press play to hear the note. Try and play it on your instrument when you can.") {
 

@@ -21,7 +21,9 @@ score_melody_interval_accuracy <- function(sung_interval,
                                            sung_interval_cents,
                                            stimuli_interval) {
 
-  tryCatch({
+  if (all( c(!is.na(sung_interval), !is.na(sung_interval_cents), is.na(stimuli_interval) ) ) ) {
+
+
     sung_interval_cents <- sung_interval_cents[2:length(sung_interval_cents)] %>% abs()
     stimuli_interval <- stimuli_interval[2:length(stimuli_interval)] %>% abs()
 
@@ -34,11 +36,12 @@ score_melody_interval_accuracy <- function(sung_interval,
     r <- purrr::map2_dbl(sung_interval_cents,nearest_intervals*100, # *100 = to cents
                          function(s, t) abs(s) - abs(t))
 
-    mean(r, na.rm = TRUE)
-  }, error = function(err) {
-    print(err)
-    NA
-  })
+    res <- mean(r, na.rm = TRUE)
+
+  } else {
+    res <- NA
+  }
+  res
 }
 
 # Test level

@@ -173,7 +173,7 @@ score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, 
 
 get_all_octaves_in_gamut <- Vectorize(function(note, gamut_min = midi.gamut.min, gamut_max = midi.gamut.max) {
 
-  stopifnot(length(note) == 1)
+  stopifnot(length(note) == 1, !is.na(note))
 
   # given a note and a range/gamut, find all midi octaves of that note within the specified range/gamut
   res <- c(note)
@@ -207,7 +207,10 @@ get_all_octaves_in_gamut <- Vectorize(function(note, gamut_min = midi.gamut.min,
 find_closest_stimuli_pitch_to_user_production_pitches <-
   function(stimuli_pitches, user_production_pitches, allOctaves = TRUE) {
 
+    stopifnot(all(!is.na(stimuli_pitches)), all(!is.na(user_production_pitches)), is.scalar.logical(allOctaves) )
+
     stimuli_pitches <- as.integer(stimuli_pitches)
+
     # if allOctaves is true, get the possible pitches in all other octaves. this should therefore resolve issues
     # where someone was presented stimuli out of their range and is penalised for it
     if (allOctaves) {

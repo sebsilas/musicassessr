@@ -32,7 +32,7 @@ ngrukkon <- function(x, y, N = 3){
 #' @examples
 get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner = TRUE){
 
-  warning('Segmentation format must be as segment ID')
+  #warning('Segmentation format must be as segment ID')
 
   # Krumhansl-Schmuckler algorithm
   ks_weights_major <- c(6.33, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)

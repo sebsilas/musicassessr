@@ -33,11 +33,12 @@ melody_trials(
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
   presampled = FALSE,
-  arrhythmic = FALSE
+  arrhythmic = FALSE,
+  get_similarity_to_previous_melody = FALSE
 )
 }
 \arguments{
-\item{arrhythmic}{}
+\item{get_similarity_to_previous_melody}{}
 }
 \value{
 

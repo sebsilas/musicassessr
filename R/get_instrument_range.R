@@ -159,10 +159,6 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
     transpose <- psychTestR::get_global("transpose_first_melody_note", state)
     clef <- psychTestR::get_global("clef", state)
 
-    print('transpose')
-
-    print(transpose)
-
     if(transpose != 0) {
       transposed_note_message <- psychTestR::i18n("transposed")
     } else {

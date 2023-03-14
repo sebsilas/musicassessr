@@ -40,11 +40,12 @@ play_melody_loop(
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
   psychTestRCAT = FALSE,
-  melody_row = NULL
+  melody_row = NULL,
+  get_similarity_to_previous_melody = FALSE
 )
 }
 \arguments{
-\item{psychTestRCAT}{}
+\item{get_similarity_to_previous_melody}{}
 }
 \value{
 

@@ -33,11 +33,12 @@ rhythmic_melody_trials(
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
-  presampled = FALSE
+  presampled = FALSE,
+  get_similarity_to_previous_melody = FALSE
 )
 }
 \arguments{
-\item{presampled}{}
+\item{get_similarity_to_previous_melody}{}
 }
 \value{
 

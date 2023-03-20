@@ -171,8 +171,6 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
       note <- answer$note
     }
 
-    cat(file=stderr(), 'note:', note)
-
     if(is.na(note)) {
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$p(psychTestR::i18n("nothing_entered")),

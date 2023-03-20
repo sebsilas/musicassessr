@@ -482,8 +482,11 @@ get_answer_midi_note_mode <- function(input, state, ...) {
 get_answer_interval_page <- function(input, state, ...) {
 
   answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
-  msg <- ifelse(input$dropdown == answer_meta_data$interval, "Correct Answer!", "Wrong Answer!")
-  shiny::showNotification(msg)
+
+  # TODO: The following works as feedback, but make an option to enable it conditionally (optionally):
+
+  # msg <- if(input$dropdown == answer_meta_data$interval) "Correct Answer!" else "Wrong Answer!"
+  # shiny::showNotification(msg)
 
   c(
     list(

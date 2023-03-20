@@ -498,7 +498,7 @@ melody_trials <- function(var_name,
     is.null.or(get_trial_characteristics_function, is.function),
     is.null.or(item_characteristics_sampler_function, is.function),
     is.null.or(item_characteristics_pars, is.list),
-    is.function(rel_to_abs_mel_function),
+    is.null.or(rel_to_abs_mel_function, is.function),
     is.scalar.numeric(max_goes),
     is.scalar.logical(max_goes_forced),
     display_modality %in% c("auditory", "visual"),
@@ -697,7 +697,7 @@ long_tone_trials <- function(num_items,
                                  psychTestR::get_global("response_type", state) == "MIDI"
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
                                                                                                 example = TRUE, feedback = feedback,
-                                                                                                get_answer = get_answer_midi_melodic_production,
+                                                                                                get_answer = get_answer,
                                                                                                 page_text = page_text, page_title = page_title))
 
                                psychTestR::conditional(function(state, ...){
@@ -782,7 +782,7 @@ find_this_note_trials <- function(num_items,
                              shiny::tags$h2(page_title),
                              shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
                              sample_from_user_range(num_examples),
-                             multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
+                             multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
                                                                                    page_text = page_text, page_title = page_title,
                                                                                    example = TRUE, feedback = feedback, get_answer = get_answer),
                              psychTestR::one_button_page(shiny::div(
@@ -795,7 +795,7 @@ find_this_note_trials <- function(num_items,
                          multi_play_long_tone_record_audio_pages(no_items = num_items,
                                                                                page_text = page_text,
                                                                                page_title = page_title,
-                                                                               page_type = "record_audio_page",
+                                                                               page_type = page_type,
                                                                                feedback = feedback,
                                                                                get_answer = get_answer)
                        )

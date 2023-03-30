@@ -91,8 +91,8 @@ score_melodic_production <- function(user_melody_freq = numeric(),
 
 
   # proportion of stimuli (target) notes found
-  proportion_of_stimuli_notes_found <- length(base::intersect(user_melody_input, stimuli))/stimuli_length
-  proportion_of_stimuli_notes_found_octaves_allowed <- length(base::intersect(user_pitch_classes, stimuli_pitch_classes))/stimuli_length
+  proportion_of_stimuli_notes_found <- length(base::intersect(user_melody_input, unique(stimuli) )) / length(unique(stimuli))
+  proportion_of_stimuli_notes_found_octaves_allowed <- length(base::intersect(user_pitch_classes, unique(stimuli_pitch_classes) )) / length(unique(stimuli_pitch_classes))
 
   # fine-grained pitch measures (i.e singing style):
   nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = features_df$note, allOctaves = TRUE)

@@ -1,5 +1,24 @@
 
 
+
+get_os <- function(){
+  # osx, windows or linux
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+
+
 flatten_no_item_list <- function(x) if(is.list(x)) sum(unlist(x)) else x
 
 

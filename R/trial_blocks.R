@@ -523,6 +523,9 @@ melody_trials <- function(var_name,
   # Unclass item bank, so it can work with dplyr
   item_bank <- item_bank %>% tibble::as_tibble()
 
+  print('in melody_trials..')
+  print(class(item_bank))
+
 
   if(num_items_flat == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
@@ -857,7 +860,7 @@ wjd_audio_melody_trials <- function(item_bank,
     # examples
     if(is.numeric(num_examples) & num_examples > 0L) {
 
-      examples <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = item_length), num_examples)
+      examples <- item_sampler(item_bank, num_examples)
 
       ## sample
       example_tl <- psychTestR::join(
@@ -890,7 +893,7 @@ wjd_audio_melody_trials <- function(item_bank,
 
 
     ## trials
-    trials <- item_sampler(itembankr::subset_item_bank(item_bank, item_length = item_length), sum(unlist(num_items)))
+    trials <- item_sampler(item_bank, sum(unlist(num_items)))
 
     trials_tl <- multi_page_play_melody_loop(
       presampled_items = trials,

@@ -141,6 +141,18 @@ create_dir_if_doesnt_exist <- function(dir) {
 
 check_port <- function(port = 3000) {
   # is something running on port xx?
+  os <- get_os()
+  if(os %in% c("osx", "linux" )) {
+    check_port_mac()
+  } else if (os == "windows") {
+    check_port_windows()
+  } else {
+    stop("OS not known.")
+  }
+}
+
+
+check_port_mac <- function(port = 3000) {
   res <- system2("lsof", args = c(paste0("-i :", port)), stdout = TRUE, stderr = TRUE, wait = TRUE)
   if(is.null(attributes(res)$status)) {
     TRUE
@@ -149,3 +161,14 @@ check_port <- function(port = 3000) {
   }
 }
 
+
+check_port_windows <- function(port = 3000) {
+
+  res <- system('netstat -na | find \"', port, '\"')
+
+  if(res) { # Needs updating
+    TRUE
+  } else {
+    FALSE
+  }
+}

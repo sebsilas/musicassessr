@@ -404,7 +404,10 @@ get_test_name <- function(test, get_local, state) {
 # production  <- get_table("production")
 
 
-
+get_session_trials <- function(session_id) {
+  trials <- get_table("trials") %>%
+    dplyr::filter(session_id == !! session_id)
+}
 
 
 

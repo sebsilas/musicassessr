@@ -147,9 +147,7 @@ get_note_until_satisfied_loop_midi <- function(show_musical_notation = FALSE, ad
 
 check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
 
-  cat(file=stderr(), 'check_note_ok')
-  cat(file=stderr(), var_name)
-  cat(file=stderr(), page_type)
+
 
 
   stopifnot(is.character(var_name), is.character(page_type), is.logical(show_musical_notation))
@@ -242,10 +240,11 @@ determine_span <- function(highest_user_note, lowest_user_note, adjust_range) {
 
 present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument")) {
 
-  stopifnot(is.logical(show_musical_notation), is.logical(adjust_range))
+  stopifnot(is.scalar.logical(show_musical_notation), is.scalar.logical(adjust_range))
+
   if(adjust_range) warning("Adjusting range")
 
-  if(test_type == "voice") {
+  if(match.arg(test_type) == "voice") {
     range_adjust_message <- psychTestR::i18n("range_adjust_message_voice")
   } else {
     range_adjust_message <- psychTestR::i18n("range_adjust_message")
@@ -264,7 +263,8 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE, t
     psychTestR::set_global("top_range", span_result$highest_user_note, state)
     psychTestR::set_global("bottom_range", span_result$lowest_user_note, state)
 
-    present_stimuli(stimuli = range,
+
+    page <- present_stimuli(stimuli = range,
                     stimuli_type = "midi_notes",
                     display_modality = both_or_auditory(show_musical_notation),
                     page_text = shiny::tags$div(
@@ -273,6 +273,11 @@ present_range <- function(show_musical_notation = FALSE, adjust_range = FALSE, t
                     ),
                     page_type = "one_button_page",
                     button_text = psychTestR::i18n("Next"))
+
+    #browser()
+
+
+    page
   })
 }
 

@@ -523,10 +523,6 @@ melody_trials <- function(var_name,
   # Unclass item bank, so it can work with dplyr
   item_bank <- item_bank %>% tibble::as_tibble()
 
-  print('in melody_trials..')
-  print(class(item_bank))
-
-
   if(num_items_flat == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {

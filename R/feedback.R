@@ -55,7 +55,6 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
         row.names(amd) <- t_names
         answer_meta_data_tab <- shiny_table(amd)
       } else if (answer_meta_data & is.list(answer_meta_data) &! is.data.frame(answer_meta_data)) {
-        print('else iff')
         answer_meta_data_tab <- list_to_shiny_table(amd)
       } else {
         answer_meta_data_tab <- " "

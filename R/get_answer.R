@@ -510,7 +510,7 @@ get_answer_save_aws_key <- function(input, ...) {
   list(key = input$key,
        file_url = input$file_url,
        user_satisfied = input$user_satisfied,
-       user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating))
+       user_rating = if(is.null(input$user_rating)) NA else input$user_rating)
 }
 
 

@@ -2,7 +2,16 @@
 % Please edit documentation in R/melconv.R
 \name{melconv_from_pyin_res}
 \alias{melconv_from_pyin_res}
-\title{Melconv from a pyin result}
+\title{#' Melconv
+#'
+#' @param file_name
+#' @param return_notes_and_durs
+#'
+#' @return
+#' @export
+#'
+#' @examples
+melconv <- function(file_name, return_notes_and_durs = TRUE) {}
 \usage{
 melconv_from_pyin_res(pyin_res)
 }
@@ -13,5 +22,25 @@ melconv_from_pyin_res(pyin_res)
 
 }
 \description{
-Melconv from a pyin result
+#' Melconv
+#'
+#' @param file_name
+#' @param return_notes_and_durs
+#'
+#' @return
+#' @export
+#'
+#' @examples
+melconv <- function(file_name, return_notes_and_durs = TRUE) {
 }
+\details{
+
+}
+\section{then use melconv}{
+melconv_res <- system2(command = 'melconv',
+args = c('-f midi',
+paste0('-i ', file_name),
+'-o /srv/shiny-server/files/mid/'),
+stdout = TRUE, stderr = FALSE)
+}
+

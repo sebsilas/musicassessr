@@ -143,12 +143,13 @@ check_port <- function(port = 3000) {
   # is something running on port xx?
   os <- get_os()
   if(os %in% c("osx", "linux" )) {
-    check_port_mac()
+    res <- check_port_mac()
   } else if (os == "windows") {
-    check_port_windows()
+    res <- check_port_windows()
   } else {
     stop("OS not known.")
   }
+  res
 }
 
 
@@ -163,10 +164,24 @@ check_port_mac <- function(port = 3000) {
 
 
 check_port_windows <- function(port = 3000) {
+  res <- system(command = sprintf('netstat -na', port), intern = T, show.output.on.console = F)
 
-  res <- system('netstat -na | find \"', port, '\"')
-
-  if(res) { # Needs updating
+  res <- res[5:length(res)] %>%
+    str_split("[ ]+") %>%
+    map_dfr(function(x){
+      local_addr <- x[[3]]
+      remote_addr <- x[[4]]
+      local_port <- x[[3]] %>% str_split(":") %>% pluck(1) %>% last()
+      remote_port <- x[[4]] %>% str_split(":") %>% pluck(1) %>% last()
+      tibble(protocol = x[[2]],
+             local_addr = local_addr,
+             local_port = local_port,
+             remote_addr = remote_addr,
+             remote_port = remote_port,
+             status = x[[5]])
+    } )
+  res <- nrow(res %>% filter(local_port == as.character(port))) > 0
+  if(res) {
     TRUE
   } else {
     FALSE

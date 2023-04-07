@@ -7,11 +7,9 @@
 sing_rhythmic_melody_trials(
   var_name = "rhythmic_melody",
   module_name = "sing_rhythmic_melodies",
- 
-    page_text = "Click below to hear the melody. Sing back the melody plus rhythm. Click Stop when finished.",
-  page_title = "Sing the melody and the rhythms",
- 
-    instruction_text = "Now you will hear some melodies with rhythms. Please try and sing the melodies with their rhythms.",
+  page_text = psychTestR::i18n("sing_rhythmic_melodies_page_text"),
+  page_title = psychTestR::i18n("sing_rhythmic_melodies_page_title"),
+  instruction_text = psychTestR::i18n("sing_rhythmic_melodies_instruction_text"),
   sampler_function = sample_arrhythmic,
   item_bank,
   num_items = integer(),

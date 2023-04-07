@@ -10,7 +10,7 @@ long_tone_trials(
   feedback = FALSE,
   show_instructions = TRUE,
   page_text = psychTestR::i18n("long_tone_text"),
-  page_title = psychTestR::i18n("long_note_title"),
+  page_title = psychTestR::i18n("long_tone_title"),
   get_answer = get_answer_pyin_long_note,
   page_type = "record_audio_page",
   long_tone_trials_as_screening = FALSE,

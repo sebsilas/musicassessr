@@ -191,14 +191,14 @@ deploy_demographics <- function(deploy) {
 test_headphones_page <- function(concise_wording = FALSE) {
 
   if(concise_wording) {
-    wording <- "Please make sure your headphones are working and adjust the volume to a good level."
+    wording <- psychTestR::i18n("concise_headphone_wording")
   } else {
     wording <- shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Headphone_Test")),
                     shiny::tags$p(psychTestR::i18n("headphone_test1"), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/play_triangle.png', width = 30, height = 31, style = "margin: 0 0 5px 0;")),
                     shiny::tags$p(psychTestR::i18n("headphone_test2")),
                     shiny::tags$p(psychTestR::i18n("headphone_test3")),
                     shiny::tags$p(psychTestR::i18n("headphone_test4")),
-                    shiny::tags$p("Use your normal way of changing loudness on your computer to do this"))
+                    shiny::tags$p(psychTestR::i18n("normal_loudness")))
   }
 
 
@@ -218,8 +218,8 @@ test_headphones_page <- function(concise_wording = FALSE) {
 microphone_type_page <- function() {
   psychTestR::NAFC_page(label = "microphone_type",
                         prompt = shiny::tags$div(
-                          shiny::tags$h2("Microphone Type"),
-                          shiny::tags$p("Are you using an internal (in-built) or external (plugged-in) microphone?"),
+                          shiny::tags$h2(psychTestR::i18n("Microphone_Type")),
+                          shiny::tags$p(psychTestR::i18n("plugged_vs_external_mic")),
                           shiny::tags$br(),
                           shiny::tags$table(style = "border: none;",
                                             shiny::tags$tr(
@@ -232,7 +232,7 @@ microphone_type_page <- function() {
                                             )
                           ), shiny::tags$br()
                         ),
-                        choices = c("Internal", "External", "Not sure"))
+                        choices = c(psychTestR::i18n("Internal"), psychTestR::i18n("External"), psychTestR::i18n("Not sure")))
 }
 
 

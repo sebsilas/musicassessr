@@ -8,8 +8,8 @@ record_audio_block(
   no_pages,
   feedback = NULL,
   get_answer = get_answer_pyin,
-  page_title = "Record audio",
-  page_text = "Click record to record some audio"
+  page_title = psychTestR::i18n("Record_audio"),
+  page_text = psychTestR::i18n("click_to_record_audio")
 )
 }
 \arguments{

@@ -142,7 +142,7 @@ compute_SNR <- function(signal_file, noise_file) {
 record_background_page <- function() {
   # a page type for recording background noise to compute signal-to-noise ratio (SNR)
   record_audio_page(page_text = shiny::tags$div(
-                                shiny::tags$h2("Check of background noise level"),
+                                shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
                                 shiny::tags$p(psychTestR::i18n("record_bg")),
                                 shiny::tags$p(psychTestR::i18n("record_bg2")),
                                 shiny::tags$p(psychTestR::i18n("record_bg3"))
@@ -158,8 +158,8 @@ record_background_page <- function() {
 }
 
 record_signal_page <- function(page_text = shiny::tags$div(
-                                        shiny::tags$h2("Check of background noise level"),
-                                        shiny::tags$p("When you are ready, click on “Record” and for about 5 seconds please hum, directed toward your microphone for 5 seconds.  (to “hum”, put your lips together and make a sound with your voice.)"))) {
+                                        shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
+                                        shiny::tags$p(psychTestR::i18n("record_signal_message")))) {
   # a page type for recording background noise to compute signal-to-noise ratio (SNR)
   record_audio_page(page_text = page_text,
                     label = "SNR_test_signal",
@@ -177,14 +177,14 @@ SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE) {
   #browser()
 
   if(is.na(SNR)) {
-    psychTestR::one_button_page("Your response was not understood. Perhaps your microphone is not setup correctly.")
+    psychTestR::one_button_page(psychTestR::i18n("response_not_understood"))
   } else if(SNR < min_SNR) {
     display_SNR_result(report_SNR, SNR, page = TRUE)
   } else {
 
-    SNR_message <- if(report_SNR) paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")) else "Your background noise level is good"
+    SNR_message <- if(report_SNR) paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")) else psychTestR::i18n("bg_noise_level_good")
 
-    psychTestR::page(ui = shiny::tags$div(shiny::tags$h2("Check of background noise level"),
+    psychTestR::page(ui = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
                                           shiny::tags$p(SNR_message),
                                           psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
                      get_answer = function(input, state, ...) {
@@ -197,17 +197,15 @@ SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE) {
 
 SNR_conclusion <- function(SNR, min_SNR, report_SNR = FALSE) {
 
-  #browser()
-
   if(is.na(SNR)) {
-    psychTestR::display_error("Your response was not understood. Perhaps your microphone is not setup correctly.")
+    psychTestR::display_error(psychTestR::i18n("response_not_understood"))
   } else if(SNR < min_SNR) {
     display_SNR_result(report_SNR, SNR, page = FALSE)
   } else {
 
-    SNR_message <- if(report_SNR) paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")) else "Your background noise level is good"
+    SNR_message <- if(report_SNR) paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")) else psychTestR::i18n("bg_noise_level_good")
 
-    psychTestR::page(ui = shiny::tags$div(shiny::tags$h2("Check of background noise level"),
+    psychTestR::page(ui = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
                                           shiny::tags$p(SNR_message),
                                           psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
                      get_answer = function(input, state, ...) {
@@ -222,10 +220,7 @@ display_SNR_result <- function(report_SNR, SNR, page) {
   if(report_SNR) {
     message <- paste0(psychTestR::i18n("your_SNR_is"), " ", SNR, psychTestR::i18n("must_be_higher"))
   } else {
-    message <- "Your vocal signal compared to the background noise is not sufficient for testing.
-      Please find a quieter space, get closer to the mic, or adjust the volume and we will measure the Vocal signal sound level again.
-      If neither of these is possible for you, please email silass@stud.hmtm-hannover.de with “weak signal” in the subject space, and you will be contacted within 24 hours to trouble shoot this problem.
-                                You may also end the program and attempt to adjust your microphone volume and start the program again."
+    message <- psychTestR::i18n("SNR_failure")
   }
   if(page) {
     psychTestR::one_button_page(message,  button_text = psychTestR::i18n("Try_Again"))
@@ -237,9 +232,9 @@ display_SNR_result <- function(report_SNR, SNR, page) {
 
 SNR_preconclusion_page <- function() {
   psychTestR::one_button_page(shiny::tags$div(
-    shiny::tags$h2("Check of background noise level"),
+    shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
     shiny::tags$p(psychTestR::i18n("noise_test_message"))
-  ))
+  ), button_test = psychTestR::i18n("Next"))
 }
 
 

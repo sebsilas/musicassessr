@@ -16,7 +16,7 @@ record_audio_page(
   get_answer = get_answer_save_aws_key,
   answer_meta_data = tibble::tibble(),
   show_aws_controls = FALSE,
-  button_text = "Record",
+  button_text = psychTestR::i18n("Record"),
   stop_button_text = "Stop",
   record_duration = NULL,
   on_complete = NULL,

@@ -8,9 +8,8 @@ audio_melodic_production_trials(
   audio_directory,
   no_to_sample = NULL,
   module_prefix = "audio_trial",
-  page_title = "Sing back the melody",
- 
-    page_text = "Click below to hear the melody. Sing back the melody. Click Stop when finished.",
+  page_title = psychTestR::i18n("Sing_the_Melody"),
+  page_text = psychTestR::i18n("sing_melody_page_text"),
   grab_meta_data,
   meta_data_df,
   meta_data_lookup_column,

@@ -65,7 +65,7 @@ Depends:
     itembankr (>= 0.1.0),
     psych
 Remotes: 
-    sebsilas/psychTestR,
+    pmcharrison/psychTestR,
     sebsilas/itembankr,
     gaborcsardi/async,
     pmcharrison/hrep,

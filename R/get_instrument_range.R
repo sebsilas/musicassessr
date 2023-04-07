@@ -107,14 +107,14 @@ range_explanation_page <- function(test_type = c("voice", "instrument"), concise
 
   if(test_type == "voice") {
     if(concise_wording) {
-      text <- "We will now find your approximate voice range. You will first be asked  to sing the lowest comfortable note for your voice, then the highest. Each time you try, the computer will analyse the note you sang. If you don't think it recorded the right note, you can try again."
+      text <- psychTestR::i18n("range_explanation_voice_concise")
     } else {
       text <- psychTestR::i18n("range_explanation_voice")
     }
   } else {
     text <- psychTestR::i18n("range_explanation_instrument")
   }
-  psychTestR::one_button_page(text)
+  psychTestR::one_button_page(text, button_text = psychTestR::i18n("Next"))
 }
 
 get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), concise_wording = FALSE) {

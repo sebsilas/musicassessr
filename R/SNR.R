@@ -234,7 +234,7 @@ SNR_preconclusion_page <- function() {
   psychTestR::one_button_page(shiny::tags$div(
     shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
     shiny::tags$p(psychTestR::i18n("noise_test_message"))
-  ), button_test = psychTestR::i18n("Next"))
+  ), button_text = psychTestR::i18n("Next"))
 }
 
 

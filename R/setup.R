@@ -232,7 +232,7 @@ microphone_type_page <- function() {
                                             )
                           ), shiny::tags$br()
                         ),
-                        choices = c(psychTestR::i18n("Internal"), psychTestR::i18n("External"), psychTestR::i18n("Not sure")))
+                        choices = c(psychTestR::i18n("Internal"), psychTestR::i18n("External"), psychTestR::i18n("Not_sure")))
 }
 
 

@@ -170,14 +170,15 @@ function triggerNote(sound, freq_tone, seconds, time) {
 
 }
 
-function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "record_audio_page", stop_button_text = "Stop", showStop = false, record_immediately = true) {
+function playTone(tone, seconds, id, sound, hidePlay = true,
+                  page_type = "record_audio_page", stop_button_text = "Stop",
+                  showStop = false, record_immediately = true) {
 
   if(hidePlay) {
     hidePlayButton(id);
   }
 
   // play a tone for x seconds
-  console.log('playTone!');
 
   connect_sound('tone');
 
@@ -193,7 +194,11 @@ function playTone(tone, seconds, id, sound, hidePlay = true, page_type = "record
   } else {
     auto_next_page = true;
     var delay = seconds*1000 ;
-    setTimeout(() => { recordAndStop(ms = null, showStop = true, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text); }, delay);
+    setTimeout(() => {
+      recordAndStop(ms = seconds*1000, showStop = showStop, hidePlay = hidePlay,
+                    id = id, page_type = page_type, stop_button_text = stop_button_text);
+
+    }, delay);
 
   }
 

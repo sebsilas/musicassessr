@@ -8,8 +8,8 @@ play_long_tone_record_audio_page(
   note = NULL,
   long_note_no = 0,
   note_length = 5,
-  page_title = psychTestR::i18n("long_tone_heading"),
-  page_text = "Sing along with the tone for 5 seconds.",
+  page_title = psychTestR::i18n("long_tone_title"),
+  page_text = psychTestR::i18n("long_tone_text"),
   play_button_text = "Play",
   page_type = "record_audio_page",
   show_aws_controls = FALSE,
@@ -19,11 +19,12 @@ play_long_tone_record_audio_page(
   get_answer = get_answer_pyin_long_note,
   page_label = "long_tone",
   total_no_long_notes = 0,
-  show_progress = FALSE
+  show_progress = FALSE,
+  paradigm = c("sing_along", "call_and_response")
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{paradigm}{}
 }
 \value{
 

@@ -10,6 +10,7 @@
 #' @param feedback
 #' @param get_answer
 #' @param show_progress
+#' @param paradigm
 #'
 #' @return
 #' @export
@@ -19,10 +20,11 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                                     page_type = "record_audio_page",
                                                     page_text = psychTestR::i18n("long_tone_text"),
                                                     example = FALSE,
-                                                    page_title = psychTestR::i18n("long_tone_heading"),
+                                                    page_title = psychTestR::i18n("long_tone_title"),
                                                     feedback = FALSE,
                                                     get_answer = get_answer_pyin_long_note,
-                                                    show_progress = TRUE) {
+                                                    show_progress = TRUE,
+                                                    paradigm = c("sing_along", "call_and_response")) {
 
   items <- purrr::map(1:no_items, function(x) {
 
@@ -34,7 +36,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                      get_answer = get_answer,
                                      page_label = paste0("long_tone_", x),
                                      total_no_long_notes = no_items,
-                                     show_progress = show_progress)
+                                     show_progress = show_progress,
+                                     paradigm = paradigm)
     })
 
   items <- add_feedback(items, feedback)
@@ -59,6 +62,7 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #' @param page_label
 #' @param total_no_long_notes
 #' @param show_progress
+#' @param paradigm
 #'
 #' @return
 #' @export
@@ -67,8 +71,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 play_long_tone_record_audio_page <- function(note = NULL,
                                              long_note_no = 0,
                                              note_length = 5,
-                                             page_title = psychTestR::i18n("long_tone_heading"),
-                                             page_text = "Sing along with the tone for 5 seconds.",
+                                             page_title = psychTestR::i18n("long_tone_title"),
+                                             page_text = psychTestR::i18n("long_tone_text"),
                                              play_button_text = "Play",
                                              page_type = "record_audio_page",
                                              show_aws_controls = FALSE,
@@ -78,9 +82,21 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              get_answer = get_answer_pyin_long_note,
                                              page_label = "long_tone",
                                              total_no_long_notes = 0,
-                                             show_progress = FALSE) {
+                                             show_progress = FALSE,
+                                             paradigm = c("sing_along", "call_and_response")) {
 
   # a page type for playing a 5-second tone and recording a user singing with it
+
+  if(match.arg(paradigm) == "sing_along") {
+    record_immediately <-  TRUE
+  } else if(match.arg(paradigm) == "call_and_response") {
+    record_immediately <-  FALSE
+    page_title <- psychTestR::i18n("long_tone_title_call_and_response")
+    page_text <-  psychTestR::i18n("long_tone_text_call_and_response")
+  } else {
+    stop("Unknown long tone paradigm")
+  }
+
 
   save_answer <- if_example_save_answer(example)
 
@@ -106,7 +122,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     auto_next_page = auto_next_page,
                     save_answer = save_answer,
                     get_answer = get_answer,
-                    record_immediately = TRUE,
+                    record_immediately = record_immediately,
                     melody_no = long_note_no,
                     total_no_melodies = total_no_long_notes,
                     show_progress = show_progress)

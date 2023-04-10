@@ -5,7 +5,8 @@
 # midi notes
 
 present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, sound = "piano",
-                                                page_type = 'null', play_button_text = "Play",
+                                                page_type = 'null',
+                                                play_button_text = "Play",
                                                 stop_button_text = "Stop",
                                                 asChord = FALSE, durations = numeric(), auto_next_page = FALSE,
                                                 play_button_id = "playButton", button_area_id = "button_area",

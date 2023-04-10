@@ -9,14 +9,15 @@ multi_play_long_tone_record_audio_pages(
   page_type = "record_audio_page",
   page_text = psychTestR::i18n("long_tone_text"),
   example = FALSE,
-  page_title = psychTestR::i18n("long_tone_heading"),
+  page_title = psychTestR::i18n("long_tone_title"),
   feedback = FALSE,
   get_answer = get_answer_pyin_long_note,
-  show_progress = TRUE
+  show_progress = TRUE,
+  paradigm = c("sing_along", "call_and_response")
 )
 }
 \arguments{
-\item{show_progress}{}
+\item{paradigm}{}
 }
 \value{
 

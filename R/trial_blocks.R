@@ -645,6 +645,7 @@ melody_trials <- function(var_name,
 #' @param instruction_text
 #' @param module_name
 #' @param show_progress
+#' @param paradigm
 #'
 #' @return
 #' @export
@@ -666,7 +667,26 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
                              module_name = "long_tone_trials",
-                             show_progress = TRUE) {
+                             show_progress = TRUE,
+                             paradigm = c("sing_along", "call_and_response")) {
+
+  if(match.arg(paradigm) == "sing_along") {
+    instruction_text <- shiny::div(
+      shiny::tags$h2(page_title),
+      shiny::tags$p(psychTestR::i18n("long_tone_instruction")),
+      shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
+      shiny::tags$p(psychTestR::i18n("long_tone_instruction_3")))
+  } else if(match.arg(paradigm) == "call_and_response") {
+    instruction_text <- shiny::div(
+      shiny::tags$h2(page_title),
+      shiny::tags$p(psychTestR::i18n("long_tone_instruction_call_and_response")),
+      shiny::tags$p(psychTestR::i18n("long_tone_instruction_call_and_response_2")),
+      shiny::tags$p(psychTestR::i18n("long_tone_instruction_call_and_response_3")))
+
+  } else {
+    stop("Unknown long tone paradigm")
+  }
+
 
 
   if(num_items == 0) {
@@ -695,18 +715,19 @@ long_tone_trials <- function(num_items,
                                psychTestR::conditional(function(state, ...) {
                                  psychTestR::get_global("response_type", state) == "MIDI"
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
-                                                                                                example = TRUE, feedback = feedback,
-                                                                                                get_answer = get_answer,
-                                                                                                page_text = page_text, page_title = page_title))
+                                                                                  example = TRUE, feedback = feedback,
+                                                                                  get_answer = get_answer, paradigm = paradigm,
+                                                                                  page_text = page_text, page_title = page_title))
 
                                psychTestR::conditional(function(state, ...){
                                  psychTestR::get_global("response_type", state) == "Microphone"
-                               }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer))
+                               }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer, paradigm = paradigm))
 
                              } else {
                                multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
-                                                                                     example = TRUE, feedback = feedback, get_answer = get_answer,
-                                                                                     page_text = page_text, page_title = page_title)
+                                                                       example = TRUE, feedback = feedback, get_answer = get_answer,
+                                                                       page_text = page_text, page_title = page_title,
+                                                                       paradigm = paradigm)
                              },
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
@@ -716,12 +737,13 @@ long_tone_trials <- function(num_items,
                          sample_from_user_range(num_items),
                          # build pages
                          multi_play_long_tone_record_audio_pages(no_items = num_items,
-                                                                               page_type = page_type,
-                                                                               feedback = feedback,
-                                                                               get_answer = get_answer,
-                                                                               page_text = page_text,
-                                                                               page_title = page_title,
-                                                                               show_progress = show_progress),
+                                                                 page_type = page_type,
+                                                                 feedback = feedback,
+                                                                 get_answer = get_answer,
+                                                                 page_text = page_text,
+                                                                 page_title = page_title,
+                                                                 show_progress = show_progress,
+                                                                 paradigm = paradigm),
 
                          psychTestR::elt_save_results_to_disk(complete = FALSE),
 

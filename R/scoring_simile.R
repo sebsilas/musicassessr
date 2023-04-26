@@ -233,7 +233,7 @@ opti3 <- function(pitch_vec1, onset_vec1,
 
   pitch_vec1 <- round(pitch_vec1)
   pitch_vec2 <- round(pitch_vec2)
-  v_ngrukkon <- ngrukkon(pitch_vec1, pitch_vec2, N = N)
+  v_ngrukkon <- ngrukkon(diff(pitch_vec1), diff(pitch_vec2), N = N)
 
   ioi1 <- c(NA, diff(onset_vec1))
   ioi2 <- c(NA, diff(onset_vec2))
@@ -314,9 +314,11 @@ read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
 opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE){
   trans_hints <- get_transposition_hints(melody1$note, melody2$note)
   v_rhythfuzz <- rhythfuzz(melody1$ioi_class, melody2$ioi_class)
+  v_ngrukkon <- ngrukkon(diff(melody1$note), diff(melody2$note), N = N)
+
   sims <- purrr::map_dfr(trans_hints, function(th){
-    v_ngrukkon <- ngrukkon(melody1$note, melody2$note + th, N = N)
-    if(use_bootstrap){
+
+    if(use_bootstrap) {
       v_harmcore <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
     }
     else{

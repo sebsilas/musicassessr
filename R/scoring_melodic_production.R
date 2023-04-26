@@ -73,6 +73,16 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   no_correct_octaves_allowed <- sum(correct_boolean_octaves_allowed)
   no_errors_octaves_allowed <- sum(errors_boolean_octaves_allowed)
 
+  # Accuracy stuff
+  # Some of these are the same thing, with different names
+  no_hits <- no_correct
+  no_false_alarms <- no_errors
+  no_misses <- length(setdiff(stimuli, user_melody_input))
+  accuracy <- no_hits / (no_hits + no_false_alarms + no_misses)
+  precision <- no_hits/(no_hits + no_misses)
+  recall <- no_hits/(no_hits + no_false_alarms)
+  F1_score = 2 * no_hits/(2 * no_hits + no_misses + no_false_alarms)
+  PMI <- pmi(stimuli, user_melody_input)
 
   # opti3
   opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)
@@ -158,7 +168,12 @@ score_melodic_production <- function(user_melody_freq = numeric(),
     additional_scoring_measures = additional_scoring_measures,
     production = features_df,
     melody_note_accuracy = score_melody_note_accuracy(user_melody_input, stimuli, user_melody_freq, nearest_pitches),
-    melody_interval_accuracy = score_melody_interval_accuracy(features_df$interval, features_df$interval_cents, diff(stimuli))
+    melody_interval_accuracy = score_melody_interval_accuracy(features_df$interval, features_df$interval_cents, diff(stimuli)),
+    accuracy = accuracy,
+    precision = precision,
+    recall = recall,
+    F1_score = F1_score,
+    PMI = PMI
     )
 
   if(as_tb) {
@@ -251,7 +266,7 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
     stimuli_df <- tibble::tibble(
       note = stimuli,
       dur = stimuli_durations,
-      onset = cumsum(stimuli_durations),
+      onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
       ioi = c(NA, diff(onset)),
       ioi_class = itembankr::classify_duration(ioi)
     ) %>% itembankr::segment_phrase()

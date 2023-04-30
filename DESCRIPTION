@@ -59,7 +59,8 @@ Imports:
     xml2,
     assertthat,
     logging,
-    changepoint
+    changepoint,
+    Biostrings
 Depends: 
     R (>= 2.10),
     itembankr (>= 0.1.0),

@@ -14,6 +14,7 @@
 #' @param answer_meta_data
 #' @param as_tb
 #' @param additional_scoring_measures
+#' @param with_pmi
 #'
 #' @return
 #' @export
@@ -30,7 +31,9 @@ score_melodic_production <- function(user_melody_freq = numeric(),
                                      onsets_noteoff = numeric(),
                                      answer_meta_data = tibble::tibble(),
                                      as_tb = FALSE,
-                                     additional_scoring_measures = NULL) {
+                                     additional_scoring_measures = NULL,
+                                     with_pmi = FALSE) {
+
   # N.B; this should remain completely abstracted from psychTestR for post-hoc analyses
   stopifnot(
     is.numeric(user_melody_freq),
@@ -82,7 +85,9 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   precision <- no_hits/(no_hits + no_misses)
   recall <- no_hits/(no_hits + no_false_alarms)
   F1_score = 2 * no_hits/(2 * no_hits + no_misses + no_false_alarms)
-  PMI <- pmi(stimuli, user_melody_input)
+  if(with_pmi) {
+    PMI <- pmi(stimuli, user_melody_input)
+  }
 
   # opti3
   opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)

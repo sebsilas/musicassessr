@@ -16,13 +16,14 @@ score_melodic_production(
   onsets_noteoff = numeric(),
   answer_meta_data = tibble::tibble(),
   as_tb = FALSE,
-  additional_scoring_measures = NULL
+  additional_scoring_measures = NULL,
+  with_pmi = FALSE
 )
 }
 \arguments{
 \item{user_melody_freq}{Can be NULL for MIDI.}
 
-\item{additional_scoring_measures}{}
+\item{with_pmi}{}
 }
 \value{
 

@@ -85,9 +85,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   precision <- no_hits/(no_hits + no_misses)
   recall <- no_hits/(no_hits + no_false_alarms)
   F1_score = 2 * no_hits/(2 * no_hits + no_misses + no_false_alarms)
-  if(with_pmi) {
-    PMI <- pmi(stimuli, user_melody_input)
-  }
+  PMI <- if(with_pmi) pmi(stimuli, user_melody_input) else NA
 
   # opti3
   opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)

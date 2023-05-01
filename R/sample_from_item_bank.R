@@ -263,15 +263,20 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
     if(nrow(rhythmic_item_bank_subset) <= 1) {
       rhythmic_item_bank_subset <- item_bank
     }
-    cat(file=stderr(), str(rhythmic_item_bank_subset), "\n")
+    cat(file=stderr(), "lasdasd", "\n")
+    cat(file=stderr(), nrow(num_items_rhythmic), "\n")
+    cat(file=stderr(), "123123", "\n")
+    cat(file=stderr(), nrow(rhythmic_item_bank_subset), "\n")
     rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
-
-    if(nrow(rhythmic_item_bank_subset) < num_items_rhythmic) {
+    cat(file=stderr(), "12u39123", "\n")
+    cat(file=stderr(), nrow(rhythmic_sample), "\n")
+    if(nrow(rhythmic_sample) < num_items_rhythmic) {
       rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic, replace = TRUE)
     } else {
       rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
     }
-    cat(file=stderr(), str(rhythmic_sample), "\n")
+    cat(file=stderr(), "ashdia7", "\n")
+    cat(file=stderr(), nrow(rhythmic_sample), "\n")
     psychTestR::set_global(id, rhythmic_sample, state)
   })
 }

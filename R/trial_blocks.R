@@ -516,7 +516,8 @@ melody_trials <- function(var_name,
     is.scalar.logical(get_similarity_to_previous_melody)
   )
 
-
+  print('num_examples..')
+  print(num_examples)
   num_examples_flat <- flatten_no_item_list(num_examples)
   num_items_flat <- flatten_no_item_list(num_items)
 
@@ -559,7 +560,7 @@ melody_trials <- function(var_name,
                                presampled_items = if(presampled) item_bank else NULL,
                                stimuli_type = "midi_notes",
                                var_name = var_name,
-                               num_items = num_items_flat,
+                               num_items = num_examples_flat,
                                page_title = page_title,
                                page_text = page_text,
                                page_type = page_type,
@@ -582,6 +583,7 @@ melody_trials <- function(var_name,
                                give_first_melody_note = give_first_melody_note,
                                arrhythmic = arrhythmic,
                                get_similarity_to_previous_melody = get_similarity_to_previous_melody),
+
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p("Now you're ready for the real thing!")))

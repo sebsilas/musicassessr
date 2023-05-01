@@ -64,6 +64,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         give_first_melody_note = FALSE,
                                         get_similarity_to_previous_melody = FALSE) {
 
+  print('multi_p')
+  print(num_items)
+  print(example)
+
 
   stopifnot(is.null.or(item_bank, tibble::is_tibble),
             is.null.or(presampled_items, is.data.frame),

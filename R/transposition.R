@@ -267,6 +267,10 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
 
   user_mean_corrected_to_stimuli <- round(user_mean_note - mean_of_stimuli)
 
+  cat(file=stderr(), "asdasd", rel_melody, "\n")
+
+  cat(file=stderr(), "asd232881", user_mean_corrected_to_stimuli, "\n")
+
   stimuli_centred_to_user_mean <- itembankr::rel_to_abs_mel(rel_melody, user_mean_corrected_to_stimuli)
   # the rel melody should be the same when converted back
   #print(diff(stimuli_centred_to_user_mean))

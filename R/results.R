@@ -27,7 +27,7 @@ plot_normal_dist_plus_score <- function(data = NULL,
 
 
   if(!is.null(data) & !is.null(mean) & !is.null(sd)) {
-    break
+    ## Do nothing
   } else if(!is.null(data) & is.null(mean) & is.null(sd)) {
     sd <- sd(data$score)
     mean <- mean(data$score)

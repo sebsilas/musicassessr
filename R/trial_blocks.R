@@ -516,8 +516,6 @@ melody_trials <- function(var_name,
     is.scalar.logical(get_similarity_to_previous_melody)
   )
 
-  print('num_examples..')
-  print(num_examples)
   num_examples_flat <- flatten_no_item_list(num_examples)
   num_items_flat <- flatten_no_item_list(num_items)
 
@@ -606,7 +604,7 @@ melody_trials <- function(var_name,
                            page_text = page_text,
                            page_type = page_type,
                            get_answer = get_answer,
-                           rel_to_abs_mel_function = rel_to_abs_mel_mean_centred,
+                           rel_to_abs_mel_function = rel_to_abs_mel_function,
                            feedback = feedback,
                            sound = sound,
                            get_trial_characteristics_function = get_trial_characteristics_function,

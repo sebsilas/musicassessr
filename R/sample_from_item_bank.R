@@ -17,7 +17,8 @@ item_sampler <- function(item_bank, no_items, replace = FALSE) {
     is.scalar.logical(replace)
   )
 
-  item_bank <- item_bank %>% dplyr::arrange(N)
+  item_bank <- item_bank %>%
+    dplyr::arrange(N)
 
   # what values are there?
   N_values <- unique(item_bank$N)
@@ -250,10 +251,8 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
 sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
 
-    cat(file=stderr(), "sample_rhythmic", "\n")
     span <- psychTestR::get_global("span", state)
-    cat(file=stderr(), "span", "\n")
-    cat(file=stderr(), span, "\n")
+
     span_warning(span)
     if(is.null(span) | span < 10) {
       span <- 10
@@ -263,20 +262,15 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
     if(nrow(rhythmic_item_bank_subset) <= 1) {
       rhythmic_item_bank_subset <- item_bank
     }
-    cat(file=stderr(), "lasdasd", "\n")
-    cat(file=stderr(), nrow(num_items_rhythmic), "\n")
-    cat(file=stderr(), "123123", "\n")
-    cat(file=stderr(), nrow(rhythmic_item_bank_subset), "\n")
-    rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
-    cat(file=stderr(), "12u39123", "\n")
-    cat(file=stderr(), nrow(rhythmic_sample), "\n")
+
+    rhythmic_sample <- item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
+
     if(nrow(rhythmic_sample) < num_items_rhythmic) {
-      rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic, replace = TRUE)
+      rhythmic_sample <- item_sampler(rhythmic_item_bank_subset, num_items_rhythmic, replace = TRUE)
     } else {
-      rhythmic_sample <- musicassessr::item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
+      rhythmic_sample <- item_sampler(rhythmic_item_bank_subset, num_items_rhythmic)
     }
-    cat(file=stderr(), "ashdia7", "\n")
-    cat(file=stderr(), nrow(rhythmic_sample), "\n")
+
     psychTestR::set_global(id, rhythmic_sample, state)
   })
 }

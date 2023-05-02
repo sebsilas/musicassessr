@@ -76,8 +76,6 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   no_correct_octaves_allowed <- sum(correct_boolean_octaves_allowed)
   no_errors_octaves_allowed <- sum(errors_boolean_octaves_allowed)
 
-  cat(file=stderr(), "dada", "\n")
-
   # Accuracy stuff
   # Some of these are the same thing, with different names
   no_hits <- no_correct
@@ -88,9 +86,6 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   recall <- no_hits/(no_hits + no_false_alarms)
   F1_score = 2 * no_hits/(2 * no_hits + no_misses + no_false_alarms)
   PMI <- if(with_pmi) pmi(stimuli, user_melody_input) else NA
-
-  cat(file=stderr(), "dada2", "\n")
-
 
   # opti3
   opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)
@@ -137,8 +132,6 @@ score_melodic_production <- function(user_melody_freq = numeric(),
 
   # additional (user-defined)
   additional_scoring_measures <- apply_additional_scoring_measures(additional_scoring_measures, features_df$onset, features_df$dur, features_df$freq, features_df$note, stimuli, stimuli_durations)
-
-  cat(file=stderr(), "dada3", "\n")
 
   res <- list(
     stimuli = stimuli,

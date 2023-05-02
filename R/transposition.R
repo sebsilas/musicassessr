@@ -217,16 +217,9 @@ sample_keys_by_difficulty <- function(inst, n_easy, n_hard) {
 
 
 mean_of_stimuli <- function(rel_melody) {
-  cat(file=stderr(), "8192312", rel_melody, "\n")
   if(class(rel_melody) == "character") {
     rel_melody <- itembankr::str_mel_to_vector(rel_melody)
   }
-  cat(file=stderr(), "hasd23", rel_melody, "\n")
-  cat(file=stderr(), rel_melody, "\n")
-  cat(file=stderr(), class(rel_melody), "\n")
-  cat(file=stderr(), length(rel_melody), "\n")
-  cat(file=stderr(), str(rel_melody), "\n")
-  cat(file=stderr(), "nasd823", rel_melody, "\n")
   round(mean(itembankr::rel_to_abs_mel(rel_melody, start_note = 0)))
 }
 

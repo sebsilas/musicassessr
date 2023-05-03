@@ -7,7 +7,7 @@
 ngrukkon(x, y, N = 3)
 }
 \arguments{
-\item{N}{}
+\item{return_na_if_too_short}{}
 }
 \value{
 

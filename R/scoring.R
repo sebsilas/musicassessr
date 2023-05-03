@@ -32,7 +32,7 @@ check_answer <- function(user_response, correct_answer,
   if (length(user_response) > 1) {
     correct <- identical(user_response, correct_answer)
   } else if (type == "midi_pitches") {
-    # itembankr::ngrukkon()
+    # itembankr::ngrukkon_safe()
   } else if (type == "rhythms") {
     ## rhythm metric
     # itembankr::rhythfuzz()

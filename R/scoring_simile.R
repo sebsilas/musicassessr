@@ -5,6 +5,7 @@
 #' @param x
 #' @param y
 #' @param N
+#' @param return_na_if_too_short
 #'
 #' @return
 #' @export
@@ -17,6 +18,33 @@ ngrukkon <- function(x, y, N = 3){
   tx <- factor(x, levels = names(joint)) %>% table()
   ty <- factor(y, levels = names(joint)) %>% table()
   1 - sum(abs(tx  - ty))/(length(x) + length(y))
+}
+
+
+#' An ngrukkon wrapper to produce warnings and return NAs rather than stop if one entry is too short
+#'
+#' @param x
+#' @param y
+#' @param N
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ngrukkon_safe <- function(x, y, N = 3) {
+  ngrukkon_warning(x)
+  ngrukkon_warning(y)
+  if( length(x) < N | length(y) < N ) {
+    res <- NA
+  } else {
+    res <- ngrukkon(x, y, N)
+  }
+  res
+}
+
+ngrukkon_warning <- function(v) {
+  # ngrukkon must be used on intervals not pitches, so warn based on a guess that the input might be pitch rather than interval values
+  if(mean(v, na.rm = TRUE) > 20) warning("Are you definitely using intervals for ngrukkon?")
 }
 
 
@@ -233,7 +261,7 @@ opti3 <- function(pitch_vec1, onset_vec1,
 
   pitch_vec1 <- round(pitch_vec1)
   pitch_vec2 <- round(pitch_vec2)
-  v_ngrukkon <- ngrukkon(diff(pitch_vec1), diff(pitch_vec2), N = N)
+  v_ngrukkon <- ngrukkon_safe(diff(pitch_vec1), diff(pitch_vec2), N = N)
 
   ioi1 <- c(NA, diff(onset_vec1))
   ioi2 <- c(NA, diff(onset_vec2))
@@ -314,7 +342,7 @@ read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
 opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE){
   trans_hints <- get_transposition_hints(melody1$note, melody2$note)
   v_rhythfuzz <- rhythfuzz(melody1$ioi_class, melody2$ioi_class)
-  v_ngrukkon <- ngrukkon(diff(melody1$note), diff(melody2$note), N = N)
+  v_ngrukkon <- ngrukkon_safe(diff(melody1$note), diff(melody2$note), N = N)
 
   sims <- purrr::map_dfr(trans_hints, function(th){
 

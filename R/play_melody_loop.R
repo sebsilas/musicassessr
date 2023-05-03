@@ -695,7 +695,7 @@ get_similarity_to_previous_melody <- function(get_similarity_to_previous_melody,
     if(melody_no > 1) {
       previous_melody <- psychTestR::get_global("previous_melody", state)
       if(arrhythmic) {
-        similarity_to_previous_melody <- ngrukkon(previous_melody, abs_melody)
+        similarity_to_previous_melody <- ngrukkon_safe(diff(previous_melody), diff(abs_melody))
       } else {
 
         previous_durations <- psychTestR::get_global("previous_durations", state)

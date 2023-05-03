@@ -376,7 +376,7 @@ display_previous_answer_music_notation_pitch_class <- function() {
       ## NB!!! need to get the actual onsets of the stimuli ^^^^
 
       # for arrhythmic?
-      ng <- ngrukkon(stimuli, user_response)
+      ng <- ngrukkon_safe(diff(stimuli), diff(user_response))
 
     }
 
@@ -462,16 +462,8 @@ display_previous_answer_music_notation_pitch_class2 <- function() {
       ng <- "Not enough notes"
     }
     else {
-
-      # similarity <- opti3(pitch_vec1 = stimuli,
-      #                     onset_vec1 = stimuli_durations,
-      #                     pitch_vec2 = user_response,
-      #                     #onset_vec2 = rep(.25, length(user_response)) # arrhythmic
-      #                     onset_vec2 = user_response_timecodes) # rhythmic
-      ## NB!!! need to get the actual onsets of the stimuli ^^^^
-
       # for arrhythmic?
-      ng <- ngrukkon(stimuli, user_response)
+      ng <- ngrukkon_safe(diff(stimuli), diff(user_response))
 
     }
 

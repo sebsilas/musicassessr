@@ -933,9 +933,6 @@ function startRecording(updateUI = true) {
 		//start the recording process
 		rec.record()
 
-    console.log('sadasdorec');
-		console.log(rec);
-
 		console.log("Recording started");
 
 	}).catch(function(err) {
@@ -973,11 +970,6 @@ function hideButtonAreaShowUserRating() {
 function stopRecording() {
 
   hideButtonAreaShowUserRating();
-
-	console.log("stopRecording clicked");
-
-	console.log('rec...');
-	console.log(rec);
 
 	//tell the recorder to stop the recording
 	rec.stop();

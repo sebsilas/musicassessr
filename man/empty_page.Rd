@@ -7,7 +7,7 @@
 empty_page(
   body = "",
   admin_ui = NULL,
-  button_text = "Next",
+  button_text = psychTestR::i18n("Next"),
   on_complete = NULL,
   page_title = ""
 )

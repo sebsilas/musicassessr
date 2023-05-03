@@ -92,7 +92,7 @@ sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72
 
 play_interval_page <- function(interval = NULL,
                                page_title = "What is the interval?",
-                               play_button_text = "Play",
+                               play_button_text = psychTestR::i18n("Play"),
                                example = FALSE,
                                label = "interval_",
                                save_answer = TRUE,
@@ -126,7 +126,7 @@ play_interval_page <- function(interval = NULL,
                          label = NULL,
                          choices = names(itembankr::intervals),
                          width = "30%"),
-      psychTestR::trigger_button("next", "Next")),
+      psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
     label = label, get_answer = get_answer, save_answer = save_answer)
 
   })
@@ -183,7 +183,7 @@ redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 
 #' @export
 #'
 #' @examples
-empty_page <- function(body = "", admin_ui = NULL, button_text = "Next", on_complete = NULL, page_title = "") {
+empty_page <- function(body = "", admin_ui = NULL, button_text = psychTestR::i18n("Next"), on_complete = NULL, page_title = "") {
   body <- tagify(body)
   stopifnot(is.scalar.character(button_text))
   ui <- shiny::div(page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))

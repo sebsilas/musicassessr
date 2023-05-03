@@ -5,7 +5,6 @@
 #' @param x
 #' @param y
 #' @param N
-#' @param return_na_if_too_short
 #'
 #' @return
 #' @export

@@ -545,8 +545,8 @@ melody_trials <- function(var_name,
                            c(
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p(paste0("First try ", num_examples, " example trials."))
-                             )),
+                               shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples, " ", psychTestR::i18n("example_trials"), "."))
+                             ), button_text = psychTestR::i18n("Next")),
                              if(is.null(item_characteristics_sampler_function)) {
                                if(!is.null(sampler_function)) sampler_function(item_bank, num_examples_flat)
                              } else {
@@ -584,7 +584,7 @@ melody_trials <- function(var_name,
 
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p("Now you're ready for the real thing!")))
+                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
                            )
                          },
                          # sample
@@ -703,13 +703,13 @@ long_tone_trials <- function(num_items,
                        psychTestR::join(
                          # instructions
                          if(show_instructions) {
-                           psychTestR::one_button_page(instruction_text)
+                           psychTestR::one_button_page(instruction_text, button_text = psychTestR::i18n("Next"))
                          },
                          # examples
                          if(is.numeric(num_examples) & num_examples > 0L) {
                            psychTestR::join(psychTestR::one_button_page(shiny::div(
                              shiny::tags$h2(page_title),
-                             shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+                             shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples, " ", psychTestR::i18n("example_trials"), "."))), button_text = psychTestR::i18n("Next")),
                              sample_from_user_range(num_examples),
                              if(page_type == "reactive") {
                                psychTestR::conditional(function(state, ...) {
@@ -731,7 +731,7 @@ long_tone_trials <- function(num_items,
                              },
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p("Now you're ready for the real thing!")))
+                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))))
                            )},
                          # sample
                          sample_from_user_range(num_items),
@@ -808,7 +808,7 @@ find_this_note_trials <- function(num_items,
                                                                                    example = TRUE, feedback = feedback, get_answer = get_answer),
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p("Now you're ready for the real thing!")))
+                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))))
                            )},
                          # sample
                          sample_from_user_range(num_items),
@@ -904,7 +904,7 @@ wjd_audio_melody_trials <- function(item_bank,
         ## sample
         psychTestR::one_button_page(shiny::tags$div(
           shiny::tags$h2(page_title),
-          shiny::tags$p("Now you're ready for the real thing!"))))
+          shiny::tags$p(psychTestR::i18n("ready_for_real_thing")))))
     } else {
       example_tl <- c()
     }

@@ -111,7 +111,7 @@ show_item_arrhythmic <- function(num_items,
                         give_first_melody_note = give_first_melody_note,
                         psychTestRCAT = TRUE,
                         arrhythmic = TRUE,
-                       play_button_text = "Play"),
+                       play_button_text = psychTestR::i18n("Play") ),
       dict = musicassessr::dict(NULL))
 
     if(feedback) {

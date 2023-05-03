@@ -20,7 +20,7 @@ record_key_presses_page <- function(body, show_console_area = FALSE, ...) {
     ui = shiny::tags$div(id = "mainDiv", shiny::tags$div(class="fx",
                           shiny::tags$div(
                               shiny::tags$div(id = "body", body),
-                             psychTestR::trigger_button("next", "Next"),
+                             psychTestR::trigger_button("next", psychTestR::i18n("Next")),
                              console_area(show_console_area)
                            )
     ),

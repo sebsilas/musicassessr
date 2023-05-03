@@ -9,7 +9,7 @@ select_midi_device_page(
  
     message = "Your device should have been plugged in before you reached this page. It may take a moment to appear.",
   error_notification = "No midi device found.",
-  button_text = "Next"
+  button_text = psychTestR::i18n("Next")
 )
 }
 \arguments{

@@ -112,7 +112,7 @@ record_midi_page <- function(body = " ",
 select_midi_device_page <- function(title = "Select MIDI device",
                                     message = "Your device should have been plugged in before you reached this page. It may take a moment to appear.",
                                     error_notification = "No midi device found.",
-                                    button_text = "Next"
+                                    button_text = psychTestR::i18n("Next")
                                     ) {
   # set the selected device
   psychTestR::page(

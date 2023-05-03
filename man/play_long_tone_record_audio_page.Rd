@@ -10,7 +10,7 @@ play_long_tone_record_audio_page(
   note_length = 5,
   page_title = psychTestR::i18n("long_tone_title"),
   page_text = psychTestR::i18n("long_tone_text"),
-  play_button_text = "Play",
+  play_button_text = psychTestR::i18n("Play"),
   page_type = "record_audio_page",
   show_aws_controls = FALSE,
   show_record_button = FALSE,

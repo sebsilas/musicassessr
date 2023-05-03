@@ -21,7 +21,7 @@ select_voice_page <- function() {
       shiny::tags$button("Test Voice", id = "playButton"),
       shiny::tags$br(),
       shiny::tags$br(),
-      psychTestR::trigger_button('next', "Next"),
+      psychTestR::trigger_button('next', psychTestR::i18n("Next") ),
       shiny::tags$script('var words = \"Here is a sample of the chosen voice.\"'),
       shiny::includeScript(system.file("www/js/speechSynthesis.js")),
     ),
@@ -75,7 +75,7 @@ record_spoken_words_page <- function() {
     ui = shiny::tags$div(
       shiny::tags$p(shiny::tags$em("...diagnostic messages"), class = "output"),
       shiny::tags$button("Record", onclick="recognition.start();"),
-      psychTestR::trigger_button("next", "Next"),
+      psychTestR::trigger_button("next", psychTestR::i18n("Next") ),
       shiny::includeScript(system.file("www/js/captureSpeech.js", package = "musicassessr"))
     ),
     get_answer = function(input, ...) {

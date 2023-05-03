@@ -8,7 +8,8 @@ get_self_chosen_anonymous_id <- function() {
       psychTestR::set_global("p_id", p_id, state)
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$script(paste0('const p_id = \"', p_id, '\";')),
-        shiny::tags$p(paste0(psychTestR::i18n("Thank_you"), ", ", p_id, ". ", psychTestR::i18n("setup_intro")))))
+        shiny::tags$p(paste0(psychTestR::i18n("Thank_you"), ", ", p_id, ". ", psychTestR::i18n("setup_intro")))),
+        button_text = psychTestR::i18n("Next"))
     })
   )
 
@@ -20,6 +21,6 @@ pass_p_id_to_js <- function() {
     psychTestR::set_global("p_id", p_id, state)
     psychTestR::one_button_page(shiny::tags$div(
       shiny::tags$script(paste0('const p_id = \"', p_id, '\";')),
-      shiny::tags$p(psychTestR::i18n("setup_intro"))))
+      shiny::tags$p(psychTestR::i18n("setup_intro"))), button_text = psychTestR::i18n("Next"))
   })
 }

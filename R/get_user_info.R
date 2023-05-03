@@ -17,7 +17,7 @@ user_info_check <- function(input, state, ...)  {
 #' @export
 #'
 #' @examples
-get_user_info_page<- function(chrome_only = TRUE) {
+get_user_info_page <- function(chrome_only = TRUE) {
 
   if(chrome_only) {
     page_text <- shiny::tags$p(psychTestR::i18n("browser_recommendation"))
@@ -36,7 +36,7 @@ get_user_info_page<- function(chrome_only = TRUE) {
       page_text,
       shiny::tags$p(psychTestR::i18n("browser_requirements2")),
       shiny::tags$div(shiny::tags$input(id = "user_info"), class="_hidden"),
-    shiny::tags$button("Next", id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
+    shiny::tags$button(psychTestR::i18n("Next"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
   )
 
   psychTestR::page(ui = ui, label = "user_info", save_answer = TRUE, get_answer = user_info_check)

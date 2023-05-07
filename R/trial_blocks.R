@@ -538,7 +538,8 @@ melody_trials <- function(var_name,
                          # instructions
                          psychTestR::one_button_page(shiny::tags$div(
                            shiny::tags$h2(page_title),
-                           shiny::tags$p(instruction_text)
+                           shiny::tags$p(instruction_text),
+                           button_text = psychTestR::i18n("Next")
                          )),
                          # examples
                          if(is.numeric(num_examples) & num_examples > 0L) {
@@ -873,7 +874,7 @@ wjd_audio_melody_trials <- function(item_bank,
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$h2(page_title),
         shiny::tags$p(instruction_text)
-      )))
+      ), button_text = psychTestR::i18n("Next")))
 
     # examples
     if(is.numeric(num_examples) & num_examples > 0L) {

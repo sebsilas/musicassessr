@@ -240,7 +240,7 @@ validate_user_entry_into_test <- function(validate_user_entry_into_test, elts) {
       psychTestR::conditional(test = function(state, ...) {
         # invert the logic
         !psychTestR::get_global("token_authenticated", state)
-      }, logic = final_page("Unfortunately you were not validated.")),
+      }, logic = psychTestR::final_page("Unfortunately you were not validated.")),
 
       elts
     )

@@ -732,7 +732,7 @@ long_tone_trials <- function(num_items,
                              },
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))))
+                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
                            )},
                          # sample
                          sample_from_user_range(num_items),

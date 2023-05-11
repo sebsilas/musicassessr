@@ -9,9 +9,6 @@ test_headphones_page(concise_wording = FALSE)
 \arguments{
 \item{concise_wording}{}
 }
-\value{
-
-}
 \description{
 Test headphones page
 }

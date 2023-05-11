@@ -9,9 +9,6 @@ get_long_note_pcas(long_note_scores)
 \arguments{
 \item{long_note_beginning_of_second_cpt}{}
 }
-\value{
-
-}
 \description{
 Get long note PCA scores
 }

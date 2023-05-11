@@ -18,9 +18,6 @@ share_score_page(
 \arguments{
 \item{data_not_from_leaderboard}{}
 }
-\value{
-
-}
 \description{
 A page for sharing scores.
 }

@@ -13,9 +13,6 @@ plot_longitudinal(
 \arguments{
 \item{type}{}
 }
-\value{
-
-}
 \description{
 Plot longitudinal
 }

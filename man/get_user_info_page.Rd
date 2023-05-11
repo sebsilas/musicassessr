@@ -9,9 +9,6 @@ get_user_info_page(chrome_only = TRUE)
 \arguments{
 \item{chrome_only}{}
 }
-\value{
-
-}
 \description{
 Check a user has the requirements to run our test and record their browser information
 }

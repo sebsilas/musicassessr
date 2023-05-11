@@ -9,9 +9,6 @@ set_condition_page(block1, block2, condition1_name, condition2_name)
 \arguments{
 \item{condition2_name}{}
 }
-\value{
-
-}
 \description{
 Allow the experimenter to set a condition at the beginning of the test
 }

@@ -13,7 +13,8 @@ present_stimuli(
   page_title = " ",
   slide_length = numeric(),
   answer_meta_data = character(),
-  get_answer = function() { },
+  get_answer = function() {
+ },
   save_answer = TRUE,
   stimuli_reactive = FALSE,
   midi_device = " ",
@@ -63,9 +64,6 @@ present_stimuli(
 }
 \arguments{
 \item{...}{}
-}
-\value{
-
 }
 \description{
 Present stimuli

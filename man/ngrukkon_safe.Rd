@@ -9,9 +9,6 @@ ngrukkon_safe(x, y, N = 3)
 \arguments{
 \item{N}{}
 }
-\value{
-
-}
 \description{
 An ngrukkon wrapper to produce warnings and return NAs rather than stop if one entry is too short
 }

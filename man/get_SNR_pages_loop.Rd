@@ -9,9 +9,6 @@ get_SNR_pages_loop(min_SNR = 14, absolute_url = character(), report_SNR)
 \arguments{
 \item{report_SNR}{}
 }
-\value{
-
-}
 \description{
 Get SNR pages as a loop (i.e., the participant can take multiple attempts)
 }

@@ -19,9 +19,6 @@ multi_play_long_tone_record_audio_pages(
 \arguments{
 \item{paradigm}{}
 }
-\value{
-
-}
 \description{
 Build multiple play_long_tone_record_audio_pages based on a user's range
 }

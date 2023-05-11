@@ -9,9 +9,6 @@ render_scores_table(res)
 \arguments{
 \item{res}{}
 }
-\value{
-
-}
 \description{
 Render scores in a shiny table
 }

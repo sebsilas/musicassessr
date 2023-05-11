@@ -9,9 +9,6 @@ plot_dtw_melody(stimuli, stimuli_durations, pyin_smoothed_pitchtrack)
 \arguments{
 \item{pyin_smoothed_pitchtrack}{}
 }
-\value{
-
-}
 \description{
 Plot a melody after being transformed into a representation for use with the dynamic time warp algorithm
 }

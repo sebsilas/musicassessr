@@ -9,9 +9,6 @@ test_acronym_to_name(acronym)
 \arguments{
 \item{acronym}{}
 }
-\value{
-
-}
 \description{
 Test acronym to its full name
 }

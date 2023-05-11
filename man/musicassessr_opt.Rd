@@ -14,9 +14,6 @@ musicassessr_opt(
 \arguments{
 \item{app_name}{}
 }
-\value{
-
-}
 \description{
 Specify options for a musicassessr test.
 }

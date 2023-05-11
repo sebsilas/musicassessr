@@ -33,9 +33,6 @@ sing_arrhythmic_melody_trials(
 \arguments{
 \item{get_similarity_to_previous_melody}{}
 }
-\value{
-
-}
 \description{
 Sing arrhythmic melody trial block
 }

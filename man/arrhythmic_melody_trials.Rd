@@ -9,8 +9,8 @@ arrhythmic_melody_trials(
   module_name = "arrhythmic_melodies",
   page_text = "Press play to hear the melody. Play back the melody.",
   page_title = "Play this melody.",
- 
-    instruction_text = "Now you will hear some melodies. Please try and play back the melodies.",
+  instruction_text =
+    "Now you will hear some melodies. Please try and play back the melodies.",
   sampler_function = sample_arrhythmic,
   item_bank,
   num_items = integer(),
@@ -39,9 +39,6 @@ arrhythmic_melody_trials(
 }
 \arguments{
 \item{get_similarity_to_previous_melody}{}
-}
-\value{
-
 }
 \description{
 Arrhythmic melody trials block

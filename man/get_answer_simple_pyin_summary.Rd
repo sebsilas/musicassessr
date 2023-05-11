@@ -9,9 +9,6 @@ get_answer_simple_pyin_summary(input, state, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 summarise pyin output with basic statistics
 }

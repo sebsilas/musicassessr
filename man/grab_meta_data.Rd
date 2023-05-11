@@ -9,9 +9,6 @@ grab_meta_data(meta_data_df, lookup_column, value)
 \arguments{
 \item{value}{}
 }
-\value{
-
-}
 \description{
 Grab meta data from a df
 }

@@ -15,9 +15,6 @@ get_answer_pyin(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Get answer by running pyin on a recorded audio file
 }

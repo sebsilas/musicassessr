@@ -12,18 +12,15 @@ wjd_audio_melody_trials(
   item_length = c(3, 15),
   get_answer = get_answer_pyin_melodic_production_additional_measures,
   sound = "piano",
- 
-    page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
+  page_text =
+    "Press play to hear the melody, then play it back as best as you can when it finishes.",
   page_title = "Play the Melody And Rhythm from Audio",
- 
-    instruction_text = "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can."
+  instruction_text =
+    "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can."
 )
 }
 \arguments{
 \item{instruction_text}{}
-}
-\value{
-
 }
 \description{
 A trial block which plays back real audio from the Weimar Jazz Database

@@ -15,9 +15,6 @@ empty_page(
 \arguments{
 \item{page_title}{}
 }
-\value{
-
-}
 \description{
 An empty page (with trigger button hidden and possible to show on demand.)
 }

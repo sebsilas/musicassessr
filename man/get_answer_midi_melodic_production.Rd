@@ -9,9 +9,6 @@ get_answer_midi_melodic_production(input, state, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Get a MIDI result and compute melodic production scores
 }

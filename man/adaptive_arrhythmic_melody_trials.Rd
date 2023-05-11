@@ -24,9 +24,6 @@ adaptive_arrhythmic_melody_trials(
 \arguments{
 \item{feedback}{}
 }
-\value{
-
-}
 \description{
 Adaptive arrhythmic melody trials block
 }

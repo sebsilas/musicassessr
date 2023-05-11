@@ -9,9 +9,6 @@ create_socials(socials, test_name, score, hashtag, test, url)
 \arguments{
 \item{url}{}
 }
-\value{
-
-}
 \description{
 Create an interface to share test score on socials
 }

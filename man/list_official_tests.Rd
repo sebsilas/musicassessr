@@ -9,9 +9,6 @@ list_official_tests(include_PDT = TRUE)
 \arguments{
 \item{include_PDT}{}
 }
-\value{
-
-}
 \description{
 List official musicassessr tests
 }

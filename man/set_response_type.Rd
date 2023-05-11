@@ -9,9 +9,6 @@ set_response_type(type = c("Microphone", "MIDI"))
 \arguments{
 \item{type}{}
 }
-\value{
-
-}
 \description{
 Set response type for a test manually
 }

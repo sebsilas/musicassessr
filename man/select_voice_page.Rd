@@ -6,9 +6,6 @@
 \usage{
 select_voice_page()
 }
-\value{
-
-}
 \description{
 A page for selecting a voice before a play words page
 }

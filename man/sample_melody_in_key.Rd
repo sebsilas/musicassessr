@@ -16,9 +16,6 @@ sample_melody_in_key(
 \arguments{
 \item{length}{}
 }
-\value{
-
-}
 \description{
 Sample melody in key
 }

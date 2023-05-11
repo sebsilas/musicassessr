@@ -14,9 +14,6 @@ download_files_from_ec2(
 \arguments{
 \item{batch_size}{}
 }
-\value{
-
-}
 \description{
 Download files from the ec2 instance (in batches)
 }

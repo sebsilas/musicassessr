@@ -9,9 +9,6 @@ final_page_or_continue_to_new_test(final = TRUE, task_name)
 \arguments{
 \item{task_name}{}
 }
-\value{
-
-}
 \description{
 Should the end of the test present a final page or not?
 }

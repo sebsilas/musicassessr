@@ -9,8 +9,8 @@ rhythmic_melody_trials(
   module_name = "rhythmic_melodies",
   page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
   page_title = "Play this melody plus rhythm",
- 
-    instruction_text = "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
+  instruction_text =
+    "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
   sampler_function = sample_rhythmic,
   item_bank,
   num_items = integer(),
@@ -39,9 +39,6 @@ rhythmic_melody_trials(
 }
 \arguments{
 \item{get_similarity_to_previous_melody}{}
-}
-\value{
-
 }
 \description{
 Rhythmic melody trials block

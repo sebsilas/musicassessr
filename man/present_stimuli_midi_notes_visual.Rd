@@ -20,9 +20,6 @@ present_stimuli_midi_notes_visual(
 \arguments{
 \item{start_hidden}{}
 }
-\value{
-
-}
 \description{
 Present MIDI notes as musical notation
 }

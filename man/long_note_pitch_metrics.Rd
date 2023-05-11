@@ -11,9 +11,6 @@ long_note_pitch_metrics(target_pitch, freq)
 
 \item{freq}{The pyin frequency vector.}
 }
-\value{
-
-}
 \description{
 Compute long tone pitch metrics
 }

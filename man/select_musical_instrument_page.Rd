@@ -6,9 +6,6 @@
 \usage{
 select_musical_instrument_page()
 }
-\value{
-
-}
 \description{
 Page to select what instrument the participant is using
 }

@@ -9,9 +9,6 @@ insert_item_into_every_other_n_position_in_list(l, item_to_add, n = 2)
 \arguments{
 \item{n}{}
 }
-\value{
-
-}
 \description{
 Insert item into every other n position in list
 }

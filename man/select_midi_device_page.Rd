@@ -6,17 +6,14 @@
 \usage{
 select_midi_device_page(
   title = "Select MIDI device",
- 
-    message = "Your device should have been plugged in before you reached this page. It may take a moment to appear.",
+  message =
+    "Your device should have been plugged in before you reached this page. It may take a moment to appear.",
   error_notification = "No midi device found.",
   button_text = psychTestR::i18n("Next")
 )
 }
 \arguments{
 \item{button_text}{}
-}
-\value{
-
 }
 \description{
 Create a page for selecting a MIDI device

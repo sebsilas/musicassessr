@@ -9,9 +9,6 @@ expand_string_df_row(df, row_id = NULL)
 \arguments{
 \item{row_id}{}
 }
-\value{
-
-}
 \description{
 Expand a string dataframe row to a dataframe
 }

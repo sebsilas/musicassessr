@@ -14,9 +14,6 @@ musicassessr_init(
 \arguments{
 \item{app_name}{}
 }
-\value{
-
-}
 \description{
 Initiate a musicassessr test
 }

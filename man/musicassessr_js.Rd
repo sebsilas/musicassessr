@@ -16,9 +16,6 @@ musicassessr_js(
 \arguments{
 \item{midi_input}{}
 }
-\value{
-
-}
 \description{
 musicassessr scripts
 }

@@ -15,9 +15,6 @@ harmcore(
 \arguments{
 \item{segmentation_type}{}
 }
-\value{
-
-}
 \description{
 Compute harmcore
 }

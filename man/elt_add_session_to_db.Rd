@@ -13,9 +13,6 @@ elt_add_session_to_db(
 \arguments{
 \item{test}{}
 }
-\value{
-
-}
 \description{
 Add session to postgres db
 }

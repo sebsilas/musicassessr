@@ -9,9 +9,6 @@ prepare_mel_stimuli_for_dtw(melody, durations, convert_midi_to_freq = TRUE)
 \arguments{
 \item{convert_midi_to_freq}{}
 }
-\value{
-
-}
 \description{
 Convert a melody to a pseudo-timeseries representation
 }

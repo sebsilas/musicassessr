@@ -9,9 +9,6 @@ read_melody(fname, style = c("sonic_annotator", "tony"))
 \arguments{
 \item{style}{}
 }
-\value{
-
-}
 \description{
 read a pYIN note track (outputted from Sonic Annotator or Tony) and make it nice
 }

@@ -14,9 +14,6 @@ tidy_melodies(
 
 \item{use_for_production}{Which get_answer output to use for production (the other will be removed).}
 }
-\value{
-
-}
 \description{
 Tidy melodies from psychTestR results object
 }

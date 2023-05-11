@@ -6,9 +6,6 @@
 \usage{
 microphone_type_page()
 }
-\value{
-
-}
 \description{
 Microphone Type Page
 }

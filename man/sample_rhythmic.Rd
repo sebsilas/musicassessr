@@ -9,9 +9,6 @@ sample_rhythmic(item_bank, num_items_rhythmic, id = "rhythmic_melody")
 \arguments{
 \item{id}{}
 }
-\value{
-
-}
 \description{
 Sample rhythmic
 }

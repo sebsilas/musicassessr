@@ -9,9 +9,6 @@ item_sampler(item_bank, no_items, replace = FALSE)
 \arguments{
 \item{replace}{}
 }
-\value{
-
-}
 \description{
 Item sampler
 }

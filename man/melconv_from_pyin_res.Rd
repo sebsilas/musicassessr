@@ -18,9 +18,6 @@ melconv_from_pyin_res(pyin_res)
 \arguments{
 \item{pyin_res}{}
 }
-\value{
-
-}
 \description{
 #' Melconv
 #'

@@ -14,9 +14,6 @@ get_answer_pyin_melodic_production_additional_measures(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Wrapper to add user-specified additional scoring measures to pYIN melodic production
 }

@@ -9,9 +9,6 @@ is_null_or_not_all_TRUE(x)
 \arguments{
 \item{x}{}
 }
-\value{
-
-}
 \description{
 Is NULL or not all TRUE?
 }

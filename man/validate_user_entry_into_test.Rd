@@ -9,9 +9,6 @@ validate_user_entry_into_test(validate_user_entry_into_test, elts)
 \arguments{
 \item{elts}{}
 }
-\value{
-
-}
 \description{
 Validate user entry to test based on session token look up in PostgreSQL DB
 }

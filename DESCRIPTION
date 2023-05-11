@@ -13,9 +13,10 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    Biostrings
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -59,8 +60,7 @@ Imports:
     xml2,
     assertthat,
     logging,
-    changepoint,
-    Biostrings
+    changepoint
 Depends: 
     R (>= 2.10),
     itembankr (>= 0.1.0),

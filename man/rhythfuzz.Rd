@@ -9,9 +9,6 @@ rhythfuzz(dur_vec1, dur_vec2)
 \arguments{
 \item{dur_vec2}{}
 }
-\value{
-
-}
 \description{
 Compute the rhythfuzz measure
 }

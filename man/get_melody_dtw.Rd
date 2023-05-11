@@ -9,9 +9,6 @@ get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, pyin_res)
 \arguments{
 \item{pyin_res}{}
 }
-\value{
-
-}
 \description{
 Compute the dynamic time warp distance between a melodic stimuli and a user's continuous pitch curve, attempting to sing that stimuli
 }

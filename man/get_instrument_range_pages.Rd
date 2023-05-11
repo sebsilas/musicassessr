@@ -17,9 +17,6 @@ get_instrument_range_pages(
 \arguments{
 \item{default_range}{}
 }
-\value{
-
-}
 \description{
 Get Instrument Range Pages
 }

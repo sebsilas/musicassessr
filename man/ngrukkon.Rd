@@ -9,9 +9,6 @@ ngrukkon(x, y, N = 3)
 \arguments{
 \item{N}{}
 }
-\value{
-
-}
 \description{
 ngrukkon as in  Müllensiefen & Frieler (2004)
 }

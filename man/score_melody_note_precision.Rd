@@ -9,9 +9,6 @@ score_melody_note_precision(all_participant_trials)
 \arguments{
 \item{all_participant_trials}{}
 }
-\value{
-
-}
 \description{
 Score melody note precision
 }

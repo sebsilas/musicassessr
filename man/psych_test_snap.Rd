@@ -15,9 +15,6 @@ psych_test_snap(
 \arguments{
 \item{force_snap}{}
 }
-\value{
-
-}
 \description{
 Useful function for randomising which of 2 blocks goes first (or forcing it with force_snap)
 }

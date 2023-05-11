@@ -19,9 +19,6 @@ plot_normal_dist_plus_score(
 \arguments{
 \item{vertical_line_colour}{}
 }
-\value{
-
-}
 \description{
 Plot a normal distribution with a certain score highlighted
 }

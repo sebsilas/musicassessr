@@ -9,9 +9,6 @@ have_requirements(answer, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Check if user has requirements for musicassessr test
 }

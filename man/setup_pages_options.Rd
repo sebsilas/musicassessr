@@ -57,9 +57,6 @@ setup_pages_options(
 
 \item{concise_wording}{Should the wording used by the concise version for not.}
 }
-\value{
-
-}
 \description{
 Setup page options for a musicassessr test
 }

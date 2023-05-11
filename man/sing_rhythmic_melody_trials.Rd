@@ -33,9 +33,6 @@ sing_rhythmic_melody_trials(
 \arguments{
 \item{get_similarity_to_previous_melody}{}
 }
-\value{
-
-}
 \description{
 Sing rhythmic melody trial block
 }

@@ -6,9 +6,6 @@
 \usage{
 feedback_melodic_production_simple()
 }
-\value{
-
-}
 \description{
 Simple melodic production feedback
 }

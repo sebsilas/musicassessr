@@ -9,9 +9,6 @@ multi_interval_page(num_items = 26L, page_title = "What is the interval?")
 \arguments{
 \item{page_title}{}
 }
-\value{
-
-}
 \description{
 Deploy a block of n trials which play back intervals
 }

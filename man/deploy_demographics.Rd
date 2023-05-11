@@ -9,9 +9,6 @@ deploy_demographics(deploy)
 \arguments{
 \item{deploy}{}
 }
-\value{
-
-}
 \description{
 Deploy Demographics via psyquest
 }

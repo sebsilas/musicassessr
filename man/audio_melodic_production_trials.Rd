@@ -20,9 +20,6 @@ audio_melodic_production_trials(
 \arguments{
 \item{feedback}{}
 }
-\value{
-
-}
 \description{
 Present a trial block of melodies from audio files
 }

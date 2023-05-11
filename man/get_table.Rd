@@ -9,9 +9,6 @@ get_table(name = c("trials", "sessions", "production"))
 \arguments{
 \item{name}{}
 }
-\value{
-
-}
 \description{
 Get a postgres table
 }

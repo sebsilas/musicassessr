@@ -9,9 +9,6 @@ pmi(stimuli_pitch, sung_recall_pitch)
 \arguments{
 \item{sung_recall_pitch}{}
 }
-\value{
-
-}
 \description{
 PMI similarity measure
 }

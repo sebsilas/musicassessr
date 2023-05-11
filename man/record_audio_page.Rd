@@ -36,9 +36,6 @@ record_audio_page(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Page to record audio in psychTestR
 }

@@ -9,9 +9,6 @@ add_feedback(items, feedback, after = 2)
 \arguments{
 \item{after}{}
 }
-\value{
-
-}
 \description{
 Helper for adding a feedback function to a timeline of pages
 }

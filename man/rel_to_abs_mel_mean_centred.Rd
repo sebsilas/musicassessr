@@ -16,9 +16,6 @@ rel_to_abs_mel_mean_centred(
 \arguments{
 \item{transpose}{}
 }
-\value{
-
-}
 \description{
 Convert a melody from relative to absolute form by centering the mean of the stimuli on mean of the user's range.
 }

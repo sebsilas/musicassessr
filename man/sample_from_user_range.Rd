@@ -9,9 +9,6 @@ sample_from_user_range(no_to_sample)
 \arguments{
 \item{no_to_sample}{}
 }
-\value{
-
-}
 \description{
 Sample from the user's range (determined at test time)
 }

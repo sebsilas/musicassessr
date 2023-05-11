@@ -13,8 +13,8 @@ multi_page_play_melody_loop(
   page_type = "record_audio_page",
   max_goes = 4L,
   page_title = psychTestR::i18n("copy_melody_title"),
- 
-    page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
+  page_text =
+    "Press play to hear the melody, then play it back as best as you can when it finishes.",
   get_answer = get_answer_pyin_melodic_production,
   rel_to_abs_mel_function = NULL,
   start_from_trial_no = 1L,
@@ -38,9 +38,6 @@ multi_page_play_melody_loop(
 }
 \arguments{
 \item{get_similarity_to_previous_melody}{}
-}
-\value{
-
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

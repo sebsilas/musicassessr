@@ -15,9 +15,6 @@ record_audio_block(
 \arguments{
 \item{page_title}{}
 }
-\value{
-
-}
 \description{
 A block of record audio pages
 }

@@ -9,9 +9,6 @@ translate_from_dict(non_english_translation, language)
 \arguments{
 \item{language}{}
 }
-\value{
-
-}
 \description{
 Translate an item from musicassessr dictionary
 }

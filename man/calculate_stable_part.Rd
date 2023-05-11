@@ -10,9 +10,6 @@ calculate_stable_part(df, plot = FALSE, return_df = FALSE)
 \arguments{
 \item{return_df}{}
 }
-\value{
-
-}
 \description{
 Calculate metrics related to "changepoints" in a time series (e.g., for long note trials)
 Input: df with "freq" column

@@ -14,8 +14,8 @@ play_melody_loop(
   max_goes_forced = FALSE,
   page_type = "record_audio_page",
   page_title = "Copy The Melody",
- 
-    page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
+  page_text =
+    "Press play to hear the melody, then play it back as best as you can when it finishes.",
   answer_meta_data = data.frame(),
   get_answer = get_answer_pyin_melodic_production,
   rel_to_abs_mel_function = NULL,
@@ -46,9 +46,6 @@ play_melody_loop(
 }
 \arguments{
 \item{get_similarity_to_previous_melody}{}
-}
-\value{
-
 }
 \description{
 Create a psychTestR test loop for having several attempts at playing back a melody.

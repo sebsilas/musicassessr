@@ -25,9 +25,6 @@ present_stimuli_midi_notes_both(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Present midi notes in both visual and auditory modalities
 }

@@ -9,9 +9,6 @@ get_implicit_harmonies(pitch_vec, segmentation = NULL, only_winner = TRUE)
 \arguments{
 \item{only_winner}{}
 }
-\value{
-
-}
 \description{
 get harmonies via the Krumhansl-Schmuckler algorithm
 }

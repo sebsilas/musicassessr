@@ -9,9 +9,6 @@ sample_random(item_bank, num_items)
 \arguments{
 \item{num_items}{}
 }
-\value{
-
-}
 \description{
 Randomly sample num_items per dataframe
 }

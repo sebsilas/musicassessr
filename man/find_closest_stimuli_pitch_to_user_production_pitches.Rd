@@ -13,9 +13,6 @@ find_closest_stimuli_pitch_to_user_production_pitches(
 \arguments{
 \item{allOctaves}{}
 }
-\value{
-
-}
 \description{
 Find the closest pitch(s) in a stimulus, to the notes a user produced
 }

@@ -13,9 +13,6 @@ sing_happy_birthday_page(
 \arguments{
 \item{text}{}
 }
-\value{
-
-}
 \description{
 A page to identify a user's singing range by asking them to sing Happy Birthday
 }

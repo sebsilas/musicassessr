@@ -6,9 +6,6 @@
 \usage{
 test_recording_app(copy_audio_to = NULL)
 }
-\value{
-
-}
 \description{
 A quick app to test recording functionality
 }

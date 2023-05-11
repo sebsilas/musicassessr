@@ -6,9 +6,6 @@
 \usage{
 list_tone_sound_types()
 }
-\value{
-
-}
 \description{
 List tone sound types
 }

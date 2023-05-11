@@ -9,9 +9,6 @@ get_voice_range_page(with_examples = TRUE)
 \arguments{
 \item{with_examples}{}
 }
-\value{
-
-}
 \description{
 A page to select a voice range
 }

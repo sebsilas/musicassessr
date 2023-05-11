@@ -9,9 +9,6 @@ get_SNR_pages(min_SNR = 14, absolute_url = character(), report_SNR = FALSE)
 \arguments{
 \item{report_SNR}{}
 }
-\value{
-
-}
 \description{
 Get SNR pages
 }

@@ -9,9 +9,6 @@ to_string_df(df, exclude_cols = character())
 \arguments{
 \item{exclude_cols}{}
 }
-\value{
-
-}
 \description{
 Useful (but unsophisticated) util to collapse a df into a pretty string df
 }

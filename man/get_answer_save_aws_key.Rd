@@ -9,9 +9,6 @@ get_answer_save_aws_key(input, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Simple saving of the corresponding URL of a trial file
 }

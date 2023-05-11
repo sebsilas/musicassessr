@@ -9,9 +9,6 @@ get_answer_midi(input, state, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Get answer for a MIDI page
 }

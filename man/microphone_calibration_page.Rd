@@ -13,9 +13,6 @@ microphone_calibration_page(
 \arguments{
 \item{musical_instrument}{}
 }
-\value{
-
-}
 \description{
 Microphone Calibration Page
 }

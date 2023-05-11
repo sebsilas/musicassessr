@@ -14,9 +14,6 @@ connect_to_db(
 \arguments{
 \item{password}{}
 }
-\value{
-
-}
 \description{
 Connect to a postgres DB
 }

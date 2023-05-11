@@ -9,9 +9,6 @@ dict(additional_dict)
 \arguments{
 \item{additional_dict}{}
 }
-\value{
-
-}
 \description{
 Use musicassessr standard dictionary plus concatenate with your own
 }

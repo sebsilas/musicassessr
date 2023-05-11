@@ -9,9 +9,6 @@ fake_range(bottom_range = 48, top_range = 72)
 \arguments{
 \item{top_range}{}
 }
-\value{
-
-}
 \description{
 Set a dummy range (to avoid having to manually set in the test)
 }

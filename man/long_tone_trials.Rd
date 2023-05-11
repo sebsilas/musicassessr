@@ -27,9 +27,6 @@ long_tone_trials(
 \arguments{
 \item{paradigm}{}
 }
-\value{
-
-}
 \description{
 Present a block of long tone trials
 }

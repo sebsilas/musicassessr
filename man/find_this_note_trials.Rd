@@ -11,15 +11,12 @@ find_this_note_trials(
   page_title = "Find This Note",
   get_answer = get_answer_pyin_melodic_production,
   page_type = "record_audio_page",
- 
-    page_text = "Press play to hear the note. Try and play it on your instrument when you can."
+  page_text =
+    "Press play to hear the note. Try and play it on your instrument when you can."
 )
 }
 \arguments{
 \item{page_text}{}
-}
-\value{
-
 }
 \description{
 Present "Find This Note" trials

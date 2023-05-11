@@ -9,9 +9,6 @@ melconv(file_name, return_notes_and_durs = TRUE)
 \arguments{
 \item{return_notes_and_durs}{}
 }
-\value{
-
-}
 \description{
 Melconv
 }

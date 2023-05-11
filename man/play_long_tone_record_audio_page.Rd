@@ -26,9 +26,6 @@ play_long_tone_record_audio_page(
 \arguments{
 \item{paradigm}{}
 }
-\value{
-
-}
 \description{
 Create a page which produces a given tone
 }

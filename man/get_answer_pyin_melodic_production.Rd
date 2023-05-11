@@ -16,9 +16,6 @@ get_answer_pyin_melodic_production(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Analyse a melody with pyin then compute melodic production scores
 }

@@ -8,15 +8,12 @@ interval_perception_trials(
   num_items = 26L,
   sound = "piano",
   page_title = "What's that interval?",
- 
-    instruction_text = "In the next set of trials, you will hear a musical interval. You must try and say what the interval is. There are no practice rounds, you will begin immediately."
+  instruction_text =
+    "In the next set of trials, you will hear a musical interval. You must try and say what the interval is. There are no practice rounds, you will begin immediately."
 )
 }
 \arguments{
 \item{instruction_text}{}
-}
-\value{
-
 }
 \description{
 A block which test a participant's perception of intervals

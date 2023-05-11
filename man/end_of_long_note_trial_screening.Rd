@@ -6,9 +6,6 @@
 \usage{
 end_of_long_note_trial_screening(failure_page = "http://www.google.com")
 }
-\value{
-
-}
 \description{
 End of long note trial screening code block
 }

@@ -9,9 +9,6 @@ get_answer_pyin_long_note(input, state, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 get_answer pyin for long notes
 }

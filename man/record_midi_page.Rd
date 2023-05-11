@@ -38,9 +38,6 @@ record_midi_page(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Page to record MIDI in psychTestR
 }

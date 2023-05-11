@@ -19,9 +19,6 @@ opti3(
 \arguments{
 \item{segmentation2}{}
 }
-\value{
-
-}
 \description{
 Score using the opti3 measure of similarity
 }

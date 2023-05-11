@@ -10,9 +10,6 @@ opti3_df(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE)
 \arguments{
 \item{return_winner}{}
 }
-\value{
-
-}
 \description{
 opti3 for melodies read by read_melody
 returns sorted tibble of transpositions of melody2 and opti3 similarity

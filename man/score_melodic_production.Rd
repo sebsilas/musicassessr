@@ -25,9 +25,6 @@ score_melodic_production(
 
 \item{with_pmi}{}
 }
-\value{
-
-}
 \description{
 Score using melodic production measures
 }

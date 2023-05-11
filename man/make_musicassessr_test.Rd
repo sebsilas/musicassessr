@@ -5,8 +5,11 @@
 \title{Make a musicassessr test}
 \usage{
 make_musicassessr_test(
-  elts_before_setup_pages = function() {    
-    psychTestR::join(psychTestR::code_block(function(state, ...) {     })) },
+  elts_before_setup_pages = function() {
+    
+    psychTestR::join(psychTestR::code_block(function(state, ...) {
+     }))
+ },
   elts,
   setup_pages,
   setup_pages_options = musicassessr::setup_pages_options,
@@ -60,9 +63,6 @@ make_musicassessr_test(
 \item{midi_input}{Is MIDI input required?}
 
 \item{...}{}
-}
-\value{
-
 }
 \description{
 Make a musicassessr test

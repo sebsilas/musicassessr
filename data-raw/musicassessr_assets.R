@@ -73,10 +73,6 @@ load('data-raw/long_note_agg.rda')
 load('data-raw/melody_pca2_data.rda')
 load('data-raw/melody_pca2.rda')
 
-use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df,
-         lm2.2, lm3.2, long_note_pca2, long_note_agg, melody_pca2,
-         melody_pca2_data,
-         overwrite = TRUE)
 
 
 # test the long note predict method
@@ -101,8 +97,17 @@ predict(long_note_pca2,
 
 # NB, run the other file for the musicassessr dict
 
+# Internal
 usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
-                  instrument_list, key_rankings, keys_table,
+                  instrument_list, key_rankings, keys_table, long_note_pca2,
                   overwrite = TRUE, internal = TRUE)
+
+# Not internal
+
+use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df,
+         lm2.2, lm3.2, melody_pca2,
+         melody_pca2_data, long_note_agg,
+         overwrite = TRUE)
+
 
 

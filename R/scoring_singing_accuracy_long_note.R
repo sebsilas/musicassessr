@@ -21,7 +21,7 @@ get_long_note_pcas <- function(long_note_scores) {
     dplyr::mutate(long_note_accuracy = abs(long_note_accuracy)) %>%
     predict(long_note_pca2,
             data = .,
-            old.data = long_note_agg %>%
+            old.data = musicassessr::long_note_agg %>%
               dplyr::select(long_note_accuracy, long_note_dtw_distance, long_note_autocorrelation_mean,
                             long_note_run_test, long_note_no_cpts, long_note_beginning_of_second_cpt)
             # you need to pass this for standardization or you will get NaNs

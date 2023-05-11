@@ -677,8 +677,9 @@ long_tone_trials <- function(num_items,
       shiny::tags$p(psychTestR::i18n("long_tone_instruction_2")),
       shiny::tags$p(psychTestR::i18n("long_tone_instruction_3")))
   } else if(match.arg(paradigm) == "call_and_response") {
+    page_title <- psychTestR::i18n("long_tone_title_call_and_response")
     instruction_text <- shiny::div(
-      shiny::tags$h2(psychTestR::i18n("long_tone_title_call_and_response")),
+      shiny::tags$h2(page_title),
       shiny::tags$p(psychTestR::i18n("long_tone_instruction_call_and_response")),
       shiny::tags$p(psychTestR::i18n("long_tone_instruction_call_and_response_2")),
       shiny::tags$p(psychTestR::i18n("long_tone_instruction_call_and_response_3")))

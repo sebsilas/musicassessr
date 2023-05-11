@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples
-dict <- function(additional_dict) {
+dict <- function(additional_dict = NULL) {
   warning('using musicassessr::dict')
   if(all(names(musicassessr::musicassessr_dict_df) ==  names(additional_dict))) {
     dict_df <- rbind(musicassessr::musicassessr_dict_df, additional_dict)

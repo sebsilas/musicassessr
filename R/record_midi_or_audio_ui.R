@@ -38,7 +38,7 @@ record_midi_or_audio_ui <- function(body = " ",
   }
 
 
-  interactive <- ifelse(interactive, "true", "false")
+  interactive <- if(interactive) "true" else "false"
 
   psychTestR::page(ui = shiny::tags$div(
 

@@ -6,12 +6,14 @@
 #' @param min_SNR
 #' @param absolute_url
 #' @param report_SNR
+#' @param allow_SNR_failure
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR = FALSE) {
+get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR = FALSE, allow_SNR_failure = FALSE) {
+
   psychTestR::join(
     record_background_page(),
     record_signal_page(),
@@ -48,7 +50,7 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
 
       psychTestR::set_global("SNR", SNR, state)
 
-      SNR_conclusion(SNR, min_SNR, report_SNR)
+      SNR_conclusion(SNR, min_SNR, report_SNR, allow_SNR_failure)
 
     })
   )
@@ -62,19 +64,27 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
 #' @param min_SNR
 #' @param absolute_url
 #' @param report_SNR
+#' @param allow_SNR_failure
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_SNR) {
+get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_SNR, allow_SNR_failure = FALSE) {
+
+  print('get_SNR_pages_loop')
+  print('allow_SNR_failure')
+  print(allow_SNR_failure)
+  print('report_SNR')
+  print(report_SNR)
+
 
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
       psychTestR::set_global("found_SNR", FALSE, state)
     }),
     psychTestR::while_loop(test = function(state, ...) {
-      psychTestR::get_global("found_SNR", state) == FALSE
+      !psychTestR::get_global("found_SNR", state)
     }, logic = psychTestR::join(
         record_background_page(),
         record_signal_page(),
@@ -112,7 +122,7 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
 
           psychTestR::set_global("SNR", SNR, state)
 
-          SNR_conclusion_loop(SNR, min_SNR, report_SNR)
+          SNR_conclusion_loop(SNR, min_SNR, report_SNR, allow_SNR_failure)
 
         })
       ))
@@ -172,14 +182,18 @@ record_signal_page <- function(page_text = shiny::tags$div(
 }
 
 
-SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE) {
+SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE, allow_SNR_failure = FALSE) {
 
-  #browser()
+  print('SNR_conclusion_loop')
+  print('report_SNR')
+  print(report_SNR)
+  print('allow_SNR_failure')
+  print(allow_SNR_failure)
 
   if(is.na(SNR)) {
     psychTestR::one_button_page(psychTestR::i18n("response_not_understood"))
   } else if(SNR < min_SNR) {
-    display_SNR_result(report_SNR, SNR, page = TRUE)
+    display_SNR_result(report_SNR, SNR, page = TRUE, allow_SNR_failure = allow_SNR_failure)
   } else {
 
     SNR_message <- if(report_SNR) paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")) else psychTestR::i18n("bg_noise_level_good")
@@ -195,12 +209,12 @@ SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE) {
   }
 }
 
-SNR_conclusion <- function(SNR, min_SNR, report_SNR = FALSE) {
+SNR_conclusion <- function(SNR, min_SNR, report_SNR = FALSE, allow_SNR_failure = FALSE) {
 
   if(is.na(SNR)) {
     psychTestR::display_error(psychTestR::i18n("response_not_understood"))
   } else if(SNR < min_SNR) {
-    display_SNR_result(report_SNR, SNR, page = FALSE)
+    display_SNR_result(report_SNR, SNR, page = FALSE, allow_SNR_failure = allow_SNR_failure)
   } else {
 
     SNR_message <- if(report_SNR) paste0(psychTestR::i18n("your_SNR_is2"), " ", SNR, psychTestR::i18n("SNR_adequate")) else psychTestR::i18n("bg_noise_level_good")
@@ -215,15 +229,41 @@ SNR_conclusion <- function(SNR, min_SNR, report_SNR = FALSE) {
   }
 }
 
-display_SNR_result <- function(report_SNR, SNR, page) {
+display_SNR_result <- function(report_SNR, SNR, page, allow_SNR_failure = FALSE) {
 
   if(report_SNR) {
     message <- paste0(psychTestR::i18n("your_SNR_is"), " ", SNR, psychTestR::i18n("must_be_higher"))
   } else {
     message <- psychTestR::i18n("SNR_failure")
   }
-  if(page) {
-    psychTestR::one_button_page(message,  button_text = psychTestR::i18n("Try_Again"))
+
+  if(page & allow_SNR_failure) {
+    message <- paste0(psychTestR::i18n("your_SNR_is"), " ", SNR, ". ", psychTestR::i18n("sure_continue"))
+    psychTestR::page(ui = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
+                                          shiny::tags$p(message),
+                                          psychTestR::trigger_button("try_again", psychTestR::i18n("Try_Again")),
+                                          psychTestR::trigger_button("continue_anyway", psychTestR::i18n("Continue_Anyway"))
+                                          ),
+                     get_answer = function(input, state, ...) {
+                      if(input$last_btn_pressed == "continue_anyway") {
+                        psychTestR::set_global("found_SNR", TRUE, state)
+                      } else {
+                        psychTestR::set_global("found_SNR", FALSE, state)
+                      }
+                       SNR <- psychTestR::get_global("SNR", state)
+                       list("SNR" = SNR)
+                     })
+
+  } else if(page & !allow_SNR_failure) {
+
+    psychTestR::page(ui = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
+                                          shiny::tags$p(message),
+                                          psychTestR::trigger_button("next", psychTestR::i18n("Try_Again"))),
+                     get_answer = function(input, state, ...) {
+                       SNR <- psychTestR::get_global("SNR", state)
+                       list("SNR" = SNR)
+                     })
+
   } else {
     psychTestR::display_error(message)
   }

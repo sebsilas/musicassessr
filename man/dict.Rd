@@ -4,7 +4,7 @@
 \alias{dict}
 \title{Use musicassessr standard dictionary plus concatenate with your own}
 \usage{
-dict(additional_dict)
+dict(additional_dict = NULL)
 }
 \arguments{
 \item{additional_dict}{}

@@ -27,7 +27,10 @@ record_midi_or_audio_ui <- function(body = " ",
                               max_goes = 1,
                               show_progress = FALSE,
                               melody_no = 0,
-                              total_no_melodies = 0, ...) {
+                              total_no_melodies = 0,
+                              volume_meter = FALSE,
+                              volume_meter_type = 'default', ...) {
+
 
   if(max_goes == 1) {
     auto_next_page <- TRUE
@@ -67,6 +70,8 @@ record_midi_or_audio_ui <- function(body = " ",
       shiny::tags$h2(page_title),
 
       if(page_text_first) page_text,
+
+      if(volume_meter) shiny::tags$div(volume_meter(volume_meter_type, start_hidden = TRUE), shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr"))),
 
       shiny::tags$div(body),
       reactive_stimuli(stimuli_function = stimuli_function,
@@ -144,44 +149,12 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
   } else {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
                     shiny::tags$p(psychTestR::i18n("were_you_happy")),
-                    shiny::tags$p(paste0(psychTestR::i18n("You_have"), ' ', " ", attempts_left, ' ', psychTestR::i18n("attempts_remaining_if_like"))),
+                    if(!is.infinite(attempts_left)) shiny::tags$p(paste0(psychTestR::i18n("You_have"), ' ', " ", attempts_left, ' ', psychTestR::i18n("attempts_remaining_if_like"))),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = 'Try Again', label = 'Try Again', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = 'Continue', label = 'Continue', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )
   }
 }
-
-return_correct_attempts_left_2 <- function(attempts_left, max_goes_forced = FALSE) {
-
-  if(max_goes_forced) {
-    attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1.forced")
-    attempts_remaining_several.2 <- psychTestR::i18n("attempts_remaining_several.2.forced")
-  } else {
-    attempts_remaining_1 <- psychTestR::i18n("attempts_remaining_1")
-    attempts_remaining_several.2 <- psychTestR::i18n("attempts_remaining_several.2")
-  }
-
-  if(attempts_left == 0L) {
-    shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(psychTestR::i18n("attempts_remaining_0")),
-                    shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
-    )
-  } else if (attempts_left == 1L) {
-    shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(psychTestR::i18n("happy_with_response_message")), shiny::tags$p(attempts_remaining_1),
-                    shiny::tags$button(psychTestR::i18n("Try_Again"), id = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
-                    if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
-    )
-  } else {
-    shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(psychTestR::i18n("happy_with_response_message")),
-                    shiny::tags$p(paste0(psychTestR::i18n("attempts_remaining_several.1"), " ", attempts_left, " ", attempts_remaining_several.2)),
-                    shiny::tags$button(psychTestR::i18n("Try_Again"), id = psychTestR::i18n("Try_Again"), label = psychTestR::i18n("Try_Again"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
-                    if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
-    )
-  }
-}
-
 
 
 happy_with_response_message <- function(happy_with_response_message, attempts_left, max_goes_forced = FALSE, max_goes = 1) {

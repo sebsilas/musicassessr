@@ -34,11 +34,13 @@ rhythmic_melody_trials(
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
   presampled = FALSE,
-  get_similarity_to_previous_melody = FALSE
+  get_similarity_to_previous_melody = FALSE,
+  volume_meter = FALSE,
+  volume_meter_type = "default"
 )
 }
 \arguments{
-\item{get_similarity_to_previous_melody}{}
+\item{volume_meter_type}{}
 }
 \description{
 Rhythmic melody trials block

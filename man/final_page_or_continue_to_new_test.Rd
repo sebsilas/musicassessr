@@ -4,10 +4,10 @@
 \alias{final_page_or_continue_to_new_test}
 \title{Should the end of the test present a final page or not?}
 \usage{
-final_page_or_continue_to_new_test(final = TRUE, task_name)
+final_page_or_continue_to_new_test(final = TRUE, task_name, img = NULL)
 }
 \arguments{
-\item{task_name}{}
+\item{img}{}
 }
 \description{
 Should the end of the test present a final page or not?

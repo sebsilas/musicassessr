@@ -7,7 +7,7 @@
 play_long_tone_record_audio_page(
   note = NULL,
   long_note_no = 0,
-  note_length = 5,
+  long_tone_length = 5,
   page_title = psychTestR::i18n("long_tone_title"),
   page_text = psychTestR::i18n("long_tone_text"),
   play_button_text = psychTestR::i18n("Play"),

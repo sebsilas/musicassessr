@@ -26,7 +26,7 @@
 make_musicassessr_test <- function(elts_before_setup_pages = function() { psychTestR::join(psychTestR::code_block(function(state, ...) {})) },
                                    elts,
                                    setup_pages,
-                                   setup_pages_options = musicassessr::setup_pages_options,
+                                   setup_pages_options = musicassessr::setup_pages_options(),
                                    title, admin_password, languages = "en",
                                    additional_dict = NULL,
                                    musicassessr_opt = musicassessr::musicassessr_opt(),
@@ -41,6 +41,8 @@ make_musicassessr_test <- function(elts_before_setup_pages = function() { psychT
                                    store_results_in_db = FALSE,
                                    fake_range = TRUE,
                                    ...) {
+
+  # TODO: Note: this doesn't work without a final page in elts. Add workaround.
 
   stopifnot(
     is.scalar.logical(musicassessr_aws),
@@ -58,10 +60,10 @@ make_musicassessr_test <- function(elts_before_setup_pages = function() { psychT
 
       if(fake_range) fake_range(),
 
-      musicassessr::musicassessr_opt(test_username,
-                                     test,
-                                     store_results_in_db,
-                                     app_name),
+      musicassessr_opt(test_username,
+                       test,
+                       store_results_in_db,
+                       app_name),
 
       elts_before_setup_pages(),
 
@@ -107,6 +109,10 @@ make_musicassessr_test <- function(elts_before_setup_pages = function() { psychT
 #' @param allow_repeat_SNR_tests Allow repeated SNR tests, if FALSE, then participant only gets one go and the test will fail if the SNR test fails.
 #' @param report_SNR Should the SNR be reported to the user.
 #' @param concise_wording Should the wording used by the concise version for not.
+#' @param skip_setup Whether to skip setup. Can be TRUE (skip whole setup), FALSE or "except_microphone" (only setup the microphone but no other steps).
+#' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
+#' @param musical_instrument Whether the participant is required to have a musical instrument.
+#' @param default_range A length 2 named list of the range that stimuli should be presented in, if not collected at test time.
 #'
 #' @return
 #' @export
@@ -127,12 +133,17 @@ setup_pages_options <- function(input = c("microphone", "midi_keyboard", "midi_k
                                 microphone_test = TRUE,
                                 allow_repeat_SNR_tests = TRUE,
                                 report_SNR = FALSE,
-                                concise_wording = FALSE) {
+                                concise_wording = FALSE,
+                                skip_setup = FALSE,
+                                get_self_chosen_anonymous_id = FALSE,
+                                musical_instrument = FALSE,
+                                default_range = list('bottom_range' = 48, 'top_range' = 72)) {
 
   function() {
     musicassessr::setup_pages(input, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,
                               absolute_url, select_instrument, get_instrument_range_musical_notation,
-                              adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording)
+                              adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
+                              skip_setup, get_self_chosen_anonymous_id, musical_instrument, default_range)
   }
 
 

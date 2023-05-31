@@ -12,7 +12,7 @@ make_musicassessr_test(
  },
   elts,
   setup_pages,
-  setup_pages_options = musicassessr::setup_pages_options,
+  setup_pages_options = musicassessr::setup_pages_options(),
   title,
   admin_password,
   languages = "en",

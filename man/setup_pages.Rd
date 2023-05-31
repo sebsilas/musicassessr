@@ -25,7 +25,10 @@ setup_pages(
   skip_setup = FALSE,
   get_self_chosen_anonymous_id = FALSE,
   musical_instrument = FALSE,
-  default_range = list(bottom_range = 48, top_range = 72)
+  default_range = list(bottom_range = 48, top_range = 72),
+  allow_SNR_failure = FALSE,
+  requirements_page = TRUE,
+  playful_volume_meter_setup = FALSE
 )
 }
 \arguments{
@@ -61,13 +64,19 @@ setup_pages(
 
 \item{concise_wording}{Whether the wording should be concise or not.}
 
-\item{skip_setup}{Whether to skip setup.}
+\item{skip_setup}{Whether to skip setup. Can be TRUE (skip whole setup), FALSE or "except_microphone" (only setup the microphone but no other steps).}
 
 \item{get_self_chosen_anonymous_id}{Whether to ask participant to provide an anonymous ID.}
 
 \item{musical_instrument}{Whether the participant is required to have a musical instrument.}
 
 \item{default_range}{A length 2 named list of the range that stimuli should be presented in, if not collected at test time.}
+
+\item{allow_SNR_failure}{If TRUE, allow user to continue even if they fail the SNR test.}
+
+\item{requirements_page}{Show a requirements page?}
+
+\item{playful_volume_meter_setup}{Should there be some additional functionality to demo the playful volume meter?}
 }
 \description{
 Setup pages for musicassessr test

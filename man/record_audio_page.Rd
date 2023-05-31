@@ -30,6 +30,8 @@ record_audio_page(
   show_progress = FALSE,
   melody_no = 0,
   total_no_melodies = 0,
+  volume_meter = FALSE,
+  volume_meter_type = "default",
   ...
 )
 }

@@ -50,6 +50,8 @@
 #' @param show_sheet_music
 #' @param sheet_music_id
 #' @param octave
+#' @param volume_meter
+#' @param volume_meter_type
 #' @param ...
 #'
 #' @return
@@ -88,7 +90,9 @@ present_stimuli <- function(stimuli, stimuli_type,
                             slider_value = 5,
                             slider_min = 1,
                             slider_max = 10,
-                            octave = 4, ...) {
+                            octave = 4,
+                            volume_meter = FALSE,
+                            volume_meter_type = 'default', ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -118,7 +122,10 @@ present_stimuli <- function(stimuli, stimuli_type,
             is.logical(show_sheet_music),
             is.character(sheet_music_id) & length(sheet_music_id) == 1,
             is.logical(give_first_melody_note),
-            octave %in% 0:9)
+            octave %in% 0:9,
+            is.scalar.logical(volume_meter),
+            assertthat::is.string(volume_meter_type)
+            )
 
   # reactive stimuli i.e that requires something at run time, in a reactive_page
   if (stimuli_reactive) {
@@ -136,7 +143,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                                                start_hidden = start_hidden,
                                                sound_only_first_melody_note = sound_only_first_melody_note,
                                                show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
-                                               give_first_melody_note = give_first_melody_note, octave = octave, ...)
+                                               give_first_melody_note = give_first_melody_note, octave = octave,
+                                               volume_meter = volume_meter, volume_meter_type = volume_meter_type, ...)
   } else {
     return_stimuli <- present_stimuli_static(stimuli = stimuli, stimuli_type = stimuli_type, display_modality = display_modality, page_type = page_type,
                                              get_answer = get_answer,
@@ -155,7 +163,7 @@ present_stimuli <- function(stimuli, stimuli_type,
                                              sound_only_first_melody_note = sound_only_first_melody_note,
                                              show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
                                              give_first_melody_note = give_first_melody_note,
-                                             octave = octave, ...)
+                                             octave = octave, volume_meter = volume_meter, volume_meter_type = volume_meter_type, ...)
 
   }
 
@@ -165,7 +173,7 @@ present_stimuli <- function(stimuli, stimuli_type,
   # play_text_page and record_midi_pages are "special" pages
 
   # is interactive?
-  interactive <- ifelse(stimuli == "interactive", TRUE, FALSE)
+  interactive <- if(all(stimuli == "interactive")) TRUE else FALSE
 
   if(length(page_type) == 0) {
     res <- return_stimuli
@@ -190,7 +198,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                               attempts_left = attempts_left,
                               auto_next_page = auto_next_page,
                               page_text_first = page_text_first, max_goes_forced = max_goes_forced, max_goes = max_goes,
-                              melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies, ...)
+                              melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
+                              volume_meter = volume_meter, volume_meter_type = volume_meter_type, ...)
 
   } else if(page_type == "record_audio_page") {
 
@@ -206,7 +215,8 @@ present_stimuli <- function(stimuli, stimuli_type,
                               page_text_first = page_text_first,
                               happy_with_response = happy_with_response,
                               attempts_left = attempts_left, max_goes_forced = max_goes_forced, max_goes = max_goes,
-                              melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies, ...)
+                              melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
+                              volume_meter = volume_meter, volume_meter_type = volume_meter_type, ...)
   }
 
   else {
@@ -282,7 +292,8 @@ retrieve_page_type <- function(page_type = character(),
                                choices = character(), user_rating = FALSE, page_text_first = TRUE,
                                happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, max_goes = 1,
                                melody_no = 0, total_no_melodies = 0, show_progress = FALSE,
-                               slider_value = 5, slider_min = 0, slider_max = 10, ...) {
+                               slider_value = 5, slider_min = 0, slider_max = 10,
+                               volume_meter = FALSE, volume_meter_type = 'default', ...) {
 
 
   stopifnot(assertthat::is.string(page_type),
@@ -302,7 +313,9 @@ retrieve_page_type <- function(page_type = character(),
             is.logical(show_progress),
             assertthat::is.scalar(slider_value) & is.numeric(slider_value),
             assertthat::is.scalar(slider_min) & is.numeric(slider_min),
-            assertthat::is.scalar(slider_max) & is.numeric(slider_max)
+            assertthat::is.scalar(slider_max) & is.numeric(slider_max),
+            is.scalar.logical(volume_meter),
+            assertthat::is.string(volume_meter_type)
             )
 
 
@@ -354,7 +367,10 @@ retrieve_page_type <- function(page_type = character(),
                 "max_goes" = max_goes,
                 "melody_no" = melody_no,
                 "total_no_melodies" = total_no_melodies,
-                "show_progress" = show_progress))
+                "show_progress" = show_progress,
+                "volume_meter" = volume_meter,
+                "volume_meter_type" = volume_meter_type))
+
   } else if(page_type == "record_key_presses_page") {
     args$body <- page_text
   } else {

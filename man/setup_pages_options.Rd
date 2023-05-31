@@ -21,7 +21,11 @@ setup_pages_options(
   microphone_test = TRUE,
   allow_repeat_SNR_tests = TRUE,
   report_SNR = FALSE,
-  concise_wording = FALSE
+  concise_wording = FALSE,
+  skip_setup = FALSE,
+  get_self_chosen_anonymous_id = FALSE,
+  musical_instrument = FALSE,
+  default_range = list(bottom_range = 48, top_range = 72)
 )
 }
 \arguments{
@@ -56,6 +60,14 @@ setup_pages_options(
 \item{report_SNR}{Should the SNR be reported to the user.}
 
 \item{concise_wording}{Should the wording used by the concise version for not.}
+
+\item{skip_setup}{Whether to skip setup. Can be TRUE (skip whole setup), FALSE or "except_microphone" (only setup the microphone but no other steps).}
+
+\item{get_self_chosen_anonymous_id}{Whether to ask participant to provide an anonymous ID.}
+
+\item{musical_instrument}{Whether the participant is required to have a musical instrument.}
+
+\item{default_range}{A length 2 named list of the range that stimuli should be presented in, if not collected at test time.}
 }
 \description{
 Setup page options for a musicassessr test

@@ -30,6 +30,8 @@
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param get_similarity_to_previous_melody
+#' @param volume_meter
+#' @param volume_meter_type
 #'
 #' @return
 #' @export
@@ -62,7 +64,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         show_sheet_music = FALSE,
                                         sheet_music_id = 'sheet_music',
                                         give_first_melody_note = FALSE,
-                                        get_similarity_to_previous_melody = FALSE) {
+                                        get_similarity_to_previous_melody = FALSE,
+                                        volume_meter = FALSE,
+                                        volume_meter_type = 'default') {
 
 
   stopifnot(is.null.or(item_bank, tibble::is_tibble),
@@ -92,7 +96,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.logical(show_sheet_music),
             assertthat::is.string(sheet_music_id),
             is.scalar.logical(give_first_melody_note),
-            is.scalar.logical(get_similarity_to_previous_melody)
+            is.scalar.logical(get_similarity_to_previous_melody),
+            is.scalar.logical(volume_meter),
+            assertthat::is.string(volume_meter_type)
             )
 
 
@@ -125,7 +131,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                        show_sheet_music = show_sheet_music,
                        sheet_music_id = sheet_music_id,
                        give_first_melody_note = give_first_melody_note,
-                       get_similarity_to_previous_melody = get_similarity_to_previous_melody)
+                       get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+                       volume_meter = volume_meter,
+                       volume_meter_type = volume_meter_type)
     })
 
     items
@@ -218,6 +226,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 #' @param give_first_melody_note
 #' @param psychTestRCAT
 #' @param get_similarity_to_previous_melody
+#' @param volume_meter
+#' @param volume_meter_type
 #'
 #' @return
 #' @export
@@ -258,7 +268,9 @@ play_melody_loop <- function(item_bank = NULL,
                              give_first_melody_note = FALSE,
                              psychTestRCAT = FALSE,
                              melody_row = NULL,
-                             get_similarity_to_previous_melody = FALSE) {
+                             get_similarity_to_previous_melody = FALSE,
+                             volume_meter = FALSE,
+                             volume_meter_type = 'default') {
 
 
   save_answer <- example_save(example)
@@ -317,7 +329,9 @@ play_melody_loop <- function(item_bank = NULL,
                      give_first_melody_note = give_first_melody_note,
                      arrhythmic = arrhythmic,
                      note_length = note_length,
-                     psychTestRCAT = psychTestRCAT),
+                     psychTestRCAT = psychTestRCAT,
+                     volume_meter = volume_meter,
+                     volume_meter_type = volume_meter_type),
 
       # update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -359,7 +373,9 @@ present_melody <- function(stimuli,
                            give_first_melody_note = FALSE,
                            arrhythmic = FALSE,
                            note_length = 0.5,
-                           psychTestRCAT = FALSE, ...) {
+                           psychTestRCAT = FALSE,
+                           volume_meter = FALSE,
+                           volume_meter_type = 'default', ...) {
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
     # then this presumes that the melody was transposed at test time, and therefore, should be grabbed
@@ -430,7 +446,10 @@ present_melody <- function(stimuli,
                     sound_only_first_melody_note = sound_only_first_melody_note,
                     show_sheet_music = show_sheet_music,
                     sheet_music_id = sheet_music_id,
-                    give_first_melody_note = give_first_melody_note)
+                    give_first_melody_note = give_first_melody_note,
+                    volume_meter = volume_meter,
+                    volume_meter_type = volume_meter_type
+                    )
 
   })
 }

@@ -235,6 +235,8 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param give_first_melody_note
 #' @param presampled
 #' @param get_similarity_to_previous_melody
+#' @param volume_meter
+#' @param volume_meter_type
 #'
 #' @return
 #' @export
@@ -268,7 +270,9 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                    sheet_music_id = 'sheet_music',
                                    give_first_melody_note = FALSE,
                                    presampled = FALSE,
-                                   get_similarity_to_previous_melody = FALSE) {
+                                   get_similarity_to_previous_melody = FALSE,
+                                   volume_meter = FALSE,
+                                   volume_meter_type = 'default') {
 
 
   melody_trials(var_name,
@@ -300,7 +304,9 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 give_first_melody_note,
                 presampled,
                 arrhythmic = TRUE,
-                get_similarity_to_previous_melody)
+                get_similarity_to_previous_melody,
+                volume_meter,
+                volume_meter_type)
 
 }
 
@@ -338,6 +344,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param give_first_melody_note
 #' @param presampled
 #' @param get_similarity_to_previous_melody
+#' @param volume_meter
+#' @param volume_meter_type
 #'
 #' @return
 #' @export
@@ -371,7 +379,9 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    sheet_music_id = 'sheet_music',
                                    give_first_melody_note = FALSE,
                                    presampled = FALSE,
-                                   get_similarity_to_previous_melody = FALSE) {
+                                   get_similarity_to_previous_melody = FALSE,
+                                   volume_meter = FALSE,
+                                   volume_meter_type = 'default') {
 
 
   melody_trials(var_name,
@@ -403,7 +413,9 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                give_first_melody_note,
                presampled,
                arrhythmic = FALSE,
-               get_similarity_to_previous_melody)
+               get_similarity_to_previous_melody,
+               volume_meter,
+               volume_meter_type)
 
 }
 
@@ -443,6 +455,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param presampled
 #' @param arrhythmic
 #' @param get_similarity_to_previous_melody
+#' @param volume_meter
+#' @param volume_meter_type
 #'
 #' @return
 #' @export
@@ -477,7 +491,9 @@ melody_trials <- function(var_name,
                            give_first_melody_note = FALSE,
                            presampled = FALSE,
                            arrhythmic = FALSE,
-                          get_similarity_to_previous_melody = FALSE) {
+                          get_similarity_to_previous_melody = FALSE,
+                          volume_meter = FALSE,
+                          volume_meter_type = 'default') {
 
 
   if(presampled) {
@@ -513,7 +529,9 @@ melody_trials <- function(var_name,
     is.function(sampler_function),
     is.scalar.logical(presampled),
     is.scalar.logical(arrhythmic),
-    is.scalar.logical(get_similarity_to_previous_melody)
+    is.scalar.logical(get_similarity_to_previous_melody),
+    is.scalar.logical(volume_meter),
+    assertthat::is.string(volume_meter_type)
   )
 
   num_examples_flat <- flatten_no_item_list(num_examples)
@@ -541,11 +559,11 @@ melody_trials <- function(var_name,
                            shiny::tags$p(instruction_text)
                          ), button_text = psychTestR::i18n("Next")),
                          # examples
-                         if(is.numeric(num_examples) & num_examples > 0L) {
+                         if(is.numeric(num_examples_flat) & num_examples_flat > 0L) {
                            c(
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples, " ", psychTestR::i18n("example_trials"), "."))
+                               shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
                              if(is.null(item_characteristics_sampler_function)) {
                                if(!is.null(sampler_function)) sampler_function(item_bank, num_examples_flat)
@@ -580,7 +598,9 @@ melody_trials <- function(var_name,
                                sheet_music_id = sheet_music_id,
                                give_first_melody_note = give_first_melody_note,
                                arrhythmic = arrhythmic,
-                               get_similarity_to_previous_melody = get_similarity_to_previous_melody),
+                               get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+                               volume_meter = volume_meter,
+                               volume_meter_type = volume_meter_type),
 
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -620,7 +640,9 @@ melody_trials <- function(var_name,
                            sheet_music_id = sheet_music_id,
                            give_first_melody_note = give_first_melody_note,
                            arrhythmic = arrhythmic,
-                           get_similarity_to_previous_melody = get_similarity_to_previous_melody)
+                           get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+                           volume_meter = volume_meter,
+                           volume_meter_type = volume_meter_type)
                        )
     )
   }
@@ -646,6 +668,7 @@ melody_trials <- function(var_name,
 #' @param module_name
 #' @param show_progress
 #' @param paradigm
+#' @param long_tone_length
 #'
 #' @return
 #' @export
@@ -668,7 +691,8 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
                              module_name = "long_tone_trials",
                              show_progress = TRUE,
-                             paradigm = c("sing_along", "call_and_response")) {
+                             paradigm = c("sing_along", "call_and_response"),
+                             long_tone_length = 5) {
 
   if(match.arg(paradigm) == "sing_along") {
     instruction_text <- shiny::div(
@@ -718,17 +742,19 @@ long_tone_trials <- function(num_items,
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
                                                                                   example = TRUE, feedback = feedback,
                                                                                   get_answer = get_answer, paradigm = paradigm,
-                                                                                  page_text = page_text, page_title = page_title))
+                                                                                  page_text = page_text, page_title = page_title,
+                                                                                  long_tone_length = long_tone_length))
 
                                psychTestR::conditional(function(state, ...){
                                  psychTestR::get_global("response_type", state) == "Microphone"
-                               }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page", example = TRUE, feedback = feedback, get_answer = get_answer, paradigm = paradigm))
+                               }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
+                                                                                  example = TRUE, feedback = feedback, get_answer = get_answer, paradigm = paradigm, long_tone_length = long_tone_length))
 
                              } else {
                                multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
                                                                        example = TRUE, feedback = feedback, get_answer = get_answer,
                                                                        page_text = page_text, page_title = page_title,
-                                                                       paradigm = paradigm)
+                                                                       paradigm = paradigm, long_tone_length = long_tone_length)
                              },
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
@@ -744,7 +770,8 @@ long_tone_trials <- function(num_items,
                                                                  page_text = page_text,
                                                                  page_title = page_title,
                                                                  show_progress = show_progress,
-                                                                 paradigm = paradigm),
+                                                                 paradigm = paradigm,
+                                                                 long_tone_length = long_tone_length),
 
                          psychTestR::elt_save_results_to_disk(complete = FALSE),
 
@@ -859,7 +886,10 @@ wjd_audio_melody_trials <- function(item_bank,
   # Declass item bank to work with tidyverse
   item_bank <- tibble::as_tibble(item_bank)
 
-  if(num_items == 0) {
+  num_items_flat <- flatten_no_item_list(num_items)
+  num_examples_flat <- flatten_no_item_list(num_examples)
+
+  if(num_items_flat == 0) {
     return(psychTestR::code_block(function(state, ...) { }))
   } else {
 
@@ -877,15 +907,15 @@ wjd_audio_melody_trials <- function(item_bank,
       ), button_text = psychTestR::i18n("Next")))
 
     # examples
-    if(is.numeric(num_examples) & num_examples > 0L) {
+    if(is.numeric(num_examples_flat) & num_examples_flat > 0L) {
 
-      examples <- item_sampler(item_bank, num_examples)
+      examples <- item_sampler(item_bank, num_examples_flat)
 
       ## sample
       example_tl <- psychTestR::join(
         psychTestR::one_button_page(shiny::tags$div(
           shiny::tags$h2(page_title),
-          shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+          shiny::tags$p(paste0("First try ", num_examples_flat, " example trials.")))),
 
         # trials
         multi_page_play_melody_loop(
@@ -912,7 +942,7 @@ wjd_audio_melody_trials <- function(item_bank,
 
 
     ## trials
-    trials <- item_sampler(item_bank, sum(unlist(num_items)))
+    trials <- item_sampler(item_bank, num_items_flat)
 
     trials_tl <- multi_page_play_melody_loop(
       presampled_items = trials,

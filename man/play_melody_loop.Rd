@@ -41,11 +41,13 @@ play_melody_loop(
   give_first_melody_note = FALSE,
   psychTestRCAT = FALSE,
   melody_row = NULL,
-  get_similarity_to_previous_melody = FALSE
+  get_similarity_to_previous_melody = FALSE,
+  volume_meter = FALSE,
+  volume_meter_type = "default"
 )
 }
 \arguments{
-\item{get_similarity_to_previous_melody}{}
+\item{volume_meter_type}{}
 }
 \description{
 Create a psychTestR test loop for having several attempts at playing back a melody.

@@ -11,6 +11,7 @@
 #' @param get_answer
 #' @param show_progress
 #' @param paradigm
+#' @param long_tone_length
 #'
 #' @return
 #' @export
@@ -24,7 +25,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                                     feedback = FALSE,
                                                     get_answer = get_answer_pyin_long_note,
                                                     show_progress = TRUE,
-                                                    paradigm = c("sing_along", "call_and_response")) {
+                                                    paradigm = c("sing_along", "call_and_response"),
+                                                    long_tone_length = 5) {
 
   items <- purrr::map(1:no_items, function(x) {
 
@@ -37,7 +39,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                      page_label = paste0("long_tone_", x),
                                      total_no_long_notes = no_items,
                                      show_progress = show_progress,
-                                     paradigm = paradigm)
+                                     paradigm = paradigm,
+                                     long_tone_length = long_tone_length)
     })
 
   items <- add_feedback(items, feedback)
@@ -49,7 +52,7 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #'
 #' @param note
 #' @param long_note_no
-#' @param note_length
+#' @param long_tone_length
 #' @param page_title
 #' @param page_text
 #' @param play_button_text
@@ -70,7 +73,7 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #' @examples
 play_long_tone_record_audio_page <- function(note = NULL,
                                              long_note_no = 0,
-                                             note_length = 5,
+                                             long_tone_length = 5,
                                              page_title = psychTestR::i18n("long_tone_title"),
                                              page_text = psychTestR::i18n("long_tone_text"),
                                              play_button_text = psychTestR::i18n("Play"),
@@ -115,7 +118,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     page_type = page_type,
                     page_label = page_label,
                     play_button_text = play_button_text,
-                    note_length = note_length,
+                    note_length = long_tone_length,
                     sound = "tone",
                     show_aws_controls = show_aws_controls,
                     show_record_button = show_record_button,

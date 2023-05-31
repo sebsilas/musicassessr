@@ -26,6 +26,8 @@
 #' @param show_progress
 #' @param melody_no
 #' @param total_no_melodies
+#' @param volume_meter
+#' @param volume_meter_type
 #' @param ...
 #'
 #' @return
@@ -56,7 +58,9 @@ record_audio_page <- function(body = " ",
                              max_goes = 1,
                              show_progress = FALSE,
                              melody_no = 0,
-                             total_no_melodies = 0, ...) {
+                             total_no_melodies = 0,
+                             volume_meter = FALSE,
+                             volume_meter_type = 'default', ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -85,7 +89,9 @@ record_audio_page <- function(body = " ",
                           max_goes,
                           show_progress,
                           melody_no,
-                          total_no_melodies)
+                          total_no_melodies,
+                          volume_meter,
+                          volume_meter_type)
 
 }
 

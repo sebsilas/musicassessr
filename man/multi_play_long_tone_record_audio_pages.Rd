@@ -13,11 +13,12 @@ multi_play_long_tone_record_audio_pages(
   feedback = FALSE,
   get_answer = get_answer_pyin_long_note,
   show_progress = TRUE,
-  paradigm = c("sing_along", "call_and_response")
+  paradigm = c("sing_along", "call_and_response"),
+  long_tone_length = 5
 )
 }
 \arguments{
-\item{paradigm}{}
+\item{long_tone_length}{}
 }
 \description{
 Build multiple play_long_tone_record_audio_pages based on a user's range

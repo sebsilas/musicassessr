@@ -124,5 +124,27 @@ produce_stimuli_in_range <- function(rel_melody, bottom_range = 21, top_range = 
 }
 
 
+#' Get the default range for an instrument
+#'
+#' @param instrument
+#'
+#' @return
+#' @export
+#'
+#' @examples
+default_range <- function(instrument) {
+
+  inst <- insts_table %>% dplyr::filter(en == instrument)
+
+  if(nrow(inst) == 0) {
+    stop("Instrument not found")
+  } else if(nrow(inst) > 1) {
+    stop("Instrument not unique")
+  } else {
+    list(bottom_range = inst$low_note, top_range = inst$high_note)
+  }
+
+}
+
 
 

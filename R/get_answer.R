@@ -594,7 +594,7 @@ store_results_in_db <- function(state, res, pyin_res) {
       test <- psychTestR::get_global("test", state)
     }
 
-    add_trial_to_db(test_username = test_username,
+    db_add_new_trial(test_username = test_username,
                     test = test,
                     session_id = session_info$p_id,
                     melody = paste0(res$stimuli, collapse = ","),

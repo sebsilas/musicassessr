@@ -4,10 +4,15 @@
 \alias{get_SNR_pages}
 \title{Get SNR pages}
 \usage{
-get_SNR_pages(min_SNR = 14, absolute_url = character(), report_SNR = FALSE)
+get_SNR_pages(
+  min_SNR = 14,
+  absolute_url = character(),
+  report_SNR = FALSE,
+  allow_SNR_failure = FALSE
+)
 }
 \arguments{
-\item{report_SNR}{}
+\item{allow_SNR_failure}{}
 }
 \description{
 Get SNR pages

@@ -33,11 +33,13 @@ multi_page_play_melody_loop(
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
-  get_similarity_to_previous_melody = FALSE
+  get_similarity_to_previous_melody = FALSE,
+  volume_meter = FALSE,
+  volume_meter_type = "default"
 )
 }
 \arguments{
-\item{get_similarity_to_previous_melody}{}
+\item{volume_meter_type}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

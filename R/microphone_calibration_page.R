@@ -25,8 +25,7 @@ microphone_calibration_page <- function(button_text = psychTestR::i18n("Start_te
   ui <- shiny::tags$div(
 
     shiny::tags$h2(psychTestR::i18n("Microphone_Test")),
-    shiny::tags$p(psychTestR::i18n("meter")),
-    shiny::tags$meter(id = "volumeMeter", high = "0.25", max = "1", value = "0", style = "width: 400px; height: 50px; margin: 20px 0 20px 0;"),
+    volume_meter(),
       wording, shiny::tags$br(),
     shiny::tags$button(button_text, id = "startButton", class="btn btn-default action-button"),
     shiny::tags$br(),
@@ -38,3 +37,19 @@ microphone_calibration_page <- function(button_text = psychTestR::i18n("Start_te
   psychTestR::page(ui = ui, admin_ui = NULL, on_complete = NULL, label = NULL, save_answer = FALSE)
 }
 
+volume_meter <- function(type = "default", start_hidden = FALSE) {
+
+  if(type == "default") {
+    v <- shiny::tags$meter(id = "volumeMeter", high = "0.25", max = "1", value = "0", style = "width: 400px; height: 50px; margin: 20px 0 20px 0;")
+  } else if(type == "playful") {
+    if(start_hidden) {
+      v <- shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/SAA_intro.png', id = "volumeMeter", height = 200, width = 200, style = "visibility:hidden;")
+    } else {
+      print('asdasld4')
+      v <- shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/SAA_intro.png', id = "volumeMeter", height = 200, width = 200)
+    }
+  } else {
+    stop('Volume meter type must be "default" or "playful"')
+  }
+  v
+}

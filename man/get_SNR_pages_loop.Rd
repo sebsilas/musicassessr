@@ -4,10 +4,15 @@
 \alias{get_SNR_pages_loop}
 \title{Get SNR pages as a loop (i.e., the participant can take multiple attempts)}
 \usage{
-get_SNR_pages_loop(min_SNR = 14, absolute_url = character(), report_SNR)
+get_SNR_pages_loop(
+  min_SNR = 14,
+  absolute_url = character(),
+  report_SNR,
+  allow_SNR_failure = FALSE
+)
 }
 \arguments{
-\item{report_SNR}{}
+\item{allow_SNR_failure}{}
 }
 \description{
 Get SNR pages as a loop (i.e., the participant can take multiple attempts)

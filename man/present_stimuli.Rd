@@ -59,6 +59,8 @@ present_stimuli(
   slider_min = 1,
   slider_max = 10,
   octave = 4,
+  volume_meter = FALSE,
+  volume_meter_type = "default",
   ...
 )
 }

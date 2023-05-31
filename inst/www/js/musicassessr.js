@@ -689,6 +689,11 @@ function recordUpdateUI(showStop, hidePlay, type = "record_audio_page",
       // update the recording UI
       showRecordingIcon();
 
+      var volumeMeter = document.getElementById('volumeMeter');
+      if(volumeMeter !== null) {
+        volumeMeter.style.visibility = "visible";
+      }
+
       if (showStop) {
         showStopButton(type, stop_button_text, show_sheet_music);
       }

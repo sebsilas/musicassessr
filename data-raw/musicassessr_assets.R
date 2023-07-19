@@ -95,6 +95,21 @@ predict(long_note_pca2,
                 pca_long_note_scoop = RC3)
 
 
+
+# Only needs to be done once (or when updates happen)
+# db_con <- connect_to_db()
+#
+# insts_table <- insts_table %>%
+#   dplyr::select(en, low_note, high_note, transpose, clef) %>%
+#   dplyr::rename(instrument_name = en,
+#          bottom_range = low_note,
+#          top_range = high_note)
+#
+# db_append_to_table(db_con, table = "instruments", data = insts_table, primary_key_col = "instrument_id")
+#
+# DBI::dbDisconnect(db_con)
+
+
 # NB, run the other file for the musicassessr dict
 
 # Internal

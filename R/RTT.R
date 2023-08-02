@@ -5,7 +5,7 @@
 RTT <- function() {
 
   make_musicassessr_test(welcome_page = psychTestR::one_button_page("Welcome to the Rhythm Tapping Test!"),
-                         elts = tl,
+                         elts = RTT_tl,
                          title = "Rhythm Tapping Test",
                          admin_password = "demo",
                          opt = musicassessr_opt(setup_options = setup_pages_options(input_type = "midi_keyboard", headphones = FALSE),
@@ -17,7 +17,7 @@ RTT <- function() {
 
 
 
-tl <- function() {
+RTT_tl <- function() {
   psychTestR::join(
     rhythm_free_recall_trials(num_items = 1L),
     steady_beat_trials(num_items = 1L),

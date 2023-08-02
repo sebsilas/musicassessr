@@ -72,13 +72,6 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
 #' @examples
 get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_SNR, allow_SNR_failure = FALSE) {
 
-  print('get_SNR_pages_loop')
-  print('allow_SNR_failure')
-  print(allow_SNR_failure)
-  print('report_SNR')
-  print(report_SNR)
-
-
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
       psychTestR::set_global("found_SNR", FALSE, state)
@@ -141,7 +134,7 @@ compute_SNR <- function(signal_file, noise_file) {
   # nice interpretation: https://reviseomatic.org/help/e-misc/Decibels.php
   signal <- seewave::env(signal, f = 44100)
   noise <- seewave::env(noise, f = 44100)
-  SNR <- 20*log10(abs(seewave::rms(signal)-seewave::rms(noise))/seewave::rms(noise))
+  SNR <- 20 * log10(abs(seewave::rms(signal)-seewave::rms(noise))/seewave::rms(noise))
   SNR <- round(SNR, 2)
   SNR <- if(is.nan(SNR) | SNR == "NaN") NA else SNR
 
@@ -160,7 +153,7 @@ record_background_page <- function() {
                     label = "SNR_test_background",
                     record_duration = 5,
                     auto_next_page = TRUE,
-                    get_answer = get_answer_save_aws_key,
+                    get_answer = get_answer_save_audio_file,
                     button_text = psychTestR::i18n("record_bg_button"),
                     on_complete = function(input, state, ...) {
                       psychTestR::set_global("SNR_noise", input$file_url, state)
@@ -175,7 +168,7 @@ record_signal_page <- function(page_text = shiny::tags$div(
                     label = "SNR_test_signal",
                     record_duration = 5,
                     auto_next_page = TRUE,
-                    get_answer = get_answer_save_aws_key,
+                    get_answer = get_answer_save_audio_file,
                     on_complete = function(input, state, ...) {
                       psychTestR::set_global("SNR_signal", input$file_url, state)
                     })

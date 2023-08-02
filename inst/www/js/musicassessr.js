@@ -6,16 +6,15 @@ toneJSInit();
 
 
 preloadImage("https://adaptiveeartraining.com/assets/img/record.gif");
-preloadImage("https://adaptiveeartraining.com/assets/img/intro.png");
+preloadImage("https://adaptiveeartraining.com/assets/img/SAA_intro.png");
 preloadImage("https://adaptiveeartraining.com/assets/img/music.png");
 preloadImage("https://adaptiveeartraining.com/assets/img/saxophone.png");
 
-// constants
-// a little delay after playback finishes before hitting record
+// Constants
+// A little delay after playback finishes before hitting record
 var record_delay = 400;
 
-// vars
-var playback_count = 0; // number of times user presses play in a trial
+// Vars
 var confidences = [];
 var user_response_frequencies = [];
 var timecodes = [];
@@ -24,7 +23,9 @@ var user_response_midi_note_on = [];
 var user_response_midi_note_off = [];
 var onsets_noteon = [];
 var onsets_noteoff = [];
-var auto_next_page;
+var stop_button_text;
+var startTime;
+var midi_device;
 
 // functions
 
@@ -88,6 +89,19 @@ function initVoiceDaa() {
 
 }
 
+
+function initRhythm() {
+
+  // create a rhythm and connect to master output
+  window.rhythm = SampleLibrary.load({
+    instruments: "rhythm",
+    minify: true
+   });
+
+  window.rhythm.toMaster();
+
+}
+
 function toneJSInit() {
 
   // sound: i.e "tone" or "piano"
@@ -97,6 +111,8 @@ function toneJSInit() {
   initPiano();
 
   initSynth();
+
+  initRhythm();
 
   //initVoiceDoo();
 
@@ -126,6 +142,9 @@ function connect_sound(sound) {
     window.synth.disconnect();
     //window.voice_doo.disconnect();
     //window.voice_daa.toMaster();
+  } else if(sound === "rhythm") {
+    window.piano.disconnect();
+    window.synth.disconnect();
   }
   else {
     window.synth.disconnect();
@@ -136,25 +155,7 @@ function connect_sound(sound) {
 }
 
 
-// playback functions
-
-
-function updatePlaybackCount() {
-
-    playback_count =  playback_count + 1;
-
-    var playbackTimes = [];
-
-    // record playback values in time
-    playbackTimes.push(Date.now());
-
-    var playbackTimesDiff = diff(playbackTimes);
-    var playbackTimesCumSum = [];
-    playbackTimesDiff.reduce(function(a,b,i) { return playbackTimesCumSum[i] = a+b; },0);
-    Shiny.setInputValue("playback_count", playback_count);
-    Shiny.setInputValue("playback_times", JSON.stringify(playbackTimesCumSum));
-
-}
+// Playback functions
 
 function triggerNote(sound, freq_tone, seconds, time) {
 
@@ -164,21 +165,17 @@ function triggerNote(sound, freq_tone, seconds, time) {
   	voice_doo.triggerAttackRelease(freq_tone, seconds, time);
   } else if (sound === "voice_daa") {
   	voice_daa.triggerAttackRelease(freq_tone, seconds, time);
+  } else if (sound === "rhythm") {
+  	rhythm.triggerAttackRelease(freq_tone, seconds, time);
   } else {
     synth.triggerAttackRelease(freq_tone, seconds, time);
   }
 
 }
 
-function playTone(tone, seconds, id, sound, hidePlay = true,
-                  page_type = "record_audio_page", stop_button_text = "Stop",
-                  showStop = false, record_immediately = true) {
+function playTone(tone, seconds) {
 
-  if(hidePlay) {
-    hidePlayButton(id);
-  }
-
-  // play a tone for x seconds
+  // Play a tone (MIDI note) for x seconds
 
   connect_sound('tone');
 
@@ -186,37 +183,21 @@ function playTone(tone, seconds, id, sound, hidePlay = true,
 
   var freq_tone = Tone.Frequency(tone, "midi").toNote();
 
-  triggerNote(sound, freq_tone, seconds);
-
-  if(record_immediately) {
-     recordAndStop(ms = seconds*1000, showStop = showStop, hidePlay = hidePlay, id = id, page_type = page_type, stop_button_text = stop_button_text);
-
-  } else {
-    auto_next_page = true;
-    var delay = seconds*1000 ;
-    setTimeout(() => {
-      recordAndStop(ms = seconds*1000, showStop = showStop, hidePlay = hidePlay,
-                    id = id, page_type = page_type, stop_button_text = stop_button_text);
-
-    }, delay);
-
-  }
-
-  updatePlaybackCount();
+  triggerNote('tone', freq_tone, seconds);
 
   Shiny.setInputValue("stimuli_pitch", tone);
 
 }
 
 
-function playTones (note_list) {
+function playTones (midi_note_list) {
 
-    note_list.forEach(element => console.log(element)); // testing
-    note_list = note_list.map(x => Tone.Frequency(x));
-    last_note = note_list[note_list.length - 1];
+    midi_note_list.forEach(element => console.log(element)); // testing
+    midi_note_list = midi_note_list.map(x => Tone.Frequency(x));
+    last_note = midi_note_list[midi_note_list.length - 1];
 
     var pattern = new Tone.Sequence(function(time, note){
-    synth.triggerAttackRelease(note, 0.5);
+    playTone(note, 0.5);
 
     if (note === last_note) {
       console.log("finished!");
@@ -234,156 +215,149 @@ function playTones (note_list) {
 }
 
 
-function playSingleNote(note_list, dur_list, hidePlay, id,
-                        page_type, stop_button_text, sound,
-                        show_sheet_music, sheet_music_id) {
-
-
-  if(hidePlay) {
-    hidePlayButton(id);
-  }
-  if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-    note_list = note_list-12;
-  }
+function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
 
 
   var freq_list = Tone.Frequency(note_list, "midi").toNote();
 
+
   triggerNote(sound, freq_list, dur_list);
-  setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, dur_list*1000);
+
+  setTimeout(() => {
+   // Execute on finish
+   if(trigger_end_of_stimuli_fun !== null) {
+      trigger_end_of_stimuli_fun();
+   }
+  }, dur_list * 1000);
 
 }
 
 
-function playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id, auto_next_page) {
 
-  console.log('playSeqArrhythmic');
-  console.log(show_sheet_music);
+function playSeq(note_list, dur_list = null, sound = 'piano',
+                 trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
 
-  if(hidePlay) {
-    hidePlayButton(id);
-  }
-   var pattern = new Tone.Sequence(function(time, note){
-
-        triggerNote(sound, note, 0.50);
-        count = count + 1;
-        if (count === last_note) {
-          pattern.stop();
-          Tone.Transport.stop();
-
-          if(page_type === "record_audio_page" | page_type === "record_midi_page") {
-            setTimeout(() => {  recordAndStop(null, true, hidePlay, id, page_type, stop_button_text, show_sheet_music, sheet_music_id); }, 0.50); // delay to avoid catching stimuli in recording
-          } else {
-            setTimeout(() => {
-
-                      if(auto_next_page) {
-                      next_page();
-                    }
-
-                    }, 0.50);
-          }
-
-        }
-
-      }, freq_list);
-}
-
-function playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type,
-                          hidePlay, id, stop_button_text, show_sheet_music = false,
-                          sheet_music_id = 'sheet_music', auto_next_page) {
-
-  if(hidePlay) {
-    hidePlayButton(id);
-  }
-  var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
-  notesAndDurations = notesAndDurations.map(timeFromDurations);
-  var pattern = new Tone.Part((time, value) => {
-              // the value is an object which contains both the note and the velocity
-              if(sound === "voice_doo") {
-                voice_doo.triggerAttackRelease(value.note, value.duration, time);
-              } else if(sound === "voice_daa") {
-                voice_daa.triggerAttackRelease(value.note, value.duration, time);
-              } else {
-                piano.triggerAttackRelease(value.note, value.duration, time);
-              }
-              count = count + 1;
-                if (count === last_note) {
-                  pattern.stop();
-                  Tone.Transport.stop();
-
-                  if(page_type === "record_audio_page" | page_type === "record_midi_page") {
-
-                    setTimeout(() => {
-                      recordAndStop(null, true, hidePlay,
-                                   id, page_type, stop_button_text,
-                                   show_sheet_music, sheet_music_id); }, value.duration*1000);
-                  } else {
-
-                    setTimeout(() => {
-
-                      if(auto_next_page) {
-                        next_page();
-                    }
-
-                    }, value.duration*1000);
-
-                }
-            }
-              }, notesAndDurations);
-    pattern.start(0).loop = false;
-    Tone.Transport.start();
-}
-
-
-function playSeq(note_list, hidePlay, id, sound, page_type, stop_button_text = "Stop",
-                  dur_list = null, auto_next_page,
-                  show_sheet_music = false, sheet_music_id = 'sheet_music') {
-
-
-
-  if(hidePlay) {
-    hidePlayButton(id);
-    hidePlayButton("firstMelodyPlay");
-  }
-
-  auto_next_page = auto_next_page;
-
-
-  // make sure not playing
+  // Make sure not playing
   Tone.Transport.stop();
   pattern = null;
 
+  // Connect sound
   connect_sound(sound);
 
-  // this should go first before the piano editing:
+  // This should go first before the piano editing:
   Shiny.setInputValue("stimuli_pitch", note_list);
 
-  // seems to be a bug with the piano sound where it plays an octave higher
+  // Trigger an arbitrary function before the stimulus plays
+  if(trigger_start_of_stimuli_fun !== null) {
+    trigger_start_of_stimuli_fun();
+  }
 
   if(typeof note_list === 'number') {
-      playSingleNote(note_list, dur_list, hidePlay, id,
-                    page_type, stop_button_text, sound,
-                    show_sheet_music, sheet_music_id)
+    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
+    note_list = note_list -12;  // There is a bug with the piano sound where it plays an octave higher
+    }
+    playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun);
   } else {
+
+    // Convert to freqs
+    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
+
+    // There is a bug with the piano sound where it plays an octave higher
 
     if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
         note_list = note_list.map(x => x-12);
     }
 
-    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
     var last_note = freq_list.length;
     var count = 0;
 
-    if(dur_list === null) {
-      playSeqArrhythmic(freq_list, dur_list, count, sound, last_note, page_type, hidePlay, id,
-                        stop_button_text, show_sheet_music, sheet_music_id, auto_next_page);
-    } else {
-      playSeqRhythmic(freq_list, dur_list, count, sound, last_note, page_type,
-                      hidePlay, id, stop_button_text, show_sheet_music, sheet_music_id, auto_next_page);
-    }
+    var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+    notesAndDurations = notesAndDurations.map(timeFromDurations);
+
+    var pattern = new Tone.Part((time, value) => {
+                // the value is an object which contains both the note and the velocity
+
+                triggerNote(sound, value.note, 0.50);
+                count = count + 1;
+
+                  if (count === last_note) {
+                    // Stop the sequence
+                    stopSeq(pattern);
+                    // Trigger something else on stop
+                    if(trigger_end_of_stimuli_fun !== null) {
+                      trigger_end_of_stimuli_fun();
+                    }
+              }
+                }, notesAndDurations);
+    pattern.start(0).loop = false;
+    Tone.Transport.start();
   }
 
 }
+
+
+function playSeqArrhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
+
+  console.log('playSeqArrhythmic');
+
+  var last_note = freq_list.length;
+  var count = 0;
+
+
+  var pattern = new Tone.Sequence(function(time, note){
+
+      triggerNote(sound, note, 0.50);
+
+      count = count + 1;
+
+      if (count === last_note) {
+        // Stop playing
+        stopSeq(pattern);
+        // Trigger something else on stop
+        if(trigger_end_of_stimuli_fun !== null) {
+          trigger_end_of_stimuli_fun();
+        }
+
+     }
+
+    }, freq_list);
+}
+
+function playSeqRhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
+
+  console.log('playSeqRhythmic');
+
+  var last_note = freq_list.length;
+  var count = 0;
+
+  var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+  notesAndDurations = notesAndDurations.map(timeFromDurations);
+
+  var pattern = new Tone.Part((time, value) => {
+              // the value is an object which contains both the note and the velocity
+
+              triggerNote(sound, value.note, 0.50);
+              count = count + 1;
+
+                if (count === last_note) {
+                  // Stop the sequence
+                  stopSeq(pattern);
+                  // Trigger something else on stop
+                  if(trigger_end_of_stimuli_fun !== null) {
+                    trigger_end_of_stimuli_fun();
+                  }
+            }
+              }, notesAndDurations);
+  pattern.start(0).loop = false;
+  Tone.Transport.start();
+}
+
+
+function stopSeq(pattern) {
+  pattern.stop();
+  Tone.Transport.stop();
+}
+
 
 
 function timeFromDurations(value, i, arr) {
@@ -406,37 +380,10 @@ function bind_notes_and_durations(notes, durations) {
     return(result);
 }
 
-function metronomeStart() {
-		Tone.Transport.start();
-}
 
-function metronome () {
-  // metronomeStart();
+/* Deprecated?
 
-    // var player = new Tone.Player("./sounds/woodblock.wav").toMaster();
-    // console.log(player)
-		// Tone.Transport.bpm.value = bpm;
-    //
-		// Tone.Buffer.onload = function() {
-		// 	//this will start the player on every quarter note
-		// 	Tone.Transport.setInterval(function(time){
-		// 	    player.start(time);
-		// 	}, "4n");
-		// 	//start the Transport for the events to start
-		// 	Tone.Transport.start();
-		// };
-}
-
-function toneJSPlay (midi, start_note, end_note, hidePlay, transpose, id, sound, bpm = 90) {
-
-  if(hidePlay) {
-    hidePlayButton(id);
-     }
-    // start timer
-
-    window.startTime = new Date().getTime();
-
-    //metronome();
+function toneJSPlay (midi, start_note, end_note, transpose, id, sound, bpm = 90) {
 
     // change tempo to whatever defined in R
     adjusted_tempo = midi;
@@ -518,6 +465,7 @@ function toneJSPlay (midi, start_note, end_note, hidePlay, transpose, id, sound,
     });
 
 }
+*/
 
 async function midiToToneJS (url, note_no, hidePlay, transpose, id, sound, bpm) {
   // load a midi file in the browser
@@ -581,7 +529,6 @@ function display_time_record_after(ev) {
   if (ev.time > seconds) {
       console.log("file finished!");
       MIDIjs.player_callback = null;
-      recordAndStop(null, true, true, id);
   }
 
   });
@@ -590,7 +537,7 @@ function display_time_record_after(ev) {
 
 // Define a function to handle status messages
 
-function playMidiFileAndRecordAfter(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
+function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
 
     // toneJS: boolean. true if file file to be played via toneJS. otherwise, via MIDIJS
 
@@ -630,9 +577,9 @@ function hide_happy_with_response_message() {
 
 function hidePlayButton(play_button_id = "playButton") {
   // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
-  var x = document.getElementById(play_button_id);
-  if (x !== null) {
-    x.style.display = "none";
+  var playButton = document.getElementById(play_button_id);
+  if (playButton !== null) {
+    playButton.style.display = "none";
   }
 
 }
@@ -643,76 +590,64 @@ function hideAudioFilePlayer() {
 }
 
 
-function recordAndStop(ms, showStop, hidePlay, id = null,
-                        type = "record_audio_page", stop_button_text = "Stop",
-                        show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
-  console.log('recordAndStop');
-  console.log(show_sheet_music);
-  console.log(type);
+function startRecording(type) {
 
-  if(hidePlay) {
-    hidePlayButton(id);
-  }
+   // Initiate startTime
+  startTime = new Date().getTime();
 
   setTimeout(() => {
-      // start recording but then stop after x milliseconds
-      window.startTime = new Date().getTime();
 
-      if (type === "record_audio_page") {
-        // aws record
-        startRecording(updateUI = false);
-      } else if(type === "record_midi_page") {
-        instantiateMIDI(midi_device);
-      }  else {
-        console.log('type not recognised');
-      }
+  if (type === "record_audio_page") {
+  startAudioRecording();
+  } else if(type === "record_midi_page") {
+  instantiateMIDI(midi_device);
+  } else {
+  console.log('type not recognised');
+  }
 
   }, record_delay);
 
-  if (ms === null) {
-    recordUpdateUI(showStop, hidePlay, type, stop_button_text, show_sheet_music, sheet_music_id);
-  } else {
-    recordUpdateUI(showStop, hidePlay, type, stop_button_text, show_sheet_music, sheet_music_id);
-    setTimeout(() => { stopRecording();
-    hideRecordImage(); }, ms);
+
+}
+
+
+function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true) {
+
+  if(showStop) {
+    showStopButton(page_type, stop_button_text);
   }
 
+  if(hideRecord) {
+    hideRecordButton();
+  }
+
+  if(showRecording) {
+    showRecordingIcon();
+  }
 }
 
-function recordUpdateUI(showStop, hidePlay, type = "record_audio_page",
-                        stop_button_text = "Stop", show_sheet_music = false,
-                        sheet_music_id = 'sheet_music') {
 
-
-    if(['record_audio_page', 'record_midi_page'].includes(type)) {
-      // update the recording UI
-      showRecordingIcon();
-
-      var volumeMeter = document.getElementById('volumeMeter');
-      if(volumeMeter !== null) {
-        volumeMeter.style.visibility = "visible";
-      }
-
-      if (showStop) {
-        showStopButton(type, stop_button_text, show_sheet_music);
-      }
-
-      if(show_sheet_music) {
-        showSheetMusic(sheet_music_id);
-      }
-    }
-
+/*
+var volumeMeter = document.getElementById('volumeMeter');
+if(volumeMeter !== null) {
+  volumeMeter.style.visibility = "visible";
 }
+
+if(show_sheet_music) {
+  showSheetMusic(sheet_music_id);
+}
+
+*/
 
 function showSheetMusic(sheet_music_id) {
-  var sm = document.getElementById(sheet_music_id);
-  sm.style.visibility = "visible";
+  var sheet_music = document.getElementById(sheet_music_id);
+  sheet_music.style.visibility = "visible";
 }
 
 function hideSheetMusic(sheet_music_id) {
-  var sm = document.getElementById(sheet_music_id);
-  sm.style.visibility = "hidden";
+  var sheet_music = document.getElementById(sheet_music_id);
+  sheet_music.style.visibility = "hidden";
 }
 
 
@@ -723,39 +658,29 @@ function hideLoading() {
   }
 }
 
-function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
 
-  stopButton.disabled = false;
-  stopButton.style.visibility = 'visible';
+function stopRecording(type) {
 
-  stopButton.onclick = function () {
-    if(show_happy_with_response) {
-      show_happy_with_response_message();
-    }
-    if(show_sheet_music) {
-      // because we are hiding *after* stopping i.e., after it has already been shown
-      hideSheetMusic(sheet_music_id);
-    }
+  hideRecordingIcon();
+
+  setTimeout(() => {
+
     if(type === "record_audio_page") {
-      stopRecording();
+      stopAudioRecording();
     } else if(type === "record_midi_page") {
-      WebMidi.disable();
-      hideButtonAreaShowUserRating();
-      if(auto_next_page) {
-        next_page();
-      }
+      stopMidiRecording();
     } else {
       console.log('Unknown page type');
     }
-  };
+    next_page();
+
+  }, record_delay);
+
+
 }
 
-function showStopButton(type = 'record_audio_page', stop_button_text = "Stop", show_sheet_music = false) {
+function showStopButton(type = null, stop_button_text = "Stop", show_sheet_music = false) {
 
-  if(type === "record_audio_page") {
-    startRecording(updateUI = false);
-    hideLoading();
-  }
   var stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
@@ -764,9 +689,28 @@ function showStopButton(type = 'record_audio_page', stop_button_text = "Stop", s
 
 }
 
+function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
+
+  stopButton.style.visibility = 'visible';
+
+  stopButton.onclick = function () {
+    if(show_happy_with_response) {
+      show_happy_with_response_message();
+    }
+    if(show_sheet_music) {
+      // Because we are hiding *after* stopping i.e., after it has already been shown
+      hideSheetMusic(sheet_music_id);
+    }
+
+    stopRecording(type);
+  };
+}
+
+
 function showRecordingIcon() {
 
   var img = document.createElement("img");
+  img.id = "recordingIcon";
   img.style.display = "block";
   img.src =  "https://adaptiveeartraining.com/assets/img/record.gif";
   img.width = "280";
@@ -777,34 +721,26 @@ function showRecordingIcon() {
 
 }
 
-function hideRecordButton() {
-  var x = document.getElementById("recordButton");
-  if (x.style.display === "none") {
-    x.style.display = "block";
-  } else {
-    x.style.display = "none";
-  }
-}
-
-function hideRecordImage() {
-  console.log('hideRecordImage called');
-  var x = document.getElementById("button_area");
-  if (x.style.display === "none") {
-    x.style.display = "block";
+function hideRecordingIcon() {
+  var rec_icon = document.getElementById("recordingIcon");
+  if (rec_icon.style.display === "none") {
+    rec_icon.style.display = "block";
    } else {
-    x.style.display = "none";
+    rec_icon.style.display = "none";
    }
 }
 
-function toggleRecording(e) {
-    if (e.classList.contains("recording")) {
-      e.classList.remove("recording");
-    } else {
-      e.classList.add("recording");
-    }
+function hideRecordButton() {
+  var recButton = document.getElementById("recordButton");
+  if (recButton.style.display === "none") {
+    recButton.style.display = "block";
+  } else {
+    recButton.style.display = "none";
+  }
 }
 
-// utils
+
+// Utils
 
 function diff(ary) {
     var newA = [];
@@ -819,7 +755,7 @@ function preloadImage(url) {
 }
 
 
-// checks
+// Checks
 
 function getUserInfo () {
     //console.log(navigator);
@@ -863,7 +799,7 @@ function testMediaRecorder () {
   return(isMediaRecorderSupported);
 }
 
-// audio recorder stuff (previously in app.js)
+// Audio recorder stuff (previously in app.js)
 
 //webkitURL is deprecated but nevertheless
 URL = window.URL || window.webkitURL;
@@ -879,31 +815,10 @@ var input;
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioContext //audio context to help us record
 
-//Delete all nodes in a html element
-function empty(id){
-	parent = document.querySelector(id);
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
-}
 
-function startRecording(updateUI = true) {
-	empty("#csv_file")
-	empty("#loading")
-	empty("#recordingsList")
+function startAudioRecording() {
+
     var constraints = { audio: true, video:false }
-
-  if(updateUI) {
-
- 	/*
-    	Disable the record button until we get a success or fail from getUserMedia()
-	*/
-	stopButton.style.visibility = 'visible';
-	recordButton.disabled = true;
-	stopButton.disabled = false;
-	pauseButton.disabled = false
-
-  }
 
 	/*
     	We're using the standard promise based getUserMedia()
@@ -921,7 +836,7 @@ function startRecording(updateUI = true) {
 		audioContext = new AudioContext();
 
 		//update the format
-		document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
+		//document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
 
 		/*  assign to gumStream for later use  */
 		gumStream = stream;
@@ -947,20 +862,20 @@ function startRecording(updateUI = true) {
 	  	//enable the record button if getUserMedia() fails
     	recordButton.disabled = false;
     	stopButton.disabled = true;
-    	pauseButton.disabled = true
+    	//pauseButton.disabled = true
 	});
 }
 
 function pauseRecording(){
 	console.log("pauseButton clicked rec.recording=",rec.recording );
 	if (rec.recording){
-		//pause
+		// Pause
 		rec.stop();
-		pauseButton.innerHTML="Resume";
+		pauseButton.innerHTML = "Resume";
 	} else{
-		//resume
+		// Resume
 		rec.record();
-		pauseButton.innerHTML="Pause";
+		pauseButton.innerHTML = "Pause";
 
 	}
 }
@@ -972,9 +887,7 @@ function hideButtonAreaShowUserRating() {
 	stop_button.style.display = "none";
 }
 
-function stopRecording() {
-
-  hideButtonAreaShowUserRating();
+function stopAudioRecording() {
 
 	//tell the recorder to stop the recording
 	rec.stop();
@@ -985,16 +898,13 @@ function stopRecording() {
 	//create the wav blob and pass it on to createDownloadLink
 
 	rec.exportWAV(upload_file_to_s3);
-	/*
-	if(this.musicassessr_state === "production") {
-	  rec.exportWAV(upload_file_to_s3);
-  } else {
-    console.log('upload local...');
-    rec.exportWAV(upload_file_to_s3_local);
-  }
-  */
+
 }
 
+function stopMidiRecording() {
+  console.log('stopMidiRecording');
+  WebMidi.disable();
+}
 
 function create_recordkey() {
   var currentDate = new Date();
@@ -1018,15 +928,8 @@ function create_recordkey() {
 
 function upload_file_to_s3(blob) {
 
-  console.log('upload_file_to_s3');
-
   var recordkey = create_recordkey();
-
   var file_url = recordkey + ".wav";
-
-  console.log('file_url');
-  console.log(file_url);
-
 	var xhr = new XMLHttpRequest();
 	var filename = new Date().toISOString();
 	var fd = new FormData();
@@ -1038,10 +941,9 @@ function upload_file_to_s3(blob) {
 	}
 
 	if(this.musicassessr_state === "production") {
-	  console.log('upload production...');
 	  xhr.open("POST","/api/store_audio/",true); // production
   } else {
-    console.log('upload local...');
+    console.log('Upload local...');
     xhr.open("POST","http://localhost:3000/upload-audio",true); // local
   }
 
@@ -1053,10 +955,9 @@ function upload_file_to_s3(blob) {
 	xhr.onload = () => { console.log(xhr.responseText)
 		// call next page after credentials saved
 		spinner = document.getElementsByClassName("hollow-dots-spinner");
-		spinner[0].style.display="none";
-		file_is_ready = true;
-		if(auto_next_page) {
-			next_page();
+		if(spinner[0] !== undefined) {
+		  spinner[0].style.display = "none";
 		}
+		file_is_ready = true;
 	};
 }

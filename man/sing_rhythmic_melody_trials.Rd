@@ -26,7 +26,6 @@ sing_rhythmic_melody_trials(
   max_goes_forced = FALSE,
   display_modality = "auditory",
   show_progress = TRUE,
-  show_record_button = FALSE,
   get_similarity_to_previous_melody = FALSE
 )
 }

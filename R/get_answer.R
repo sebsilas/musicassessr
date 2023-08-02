@@ -20,8 +20,8 @@ get_answer_pyin_melodic_production_additional_measures <- function(type = c("bot
       get_answer_pyin_melodic_production(input = input,
                                          state = state,
                                          type = type,
-                                       melconv = melconv,
-                                       additional_scoring_measures = additional_scoring_measures, ...)
+                                         melconv = melconv,
+                                        additional_scoring_measures = additional_scoring_measures, ...)
     }
 
 }
@@ -52,8 +52,7 @@ get_answer_pyin_melodic_production <- function(input,
 
   logging::loginfo("Got pyin")
 
-
-  if(is_null_or_na_length_1(pyin_res$pyin_res) | is_null_or_na_length_1(pyin_res$pyin_res$freq)) {
+  if(is.scalar.na.or.null(pyin_res$pyin_res) | is.scalar.na.or.null(pyin_res$pyin_res$freq)) {
 
     res <- list(
       error = TRUE,
@@ -63,29 +62,22 @@ get_answer_pyin_melodic_production <- function(input,
       attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
       opti3 = NA,
       answer_meta_data = tibble::as_tibble(input$answer_meta_data),
-      stimuli = as.numeric(rjson::fromJSON(input$stimuli)))
+      stimuli = as.numeric(rjson::fromJSON(input$stimuli))
+      )
 
     logging::loginfo("There was nothing in the pitch track")
 
 
   } else {
 
-    res <- concat_mel_prod_results(input,
-                                   state,
-                                   pyin_res$melconv_res,
-                                   pyin_res$pyin_res$freq,
-                                   pyin_res$pyin_res$note,
-                                   pyin_res$pyin_res$dur,
-                                   pyin_res$pyin_res$onset,
-                                   pyin_res$pyin_pitch_track,
-                                   additional_scoring_measures)
-
-    logging::loginfo("Concatenated melodic production results")
-
+    res <- concat_mel_prod_results(input = input,
+                                   state = state,
+                                   melconv_res = pyin_res$melconv_res,
+                                   pyin_style_res = pyin_res,
+                                   pyin_pitch_track = pyin_res$pyin_pitch_track,
+                                   additional_scoring_measures = additional_scoring_measures)
 
   }
-
-  store_results_in_db(state, res, pyin_res)
 
   res
 
@@ -113,7 +105,7 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
 
-  if(is_null_or_na_length_1(pyin_res)) {
+  if(is.scalar.na.or.null(pyin_res)) {
 
     long_note_pitch_measures <- list(
       "long_note_accuracy" = NA,
@@ -143,10 +135,11 @@ get_answer_pyin_long_note <- function(input, state, ...) {
   c(
     list(file = audio_file,
          stimuli = as.numeric(input$stimuli),
-         onset = if(is_null_or_na_length_1(pyin_res)) NA else pyin_res$onset,
-         freq = if(is_null_or_na_length_1(pyin_res)) NA else pyin_res$freq,
+         onset = if(is.scalar.na.or.null(pyin_res)) NA else pyin_res$onset,
+         freq = if(is.scalar.na.or.null(pyin_res)) NA else pyin_res$freq,
          noise_classification = noise.classification$prediction,
          failed_tests = noise.classification$failed_tests),
+    # Append measures
     long_note_pitch_measures
 
   )
@@ -191,13 +184,13 @@ get_answer_pyin <- function(input,
 
   type <- match.arg(type)
 
-  # get file
+  # Get file
   audio_file <- get_audio_file_for_pyin(input, state)
 
-  # get pyin
+  # Get pyin
   pyin_res <- get_pyin(audio_file, type, state)
 
-  # melconv
+  # Get melconv (optionally)
   melconv_res <- get_melconv(melconv, pyin_res)
 
   list(pyin_res = pyin_res$pyin_res,
@@ -224,7 +217,7 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
   pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
 
-  if(is_na_length_1(pyin_res$note)) {
+  if(is.scalar.na(pyin_res$note)) {
     res <- list("Min." = NA,
                 "1st Qu." = NA,
                 "Median" = NA,
@@ -238,7 +231,6 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
   res$file <- audio_file
   res
 }
-
 
 
 
@@ -260,7 +252,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
-      if(is_null_length_1(pyin_res$freq) | is_na_length_1(pyin_res$freq)) {
+      if(is.scalar.null(pyin_res$freq) | is.scalar.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
         freqs <- pyin_res$freq
@@ -273,7 +265,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
-      if(is_null_length_1(pyin_res$freq) | is_na_length_1(pyin_res$freq)) {
+      if(is.scalar.null(pyin_res$freq) | is.scalar.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
         audio_file <- get_audio_file_for_pyin(input, state)
@@ -288,7 +280,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
     function(input, state, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
-      if(is_null_length_1(pyin_res$freq) | is.logical(pyin_res$freq)) {
+      if(is.scalar.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         cat(file=stderr(), 'get_answer_average_frequency_ff')
         list(user_response = NA)
       } else {
@@ -335,24 +327,7 @@ get_melconv <- function(melconv, pyin_res) {
 }
 
 
-
-
-# midi-related
-
-check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
-                                             user_response_midi_note_off,
-                                             onsets_noteon,
-                                             onsets_noteoff) {
-
-  length1 <- length(rjson::fromJSON(user_response_midi_note_on))
-  length2 <- length(rjson::fromJSON(user_response_midi_note_off))
-  length3 <- length(rjson::fromJSON(onsets_noteon))
-  length4 <- length(rjson::fromJSON(onsets_noteoff))
-
-  equal_lengths <- length1 == length2 & length2 == length3 & length3 == length4
-
-  length1 == 0 | length2 == 0 | length3 == 0 | length4 == 0 | !equal_lengths
-}
+# Midi-related
 
 
 #' Get a MIDI result and compute melodic production scores
@@ -370,9 +345,9 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
 
   if(check_midi_melodic_production_lengths(input$user_response_midi_note_on,
-                                      input$user_response_midi_note_off,
-                                      input$onsets_noteon,
-                                      input$onsets_noteoff)) {
+                                          input$user_response_midi_note_off,
+                                          input$onsets_noteon,
+                                          input$onsets_noteoff)) {
 
     midi_res <- list(
       pyin_style_res = tibble::tibble(
@@ -384,10 +359,10 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
 
     res <- list(error = TRUE,
-                reason = "no midi notes / lengths unequal",
-                user_satisfied = ifelse(is.null(input$user_satisfied), NA, input$user_satisfied),
-                user_rating = ifelse(is.null(input$user_rating), NA, input$user_rating),
-                attempt = ifelse(length(input$attempt) == 0, NA, as.numeric(input$attempt)),
+                reason = "No midi notes / lengths unequal.",
+                user_satisfied = if (is.null(input$user_satisfied)) NA else input$user_satisfied,
+                user_rating = if (is.null(input$user_rating)) NA else input$user_rating,
+                attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt),
                 opti3 = NA,
                 answer_meta_data = tibble::as_tibble(input$answer_meta_data),
                 stimuli = as.numeric(rjson::fromJSON(input$stimuli)))
@@ -400,17 +375,12 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
        res <- concat_mel_prod_results(input,
                                       state,
                                       melconv_res = list(notes = NA, durations = NA),
-                                      user_melody_freq = pyin_res$pyin_res$freq,
-                                      user_melody_input = midi_res$user_response_midi_note_on,
-                                      user_duration_input = midi_res$pyin_style_res$dur,
-                                      user_onset_input = midi_res$onsets_noteon,
-                                      pyin_pitch_track = midi_res$pyin_style_res)
-
+                                      pyin_style_res = midi_res$pyin_style_res,
+                                      pyin_pitch_track = NA)
      }
 
 
-  store_results_in_db(state, res, midi_res$pyin_style_res)
-  res
+  return(res)
 
 }
 
@@ -434,7 +404,9 @@ get_answer_midi <- function(input, state, ...) {
       user_response_midi_note_off =  NA,
       onsets_noteon =  NA,
       onsets_off = NA,
-      pyin_style_res = NA)
+      pyin_style_res = NA,
+      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+      )
 
   } else {
 
@@ -444,7 +416,8 @@ get_answer_midi <- function(input, state, ...) {
     onsets_off <- as.numeric(rjson::fromJSON(input$onsets_noteoff))/1000
 
 
-    durs <- onsets_off - onsets
+    # durs <- onsets_off - onsets # This is not right, really
+    durs <-  c(diff(onsets), onsets_off[length(onsets_off)] - onsets[length(onsets)])
 
     pyin_style_res <- tibble::tibble(
       onset = onsets,
@@ -461,16 +434,132 @@ get_answer_midi <- function(input, state, ...) {
       user_response_midi_note_off =  notes_off,
       onsets_noteon =  onsets,
       onsets_off = onsets_off,
-      pyin_style_res = pyin_style_res)
+      pyin_style_res = pyin_style_res,
+      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+      )
   }
 
 }
 
 
+#' Get a MIDI result and compute melodic production scores
+#'
+#' @param input
+#' @param state
+#' @param feedback
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_midi_rhythm_production <- function(input, state, feedback = TRUE, ...) {
+
+  stimuli_durations <- if(is.scalar.na.or.null(input$stimuli_durations)) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+
+  if(check_midi_melodic_production_lengths(input$user_response_midi_note_on,
+                                           input$user_response_midi_note_off,
+                                           input$onsets_noteon,
+                                           input$onsets_noteoff)) {
+
+    midi_res <- list(
+      pyin_style_res = tibble::tibble(
+        file_name = NA,
+        onset = NA,
+        dur = NA,
+        freq = NA,
+        note = NA))
+
+    res <- list(
+      error = TRUE,
+      reason = "No midi notes / lengths unequal.",
+      user_satisfied = if (is.scalar.na.or.null(input$user_satisfied)) NA else input$user_satisfied,
+      user_rating = if (is.scalar.na.or.null(input$user_rating)) NA else input$user_rating,
+      attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt),
+      stimuli_durations = stimuli_durations,
+      mean_duration = NA,
+      precision = NA,
+      accuracy = NA,
+      dtw_distance = NA,
+      tam_distance = NA,
+      user_bpm = NA,
+      user_durations = NA,
+      rhythfuzz = NA
+    )
+
+  } else {
+
+    midi_res <- get_answer_midi(input, state, ...)
+
+    user_durations <- midi_res$pyin_style_res$dur
+
+    stimuli_bpm <- round(60/stimuli_durations)  # Note, this is not a good way to get the BPM for actual stimuli, but will work for the beat sync trials where the stimuli is basically a metronome :
+
+    mean_dur <- mean(user_durations, na.rm = TRUE)
+    bpm <- round(60/mean_dur)
+
+    answer_meta_data <- input$answer_meta_data
+
+    if(is.scalar.na.or.null(stimuli_durations)) {
+      dtw_dist <- NA
+      tam_dist <- NA
+    } else {
+      dtw_dist <- dtw::dtw(stimuli_durations, user_durations)$distance
+      tam_dist <- TSdist::TAMDistance(stimuli_durations, user_durations)
+    }
+
+    res <- list(
+        stimuli_durations = stimuli_durations,
+        mean_duration = mean_dur,
+        precision = sd(user_durations, na.rm = TRUE),
+        accuracy = stats::mad(user_durations, center = bpm_to_ms(stimuli_bpm)),
+        dtw_distance = dtw_dist,
+        tam_distance = tam_dist,
+        user_bpm = if(is.null(answer_meta_data$bpm)) bpm else answer_meta_data$bpm,
+        user_durations = user_durations,
+        rhythfuzz = rhythfuzz(stimuli_durations, user_durations)
+      )
+
+  }
+
+
+  if(feedback && !is.null(res$user_bpm) && !is.na(res$user_bpm)) {
+    shiny::showNotification(paste0("BPM: ", round(res$user_bpm, 2)))
+  }
+
+  if(feedback && !is.null(res$rhythfuzz) && !is.na(res$rhythfuzz)) {
+    shiny::showNotification(paste0("Rhythfuzz: ", round(res$rhythfuzz, 2)))
+  }
+
+  if(feedback && !is.null(res$precision) && !is.na(res$precision)) {
+    shiny::showNotification(paste0("Precision: ", round(res$precision, 2)))
+  }
+
+  if(feedback && !is.null(res$accuracy) && !is.na(res$accuracy)) {
+    shiny::showNotification(paste0("Accuracy: ", round(res$accuracy, 2)))
+  }
+
+  if(feedback && !is.null(res$dtw_distance) && !is.na(res$dtw_distance)) {
+    shiny::showNotification(paste0("DTW Distance: ", round(res$dtw_distance, 2)))
+  }
+
+  if(feedback && !is.null(res$tam_distance) && !is.na(res$tam_distance)) {
+    shiny::showNotification(paste0("TAM Distance: ", round(res$tam_distance, 2)))
+  }
+
+  return(res)
+
+}
+
+bpm_to_ms <- function(bpm) {
+  60/bpm
+}
+
+
 get_answer_midi_note_mode <- function(input, state, ...) {
 
-  if(is_na_length_1(input$user_response_midi_note_on) |
-     is_null_length_1(input$user_response_midi_note_on)) {
+  if(is.scalar.na(input$user_response_midi_note_on) |
+     is.scalar.null(input$user_response_midi_note_on)) {
     list(note = NA)
   } else {
     list(note = getmode(rjson::fromJSON(input$user_response_midi_note_on)))
@@ -506,7 +595,7 @@ get_answer_interval_page <- function(input, state, ...) {
 #' @export
 #'
 #' @examples
-get_answer_save_aws_key <- function(input, ...) {
+get_answer_save_audio_file <- function(input, ...) {
   list(key = input$key,
        file_url = input$file_url,
        user_satisfied = input$user_satisfied,
@@ -515,18 +604,17 @@ get_answer_save_aws_key <- function(input, ...) {
 
 
 
-# generic
+# Generic
 
 concat_mel_prod_results <- function(input,
                                     state,
                                     melconv_res,
-                                    user_melody_freq = NULL, # Can be null if MIDI
-                                    user_melody_input,
-                                    user_duration_input,
-                                    user_onset_input,
+                                    pyin_style_res,
                                     pyin_pitch_track,
                                     additional_scoring_measures = NULL, ...) {
 
+
+  # Grab MIDI-specific data if available
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
     onsets_noteoff <- NA
@@ -535,7 +623,8 @@ concat_mel_prod_results <- function(input,
     onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
   }
 
-  if(is_null_length_1(input$stimuli)) {
+  # Grab stimuli information
+  if(is.scalar.null(input$stimuli)) {
     stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
     stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
   } else {
@@ -543,28 +632,28 @@ concat_mel_prod_results <- function(input,
     stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
   }
 
-
-  scores <- score_melodic_production(user_melody_freq,
-                                     user_melody_input,
-                                     user_duration_input,
-                                     user_onset_input,
-                                     stimuli,
-                                     stimuli_durations,
-                                     pyin_pitch_track,
-                                     user_response_midi_note_off,
-                                     onsets_noteoff,
-                                     tibble::as_tibble(input$answer_meta_data),
+  # Produce trial-level scores
+  scores <- score_melodic_production(user_melody_freq = if(is.null(pyin_style_res$pyin_res)) pyin_style_res$freq else pyin_style_res$pyin_res$freq,
+                                     user_melody_input = if(is.null(pyin_style_res$pyin_res)) pyin_style_res$note else pyin_style_res$pyin_res$note,
+                                     user_duration_input = if(is.null(pyin_style_res$pyin_res)) pyin_style_res$dur else pyin_style_res$pyin_res$dur,
+                                     user_onset_input = if(is.null(pyin_style_res$pyin_res)) pyin_style_res$onset else pyin_style_res$pyin_res$onset,
+                                     stimuli = stimuli,
+                                     stimuli_durations = stimuli_durations,
+                                     pyin_pitch_track = pyin_pitch_track,
+                                     user_response_midi_note_off = user_response_midi_note_off,
+                                     onsets_noteoff = onsets_noteoff,
+                                     answer_meta_data = tibble::as_tibble(input$answer_meta_data),
                                      as_tb = FALSE,
-                                     additional_scoring_measures)
+                                     additional_scoring_measures = additional_scoring_measures)
 
-  # for final scores at end of test - currently not in usage,
-  # but could be useful to standardise final scores across tests (i.e., so each test doesn't need it's own final_results function)
+  # Store scores for final scores at end of test. Perhaps now deprecated
+  # But could be useful to standardise final scores across tests (i.e., so each test doesn't need it's own final_results function)
+
   ongoing_scores <- psychTestR::get_global("scores", state)
   psychTestR::set_global("scores", c(ongoing_scores, scores$opti3), state)
 
 
-  c(
-
+  results <- c(
     list(file = get_audio_file_for_pyin(input, state),
          error = FALSE,
          attempt = if(length(input$attempt) == 0) NA  else as.numeric(input$attempt),
@@ -572,41 +661,100 @@ concat_mel_prod_results <- function(input,
          user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
          melconv_notes = melconv_res$notes,
          melconv_durations = melconv_res$durations),
+        # Append scores
+         scores
+      )
 
-    scores)
+  # Add trial level data to DB
+  add_trial_trial_level_data_to_db(state = state, res = results, pyin_style_res = pyin_style_res, scores = scores)
+
+  results
 }
 
 
 
-store_results_in_db <- function(state, res, pyin_res) {
+add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores) {
 
-  store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
+  use_musicassessr_db <- psychTestR::get_global("use_musicassessr_db", state)
 
-  if(store_results_in_db) {
+  if(use_musicassessr_db) {
+
+    db_con <- psychTestR::get_global("db_con", state)
 
     logging::loginfo("Store results in SQL database")
 
-    session_info <- psychTestR::get_session_info(state, complete = FALSE)
-    test_username <- psychTestR::get_global("test_username", state)
-    test <- psychTestR::get_local("test", state)
+    instrument <- if(psychTestR::get_global("singing_trial", state)) "Voice" else psychTestR::get_global("inst", state)
+    trial_time_started <- psychTestR::get_global("trial_time_started", state)
+    session_id <- psychTestR::get_global("session_id", state)
+    item_bank_id <- psychTestR::get_global("item_bank_id", state)
 
-    if(is.null(test)) {
-      test <- psychTestR::get_global("test", state)
-    }
 
-    db_add_new_trial(test_username = test_username,
-                    test = test,
-                    session_id = session_info$p_id,
-                    melody = paste0(res$stimuli, collapse = ","),
-                    res$opti3,
-                    pyin_res,
-                    res$answer_meta_data$N,
-                    res$answer_meta_data$step.cont.loc.var,
-                    res$answer_meta_data$tonalness,
-                    res$answer_meta_data$log_freq,
-                    res$attempt)
+    # Append trials
+    trial_id <- db_append_trials(
+                     db_con,
+                     audio_file = basename(res$file),
+                     time_started = trial_time_started,
+                     time_completed = Sys.time(),
+                     instrument = instrument,
+                     attempt = as.integer(res$attempt),
+                     item_id = res$answer_meta_data$item_id,
+                     display_modality = res$answer_meta_data$display_modality,
+                     phase = res$answer_meta_data$phase,
+                     rhythmic = res$answer_meta_data$rhythmic,
+                     item_bank_id = as.integer(item_bank_id),
+                     session_id = as.integer(session_id)
+                     )
+
+    # Append melodic production
+    db_append_melodic_production(db_con, trial_id, pyin_style_res$pyin_res, scores$correct_boolean_octaves_allowed)
+
+    # Append scores
+    db_append_scores_trial(db_con,
+                           res$trial_length,
+                           res$no_recalled_notes,
+                           res$no_correct_notes,
+                           res$no_error_notes,
+                           res$no_correct_notes_octaves_allowed,
+                           res$no_error_notes_octaves_allowed,
+                           res$proportion_of_correct_note_events,
+                           res$proportion_of_correct_note_events_octaves_allowed,
+                           res$proportion_of_stimuli_notes_found,
+                           res$proportion_of_stimuli_notes_found_octaves_allowed,
+                           res$opti3,
+                           res$ngrukkon,
+                           res$harmcore,
+                           res$rhythfuzz,
+                           res$melody_dtw,
+                           res$mean_cents_deviation_from_nearest_stimuli_pitch,
+                           res$mean_cents_deviation_from_nearest_midi_pitch,
+                           res$melody_note_accuracy,
+                           res$melody_interval_accuracy,
+                           res$accuracy,
+                           res$precision,
+                           res$recall,
+                           res$F1_score,
+                           res$PMI)
+
+
   }
 }
 
 
+
+# Utils
+
+check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
+                                                  user_response_midi_note_off,
+                                                  onsets_noteon,
+                                                  onsets_noteoff) {
+
+  lengths <- c(length(rjson::fromJSON(user_response_midi_note_on)),
+               length(rjson::fromJSON(user_response_midi_note_off)),
+               length(rjson::fromJSON(onsets_noteon)),
+               length(rjson::fromJSON(onsets_noteoff)))
+
+  are_lengths_equal <- length(unique(lengths)) == 1
+
+  any(lengths == 0) | ! are_lengths_equal
+}
 

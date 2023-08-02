@@ -11,11 +11,9 @@
 #' @param page_text
 #' @param page_title
 #' @param interactive
-#' @param show_record_button
 #' @param get_answer
 #' @param answer_meta_data
-#' @param show_aws_controls
-#' @param button_text
+#' @param record_button_text
 #' @param stop_button_text
 #' @param record_duration
 #' @param on_complete
@@ -31,25 +29,28 @@
 #' @param show_progress
 #' @param melody_no
 #' @param total_no_melodies
+#' @param volume_meter
+#' @param volume_meter
+#' @param volume_meter_type
+#' @param show_sheet_music_after_record
+#' @param show_record_button
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-record_midi_page <- function(body = " ",
+record_midi_page <- function(body = "",
                              label = "record_midi_page",
-                             stimuli = " ",
+                             stimuli = NULL,
                              stimuli_reactive = FALSE,
                              page_text = " ",
                              page_title = " ",
                              interactive = FALSE,
-                             show_record_button = TRUE,
                              get_answer = get_answer_midi,
                              answer_meta_data = tibble::tibble(),
-                             show_aws_controls,
-                             button_text = "Record",
-                             stop_button_text = "Stop",
+                             record_button_text = psychTestR::i18n("Record"),
+                             stop_button_text = psychTestR::i18n("Stop"),
                              record_duration = NULL,
                              on_complete = NULL,
                              auto_next_page = FALSE,
@@ -59,11 +60,15 @@ record_midi_page <- function(body = " ",
                              attempts_left = NULL,
                              max_goes_forced = FALSE,
                              autoInstantiate = FALSE,
-                             midi_device,
+                             midi_device = "",
                              max_goes = 1,
                              show_progress = FALSE,
                              melody_no = 0,
-                             total_no_melodies = 0, ...) {
+                             total_no_melodies = 0,
+                             volume_meter = FALSE,
+                             volume_meter_type = 'default',
+                             show_sheet_music_after_record = FALSE,
+                             show_record_button = TRUE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -73,11 +78,9 @@ record_midi_page <- function(body = " ",
                           page_title,
                           page_type = "record_midi_page",
                           interactive,
-                          show_record_button,
                           get_answer,
                           answer_meta_data,
-                          show_aws_controls,
-                          button_text,
+                          record_button_text,
                           stop_button_text,
                           record_duration,
                           on_complete,
@@ -92,7 +95,11 @@ record_midi_page <- function(body = " ",
                           max_goes,
                           show_progress,
                           melody_no,
-                          total_no_melodies)
+                          total_no_melodies,
+                          volume_meter,
+                          volume_meter_type,
+                          show_sheet_music_after_record,
+                          show_record_button)
 
 }
 
@@ -140,11 +147,10 @@ select_midi_device_page <- function(title = "Select MIDI device",
 }
 
 autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive) {
-  if (instantiate == TRUE) {
+  if (instantiate) {
     shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', interactive, ');'))
-  }
-  else {
-    shiny::tags$script(paste0('const midi_device = \"', midi_device, '\";'))
+  } else {
+    shiny::tags$script(paste0('var midi_device = \"', midi_device, '\";'))
   }
 }
 

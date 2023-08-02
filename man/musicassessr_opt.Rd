@@ -5,14 +5,47 @@
 \title{Specify options for a musicassessr test.}
 \usage{
 musicassessr_opt(
-  test_username = NA,
-  test = NA,
-  store_results_in_db = FALSE,
-  app_name = ""
+  setup_pages = TRUE,
+  setup_options = setup_pages_options(),
+  use_musicassessr_db = FALSE,
+  app_name = "",
+  midi_file_playback = FALSE,
+  visual_notation = FALSE,
+  record_audio = TRUE,
+  midi_input = FALSE,
+  fake_range = TRUE,
+  musicassessr_aws = FALSE,
+  experiment_id = NULL,
+  experiment_condition_id = NULL,
+  user_id = NULL
 )
 }
 \arguments{
-\item{app_name}{}
+\item{setup_pages}{Should there be setup pages?}
+
+\item{setup_options}{Setup page options.}
+
+\item{use_musicassessr_db}{Is a SQL backend being used?}
+
+\item{app_name}{App name for audio recording apps.}
+
+\item{midi_file_playback}{Will MIDI files need to be played back?}
+
+\item{visual_notation}{Will there be visual notation?}
+
+\item{record_audio}{Is audio recording required?}
+
+\item{midi_input}{Is MIDI input required?}
+
+\item{fake_range}{Should the vocal/instrument range be faked?}
+
+\item{musicassessr_aws}{Is this being run on Amazon Web Services (AWS)?}
+
+\item{experiment_id}{An experiment ID.}
+
+\item{experiment_condition_id}{An experiment condition ID.}
+
+\item{user_id}{A user ID.}
 }
 \description{
 Specify options for a musicassessr test.

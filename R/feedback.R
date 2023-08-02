@@ -115,8 +115,8 @@ feedback_long_tone <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(is_na_length_1(answer$onset) | is.null(answer$onset) |
-       is_na_length_1(answer$freq) | is.null(answer$freq)) {
+    if(is.scalar.na(answer$onset) | isscalar.null(answer$onset) |
+       is.scalar.na(answer$freq) | is.scalar.null(answer$freq)) {
       plot <- "Sorry, but we cannot provide feedback for this trial. Did you sing?"
     } else {
       # plot

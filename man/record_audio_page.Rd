@@ -5,18 +5,16 @@
 \title{Page to record audio in psychTestR}
 \usage{
 record_audio_page(
-  body = " ",
+  body = "",
   label = "record_audio_page",
-  stimuli = " ",
+  stimuli = NULL,
   stimuli_reactive = FALSE,
   page_text = " ",
   page_title = " ",
   interactive = FALSE,
-  show_record_button = TRUE,
-  get_answer = get_answer_save_aws_key,
+  get_answer = get_answer_save_audio_file,
   answer_meta_data = tibble::tibble(),
-  show_aws_controls = FALSE,
-  button_text = psychTestR::i18n("Record"),
+  record_button_text = psychTestR::i18n("Record"),
   stop_button_text = psychTestR::i18n("Stop"),
   record_duration = NULL,
   on_complete = NULL,
@@ -32,6 +30,8 @@ record_audio_page(
   total_no_melodies = 0,
   volume_meter = FALSE,
   volume_meter_type = "default",
+  show_sheet_music_after_record = FALSE,
+  show_record_button = TRUE,
   ...
 )
 }

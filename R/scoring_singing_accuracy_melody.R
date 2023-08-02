@@ -33,7 +33,7 @@ score_melody_interval_accuracy <- function(sung_interval,
         user_production_pitches = sung_interval[!is.na(sung_interval)],
         allOctaves = TRUE)
 
-    r <- purrr::map2_dbl(sung_interval_cents,nearest_intervals*100, # *100 = to cents
+    r <- purrr::map2_dbl(sung_interval_cents,nearest_intervals * 100, # *100 = to cents
                          function(s, t) abs(s) - abs(t))
 
     res <- mean(r, na.rm = TRUE)

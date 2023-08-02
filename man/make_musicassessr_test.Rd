@@ -5,62 +5,38 @@
 \title{Make a musicassessr test}
 \usage{
 make_musicassessr_test(
-  elts_before_setup_pages = function() {
-    
-    psychTestR::join(psychTestR::code_block(function(state, ...) {
-     }))
- },
-  elts,
-  setup_pages,
-  setup_pages_options = musicassessr::setup_pages_options(),
   title,
   admin_password,
+  elts,
+  elts_before_setup_pages = function() {
+     empty_code_block()
+ },
   languages = "en",
   additional_dict = NULL,
-  musicassessr_opt = musicassessr::musicassessr_opt(),
-  musicassessr_aws = FALSE,
-  visual_notation = FALSE,
-  midi_file_playback = FALSE,
-  record_audio = TRUE,
-  app_name = character(),
-  midi_input = FALSE,
-  test_username = NA,
-  test = NA,
-  store_results_in_db = FALSE,
-  fake_range = TRUE,
+  opt = musicassessr_opt(),
+  final_page_ui = psychTestR::i18n("thank_you_for_completing"),
+  welcome_page = psychTestR::one_button_page("Welcome."),
   ...
 )
 }
 \arguments{
-\item{elts_before_setup_pages}{Timeline to go before setup pages.}
-
-\item{elts}{Timeline to go after setup pages.}
-
-\item{setup_pages}{Should there be setup pages.}
-
-\item{setup_pages_options}{Options for setup pages.}
-
 \item{title}{Title of the test.}
 
 \item{admin_password}{Password for the test.}
+
+\item{elts}{Timeline to go after setup pages.}
+
+\item{elts_before_setup_pages}{Timeline to go before setup pages.}
 
 \item{languages}{Languages for the test.}
 
 \item{additional_dict}{Additional dictionary for the test.}
 
-\item{musicassessr_opt}{Musicassessr options.}
+\item{opt}{Musicassessr options.}
 
-\item{musicassessr_aws}{Running on AWS?}
+\item{final_page_ui}{The UI of the final page.}
 
-\item{visual_notation}{Will there be visual notation?}
-
-\item{midi_file_playback}{Is MIDI file playback required?}
-
-\item{record_audio}{Is audio recording required?}
-
-\item{app_name}{App name for audio recording apps.}
-
-\item{midi_input}{Is MIDI input required?}
+\item{welcome_page}{Required because you need a page before musicassessr_init to instantiate a p_id.}
 
 \item{...}{}
 }

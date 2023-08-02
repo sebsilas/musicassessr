@@ -13,12 +13,14 @@ present_stimuli(
   page_title = " ",
   slide_length = numeric(),
   answer_meta_data = character(),
-  get_answer = function() {
- },
+  get_answer = function(input, ...) {
+    
+    stop("Specify a proper get_answer function if you're using present_stimuli with page_type")
+
+    },
   save_answer = TRUE,
   stimuli_reactive = FALSE,
   midi_device = " ",
-  show_aws_controls = FALSE,
   page_label = "x",
   button_text = psychTestR::i18n("Next"),
   play_button_text = psychTestR::i18n("Play"),
@@ -29,7 +31,6 @@ present_stimuli(
   start_note = 0L,
   end_note = "end",
   durations = numeric(),
-  show_record_button = FALSE,
   auto_next_page = FALSE,
   choices = character(),
   user_rating = FALSE,
@@ -61,10 +62,19 @@ present_stimuli(
   octave = 4,
   volume_meter = FALSE,
   volume_meter_type = "default",
+  show_sheet_music_after_record = FALSE,
+  interactive = FALSE,
+  show_record_button = FALSE,
+  trigger_start_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
+  trigger_end_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
   ...
 )
 }
 \arguments{
+\item{trigger_start_of_stimuli_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus begins.}
+
+\item{trigger_end_of_stimuli_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus is completed.}
+
 \item{...}{}
 }
 \description{

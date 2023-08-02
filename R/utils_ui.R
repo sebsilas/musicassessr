@@ -20,60 +20,6 @@ final_page_or_continue_to_new_test <- function(final = TRUE, task_name, img = NU
   }
 }
 
-present_record_button <- function(present = FALSE,
-                                  type = "record_audio_page",
-                                  midi_device = " ",
-                                  interactive = FALSE,
-                                  button_text = psychTestR::i18n("Record"),
-                                  record_duration = NULL, show_stop_button_after_record = FALSE,
-                                  stop_button_text = psychTestR::i18n("Stop")) {
-
-  if (present & type == "record_audio_page" & is.null(record_duration)) {
-
-    shiny::tags$div(id = "button_area",
-                    shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
-                    htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" style="visibility: hidden;">',stop_button_text, '</button>')),
-
-                    if(show_stop_button_after_record) {
-                      shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
-                           recordAndStop(null, true, false, this.id, \"',type,'\");
-                           hideRecordButton();
-                           showStopButton();
-                            });'))
-                    } else {
-                      shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
-                           recordAndStop(null, true, false, this.id, \"',type,'\");
-                           hideRecordButton();
-                            });'))
-                    }
-    )
-  } else if (present & type == "record_audio_page" & !is.null(record_duration)) {
-
-    record_duration <- record_duration*1000
-    shiny::tags$div(id = "button_area",
-                    shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
-                    htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" style="visibility: hidden;">',stop_button_text, '</button>')),
-                    shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
-                           recordAndStop(', record_duration, ', false, false, this.id, \"',type,'\");
-                            hideRecordButton();
-                    });
-    ')))
-  } else if (present & type == "record_midi_page") {
-    shiny::tags$div(id = "button_area",
-                    shiny::tags$button(button_text, id = "recordButton", class="btn btn-default action-button"),
-                    htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" style="visibility: hidden;">',stop_button_text, '</button>')),
-                    shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
-                           recordAndStop(null, true, false, this.id, \"record_midi_page\");
-                            hideRecordButton();
-                           instantiateMIDI(\"',midi_device,'\", false);
-                            })'))
-    )
-  } else {
-    shiny::tags$div(id = "button_area",
-                    htmltools::HTML(paste0('<button id="stopButton" class="btn btn-default action-button" style = "visibility: hidden;">',stop_button_text, '</button>'))
-    )
-  }
-}
 
 
 validate_page_types <- function(page_type_string, args) {
@@ -102,4 +48,31 @@ validate_page_types <- function(page_type_string, args) {
       stop('You must specify a label for text_input_page')
     }
   }
+}
+
+
+#' Deploy a filler task
+#'
+#' @param type
+#'
+#' @return
+#' @export
+#'
+#' @examples
+filler_task <- function(type = c("none", "surveys")) {
+  if (match.arg(type) == "none") {
+    musicassessr::empty_code_block()
+  } else if (match.arg(type) == "surveys") {
+    psychTestR::join(
+      psyquest::GMS(subscales = "Musical Training"),
+      musicassessr::deploy_demographics(TRUE)
+    )
+  } else {
+    stop("Filler task type not recognised")
+  }
+}
+
+
+wrap_musicassessr_timeline <- function(tl) {
+  psychTestR::new_timeline(tl, dict = musicassessr::dict(NULL))
 }

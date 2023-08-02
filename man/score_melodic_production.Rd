@@ -17,13 +17,14 @@ score_melodic_production(
   answer_meta_data = tibble::tibble(),
   as_tb = FALSE,
   additional_scoring_measures = NULL,
-  with_pmi = FALSE
+  with_pmi = FALSE,
+  compute_accuracy_measures_aligned = TRUE
 )
 }
 \arguments{
 \item{user_melody_freq}{Can be NULL for MIDI.}
 
-\item{with_pmi}{}
+\item{compute_accuracy_measures_aligned}{}
 }
 \description{
 Score using melodic production measures

@@ -26,7 +26,6 @@ rhythmic_melody_trials(
   max_goes = 3L,
   max_goes_forced = FALSE,
   display_modality = "auditory",
-  show_record_button = FALSE,
   show_progress = TRUE,
   start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
@@ -36,11 +35,16 @@ rhythmic_melody_trials(
   presampled = FALSE,
   get_similarity_to_previous_melody = FALSE,
   volume_meter = FALSE,
-  volume_meter_type = "default"
+  volume_meter_type = "default",
+  melody_paradigm = c("standard", "sing_melody_first",
+    "learn_phase_visual_display_modality"),
+  singing_trials = TRUE,
+  review = FALSE,
+  phase = c("test", "learn", "review")
 )
 }
 \arguments{
-\item{volume_meter_type}{}
+\item{phase}{}
 }
 \description{
 Rhythmic melody trials block

@@ -5,14 +5,15 @@
 \title{Initiate a musicassessr test}
 \usage{
 musicassessr_init(
-  test_username = NA,
-  test = NA,
-  store_results_in_db = FALSE,
-  app_name
+  use_musicassessr_db = FALSE,
+  app_name = "",
+  experiment_id = NULL,
+  experiment_condition_id = NULL,
+  user_id = NULL
 )
 }
 \arguments{
-\item{app_name}{}
+\item{user_id}{}
 }
 \description{
 Initiate a musicassessr test

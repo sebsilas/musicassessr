@@ -19,7 +19,8 @@ present_stimuli_midi_notes_both(
   show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   page_type = "null",
-  durations = NULL
+  durations = NULL,
+  trigger_end_of_stimuli_fun = "function() { console.log('Stimulus finished!'); }"
 )
 }
 \arguments{

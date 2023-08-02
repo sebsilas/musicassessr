@@ -26,7 +26,6 @@ multi_page_play_melody_loop(
   get_trial_characteristics_function = NULL,
   max_goes_forced = FALSE,
   display_modality = "auditory",
-  show_record_button = FALSE,
   show_progress = TRUE,
   start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
@@ -35,11 +34,15 @@ multi_page_play_melody_loop(
   give_first_melody_note = FALSE,
   get_similarity_to_previous_melody = FALSE,
   volume_meter = FALSE,
-  volume_meter_type = "default"
+  volume_meter_type = "default",
+  melody_paradigm = c("standard", "sing_melody_first",
+    "learn_phase_visual_display_modality"),
+  singing_trials = TRUE,
+  phase = c("test", "learn", "review", "example")
 )
 }
 \arguments{
-\item{volume_meter_type}{}
+\item{phase}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

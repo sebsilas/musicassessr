@@ -215,7 +215,7 @@ get_transposition_hints <- function(pitch_vec1, pitch_vec2){
            round(median(pitch_vec1)) - round(median(pitch_vec2)))
   octave_offset <- modus(round(ret/12))
   #messagef("Octave offset = %d", octave_offset)
-  ret <- c(0, ret, octave_offset*12 + key_diff, octave_offset*12 + 12 - key_diff)
+  ret <- c(0, ret, octave_offset*12 + key_diff, octave_offset * 12 + 12 - key_diff)
   unique(ret) %>% sort()
 
 }

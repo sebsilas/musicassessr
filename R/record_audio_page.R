@@ -8,11 +8,9 @@
 #' @param page_text
 #' @param page_title
 #' @param interactive
-#' @param show_record_button
 #' @param get_answer
 #' @param answer_meta_data
-#' @param show_aws_controls
-#' @param button_text
+#' @param record_button_text
 #' @param stop_button_text
 #' @param record_duration
 #' @param on_complete
@@ -28,24 +26,24 @@
 #' @param total_no_melodies
 #' @param volume_meter
 #' @param volume_meter_type
+#' @param show_sheet_music_after_record
+#' @param show_record_button
 #' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-record_audio_page <- function(body = " ",
+record_audio_page <- function(body = "",
                              label = "record_audio_page",
-                             stimuli = " ",
+                             stimuli = NULL,
                              stimuli_reactive = FALSE,
                              page_text = " ",
                              page_title = " ",
                              interactive = FALSE,
-                             show_record_button = TRUE,
-                             get_answer = get_answer_save_aws_key,
+                             get_answer = get_answer_save_audio_file,
                              answer_meta_data = tibble::tibble(),
-                             show_aws_controls = FALSE,
-                             button_text = psychTestR::i18n("Record"),
+                             record_button_text = psychTestR::i18n("Record"),
                              stop_button_text = psychTestR::i18n("Stop"),
                              record_duration = NULL,
                              on_complete = NULL,
@@ -60,7 +58,9 @@ record_audio_page <- function(body = " ",
                              melody_no = 0,
                              total_no_melodies = 0,
                              volume_meter = FALSE,
-                             volume_meter_type = 'default', ...) {
+                             volume_meter_type = 'default',
+                             show_sheet_music_after_record = FALSE,
+                             show_record_button = TRUE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -70,11 +70,9 @@ record_audio_page <- function(body = " ",
                           page_title,
                           page_type = "record_audio_page",
                           interactive,
-                          show_record_button,
                           get_answer,
                           answer_meta_data,
-                          show_aws_controls,
-                          button_text,
+                          record_button_text,
                           stop_button_text,
                           record_duration,
                           on_complete,
@@ -91,39 +89,12 @@ record_audio_page <- function(body = " ",
                           melody_no,
                           total_no_melodies,
                           volume_meter,
-                          volume_meter_type)
+                          volume_meter_type,
+                          show_sheet_music_after_record,
+                          show_record_button)
 
 }
 
-
-deploy_aws_pyin <- function(show_aws_controls = TRUE, stop_button_text = "Stop") {
-
-  # NB: remove style attribute from pauseButton and/or recordingsList to show pause button or recordings respectively
-  shiny::tags$div(
-    htmltools::HTML('<div id="spinnerContainer" class="spinner"></div>
-
-  <div id="controls">
-
-   <button id="recordButton" class="btn btn-default action-button">Record</button>
-   <button id="pauseButton" class="btn btn-default action-button" disabled style="display: none;">Pause</button>
-  </div>
-  <div id="formats" style="display: none;">Format: start recording to see sample rate</div>
-  <p style="display: none;"><strong>Recordings:</strong></p>
-  <ol id="recordingsList" style="display: none;"></ol>
-      <div id="csv_file" style="display: none;"></div>'),
-  show_aws_buttons(show_aws_controls))
-}
-
-
-show_aws_buttons <- function(show_aws_controls) {
-  if(show_aws_controls) {
-    aws_controls <- shiny::tags$script('')
-  } else {
-    aws_controls <- shiny::tags$script('var controls = document.getElementById("controls");
-                                controls.style.visibility = \'hidden\'; // start hidden')
-  }
-  aws_controls
-}
 
 
 

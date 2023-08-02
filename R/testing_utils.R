@@ -46,8 +46,6 @@ test_recording_app <- function(copy_audio_to = NULL) {
 
 log_scores <- function(onset, dur, freq, note, stimuli, stimuli_durations) {
 
-  print(onset)
-
   tibble::tibble(log_onset = log(onset),
                  log_dur = log(dur),
                  freq_2 = freq * 2,

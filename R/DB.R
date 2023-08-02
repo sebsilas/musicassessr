@@ -1,386 +1,309 @@
 
-instantiate_db <- function(host, username, password, overwrite = FALSE) {
+db_append_scores_session <- function(session_id, mean_opti3_arrhythmic, mean_opti3_rhythmic,
+                                     ability_estimate_arrhythmic_first_attempt, ability_estimate_arrhythmic_last_attempt,
+                                     ability_estimate_rhythmic_first_attempt, ability_estimate_rhythmic_last_attempt) {
 
-  # leave this unexported, to make it less easy to accidentally delete data
+  session_scores_df <- tibble::tibble(session_id = session_id,
+                                      mean_opti3_arrhythmic = mean_opti3_arrhythmic,
+                                      mean_opti3_rhythmic = mean_opti3_rhythmic,
+                                      ability_estimate_arrhythmic_first_attempt = ability_estimate_arrhythmic_first_attempt,
+                                      ability_estimate_arrhythmic_last_attempt = ability_estimate_arrhythmic_last_attempt,
+                                      ability_estimate_rhythmic_first_attempt = ability_estimate_rhythmic_first_attempt,
+                                      ability_estimate_rhythmic_last_attempt = ability_estimate_rhythmic_last_attempt)
 
-  if(overwrite) {
-
-    if(askYesNo("Careful! Are you sure you want to overwrite the underlying database?")) {
-
-      if(askYesNo("Are you really sure?!")) {
-        con <- connect_to_db(host, username, password)
-
-        print('instantiate new user')
-
-        backup_db()
-
-        # create a table to store trials
-
-        trials <- tibble::tibble(
-          # NB: take the times and dates from psychTestR
-          file_name = character(),
-          test_username = character(),
-          test = character(),
-          trial_id = numeric(),
-          session_id = character(),
-          abs_melody = character(),
-          melody = character(),
-          opti3 = numeric(),
-          N = numeric(),
-          step.cont.loc.var = numeric(),
-          tonalness = numeric(),
-          log_freq = numeric(),
-          attempt = numeric())
-
-
-        sessions <- tibble::tibble(
-          # NB: take the times and dates from psychTestR
-          test_username = character(),
-          test = character(),
-          session_id = character(),
-          time_started = as.POSIXct(character(), format = "%Y-%m-d-H:%M:%OS"),
-          time_completed = as.POSIXct(character(), format = "%Y-%m-d-H:%M:%OS"),
-          session_length = numeric(),
-          mean_opti3 = numeric(),
-          ability_estimate = numeric())
-
-        production <- tibble::tibble(
-          file_name = character(),
-          test_username = character(),
-          test = character(),
-          session_id = character(),
-          trial_id = integer(),
-          abs_melody = character(),
-          melody = character(),
-          onset = numeric(),
-          dur = numeric(),
-          freq = numeric(),
-          note = numeric(),
-          user_pitch_classes = character(),
-          correct_note = logical())
-
-        DBI::dbWriteTable(con, "production", production, overwrite = overwrite)
-        DBI::dbWriteTable(con, "trials", trials, overwrite = overwrite)
-        DBI::dbWriteTable(con, "sessions", sessions, overwrite = overwrite)
-        print('tables: ')
-        print(DBI::dbListTables(con))
-        DBI::dbDisconnect(con)
-
-      }
-
-    }
-
-  }
+  db_append_to_table(table = "scores_session", data = session_scores_df, primary_key_col = "scores_session_id")
 
 }
 
 
+db_append_session <- function(db_con,
+                              condition_id,
+                              user_id,
+                              psychTestR_session_id,
+                              time_completed,
+                              experiment_id) {
 
-#' Get a postgres table
-#'
-#' @param name
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get_table <- function(name = c("trials", "sessions", "production")) {
+  session_df <- tibble::tibble(condition_id = condition_id,
+                               user_id = user_id,
+                               psychTestR_session_id = psychTestR_session_id,
+                               time_completed = time_completed,
+                               experiment_id = experiment_id)
 
-  con <- connect_to_db()
-
-  if (name > 1) {
-    name <- name[1]
-  }
-  print(name)
-  tab <- DBI::dbReadTable(con, name)
-
-  DBI::dbDisconnect(con)
-  tab
+  session_id <- db_append_to_table(db_con, table = "sessions", data = session_df, primary_key_col = "session_id")
+  session_id
 }
 
 
 
+db_append_melodic_production <- function(db_con, trial_id, pyin_res, correct_boolean) {
+  melodic_production_df <- pyin_res %>%
+    dplyr::select(-file_name) %>%
+    dplyr::mutate(trial_id = trial_id,
+                  correct = correct_boolean)
+  db_append_to_table(db_con, table = "melodic_production", data = melodic_production_df)
+}
 
-backup_db <- function() {
+#
+# pyin::test_pyin() %>% dplyr::select(onset:note) %>% db_append_melodic_production()
 
-  trials <- get_table("trials")
-  sessions <- get_table("sessions")
-  production <- get_table("production")
+db_append_trials <- function(db_con, audio_file, time_started, time_completed, instrument,
+                             attempt, item_id, display_modality, phase, rhythmic, item_bank_id, session_id) {
 
-  save(trials, sessions, production, file = paste0("backup/LongitudinalBackup_",
-                                                   format(Sys.time(), "%a_%b_%d_%X_%Y"), ".rda"))
+  stopifnot(
+            is.scalar.character(audio_file),
+            is(time_started, "POSIXct"),
+            is(time_completed, "POSIXct"),
+            is.scalar.character(instrument),
+            is.integer(attempt),
+            is.scalar.character(item_id),
+            is.scalar.character(display_modality),
+            is.scalar.character(phase),
+            is.scalar.logical(rhythmic),
+            is.integer(item_bank_id),
+            is.integer(session_id)
+            )
 
+  trial_df <- tibble::tibble(audio_file = audio_file,
+                             time_started = time_started,
+                             time_completed = time_completed,
+                             instrument = instrument,
+                             attempt = attempt,
+                             item_id = item_id,
+                             display_modality = display_modality,
+                             phase = phase,
+                             rhythmic = rhythmic,
+                             item_bank_id = item_bank_id,
+                             session_id = session_id)
+
+  db_append_to_table(db_con, table = "trials", data = trial_df, primary_key_col = "trial_id")
 }
 
 
+# t <- db_append_trials(item_name = "test_item", audio_file = "test.wav", attempt = 1L,
+#                  time_started = Sys.time(), time_completed = Sys.time() - lubridate::seconds(10), instrument = "test_instrument")
+#
 
 
-#' Connect to a postgres DB
-#'
-#' @param host
-#' @param username
-#' @param password
-#'
-#' @return
-#' @export
-#'
-#' @examples
-connect_to_db <- function(host = Sys.getenv("DB_HOST"),
-                          db_name = Sys.getenv("DB_NAME"),
-                          username = Sys.getenv("DB_USER"),
-                          password = Sys.getenv("DB_PASSWORD")) {
-  con <- DBI::dbConnect(
-    RPostgres::Postgres(),
-    host = host,
-    port = 5432,
-    dbname = db_name,
-    user = username,
-    password = password
-  )
-  print('connect to DB')
-  print("tables: ")
-  print(DBI::dbListTables(con))
-  con
-}
 
 
-append_to_db <- function(db_name, value) {
+db_append_items_studied <- function(review = FALSE, next_review_date = NULL) {
 
-  con <- connect_to_db(host, username, password)
-
-  DBI::dbWriteTable(conn = con,
-                    name = db_name,
-                    value = value,
-                    append = TRUE)
-
-  print('added trial: ')
-  print(dplyr::tbl(con, db_name))
-  DBI::dbDisconnect(con)
-}
-
-db_add_new_trial <- function(test_username,
-                             test,
-                             session_id,
-                             melody,
-                             opti3,
-                             file_name,
-                             N,
-                             step.cont.loc.var,
-                             tonalness,
-                             log_freq,
-                             attempt) {
-
-  print('db_add_new_trial')
-  cat(
-    N,
-    step.cont.loc.var,
-    tonalness,
-    log_freq,
-    attempt
+  stopifnot(
+    is.scalar.logical(review),
+    is(next_review_date, "POSIXct"),
   )
 
-  trial_id <- nrow(get_table("trials")) + 1
 
-  trial <- tibble::tibble_row(
-    file_name = file_name,
-    test_username = test_username,
-    test = test,
-    trial_id = trial_id,
-    session_id = session_id,
-    abs_melody = melody,
-    melody = paste0(diff(itembankr::str_mel_to_vector(melody)), collapse = ","),
-    opti3 = opti3,
-    N = N,
-    step.cont.loc.var = step.cont.loc.var,
-    tonalness = tonalness,
-    log_freq = log_freq,
-    attempt = attempt)
+  items_studied_df <- tibble::tibble(review = review, next_review_date = next_review_date)
 
-  append_to_db("trials", trial)
-
-  return(trial_id)
-
-}
-
-
-db_add_new_session <- function(test_username,
-                               test,
-                               session_id,
-                               time_started,
-                               time_completed = lubridate::now(),
-                               mean_opti3,
-                               ability_estimate) {
-
-
-  session <- tibble::tibble_row(
-    # NB: take the times and dates from psychTestR
-    test_username = test_username,
-    test = test,
-    session_id = session_id,
-    time_started = as.POSIXct(time_started, format = "%Y-%m-d-H:%M:%OS"),
-    time_completed = as.POSIXct(time_completed, format = "%Y-%m-d-H:%M:%OS"),
-    session_length = as.numeric(time_completed - time_started),
-    mean_opti3 = mean_opti3,
-    ability_estimate = ability_estimate)
-
-  append_to_db("sessions", session)
-
+  db_append_to_table(con, table = "items_studied", data = items_studied_df)
 }
 
 
 
-db_add_new_production <- function(test_username,
-                                  test,
-                                  session_id,
-                                  trial_id,
-                                  melody,
-                                  pyin_res) {
+db_append_conditions <- function(condition_name, condition_description) {
 
-  if(!is.null(pyin_res$pyin_res)) {
-    pyin_res <- pyin_res$pyin_res
-  }
-
-  if(all(is.na(pyin_res))) {
-
-    production <- pyin_res %>%
-      dplyr::mutate(
-        test_username = test_username,
-        test = test,
-        session_id = session_id,
-        trial_id = trial_id,
-        abs_melody = melody,
-        melody = paste0(diff(itembankr::str_mel_to_vector(melody)), collapse = ","),
-        user_pitch_classes = as.character(NA),
-        correct_note = as.logical(NA))
-
-  } else {
-
-    melody_v <- itembankr::str_mel_to_vector(melody)
-    stimuli_pitch_classes <- itembankr::midi_to_pitch_class(melody_v)
-
-    production <- pyin_res %>%
-      dplyr::mutate(
-        test_username = test_username,
-        test = test,
-        session_id = session_id,
-        trial_id = trial_id,
-        abs_melody = melody,
-        melody = paste0(diff(itembankr::str_mel_to_vector(melody)), collapse = ","),
-        user_pitch_classes = dplyr::case_when(is.na(note) ~ as.character(NA), TRUE ~ as.character(itembankr::midi.to.pitch.classes.list[note])),
-        correct_note = user_pitch_classes %in% stimuli_pitch_classes)
-
-  }
+  stopifnot(
+    is.scalar.character(condition_name),
+    is.scalar.character(condition_description)
+  )
 
 
-  append_to_db("production", production)
+  conditions_df <- tibble::tibble(condition_name = condition_name,
+                                  condition_description = condition_description)
 
+  db_append_to_table(con, table = "conditions", data = conditions_df)
 }
 
 
 
-add_trial_to_db <- function(test_username = NA,
-                            test,
-                            session_id,
-                            melody,
-                            opti3,
-                            pyin_res,
-                            N,
-                            step.cont.loc.var,
-                            tonalness,
-                            log_freq,
-                            attempt) {
+db_append_users <- function(db_con, username, password, enabled = TRUE, created_at = Sys.time() ) {
+
+  stopifnot(
+    is.scalar.character(username),
+    is.scalar.character(password),
+    is.scalar.logical(enabled),
+    is(created_at, "POSIXct")
+  )
 
 
-  trial_id <- db_add_new_trial(test_username,
-                               test,
-                               session_id,
-                               melody,
-                               opti3,
-                               pyin_res$pyin_res$file_name[1],
-                               N,
-                               step.cont.loc.var,
-                               tonalness,
-                               log_freq,
-                               attempt)
+  users_df <- tibble::tibble(username = username,
+                             password = digest::hmac(
+                               key = Sys.getenv(x = "ENCRYPTION_KEY"),
+                               object = password,
+                               algo = "sha512"
+                             ),
+                             enabled = enabled,
+                             created_at = created_at)
 
-  db_add_new_production(test_username, test, session_id, trial_id, melody, pyin_res)
-
+  db_append_to_table(db_con, table = "users", data = users_df)
 }
 
-#' Add session to postgres db
+db_append_session_tokens <- function(user_id, expiration_in_seconds) {
+
+  stopifnot(
+    is.character(user_id),
+    is.numeric(expiration_in_seconds)
+  )
+
+  token <- create_session_token()
+
+  expires <- Sys.time() + expiration_in_seconds
+
+
+  session_tokens_df <- tibble::tibble(
+                             user_id = user_id,
+                             token = token,
+                             created_at = created_at,
+                             expires = expires,
+                             active = TRUE)
+
+  db_append_to_table(con, table = "session_tokens", data = session_tokens_df)
+}
+
+
+db_append_user_instrument_info <- function(db_con, user_id, instrument_id, bottom_range, top_range) {
+
+  stopifnot(
+    is.integer(user_id),
+    is.integer(instrument_id),
+    is.integer(bottom_range) & bottom_range %in% midi.gamut,
+    is.integer(top_range) & top_range %in% midi.gamut
+  )
+
+
+  instrument_ranges_df <- tibble::tibble(
+    user_id = user_id,
+    instrument_id = instrument_id,
+    bottom_range = bottom_range,
+    top_range = top_range)
+
+  db_append_to_table(db_con, table = "user_instrument_info", data = instrument_ranges_df)
+}
+
+
+
+#' Add final session info to postgres db
 #'
-#' @param take_scores_from
-#' @param get_local
-#' @param test
 #'
 #' @return
 #' @export
 #'
 #' @examples
-elt_add_session_to_db <- function(take_scores_from = c("db_table", "session_variable"),
-                                  get_local = FALSE,
-                                  test = NULL) {
+elt_add_final_session_info_to_db <- function() {
+
 
   psychTestR::code_block(function(state, ...) {
 
-    store_results_in_db <- psychTestR::get_global("store_results_in_db", state)
+    use_musicassessr_db <- psychTestR::get_global("use_musicassessr_db", state)
 
-    if(store_results_in_db) {
+    if(use_musicassessr_db) {
 
-      test_username <- psychTestR::get_global("test_username", state)
-
-      test <- get_test_name(test, get_local, state)
-
+      # Get session info
+      session_id <- psychTestR::get_global("session_id", state) # Created earlier
+      test_id <- psychTestR::get_global("test_id", state)
+      condition_id <- psychTestR::get_global("condition_id", state)
+      user_id <- psychTestR::get_global("user_id", state)
+      experiment_id <- psychTestR::get_global("experiment_id", state)
+      item_bank_id <- psychTestR::get_global("item_bank_id", state)
       session_info <- psychTestR::get_session_info(state, complete = TRUE)
-      session_id <- session_info$p_id
+      psychTestR_session_id <- session_info$p_id
       time_started <- session_info$time_started
       time_completed <- session_info$current_time
 
-      trial_table <- musicassessr::get_table("trials") %>%
+      db_con <- psychTestR::get_global('db_con', state)
+
+      browser()
+
+      # Get trials
+      trial_table <- musicassessr::get_table(db_con, "trials") %>%
+        dplyr::left_join(musicassessr::get_table(db_con, "sessions"), by = "trial_id") %>%
         dplyr::filter(session_id == !! session_id,
-                      test == !! test,
-                      test_username == !! test_username) %>%
+                      user_id == !! user_id,
+                      test_id == !! test_id ) %>%
+        dplyr::left_join(item_bank, by = "item_id")
+
+
+      # First attempt
+      first_attempt_trial_table <- trial_table %>%
         dplyr::group_by(melody) %>%
-        dplyr::slice_max(order_by = attempt, with_ties = FALSE) %>%
+        dplyr::slice_min(attempt, with_ties = FALSE) %>%
         dplyr::ungroup()
 
-      mean_opti3 <- trial_table %>%
-        dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
-        dplyr::pull(mean_opti3)
+      # Last attempt
+      last_attempt_trial_table <- trial_table %>%
+        dplyr::group_by(melody) %>%
+        dplyr::slice_max(attempt, with_ties = FALSE) %>% #
+        dplyr::ungroup()
+
+      # Produce session-level scores
+
+        ## Mean opti3
+          ### First attempt
+        mean_opti3_first_attempt <- first_attempt_trial_table %>%
+          dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
+          dplyr::pull(mean_opti3)
+          ### Last attempt
+        mean_opti3_last_attempt <- last_attempt_trial_table %>%
+          dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
+          dplyr::pull(mean_opti3)
 
 
-      if (take_scores_from == "session_variable") {
+          # Ability estimate
 
-        print('taking scores from session_variable')
+            ## Arrhythmic
 
-        presampled_items <- psychTestR::get_local("presampled_items", state)
+            ability_estimate_arrhythmic_first_attempt <-
+              first_attempt_trial_table %>%
+              dplyr::filter(!rhythmic) %>%
+              dplyr::select(N, step.cont.loc.var, log_freq, i.entropy, opti3) %>%
+              dplyr::mutate(tmp_scores = opti3) %>%
+              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm2.2,  new_data = .)
 
-        new_data <- cbind(presampled_items, tibble::tibble(opti3 = trial_table$opti3, attempt = trial_table$attempt))
-
-      } else if(take_scores_from == "db_table") {
-
-        print('taking scores from db_table')
-
-        new_data <- trial_table
-
-      } else {
-        stop('take_scores_from not recognised')
-      }
-
-      new_data <- new_data %>%
-        dplyr::select(N, step.cont.loc.var, tonalness, opti3) %>%
-        dplyr::mutate(log_freq = 0, # use mean for now
-                      tmp_scores = opti3)
+            ability_estimate_arrhythmic_last_attempt <-
+              last_attempt_trial_table %>%
+              dplyr::filter(!rhythmic) %>%
+              dplyr::select(N, step.cont.loc.var, tonalness, log_freq, opti3) %>%
+              dplyr::mutate(tmp_scores = opti3) %>%
+              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm2.2,  new_data = . )
 
 
-      ability_estimate <- psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm2.2_scaled,
-                                                                                new_data)
+            ## Rhythmic
+
+            ability_estimate_arrhythmic_first_attempt <-
+              first_attempt_trial_table %>%
+              dplyr::filter(rhythmic) %>%
+              dplyr::select(N, step.cont.loc.var, log_freq, d.entropy, i.entropy, opti3) %>%
+              dplyr::mutate(tmp_scores = opti3) %>%
+              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm3.2,  new_data = .)
+
+            ability_estimate_arrhythmic_last_attempt <-
+              last_attempt_trial_table %>%
+              dplyr::filter(rhythmic) %>%
+              dplyr::select(N, step.cont.loc.var, log_freq, d.entropy, i.entropy, opti3) %>%
+              dplyr::mutate(tmp_scores = opti3) %>%
+              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm3.2,  new_data = . )
 
 
-      db_add_new_session(test_username, test, session_id, time_started, time_completed, mean_opti3, ability_estimate)
+      # Append scores
+      db_append_scores_session(session_id,
+                               mean_opti3_arrhythmic, mean_opti3_rhythmic,
+                               ability_estimate_arrhythmic_first_attempt, ability_estimate_arrhythmic_last_attempt,
+                               ability_estimate_rhythmic_first_attempt, ability_estimate_rhythmic_last_attempt)
+
+      # Update sessions table with time finished
+
+      session_df <- get_table(db_con, 'sessions')
+
+      dplyr::rows_update(session_df, tibble::tibble(session_id = session_id, time_completed = Sys.time()),
+                         by = "session_id", in_place = TRUE)
+
+
     }
   })
 }
+
+
 
 
 get_test_name <- function(test, get_local, state) {
@@ -396,14 +319,6 @@ get_test_name <- function(test, get_local, state) {
 
 
 
-
-# instantiate_db(host = host, username = username, password = password, overwrite = TRUE)
-
-# trials <- get_table("trials")
-# sessions <- get_table("sessions")
-# production  <- get_table("production")
-
-
 get_session_trials <- function(session_id) {
   trials <- get_table("trials") %>%
     dplyr::filter(session_id == !! session_id)
@@ -412,4 +327,114 @@ get_session_trials <- function(session_id) {
 
 
 
+#' Get a random selection of previous trials based on a user ID
+#'
+#' Note currently this doesn't distinguish between the most recent session and others further back, nor the trial type previously (arrhythmic, rhythmic etc.)
+#'
+#' @param db_con
+#' @param user_id
+#' @param no_reviews
+#'
+#' @return
+#'
+#' @examples
+get_review_trials <- function(db_con, user_id, no_reviews) {
 
+  # Grab session info
+  sessions <- musicassessr::get_table(db_con, "sessions")
+
+  # Grab trial info
+  trials <- musicassessr::get_table("trials") %>%
+    dplyr::left_join(sessions, by = "session_id")
+
+  # Grab user file sessions
+  user_trials <- trials %>%
+    dplyr::filter(user_id == user_id)
+
+  # Sample from previous trials
+  user_trials %>%
+    dplyr::slice_sample(n = no_reviews)
+
+
+}
+
+
+
+# get_user_trials_from_last_session("Seb")
+
+
+#' Get a user's range based on their user ID
+#'
+#' @param user_id
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_range_from_user_id <- function(db_con, user_id, instrument_id = 1L) {
+
+  res <- get_table(db_con, 'user_instrument_info') %>%
+    dplyr::filter(user_id == user_id, instrument_id == instrument_id)
+
+  list(bottom_range = res$bottom_range, top_range = res$top_range)
+
+}
+
+# get_range_from_user_id(db_con, user_id = 2)
+
+db_append_scores_trial <- function(db_con,
+                                   trial_length,
+                                   no_recalled_notes,
+                                   no_correct_notes,
+                                   no_error_notes,
+                                   no_correct_notes_octaves_allowed,
+                                   no_error_notes_octaves_allowed,
+                                   proportion_of_correct_note_events,
+                                   proportion_of_correct_note_events_octaves_allowed,
+                                   proportion_of_stimuli_notes_found,
+                                   proportion_of_stimuli_notes_found_octaves_allowed,
+                                   opti3,
+                                   ngrukkon,
+                                   harmcore,
+                                   rhythfuzz,
+                                   melody_dtw,
+                                   mean_cents_deviation_from_nearest_stimuli_pitch,
+                                   mean_cents_deviation_from_nearest_midi_pitch,
+                                   melody_note_accuracy,
+                                   melody_interval_accuracy,
+                                   accuracy,
+                                   precision,
+                                   recall,
+                                   F1_score,
+                                   PMI) {
+
+  scores_df <- tibble::tibble(
+    trial_length = trial_length,
+    no_recalled_notes = no_recalled_notes,
+    no_correct_notes = no_correct_notes,
+    no_error_notes = no_error_notes,
+    no_correct_notes_octaves_allowed = no_correct_notes_octaves_allowed,
+    no_error_notes_octaves_allowed = no_error_notes_octaves_allowed,
+    proportion_of_correct_note_events = proportion_of_correct_note_events,
+    proportion_of_correct_note_events_octaves_allowed = proportion_of_correct_note_events_octaves_allowed,
+    proportion_of_stimuli_notes_found = proportion_of_stimuli_notes_found,
+    proportion_of_stimuli_notes_found_octaves_allowed = proportion_of_stimuli_notes_found_octaves_allowed,
+    opti3 = opti3,
+    ngrukkon = ngrukkon,
+    harmcore = harmcore,
+    rhythfuzz = rhythfuzz,
+    melody_dtw = melody_dtw,
+    mean_cents_deviation_from_nearest_stimuli_pitch = mean_cents_deviation_from_nearest_stimuli_pitch,
+    mean_cents_deviation_from_nearest_midi_pitch = mean_cents_deviation_from_nearest_midi_pitch,
+    melody_note_accuracy = melody_note_accuracy,
+    melody_interval_accuracy = melody_interval_accuracy,
+    accuracy = accuracy,
+    precision = precision,
+    recall = recall,
+    F1_score = F1_score,
+    PMI = PMI)
+
+  db_append_to_table(db_con, table = "scores_trial", data = scores_df)
+
+
+}

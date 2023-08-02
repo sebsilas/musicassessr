@@ -52,7 +52,6 @@ item_sampler <- function(item_bank, no_items, replace = FALSE) {
 sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
   psychTestR::code_block(function(state, ...) {
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
-    print(item_chars)
     psychTestR::set_global(var_name, item_chars, state)
   })
 }
@@ -257,7 +256,7 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
     if(is.null(span) | span < 10) {
       span <- 10
     }
-    # sample rhythmic
+    # Sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     if(nrow(rhythmic_item_bank_subset) <= 1) {
       rhythmic_item_bank_subset <- item_bank
@@ -286,8 +285,6 @@ sample_rhythmic <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody
 #'
 #' @examples
 sample_random <- function(item_bank, num_items) {
-  print('sample_random')
-
   item_bank %>% dplyr::slice_sample(n = num_items)
 }
 
@@ -299,4 +296,27 @@ span_warning <- function(span) {
 
 
 
+
+#' Sample review
+#'
+#' @param num_review_items
+#' @param id
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sample_review <- function(num_review_items, id = "arrhythmic_melody") {
+  psychTestR::code_block(function(state, ...) {
+
+    # Get DB con
+    db_con <- psychTestR::get_global("db_con", state)
+    user_id <- psychTestR::get_global("user_id", state)
+
+    # Sample arrhythmic
+    review_sample <- get_review_trials(db_con, user_id, num_review_items)
+
+    psychTestR::set_global(id, review_sample, state)
+  })
+}
 

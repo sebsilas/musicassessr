@@ -5,7 +5,7 @@
 \title{Setup pages for musicassessr test}
 \usage{
 setup_pages(
-  input = c("microphone", "midi_keyboard", "midi_keyboard_and_microphone",
+  input_type = c("microphone", "midi_keyboard", "midi_keyboard_and_microphone",
     "midi_keyboard_or_microphone"),
   headphones = TRUE,
   SNR_test = TRUE,
@@ -32,7 +32,7 @@ setup_pages(
 )
 }
 \arguments{
-\item{input}{The form of musicassessr test.}
+\item{input_type}{The form of musicassessr test.}
 
 \item{headphones}{Deploy a headphone setup page.}
 

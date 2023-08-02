@@ -42,21 +42,18 @@ is.scalar <- function(x) {
   identical(length(x), 1L)
 }
 
-is_na_length_1 <- function(x) {
+is.scalar.na <- function(x) {
   all(is.na(x)) & length(x) == 1
 }
 
-is_null_length_1 <- function(x) {
-  all(is.null(x)) & length(x) == 1
+is.scalar.null <- function(x) {
+  all(is.null(x)) & length(x) == 0
 }
 
-is_null_or_na_length_1 <- function(x) {
-  is_na_length_1(x) | is.null(x)
+is.scalar.na.or.null <- function(x) {
+  is.scalar.na(x) | is.scalar.null(x)
 }
 
-is_equal_to_length_1 <- function(x, equal_to) {
-  all(x == equal_to) & length(x) == 1
-}
 
 
 #' Is NULL or not all TRUE?
@@ -68,7 +65,7 @@ is_equal_to_length_1 <- function(x, equal_to) {
 #'
 #' @examples
 is_null_or_not_all_TRUE <- function(x) {
-  !all(x) | is.null(x)
+  ! all(x) | is.null(x)
 }
 
 is_midi_note <- function(n) {
@@ -244,8 +241,11 @@ log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 #'
 #' @examples
 insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 2) {
+  print('insert_item_into_every_other_n_position_in_list')
+  print(i)
+  print(n)
   for (i in seq_along(l)) {
-    l <- append(l, item_to_add, after = (i*n)-1)
+    l <- append(l, item_to_add, after = (i * n)-1)
   }
   l
 }
@@ -419,4 +419,18 @@ list_tone_sound_types <- function() {
 }
 
 
+#' An empty code block
+#'
+#' @return
+#' @export
+#'
+#' @examples
+empty_code_block <- function() {
+    psychTestR::code_block(function(state, ...) { })
+}
+
+
+NA_to_js_null <- function(x) {
+  if(is.na(x)) 'null' else x
+}
 

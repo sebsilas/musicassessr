@@ -57,8 +57,6 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #' @param page_text
 #' @param play_button_text
 #' @param page_type
-#' @param show_aws_controls
-#' @param show_record_button
 #' @param auto_next_page
 #' @param example
 #' @param get_answer
@@ -78,8 +76,6 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              page_text = psychTestR::i18n("long_tone_text"),
                                              play_button_text = psychTestR::i18n("Play"),
                                              page_type = "record_audio_page",
-                                             show_aws_controls = FALSE,
-                                             show_record_button = FALSE,
                                              auto_next_page = TRUE,
                                              example = FALSE,
                                              get_answer = get_answer_pyin_long_note,
@@ -120,8 +116,6 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     play_button_text = play_button_text,
                     note_length = long_tone_length,
                     sound = "tone",
-                    show_aws_controls = show_aws_controls,
-                    show_record_button = show_record_button,
                     auto_next_page = auto_next_page,
                     save_answer = save_answer,
                     get_answer = get_answer,

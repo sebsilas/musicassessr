@@ -5,7 +5,7 @@
 \title{Get Instrument Range Pages}
 \usage{
 get_instrument_range_pages(
-  type,
+  input_type,
   get_range,
   show_musical_notation = FALSE,
   adjust_range = FALSE,

@@ -5,19 +5,17 @@
 \title{Page to record MIDI in psychTestR}
 \usage{
 record_midi_page(
-  body = " ",
+  body = "",
   label = "record_midi_page",
-  stimuli = " ",
+  stimuli = NULL,
   stimuli_reactive = FALSE,
   page_text = " ",
   page_title = " ",
   interactive = FALSE,
-  show_record_button = TRUE,
   get_answer = get_answer_midi,
   answer_meta_data = tibble::tibble(),
-  show_aws_controls,
-  button_text = "Record",
-  stop_button_text = "Stop",
+  record_button_text = psychTestR::i18n("Record"),
+  stop_button_text = psychTestR::i18n("Stop"),
   record_duration = NULL,
   on_complete = NULL,
   auto_next_page = FALSE,
@@ -27,11 +25,15 @@ record_midi_page(
   attempts_left = NULL,
   max_goes_forced = FALSE,
   autoInstantiate = FALSE,
-  midi_device,
+  midi_device = "",
   max_goes = 1,
   show_progress = FALSE,
   melody_no = 0,
   total_no_melodies = 0,
+  volume_meter = FALSE,
+  volume_meter_type = "default",
+  show_sheet_music_after_record = FALSE,
+  show_record_button = TRUE,
   ...
 )
 }

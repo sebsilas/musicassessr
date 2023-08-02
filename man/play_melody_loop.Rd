@@ -31,7 +31,6 @@ play_melody_loop(
   reactive_stimuli = NULL,
   get_trial_characteristics_function = NULL,
   display_modality = "auditory",
-  show_record_button = FALSE,
   total_no_melodies = 0,
   show_progress = TRUE,
   start_hidden = FALSE,
@@ -43,11 +42,19 @@ play_melody_loop(
   melody_row = NULL,
   get_similarity_to_previous_melody = FALSE,
   volume_meter = FALSE,
-  volume_meter_type = "default"
+  volume_meter_type = "default",
+  singing_trial = TRUE,
+  phase = c("test", "learn", "review", "example"),
+  melody_paradigm = c("standard", "sing_melody_first",
+    "learn_phase_visual_display_modality")
 )
 }
 \arguments{
-\item{volume_meter_type}{}
+\item{singing_trial}{Boolean: if TRUE, the trial is defined as singing-based, otherwise instrument-based.}
+
+\item{phase}{Can be one of 'learn', 'test', 'review' or 'example'}
+
+\item{melody_paradigm}{}
 }
 \description{
 Create a psychTestR test loop for having several attempts at playing back a melody.

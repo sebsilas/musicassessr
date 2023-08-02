@@ -4,7 +4,7 @@
 \alias{get_table}
 \title{Get a postgres table}
 \usage{
-get_table(name)
+get_table(db_con, name)
 }
 \arguments{
 \item{name}{}

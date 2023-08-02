@@ -16,9 +16,7 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
   melconv_location <- Sys.getenv("MELCONV_LOCATION")
   melconv_out <- Sys.getenv("MELCONV_OUT")
 
-  #browser()
-
-  # then use melconv
+  # Use melconv
 
   melconv_res <- system2(command = melconv_location,
            args = c('-f midi',
@@ -32,54 +30,10 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
     n <- paste0(melconv_out, basename(file_name))
     res <- itembankr::midi_file_to_notes_and_durations(n)
   }
-
-  print('result..')
-  print(res)
-
   # tuneR::readMidi(res)
   res
 
 }
-
-# fs <- list.files("/Users/sebsilas/geerdes/data-raw/midi/", full.names = TRUE)
-# purrr::walk(fs, melconv)
-
-# melconv('/Users/sebsilas/geerdes/data-raw/midi/1.mid')
-
-
-#' #' Melconv
-#' #'
-#' #' @param file_name
-#' #' @param return_notes_and_durs
-#' #'
-#' #' @return
-#' #' @export
-#' #'
-#' #' @examples
-#' melconv <- function(file_name, return_notes_and_durs = TRUE) {
-#'
-#'   # then use melconv
-#'   melconv_res <- system2(command = 'melconv',
-#'                          args = c('-f midi',
-#'                                   paste0('-i ', file_name),
-#'                                   '-o /srv/shiny-server/files/mid/'),
-#'                          stdout = TRUE, stderr = FALSE)
-#'
-#'   res <- strsplit(file_name, "/", fixed = TRUE)[[1]]
-#'   res <- res[length(res)]
-#'   res <- strsplit(res, ".", fixed = TRUE)[[1]][1]
-#'   res <- paste0('/srv/shiny-server/files/mid/', res, '.mid')
-#'   #res <- paste0('/Users/sebsilas/true.mid')
-#'
-#'
-#'   if(return_notes_and_durs) {
-#'     itembankr::midi_file_to_notes_and_durations(res)
-#'   } else {
-#'     tuneR::readMidi(res)
-#'   }
-#'
-#' }
-
 
 
 

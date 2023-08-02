@@ -28,7 +28,7 @@ user_performance_plots <- function(username) {
     dplyr::group_by(session_id, test) %>%
     dplyr::mutate(trial_no = dplyr::row_number()) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(session_by_attempt = (10*session_no) + attempt)
+    dplyr::mutate(session_by_attempt = (10 * session_no) + attempt)
 
 
   melodies_which_appear_more_than_once <- joint %>%

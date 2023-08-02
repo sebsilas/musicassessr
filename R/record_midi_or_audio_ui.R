@@ -1,35 +1,35 @@
 
 # common ui template for midi and audio pages
-record_midi_or_audio_ui <- function(body = " ",
+record_midi_or_audio_ui <- function(body = "",
                                     label = "record_audio_page",
-                                    stimuli = " ",
+                                    stimuli = NULL,
                                     stimuli_reactive = FALSE,
                                     page_text = " ",
                                     page_title = " ",
                                     page_type = "record_audio_page",
-                              interactive = FALSE,
-                              show_record_button = TRUE,
-                              get_answer,
-                              answer_meta_data = tibble::tibble(),
-                              show_aws_controls = FALSE,
-                              button_text = psychTestR::i18n("Record"),
-                              stop_button_text = psychTestR::i18n("Stop"),
-                              record_duration = NULL,
-                              on_complete = NULL,
-                              auto_next_page = FALSE,
-                              save_answer = TRUE,
-                              page_text_first = TRUE,
-                              happy_with_response =  FALSE,
-                              attempts_left = integer(),
-                              max_goes_forced = FALSE,
-                              autoInstantiate = FALSE,
-                              midi_device = " ",
-                              max_goes = 1,
-                              show_progress = FALSE,
-                              melody_no = 0,
-                              total_no_melodies = 0,
-                              volume_meter = FALSE,
-                              volume_meter_type = 'default', ...) {
+                                    interactive = FALSE,
+                                    get_answer,
+                                    answer_meta_data = tibble::tibble(),
+                                    record_button_text = psychTestR::i18n("Record"),
+                                    stop_button_text = psychTestR::i18n("Stop"),
+                                    record_duration = NULL,
+                                    on_complete = NULL,
+                                    auto_next_page = FALSE,
+                                    save_answer = TRUE,
+                                    page_text_first = TRUE,
+                                    happy_with_response =  FALSE,
+                                    attempts_left = integer(),
+                                    max_goes_forced = FALSE,
+                                    autoInstantiate = FALSE,
+                                    midi_device = " ",
+                                    max_goes = 1,
+                                    show_progress = FALSE,
+                                    melody_no = 0,
+                                    total_no_melodies = 0,
+                                    volume_meter = FALSE,
+                                    volume_meter_type = 'default',
+                                    show_sheet_music_after_record = FALSE,
+                                    show_record_button = TRUE, ...) {
 
 
   if(max_goes == 1) {
@@ -52,7 +52,7 @@ record_midi_or_audio_ui <- function(body = " ",
       ),
 
       shiny::tags$script(paste0('console.log(\"this is a ', page_type, '\");')),
-      if(page_type == "record_midi_page") autoInstantiateMidi(instantiate = autoInstantiate, midi_device, interactive),
+      if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive),
 
       if(page_type == "record_audio_page") send_page_label_to_js(label),
 
@@ -74,18 +74,14 @@ record_midi_or_audio_ui <- function(body = " ",
       if(volume_meter) shiny::tags$div(volume_meter(volume_meter_type, start_hidden = TRUE), shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr"))),
 
       shiny::tags$div(body),
-      reactive_stimuli(stimuli_function = stimuli_function,
-                       stimuli_reactive = stimuli_reactive,
-                       prepared_stimuli = abs_mel),
 
-      present_record_button(present = show_record_button, type = page_type,
-                            button_text = button_text, record_duration = record_duration,
-                            stop_button_text = stop_button_text),
+      if(!is.null(stimuli)) shiny::tags$div(stimuli),
+
+      present_record_button(show_record_button, page_type, record_button_text, stop_button_text),
 
       if(page_type == "record_audio_page") loading(),
 
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced, max_goes),
-      if(page_type == "record_audio_page") deploy_aws_pyin(show_aws_controls = show_aws_controls, stop_button_text),
 
       if(!page_text_first) page_text
     )
@@ -162,6 +158,7 @@ happy_with_response_message <- function(happy_with_response_message, attempts_le
   if(max_goes == 1) {
     happy_with_response_message <- FALSE
   }
+
   if(happy_with_response_message) {
     shiny::tags$div(
       return_correct_attempts_left(attempts_left, max_goes_forced),
@@ -173,4 +170,63 @@ happy_with_response_message <- function(happy_with_response_message, attempts_le
     )
   }
 }
+
+
+
+present_record_button <- function(show_record_button, page_type, record_button_text =  psychTestR::i18n("Record"), stop_button_text = psychTestR::i18n("Stop")) {
+
+
+  shiny::tags$div(id = "button_area",
+    shiny::tags$script(paste0("var stop_button_text = \"", stop_button_text, "\"")),
+    shiny::tags$button(record_button_text, id = "recordButton", class = "btn btn-default action-button", style = if(show_record_button) "visibility: visible;" else "visibility: hidden"),
+    shiny::tags$button(stop_button_text, id = "stopButton", class = "btn btn-default action-button", style = "visibility: hidden;"),
+    shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
+                            startRecording(type = \"', page_type, '\", stop_button_text = \"', stop_button_text, '\");
+                            recordUpdateUI();
+                            })'))
+  )
+
+}
+
+
+
+
+#
+# get_on_stimuli_start_fun <- function(paradigm) {
+#   if(paradigm == "call_and_response") {
+#     on_stimuli_start_fun <- ""
+#   } else if(paradigm == "play_along") {
+#     on_stimuli_start_fun <- ""
+#   } else {
+#     stop("Paradigm not valid")
+#   }
+#   on_stimuli_start_fun
+# }
+#
+# get_on_stimuli_end_fun <- function(paradigm, stop_fun) {
+#   if(paradigm == "call_and_response") {
+#     on_stimuli_end_fun <- call_and_response_start
+#   } else if(paradigm == "play_along") {
+#     on_stimuli_end_fun <- call_and_response_stop
+#   } else {
+#     stop("Paradigm not valid")
+#   }
+#   on_stimuli_end_fun
+# }
+#
+# on_stimuli_start_fun <- get_on_stimuli_start_fun(paradigm)
+# on_stimuli_end_fun <- get_on_stimuli_end_fun(paradigm)
+#
+#
+# if(is.null(stimuli)) {
+#   present_record_button()
+# } else {
+#   present_stimuli_record_page(on_stimuli_start_fun, on_stimuli_end_fun)
+# }
+#
+# present_stimuli_record_page <- function(on_stimuli_start_fun, on_stimuli_end_fun) {
+#
+# }
+
+
 

@@ -1,5 +1,16 @@
 
 
+#' Choose a melody paradigm
+#'
+#' @param paradigm_type
+#' @param page_type
+#' @param call_and_response_end
+#' @param stop_recording_after_x_seconds
+#'
+#' @return
+#' @export
+#'
+#' @examples
 paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall"),
                      page_type = c("record_audio_page", "record_midi_page"),
                      call_and_response_end = c("manual", "auto"),

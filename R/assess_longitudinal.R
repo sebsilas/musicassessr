@@ -171,71 +171,6 @@ flick_through_plots <- function(n = 1) {
 
 
 
-
-
-
-
-# NB, there was some bug in the experiment which meant that sometimes the experiment
-# Would end after 2 conditions (rather than 3), so I had to manually run the 3rd
-# condition and then update the DB appropriately afterwards, using the below code:
-
-
-
-
-
-# trials <- get_table("trials")
-# sessions <- get_table("sessions")
-# production <- get_table("production")
-
-
-
-# save the backup for the Seb/Sylvia experiment:
-# save(production, sessions, trials, file = 'data-raw/longitudinal_study_backup.rda')
-#load(file = 'data-raw/longitudinal_study_backup.rda')
-
-
-
-
-
-# CAREFUL. This is for editing the DBs manually!
-# trials <- get_table("trials")
-# sessions <- get_table("sessions")
-# production <- get_table("production")
-#
-#
-# trials2 <- trials
-# sessions2 <- sessions
-# production2 <- production
-#
-# correct_session_id <- "49e83bdf0a8d8588b95e35f0d58108fd3130858d945dc07eb5df1eb022c6f29f"
-# wrong_session_id <- "2e40096627bb1d4e14513e1129b599909b09e7e61a1857b2d830a93ef957b178"
-#
-# correct_time_started <- sessions[53, "time_started"]
-#
-# # sessions
-# sessions2$session_id[sessions2$session_id == wrong_session_id] <- correct_session_id
-# sessions2[54, "time_started"] <- correct_time_started
-#
-# # trials
-# trials2$session_id[trials2$session_id == wrong_session_id] <- correct_session_id
-#
-# # production
-# production2$session_id[production2$session_id == wrong_session_id] <- correct_session_id
-# # save out
-#
-# host <- "localhost"
-# username <- "postgres"
-# password <- "ilikecheesepie432"
-#
-# con <- connect_to_db(host, username, password)
-#
-# DBI::dbWriteTable(con, "sessions", sessions2, overwrite = TRUE)
-# DBI::dbWriteTable(con, "trials", trials2, overwrite = TRUE)
-# DBI::dbWriteTable(con, "production", production2, overwrite = TRUE)
-#
-# DBI::dbDisconnect(con)
-
-
 plot_single_melody <- function(melody_no) {
 
   trials <- get_table("trials")
@@ -295,11 +230,59 @@ plot_single_melody <- function(melody_no) {
       ggplot2::ylim(0:1)
 }
 
-#no <- 13
 
 run_da <- function() {
  no <<- no+1
  plot_single_melody(no)
 }
 
-# # 75 is a good example
+# # 75 is a good example to use
+
+
+
+
+
+
+
+
+# NB, there was some bug in the experiment which meant that sometimes the experiment
+# Would end after 2 conditions (rather than 3), so I had to manually run the 3rd
+# condition and then update the DB appropriately afterwards, using the below code:
+
+
+
+
+# CAREFUL. This is for editing the DBs manually!
+# trials <- get_table("trials")
+# sessions <- get_table("sessions")
+# production <- get_table("production")
+#
+#
+# trials2 <- trials
+# sessions2 <- sessions
+# production2 <- production
+#
+# correct_session_id <- "49e83bdf0a8d8588b95e35f0d58108fd3130858d945dc07eb5df1eb022c6f29f"
+# wrong_session_id <- "2e40096627bb1d4e14513e1129b599909b09e7e61a1857b2d830a93ef957b178"
+#
+# correct_time_started <- sessions[53, "time_started"]
+#
+# # sessions
+# sessions2$session_id[sessions2$session_id == wrong_session_id] <- correct_session_id
+# sessions2[54, "time_started"] <- correct_time_started
+#
+# # trials
+# trials2$session_id[trials2$session_id == wrong_session_id] <- correct_session_id
+#
+# # production
+# production2$session_id[production2$session_id == wrong_session_id] <- correct_session_id
+# # save out
+#
+# con <- connect_to_db(Sys.getenv("DB_HOST"), Sys.getenv("DB_USER"), Sys.getenv("DB_PASSWORD"))
+#
+# DBI::dbWriteTable(con, "sessions", sessions2, overwrite = TRUE)
+# DBI::dbWriteTable(con, "trials", trials2, overwrite = TRUE)
+# DBI::dbWriteTable(con, "production", production2, overwrite = TRUE)
+#
+# DBI::dbDisconnect(con)
+

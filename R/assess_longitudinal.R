@@ -36,7 +36,7 @@ plot_longitudinal <- function(type = c("ability_across_sessions",
     dplyr::group_by(test_username, session_id, test) %>%
     dplyr::mutate(trial_no = dplyr::row_number()) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(session_by_attempt = (10*session_no) + attempt)
+    dplyr::mutate(session_by_attempt = (10 * session_no) + attempt)
 
 
   melodies_which_appear_more_than_once <- joint %>%
@@ -251,7 +251,7 @@ plot_single_melody <- function(melody_no) {
     dplyr::group_by(test_username, session_id, test) %>%
     dplyr::mutate(trial_no = dplyr::row_number()) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(session_by_attempt = (10*session_no) + attempt)
+    dplyr::mutate(session_by_attempt = (10 * session_no) + attempt)
 
 
   melodies_which_appear_more_than_once <- joint %>%

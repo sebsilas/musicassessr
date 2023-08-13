@@ -12,17 +12,18 @@ play_long_tone_record_audio_page(
   page_text = psychTestR::i18n("long_tone_text"),
   play_button_text = psychTestR::i18n("Play"),
   page_type = "record_audio_page",
-  auto_next_page = TRUE,
   example = FALSE,
   get_answer = get_answer_pyin_long_note,
   page_label = "long_tone",
   total_no_long_notes = 0,
   show_progress = FALSE,
-  paradigm = c("sing_along", "call_and_response")
+  trial_paradigm = c("simultaneous_recall", "call_and_response"),
+  call_and_response_end = c("manual", "auto"),
+  singing_trial = TRUE
 )
 }
 \arguments{
-\item{paradigm}{}
+\item{singing_trial}{}
 }
 \description{
 Create a page which produces a given tone

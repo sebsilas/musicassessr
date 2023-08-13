@@ -20,10 +20,10 @@
 #' @param skip_setup Whether to skip setup. Can be TRUE (skip whole setup), FALSE or "except_microphone" (only setup the microphone but no other steps).
 #' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
 #' @param musical_instrument Whether the participant is required to have a musical instrument.
-#' @param default_range A length 2 named list of the range that stimuli should be presented in, if not collected at test time.
 #' @param allow_SNR_failure If TRUE, allow user to continue even if they fail the SNR test.
 #' @param requirements_page Show a requirements page?
 #' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
+#' @param fake_range Should the instrument/voice range be faked with a default?
 #'
 #' @return
 #' @export
@@ -51,10 +51,10 @@ setup_pages <- function(input_type = c("microphone",
                         skip_setup = FALSE,
                         get_self_chosen_anonymous_id = FALSE,
                         musical_instrument = FALSE,
-                        default_range = list('bottom_range' = 48, 'top_range' = 72),
                         allow_SNR_failure = FALSE,
                         requirements_page = TRUE,
-                        playful_volume_meter_setup = FALSE) {
+                        playful_volume_meter_setup = FALSE,
+                        fake_range = FALSE) {
 
   stopifnot(input_type %in% c("microphone",
                               "midi_keyboard",
@@ -73,10 +73,10 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(skip_setup) | skip_setup == "except_microphone",
             is.scalar.logical(get_self_chosen_anonymous_id),
             is.scalar.logical(musical_instrument),
-            is.list(default_range) & length(default_range) == 2,
             is.scalar.logical(allow_SNR_failure),
             is.scalar.logical(requirements_page),
-            is.scalar.logical(playful_volume_meter_setup)
+            is.scalar.logical(playful_volume_meter_setup),
+            is.scalar.logical(fake_range)
             )
 
 
@@ -91,22 +91,13 @@ setup_pages <- function(input_type = c("microphone",
 
       correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure),
 
-      fake_range(bottom_range = default_range$bottom_range,
-                 top_range = default_range$top_range)
     )
 
   } else if(skip_setup == "except_microphone") {
 
     setup <- psychTestR::join(
 
-      fake_range(bottom_range = default_range$bottom_range, top_range = default_range$top_range),
-
-      # fake instrument:
-      psychTestR::code_block(function(state, ...) {
-        psychTestR::set_global("inst", "Piano", state)
-        psychTestR::set_global("transpose_first_melody_note", 0, state)
-        psychTestR::set_global("clef", "auto", state)
-      }),
+      fake_instrument(),
 
       correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
     )
@@ -115,14 +106,7 @@ setup_pages <- function(input_type = c("microphone",
 
     setup <- psychTestR::join(
 
-      fake_range(bottom_range = default_range$bottom_range, top_range = default_range$top_range),
-
-      # Fake instrument:
-      psychTestR::code_block(function(state, ...) {
-        psychTestR::set_global("inst", "Piano", state)
-        psychTestR::set_global("transpose_first_melody_note", 0, state)
-        psychTestR::set_global("clef", "auto", state)
-      })
+      fake_instrument()
 
     )
 
@@ -150,8 +134,7 @@ setup_pages <- function(input_type = c("microphone",
                                  show_musical_notation = get_instrument_range_musical_notation,
                                  adjust_range = adjust_range,
                                  test_type = test_type,
-                                 concise_wording = concise_wording,
-                                 default_range = default_range)
+                                 concise_wording = concise_wording)
     ))
 
   }
@@ -159,6 +142,7 @@ setup_pages <- function(input_type = c("microphone",
   # Set the response/input type when it is definitely either microphone or MIDI (i.e., non-user specified):
   psychTestR::join(
     if(input_type %in% c("microphone", "midi_keyboard")) set_response_type(if(input_type == "microphone") "Microphone" else if(input_type == "midi_keyboard") "MIDI" else stop("Input type not recognised.")),
+    if(fake_range) set_instrument_range(),
     setup
   )
 
@@ -332,4 +316,16 @@ midi_setup <- function() {
 }
 
 
+fake_instrument <- function() {
+  # Fake instrument:
+  psychTestR::code_block(function(state, ...) {
+
+    if( is.null(psychTestR::get_global("inst", state)) && is.null(psychTestR::get_global("instrument_id", state)) ) { # Then one hasn't been specified manually via an instrument ID
+      psychTestR::set_global("inst", "Piano", state)
+      psychTestR::set_global("transpose_visual_notation", 0, state)
+      psychTestR::set_global("clef", "auto", state)
+    }
+
+  })
+}
 

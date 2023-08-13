@@ -12,7 +12,9 @@ find_this_note_trials(
   get_answer = get_answer_pyin_melodic_production,
   page_type = "record_audio_page",
   page_text =
-    "Press play to hear the note. Try and play it on your instrument when you can."
+    "Press play to hear the note. Try and play it on your instrument when you can.",
+  trial_paradigm = c("simultaneous_recall", "call_and_response"),
+  call_and_response_end = c("manual", "auto")
 )
 }
 \arguments{

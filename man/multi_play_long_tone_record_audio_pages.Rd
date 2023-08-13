@@ -13,12 +13,14 @@ multi_play_long_tone_record_audio_pages(
   feedback = FALSE,
   get_answer = get_answer_pyin_long_note,
   show_progress = TRUE,
-  paradigm = c("sing_along", "call_and_response"),
-  long_tone_length = 5
+  trial_paradigm = c("simultaneous_recall", "call_and_response"),
+  call_and_response_end = c("manual", "auto"),
+  long_tone_length = 5,
+  singing_trial = FALSE
 )
 }
 \arguments{
-\item{long_tone_length}{}
+\item{singing_trial}{}
 }
 \description{
 Build multiple play_long_tone_record_audio_pages based on a user's range

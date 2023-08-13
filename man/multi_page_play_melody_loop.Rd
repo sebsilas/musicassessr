@@ -27,22 +27,22 @@ multi_page_play_melody_loop(
   max_goes_forced = FALSE,
   display_modality = "auditory",
   show_progress = TRUE,
-  start_hidden = FALSE,
+  sheet_music_start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
-  show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
   get_similarity_to_previous_melody = FALSE,
   volume_meter = FALSE,
   volume_meter_type = "default",
-  melody_paradigm = c("standard", "sing_melody_first",
+  melody_block_paradigm = c("standard", "sing_melody_first",
     "learn_phase_visual_display_modality"),
   singing_trials = TRUE,
-  phase = c("test", "learn", "review", "example")
+  phase = c("test", "learn", "review", "example"),
+  melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
 )
 }
 \arguments{
-\item{phase}{}
+\item{melody_trial_paradigm}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

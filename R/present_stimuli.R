@@ -35,7 +35,7 @@
 #' @param hideOnPlay
 #' @param record_immediately
 #' @param max_goes_forced
-#' @param transpose_first_melody_note
+#' @param transpose_visual_notation
 #' @param clef
 #' @param volume
 #' @param audio_playback_as_single_play_button
@@ -43,9 +43,8 @@
 #' @param melody_no
 #' @param total_no_melodies
 #' @param show_progress
-#' @param start_hidden
+#' @param sheet_music_start_hidden
 #' @param sound_only_first_melody_note
-#' @param show_sheet_music
 #' @param sheet_music_id
 #' @param octave
 #' @param volume_meter
@@ -53,8 +52,8 @@
 #' @param show_sheet_music_after_record
 #' @param interactive
 #' @param show_record_button
-#' @param trigger_start_of_stimuli_fun A string of an anonymous Javascript function (with body) to trigger when the stimulus begins.
-#' @param trigger_end_of_stimuli_fun A string of an anonymous Javascript function (with body) to trigger when the stimulus is completed.
+#' @param trigger_start_of_stimulus_fun A string of an anonymous Javascript function (with body) to trigger when the stimulus begins.
+#' @param trigger_end_of_stimulus_fun A string of an anonymous Javascript function (with body) to trigger when the stimulus is completed.
 #' @param ...
 #'
 #' @return
@@ -82,12 +81,13 @@ present_stimuli <- function(stimuli,
                             attempts_left = integer(), visual_music_notation_id = "sheet_music",
                             play_button_id = "playButton", button_area_id = "button_area",
                             hideOnPlay = FALSE, record_immediately = FALSE, max_goes_forced = FALSE,
-                            transpose_first_melody_note = 0, clef = "auto",
+                            transpose_visual_notation = 0L,
+                            clef = "auto",
                             volume = 1, audio_playback_as_single_play_button = FALSE,
                             max_goes = 1, melody_no = 0, total_no_melodies = 0,
-                            show_progress = FALSE, start_hidden = FALSE,
+                            show_progress = FALSE,
+                            sheet_music_start_hidden = FALSE,
                             sound_only_first_melody_note = FALSE,
-                            show_sheet_music = FALSE,
                             sheet_music_id = 'sheet_music',
                             give_first_melody_note = FALSE,
                             slider_value = 5,
@@ -99,8 +99,8 @@ present_stimuli <- function(stimuli,
                             show_sheet_music_after_record = FALSE,
                             interactive = FALSE,
                             show_record_button = FALSE,
-                            trigger_start_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
-                            trigger_end_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus finished!');"), ...) {
+                            trigger_start_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
+                            trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"), ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -117,17 +117,16 @@ present_stimuli <- function(stimuli,
             is.numeric(attempts_left), is.character(visual_music_notation_id),
             is.character(play_button_id), is.character(button_area_id),
             is.scalar.logical(hideOnPlay), is.scalar.logical(record_immediately), is.scalar.logical(max_goes_forced),
-            is.numeric(transpose_first_melody_note),
-            is.character(clef) & length(clef) == 1,
-            is.numeric(volume) & length(volume) == 1,
+            is.integer(transpose_visual_notation),
+            is.scalar.character(clef),
+            is.scalar.numeric(volume),
             is.scalar.logical(audio_playback_as_single_play_button),
             is.numeric(max_goes),
             is.numeric(melody_no) & length(melody_no) == 1,
             is.numeric(total_no_melodies) & length(total_no_melodies) == 1,
             is.scalar.logical(show_progress),
-            is.scalar.logical(start_hidden),
+            is.scalar.logical(sheet_music_start_hidden),
             is.scalar.logical(sound_only_first_melody_note) | is.numeric(sound_only_first_melody_note) & length(sound_only_first_melody_note) == 1,
-            is.scalar.logical(show_sheet_music),
             is.character(sheet_music_id) & length(sheet_music_id) == 1,
             is.scalar.logical(give_first_melody_note),
             octave %in% 0:9,
@@ -136,8 +135,8 @@ present_stimuli <- function(stimuli,
             is.scalar.logical(show_sheet_music_after_record),
             is.scalar.logical(interactive),
             is.scalar.logical(show_record_button),
-            is.null(trigger_start_of_stimuli_fun) || is.na(trigger_start_of_stimuli_fun) || is.scalar.character(trigger_start_of_stimuli_fun),
-            is.null(trigger_end_of_stimuli_fun) || is.na(trigger_end_of_stimuli_fun) || is.scalar.character(trigger_end_of_stimuli_fun)
+            is.null(trigger_start_of_stimulus_fun) || is.na(trigger_start_of_stimulus_fun) || is.scalar.character(trigger_start_of_stimulus_fun),
+            is.null(trigger_end_of_stimulus_fun) || is.na(trigger_end_of_stimulus_fun) || is.scalar.character(trigger_end_of_stimulus_fun)
             )
 
   # Generic stimuli types
@@ -165,14 +164,13 @@ present_stimuli <- function(stimuli,
                                                  visual_music_notation_id = visual_music_notation_id,
                                                  play_button_id = play_button_id, button_area_id = button_area_id,
                                                  record_immediately = record_immediately,
-                                                 transpose_first_melody_note = transpose_first_melody_note, clef = clef,
-                                                 start_hidden = start_hidden,
+                                                 transpose_visual_notation = transpose_visual_notation, clef = clef,
+                                                 sheet_music_start_hidden = sheet_music_start_hidden,
                                                  sound_only_first_melody_note = sound_only_first_melody_note,
-                                                 show_sheet_music = show_sheet_music,
                                                  sheet_music_id = sheet_music_id,
                                                  give_first_melody_note = give_first_melody_note,
-                                                 trigger_start_of_stimuli_fun = trigger_start_of_stimuli_fun,
-                                                 trigger_end_of_stimuli_fun = trigger_end_of_stimuli_fun)
+                                                 trigger_start_of_stimulus_fun = trigger_start_of_stimulus_fun,
+                                                 trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun)
   } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)
   } else if (stimuli_type == "pitch_classes") {
@@ -185,7 +183,7 @@ present_stimuli <- function(stimuli,
   } else if (stimuli_type == "midi_file") {
     return_stimuli <- present_stimuli_midi_file(stimuli, display_modality, start_note = start_note, end_note = end_note, ...)
   } else if (stimuli_type == "musicxml_file") {
-    return_stimuli <- present_stimuli_music_xml_file(stimuli, display_modality, sound_only_first_melody_note, start_hidden, show_sheet_music, page_type = page_type, ...)
+    return_stimuli <- present_stimuli_music_xml_file(stimuli, display_modality, sound_only_first_melody_note, sheet_music_start_hidden, page_type = page_type, ...)
     # Mixed
   } else if (stimuli_type == "mixed") {
     return_stimuli <- present_stimuli_mixed(display_modality, button_text = button_text, ...)
@@ -218,7 +216,7 @@ present_stimuli <- function(stimuli,
                               page_text_first = page_text_first, max_goes_forced = max_goes_forced, max_goes = max_goes,
                               melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type,
-                              show_record_button = show_record_button, ...)
+                              show_record_button = show_record_button, show_sheet_music_after_record = show_sheet_music_after_record, ...)
 
   } else if(page_type == "record_audio_page") {
 

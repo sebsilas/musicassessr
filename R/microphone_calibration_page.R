@@ -45,7 +45,6 @@ volume_meter <- function(type = "default", start_hidden = FALSE) {
     if(start_hidden) {
       v <- shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/SAA_intro.png', id = "volumeMeter", height = 200, width = 200, style = "visibility:hidden;")
     } else {
-      print('asdasld4')
       v <- shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/SAA_intro.png', id = "volumeMeter", height = 200, width = 200)
     }
   } else {

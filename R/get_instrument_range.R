@@ -9,7 +9,6 @@
 #' @param adjust_range
 #' @param test_type
 #' @param concise_wording
-#' @param default_range
 #'
 #' @return
 #' @export
@@ -20,8 +19,7 @@ get_instrument_range_pages <- function(input_type,
                                        show_musical_notation = FALSE,
                                        adjust_range = FALSE,
                                        test_type = c("voice", "instrument"),
-                                       concise_wording = FALSE,
-                                       default_range = list('bottom_range' = 48, 'top_range' = 72)) {
+                                       concise_wording = FALSE) {
 
 
   # a short multi-page protocol to get the user's frequency range
@@ -29,20 +27,15 @@ get_instrument_range_pages <- function(input_type,
   stopifnot(assertthat::is.string(input_type),
             is.logical(get_range) | assertthat::is.string(get_range),
             is.logical(show_musical_notation),
-            is.list(default_range) & length(2),
             assertthat::is.string(test_type),
             is.scalar.logical(concise_wording))
 
-  if(get_range == "test" | get_range == FALSE) {
-    fake_range(bottom_range = default_range$bottom_range, top_range = default_range$top_range)
+  if (input_type == "microphone") {
+    get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording)
+  } else if(input_type == "midi_keyboard") {
+    get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
   } else {
-    if (input_type == "microphone") {
-      get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording)
-    } else if(input_type == "midi_keyboard") {
-      get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
-    } else {
-      midi_or_audio_reactive(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type)
-    }
+    midi_or_audio_reactive(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type)
   }
 
 
@@ -157,7 +150,7 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
 
   psychTestR::reactive_page(function(answer, state, ...) {
 
-    transpose <- psychTestR::get_global("transpose_first_melody_note", state)
+    transpose <- psychTestR::get_global("transpose_visual_notation", state)
     clef <- psychTestR::get_global("clef", state)
 
     if(transpose != 0) {

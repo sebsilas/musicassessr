@@ -23,17 +23,17 @@
 #' @param max_goes_forced
 #' @param display_modality
 #' @param show_progress
-#' @param start_hidden
+#' @param sheet_music_start_hidden
 #' @param sound_only_first_melody_note
-#' @param show_sheet_music
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param get_similarity_to_previous_melody
 #' @param volume_meter
 #' @param volume_meter_type
-#' @param melody_paradigm
+#' @param melody_block_paradigm
 #' @param singing_trials
 #' @param phase
+#' @param melody_trial_paradigm
 #'
 #' @return
 #' @export
@@ -60,19 +60,21 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         max_goes_forced = FALSE,
                                         display_modality = "auditory",
                                         show_progress = TRUE,
-                                        start_hidden = FALSE,
+                                        sheet_music_start_hidden = FALSE,
                                         sound_only_first_melody_note = FALSE,
-                                        show_sheet_music = FALSE,
                                         sheet_music_id = 'sheet_music',
                                         give_first_melody_note = FALSE,
                                         get_similarity_to_previous_melody = FALSE,
                                         volume_meter = FALSE,
                                         volume_meter_type = 'default',
-                                        melody_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                                        melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                                         singing_trials = TRUE,
-                                        phase = c('test', 'learn', 'review', 'example')) {
+                                        phase = c('test', 'learn', 'review', 'example'),
+                                        melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
+                                        ) {
 
-  melody_paradigm <- match.arg(melody_paradigm)
+  melody_block_paradigm <- match.arg(melody_block_paradigm)
+  melody_trial_paradigm <- match.arg(melody_trial_paradigm)
   phase <- match.arg(phase)
 
 
@@ -97,21 +99,131 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.logical(max_goes_forced),
             assertthat::is.string(display_modality),
             is.scalar.logical(show_progress),
-            is.scalar.logical(start_hidden),
+            is.scalar.logical(sheet_music_start_hidden),
             is.scalar.logical(sound_only_first_melody_note),
-            is.scalar.logical(show_sheet_music),
             assertthat::is.string(sheet_music_id),
             is.scalar.logical(give_first_melody_note),
             is.scalar.logical(get_similarity_to_previous_melody),
             is.scalar.logical(volume_meter),
             assertthat::is.string(volume_meter_type),
-            melody_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+            melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
             is.scalar.logical(singing_trials),
-            phase %in% c('learn', 'test', 'review', 'example'))
+            phase %in% c('learn', 'test', 'review', 'example'),
+            melody_trial_paradigm %in% c("call_and_response", "simultaneous_recall")
+            )
 
 
-  if(is.null(presampled_items)) {
-    # Items should be a data frame
+  if(is.null(presampled_items) && is.infinite(num_items)) {
+    # Then the test stops when defined by the user
+    psychTestR::join(
+      psychTestR::code_block(function(state, ...) {
+        psychTestR::set_global("user_determined_stop", state, FALSE)
+        psychTestR::set_global("reactive_melody_no", state, 1L)
+      }),
+
+      items <- psychTestR::while_loop(test = function(state, ...) {
+        melody_no <- psychTestR::get_global("reactive_melody_no", state)
+        psychTestR::get_global("user_determined_stop", state)
+      }, logic = psychTestR::reactive_page(function(state, ...) {
+
+        melody_no <- psychTestR::get_global("reactive_melody_no")
+
+        page <- play_melody_loop(melody_no = melody_no,
+                                 var_name = var_name,
+                                 max_goes = max_goes,
+                                 page_type = page_type,
+                                 page_title = page_title,
+                                 page_text = page_text,
+                                 get_answer = get_answer,
+                                 stimuli_type = stimuli_type,
+                                 rel_to_abs_mel_function = rel_to_abs_mel_function,
+                                 clip_stimuli_length = clip_stimuli_length,
+                                 arrhythmic = arrhythmic,
+                                 example = example,
+                                 sound = sound,
+                                 get_trial_characteristics_function = get_trial_characteristics_function,
+                                 max_goes_forced = max_goes_forced,
+                                 item_bank = item_bank,
+                                 display_modality = display_modality,
+                                 total_no_melodies = num_items,
+                                 show_progress = show_progress,
+                                 sheet_music_start_hidden = sheet_music_start_hidden,
+                                 sound_only_first_melody_note = sound_only_first_melody_note,
+                                 sheet_music_id = sheet_music_id,
+                                 give_first_melody_note = give_first_melody_note,
+                                 get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+                                 volume_meter = volume_meter,
+                                 volume_meter_type = volume_meter_type,
+                                 singing_trial = singing_trials,
+                                 phase = phase,
+                                 melody_block_paradigm = melody_block_paradigm,
+                                 melody_trial_paradigm = melody_trial_paradigm)
+
+        if (melody_block_paradigm == "sing_melody_first") {
+
+          sing_page <- play_melody_loop(melody_no = melody_no,
+                                        var_name = var_name,
+                                        max_goes = max_goes,
+                                        page_type = page_type,
+                                        page_title = psychTestR::i18n("Sing_the_Melody"),
+                                        page_text = psychTestR::i18n("sing_melody_page_text"),
+                                        get_answer = get_answer,
+                                        stimuli_type = stimuli_type,
+                                        rel_to_abs_mel_function = rel_to_abs_mel_function,
+                                        clip_stimuli_length = clip_stimuli_length,
+                                        arrhythmic = arrhythmic,
+                                        example = example,
+                                        sound = sound,
+                                        get_trial_characteristics_function = get_trial_characteristics_function,
+                                        max_goes_forced = max_goes_forced,
+                                        item_bank = item_bank,
+                                        display_modality = display_modality,
+                                        total_no_melodies = num_items,
+                                        show_progress = show_progress,
+                                        sheet_music_start_hidden = sheet_music_start_hidden,
+                                        sound_only_first_melody_note = sound_only_first_melody_note,
+                                        sheet_music_id = sheet_music_id,
+                                        give_first_melody_note = give_first_melody_note,
+                                        get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+                                        volume_meter = volume_meter,
+                                        volume_meter_type = volume_meter_type,
+                                        singing_trial = TRUE,
+                                        phase = phase,
+                                        melody_block_paradigm = melody_block_paradigm,
+                                        melody_trial_paradigm = melody_trial_paradigm)
+
+          sing_then_play_pages <- psychTestR::join(sing_page, page)
+
+          return(sing_then_play_pages)
+
+        } else {
+          return(page)
+        }
+
+      })
+      ),
+
+      psychTestR::NAFC_page(label = "finished_user_determined_loop",
+                            choices = c("Yes", "No"),
+                            on_complete = function(state, answer, ...) {
+
+                              print('finished_user_determined_loop on_complete...')
+
+                              print('answer...')
+                              print(answer)
+
+                              if(answer == "Yes") {
+                                psychTestR::set_global("user_determined_stop", state, TRUE)
+                                reactive_melody_no <- psychTestR::get_global("reactive_melody_no", state)
+                                psychTestR::set_global("reactive_melody_no", state, reactive_melody_no + 1L)
+                              }
+
+                            })
+    )
+
+
+  } else if(is.null(presampled_items) && !is.infinite(num_items)) {
+
     # This will return a sequence of test items
     items <- purrr::map(start_from_trial_no:num_items, function(melody_no) {
 
@@ -134,9 +246,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                display_modality = display_modality,
                                total_no_melodies = num_items,
                                show_progress = show_progress,
-                               start_hidden = start_hidden,
+                               sheet_music_start_hidden = sheet_music_start_hidden,
                                sound_only_first_melody_note = sound_only_first_melody_note,
-                               show_sheet_music = show_sheet_music,
                                sheet_music_id = sheet_music_id,
                                give_first_melody_note = give_first_melody_note,
                                get_similarity_to_previous_melody = get_similarity_to_previous_melody,
@@ -144,59 +255,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                volume_meter_type = volume_meter_type,
                                singing_trial = singing_trials,
                                phase = phase,
-                               melody_paradigm = melody_paradigm)
+                               melody_block_paradigm = melody_block_paradigm,
+                               melody_trial_paradigm = melody_trial_paradigm)
 
-      if (melody_paradigm == "sing_melody_first") {
-
-        sing_page <- play_melody_loop(melody_no = melody_no,
-                                       var_name = var_name,
-                                       max_goes = max_goes,
-                                       page_type = page_type,
-                                       page_title = psychTestR::i18n("Sing_the_Melody"),
-                                       page_text = psychTestR::i18n("sing_melody_page_text"),
-                                       get_answer = get_answer,
-                                       stimuli_type = stimuli_type,
-                                       rel_to_abs_mel_function = rel_to_abs_mel_function,
-                                       clip_stimuli_length = clip_stimuli_length,
-                                       arrhythmic = arrhythmic,
-                                       example = example,
-                                       sound = sound,
-                                       get_trial_characteristics_function = get_trial_characteristics_function,
-                                       max_goes_forced = max_goes_forced,
-                                       item_bank = item_bank,
-                                       display_modality = display_modality,
-                                       total_no_melodies = num_items,
-                                       show_progress = show_progress,
-                                       start_hidden = start_hidden,
-                                       sound_only_first_melody_note = sound_only_first_melody_note,
-                                       show_sheet_music = show_sheet_music,
-                                       sheet_music_id = sheet_music_id,
-                                       give_first_melody_note = give_first_melody_note,
-                                       get_similarity_to_previous_melody = get_similarity_to_previous_melody,
-                                       volume_meter = volume_meter,
-                                       volume_meter_type = volume_meter_type,
-                                       singing_trial = TRUE,
-                                       phase = phase,
-                                       melody_paradigm = melody_paradigm)
-
-        sing_then_play_pages <- psychTestR::join(sing_page, page)
-
-        return(sing_then_play_pages)
-
-      } else {
-        return(page)
-      }
-
-    })
-
-    items
-
-  } else {
-
-    items <- purrr::map(1:nrow(presampled_items), function(x) {
-      melody <- presampled_items %>% dplyr::slice(x)
-
-      if (melody_paradigm == "sing_melody_first") {
+      if (melody_block_paradigm == "sing_melody_first") {
 
         sing_page <- play_melody_loop(melody_no = melody_no,
                                       var_name = var_name,
@@ -217,9 +279,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                       display_modality = display_modality,
                                       total_no_melodies = num_items,
                                       show_progress = show_progress,
-                                      start_hidden = start_hidden,
+                                      sheet_music_start_hidden = sheet_music_start_hidden,
                                       sound_only_first_melody_note = sound_only_first_melody_note,
-                                      show_sheet_music = show_sheet_music,
                                       sheet_music_id = sheet_music_id,
                                       give_first_melody_note = give_first_melody_note,
                                       get_similarity_to_previous_melody = get_similarity_to_previous_melody,
@@ -227,7 +288,58 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                       volume_meter_type = volume_meter_type,
                                       singing_trial = TRUE,
                                       phase = phase,
-                                      melody_paradigm = melody_paradigm)
+                                      melody_block_paradigm = melody_block_paradigm,
+                                      melody_trial_paradigm = melody_trial_paradigm
+                                      )
+
+        sing_then_play_pages <- psychTestR::join(sing_page, page)
+
+        return(sing_then_play_pages)
+
+      } else {
+        return(page)
+      }
+
+    })
+
+
+  } else {
+
+    items <- purrr::map(1:nrow(presampled_items), function(x) {
+      melody <- presampled_items %>% dplyr::slice(x)
+
+      if (melody_block_paradigm == "sing_melody_first") {
+
+        sing_page <- play_melody_loop(melody_no = melody_no,
+                                      var_name = var_name,
+                                      max_goes = max_goes,
+                                      page_type = page_type,
+                                      page_title = psychTestR::i18n("Sing_the_Melody"),
+                                      page_text = psychTestR::i18n("sing_melody_page_text"),
+                                      get_answer = get_answer,
+                                      stimuli_type = stimuli_type,
+                                      rel_to_abs_mel_function = rel_to_abs_mel_function,
+                                      clip_stimuli_length = clip_stimuli_length,
+                                      arrhythmic = arrhythmic,
+                                      example = example,
+                                      sound = sound,
+                                      get_trial_characteristics_function = get_trial_characteristics_function,
+                                      max_goes_forced = max_goes_forced,
+                                      item_bank = item_bank,
+                                      display_modality = display_modality,
+                                      total_no_melodies = num_items,
+                                      show_progress = show_progress,
+                                      sheet_music_start_hidden = sheet_music_start_hidden,
+                                      sound_only_first_melody_note = sound_only_first_melody_note,
+                                      sheet_music_id = sheet_music_id,
+                                      give_first_melody_note = give_first_melody_note,
+                                      get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+                                      volume_meter = volume_meter,
+                                      volume_meter_type = volume_meter_type,
+                                      singing_trial = TRUE,
+                                      phase = phase,
+                                      melody_block_paradigm = melody_block_paradigm,
+                                      melody_trial_paradigm = melody_trial_paradigm)
 
         sing_then_play_pages <- psychTestR::join(sing_page, page)
 
@@ -285,9 +397,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 #' @param display_modality
 #' @param total_no_melodies
 #' @param show_progress
-#' @param start_hidden
+#' @param sheet_music_start_hidden
 #' @param sound_only_first_melody_note
-#' @param show_sheet_music
 #' @param sheet_music_id
 #' @param give_first_melody_note
 #' @param psychTestRCAT
@@ -296,7 +407,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 #' @param volume_meter_type
 #' @param singing_trial Boolean: if TRUE, the trial is defined as singing-based, otherwise instrument-based.
 #' @param phase Can be one of 'learn', 'test', 'review' or 'example'
-#' @param melody_paradigm
+#' @param melody_block_paradigm
+#' @param melody_trial_paradigm
 #'
 #' @return
 #' @export
@@ -329,9 +441,8 @@ play_melody_loop <- function(item_bank = NULL,
                              display_modality = "auditory",
                              total_no_melodies = 0,
                              show_progress = TRUE,
-                             start_hidden = FALSE,
+                             sheet_music_start_hidden = FALSE,
                              sound_only_first_melody_note = FALSE,
-                             show_sheet_music = FALSE,
                              sheet_music_id = 'sheet_music',
                              give_first_melody_note = FALSE,
                              psychTestRCAT = FALSE,
@@ -341,11 +452,17 @@ play_melody_loop <- function(item_bank = NULL,
                              volume_meter_type = 'default',
                              singing_trial = TRUE,
                              phase = c('test', 'learn', 'review', 'example'),
-                             melody_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality')) {
+                             melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                             melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
+                             ) {
 
 
-  save_answer <- example_save(example)
+  save_answer <- ! example
+
   phase <- match.arg(phase)
+  melody_block_paradigm <- match.arg(melody_block_paradigm)
+  melody_trial_paradigm <- match.arg(melody_trial_paradigm)
+
 
   psychTestR::join(
     # Set the user satisfied state to false
@@ -393,9 +510,8 @@ play_melody_loop <- function(item_bank = NULL,
                      max_goes_forced = max_goes_forced,
                      total_no_melodies = total_no_melodies,
                      show_progress = show_progress,
-                     start_hidden = start_hidden,
+                     sheet_music_start_hidden = sheet_music_start_hidden,
                      sound_only_first_melody_note = sound_only_first_melody_note,
-                     show_sheet_music = show_sheet_music,
                      sheet_music_id = sheet_music_id,
                      give_first_melody_note = give_first_melody_note,
                      arrhythmic = arrhythmic,
@@ -405,7 +521,8 @@ play_melody_loop <- function(item_bank = NULL,
                      volume_meter_type = volume_meter_type,
                      singing_trial = singing_trial,
                      phase = phase,
-                     melody_paradigm = melody_paradigm),
+                     melody_trial_paradigm = melody_trial_paradigm,
+                     melody_block_paradigm = melody_block_paradigm),
 
       # Update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -439,9 +556,8 @@ present_melody <- function(stimuli,
                            hideOnPlay = FALSE,
                            show_progress = TRUE,
                            total_no_melodies = 0,
-                           start_hidden = FALSE,
+                           sheet_music_start_hidden = FALSE,
                            sound_only_first_melody_note = FALSE,
-                           show_sheet_music = FALSE,
                            sheet_music_id = 'sheet_music',
                            give_first_melody_note = FALSE,
                            arrhythmic = FALSE,
@@ -450,9 +566,15 @@ present_melody <- function(stimuli,
                            volume_meter = FALSE,
                            volume_meter_type = 'default',
                            singing_trial = TRUE,
-                           melody_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                           melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                            user_rating = FALSE,
-                           happy_with_response = FALSE, ...) {
+                           happy_with_response = FALSE,
+                           melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
+                           call_and_response_end = c("manual", "auto"), ...) {
+
+  melody_block_paradigm <- match.arg(melody_block_paradigm)
+  melody_trial_paradigm <- match.arg(melody_trial_paradigm)
+  call_and_response_end <- match.arg(call_and_response_end)
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
     # then this presumes that the melody was transposed at test time, and therefore, should be grabbed
@@ -462,7 +584,7 @@ present_melody <- function(stimuli,
 
   psychTestR::reactive_page(function(state, ...) {
 
-    # grab attempts left etc.
+    # Grab attempts left etc.
     number_attempts <- psychTestR::get_global("number_attempts", state)
     max_goes <- psychTestR::get_global("max_goes", state)
     attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
@@ -471,12 +593,17 @@ present_melody <- function(stimuli,
       answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
     }
 
-    transpose_first_melody_note <- psychTestR::get_global("transpose_first_melody_note", state)
+    transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
     clef <- psychTestR::get_global("clef", state)
+
+    logging::loginfo("Transpose visual notation play melody loop: %s", transpose_visual_notation)
+
+    logging::loginfo("Getting clef: %s", clef)
 
     # MIDI checks
     midi_device <- midi_device_check(page_type, state)
 
+    # Audio WJD trials
     if(stimuli_type == "audio_WJD") {
       stimuli <- present_stimuli_audio_WJD(stimuli)
       stimuli_type <- "audio"
@@ -490,11 +617,15 @@ present_melody <- function(stimuli,
       melody_no <- psychTestR::get_local("item", state) %>% psychTestRCAT::get_item_number()
     }
 
+    # Set some vars for storing in DB
     psychTestR::set_global("trial_time_started", Sys.time(), state)
     psychTestR::set_global("singing_trial", singing_trial, state)
 
     # Use a display_modality created at test time, if appropriate
     display_modality <- if(is.null(melody_checks$display_modality)) display_modality else melody_checks$display_modality
+
+    # Get trial paradigm info
+    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
 
     # Present the stimulus
     present_stimuli(stimuli = melody_checks$melody,
@@ -516,30 +647,29 @@ present_melody <- function(stimuli,
                     happy_with_response = happy_with_response,
                     attempts_left = attempts_left,
                     sound = sound,
+                    trigger_start_of_stimulus_fun = trial_paradigm$trigger_start_of_stimulus_fun,
+                    trigger_end_of_stimulus_fun= trial_paradigm$trigger_end_of_stimulus_fun,
                     hideOnPlay = hideOnPlay,
                     max_goes = max_goes,
                     max_goes_forced = max_goes_forced,
-                    transpose_first_melody_note = transpose_first_melody_note,
+                    transpose_visual_notation = transpose_visual_notation,
                     clef = clef,
                     melody_no = melody_no,
                     show_progress = show_progress,
                     total_no_melodies = total_no_melodies,
-                    start_hidden = if(melody_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual") TRUE else start_hidden,
+                    sheet_music_start_hidden = if(melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual") TRUE else sheet_music_start_hidden,
                     sound_only_first_melody_note = sound_only_first_melody_note,
-                    show_sheet_music = if(melody_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual") TRUE else show_sheet_music,
                     sheet_music_id = sheet_music_id,
-                    give_first_melody_note = if(melody_paradigm == 'learn_phase_visual_display_modality') FALSE else give_first_melody_note,
+                    give_first_melody_note = if(melody_block_paradigm == 'learn_phase_visual_display_modality') FALSE else give_first_melody_note,
                     volume_meter = volume_meter,
                     volume_meter_type = volume_meter_type,
-                    show_sheet_music_after_record = melody_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual")
+                    show_sheet_music_after_record = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
+                    show_record_button = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual"
+                    )
 
   })
 }
 
-
-example_save <- function(example) {
-  ifelse(example, FALSE, TRUE)
-}
 
 grab_sampled_melody <- function(item_bank = NULL,
                                 melody_row = NULL,

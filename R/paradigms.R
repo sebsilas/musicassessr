@@ -30,14 +30,14 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
   )
 
   if(paradigm_type == "simultaneous_recall") {
-    beginning_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE)
-    end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type)
+    trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE)
+    trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type)
   } else if(paradigm_type == "call_and_response") {
-    beginning_of_stimulus_fun <- NA
+    trigger_start_of_stimulus_fun <- NA
       if(call_and_response_end == "manual") {
-        end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type)
+        trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type)
       } else if(call_and_response_end == "auto") {
-        end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds)
+        trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds)
       } else {
         stop('call_and_response_end not understood')
       }
@@ -45,8 +45,8 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     stop("Unknown paradigm_type")
   }
 
-  list(beginning_of_stimulus_fun = beginning_of_stimulus_fun,
-       end_of_stimulus_fun = end_of_stimulus_fun)
+  list(trigger_start_of_stimulus_fun = trigger_start_of_stimulus_fun,
+       trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun)
 
 }
 

@@ -77,7 +77,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(!is.null(stimuli)) shiny::tags$div(stimuli),
 
-      present_record_button(show_record_button, page_type, record_button_text, stop_button_text),
+      present_record_button(show_record_button, page_type, record_button_text, stop_button_text, show_sheet_music_after_record),
 
       if(page_type == "record_audio_page") loading(),
 
@@ -173,60 +173,26 @@ happy_with_response_message <- function(happy_with_response_message, attempts_le
 
 
 
-present_record_button <- function(show_record_button, page_type, record_button_text =  psychTestR::i18n("Record"), stop_button_text = psychTestR::i18n("Stop")) {
+present_record_button <- function(show_record_button,
+                                  page_type,
+                                  record_button_text =  psychTestR::i18n("Record"),
+                                  stop_button_text = psychTestR::i18n("Stop"),
+                                  show_sheet_music_after_record = FALSE,
+                                  sheet_music_id = "sheet_music") {
 
 
   shiny::tags$div(id = "button_area",
     shiny::tags$script(paste0("var stop_button_text = \"", stop_button_text, "\"")),
     shiny::tags$button(record_button_text, id = "recordButton", class = "btn btn-default action-button", style = if(show_record_button) "visibility: visible;" else "visibility: hidden"),
     shiny::tags$button(stop_button_text, id = "stopButton", class = "btn btn-default action-button", style = "visibility: hidden;"),
-    shiny::tags$script(paste0('document.getElementById("recordButton").addEventListener("click", function() {
+    shiny::tags$script(shiny::HTML(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                             startRecording(type = \"', page_type, '\", stop_button_text = \"', stop_button_text, '\");
-                            recordUpdateUI();
-                            })'))
+                            recordUpdateUI();',
+                          if(show_sheet_music_after_record) paste0("showSheetMusic('", sheet_music_id, "');") else "",
+                            '});'))),
   )
 
 }
-
-
-
-
-#
-# get_on_stimuli_start_fun <- function(paradigm) {
-#   if(paradigm == "call_and_response") {
-#     on_stimuli_start_fun <- ""
-#   } else if(paradigm == "play_along") {
-#     on_stimuli_start_fun <- ""
-#   } else {
-#     stop("Paradigm not valid")
-#   }
-#   on_stimuli_start_fun
-# }
-#
-# get_on_stimuli_end_fun <- function(paradigm, stop_fun) {
-#   if(paradigm == "call_and_response") {
-#     on_stimuli_end_fun <- call_and_response_start
-#   } else if(paradigm == "play_along") {
-#     on_stimuli_end_fun <- call_and_response_stop
-#   } else {
-#     stop("Paradigm not valid")
-#   }
-#   on_stimuli_end_fun
-# }
-#
-# on_stimuli_start_fun <- get_on_stimuli_start_fun(paradigm)
-# on_stimuli_end_fun <- get_on_stimuli_end_fun(paradigm)
-#
-#
-# if(is.null(stimuli)) {
-#   present_record_button()
-# } else {
-#   present_stimuli_record_page(on_stimuli_start_fun, on_stimuli_end_fun)
-# }
-#
-# present_stimuli_record_page <- function(on_stimuli_start_fun, on_stimuli_end_fun) {
-#
-# }
 
 
 

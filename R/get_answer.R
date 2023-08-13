@@ -683,10 +683,15 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
 
     logging::loginfo("Store results in SQL database")
 
-    instrument <- if(psychTestR::get_global("singing_trial", state)) "Voice" else psychTestR::get_global("inst", state)
+    singing_trial <- psychTestR::get_global("singing_trial", state)
+    instrument <- if(singing_trial) "Voice" else psychTestR::get_global("inst", state)
     trial_time_started <- psychTestR::get_global("trial_time_started", state)
     session_id <- psychTestR::get_global("session_id", state)
     item_bank_id <- psychTestR::get_global("item_bank_id", state)
+    item_id <- if(is.null(res$answer_meta_data$item_id)) NA else res$answer_meta_data$item_id
+    display_modality <- psychTestR::get_global("display_modality", state)
+    phase <- if(is.null(psychTestR::get_global("phase", state))) res$answer_meta_data$phase else psychTestR::get_global("phase", state)
+    rhythmic <- if(is.null(psychTestR::get_global("rhythmic", state))) res$answer_meta_data$rhythmic else psychTestR::get_global("rhythmic", state)
 
 
     # Append trials
@@ -697,10 +702,10 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
                      time_completed = Sys.time(),
                      instrument = instrument,
                      attempt = as.integer(res$attempt),
-                     item_id = res$answer_meta_data$item_id,
-                     display_modality = res$answer_meta_data$display_modality,
-                     phase = res$answer_meta_data$phase,
-                     rhythmic = res$answer_meta_data$rhythmic,
+                     item_id = item_id,
+                     display_modality = display_modality,
+                     phase = phase,
+                     rhythmic = rhythmic,
                      item_bank_id = as.integer(item_bank_id),
                      session_id = as.integer(session_id)
                      )

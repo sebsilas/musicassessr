@@ -17,7 +17,8 @@ musicassessr_opt(
   musicassessr_aws = FALSE,
   experiment_id = NULL,
   experiment_condition_id = NULL,
-  user_id = NULL
+  user_id = NULL,
+  instrument_id = NULL
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ musicassessr_opt(
 \item{experiment_condition_id}{An experiment condition ID.}
 
 \item{user_id}{A user ID.}
+
+\item{instrument_id}{An instrument ID.}
 }
 \description{
 Specify options for a musicassessr test.

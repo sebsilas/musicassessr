@@ -100,7 +100,7 @@ db_append_to_table <- function(db_con, table, data, primary_key_col = NULL){
 }
 
 
-check_ids_exist <- function(db_con, experiment_id, experiment_condition_id, user_id) {
+check_ids_exist <- function(db_con, experiment_id = NULL, experiment_condition_id = NULL, user_id = NULL) {
   if(!is.null(experiment_id)) {
     if(!check_id_exists(db_con, table_name = "experiments", id_col = "experiment_id", id = experiment_id)) stop(paste0("Experiment ID ", experiment_id, " does not exist."))
   }

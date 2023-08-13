@@ -43,7 +43,7 @@ present_stimuli(
   hideOnPlay = FALSE,
   record_immediately = FALSE,
   max_goes_forced = FALSE,
-  transpose_first_melody_note = 0,
+  transpose_visual_notation = 0L,
   clef = "auto",
   volume = 1,
   audio_playback_as_single_play_button = FALSE,
@@ -51,9 +51,8 @@ present_stimuli(
   melody_no = 0,
   total_no_melodies = 0,
   show_progress = FALSE,
-  start_hidden = FALSE,
+  sheet_music_start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
-  show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   give_first_melody_note = FALSE,
   slider_value = 5,
@@ -65,15 +64,15 @@ present_stimuli(
   show_sheet_music_after_record = FALSE,
   interactive = FALSE,
   show_record_button = FALSE,
-  trigger_start_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
-  trigger_end_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
+  trigger_start_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
+  trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
   ...
 )
 }
 \arguments{
-\item{trigger_start_of_stimuli_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus begins.}
+\item{trigger_start_of_stimulus_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus begins.}
 
-\item{trigger_end_of_stimuli_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus is completed.}
+\item{trigger_end_of_stimulus_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus is completed.}
 
 \item{...}{}
 }

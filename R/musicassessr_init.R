@@ -41,13 +41,10 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
       }
 
-
-
+      # Set vars
       psychTestR::set_global("app_name", app_name, state)
       psychTestR::set_global("use_musicassessr_db", use_musicassessr_db, state)
       psychTestR::set_global("scores", c(), state)
-      psychTestR::set_global("transpose_first_melody_note", 0, state)
-      psychTestR::set_global("clef", "auto", state)
       psychTestR::set_global("experiment_id", experiment_id, state)
       psychTestR::set_global("experiment_condition_id", experiment_condition_id, state)
       psychTestR::set_global("user_id", user_id, state)
@@ -82,5 +79,48 @@ set_test <- function(test_name, test_id = NULL) {
   })
 
 }
+
+
+
+#' Set instrument ID
+#'
+#' @param instrument_id
+#'
+#' @return
+#' @export
+#'
+#' @examples
+set_instrument <- function(instrument_id = NULL) {
+
+  psychTestR::code_block(function(state, ...) {
+
+    if(!is.null(instrument_id)) {
+
+      db_con <- psychTestR::get_global("db_con", state)
+      if(is.null(db_con)) stop("If instrument_id is non-NULL, then use_musicassessr_db must be true.")
+      check_id_exists(db_con, table_name = "instruments", id_col = "instrument_id", id = instrument_id)
+
+      logging::loginfo("Setting instrument ID, manually specified. ID: %s", instrument_id)
+
+      psychTestR::set_global("instrument_id", instrument_id, state)
+
+      inst <- insts_table %>%
+        dplyr::mutate(id = dplyr::row_number()) %>%
+        dplyr::filter(id == instrument_id)
+
+      logging::loginfo("Instrument: %s", inst$en)
+      logging::loginfo("Transpose: %s", inst$transpose)
+      logging::loginfo("Clef: %s", inst$clef)
+
+      psychTestR::set_global("inst", inst$en, state)
+      psychTestR::set_global("transpose_visual_notation", as.integer(inst$transpose), state)
+      psychTestR::set_global("clef", inst$clef, state)
+
+    }
+
+  })
+
+}
+
 
 

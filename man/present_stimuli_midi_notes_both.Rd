@@ -14,17 +14,18 @@ present_stimuli_midi_notes_both(
   visual_music_notation_id = "sheet_music",
   play_button_id = "playButton",
   button_area_id = "button_area",
-  start_hidden = FALSE,
+  sheet_music_start_hidden = FALSE,
   sound_only_first_melody_note = FALSE,
-  show_sheet_music = FALSE,
   sheet_music_id = "sheet_music",
   page_type = "null",
   durations = NULL,
-  trigger_end_of_stimuli_fun = "function() { console.log('Stimulus finished!'); }"
+  trigger_start_of_stimulus_fun = "function() { console.log('Stimulus started!'); }",
+  trigger_end_of_stimulus_fun = "function() { console.log('Stimulus finished!'); }",
+  clef = "auto"
 )
 }
 \arguments{
-\item{...}{}
+\item{clef}{}
 }
 \description{
 Present midi notes in both visual and auditory modalities

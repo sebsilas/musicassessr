@@ -12,17 +12,15 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
                                                 durations = numeric(),
                                                 play_button_id = "playButton",
                                                 button_area_id = "button_area",
-                                                transpose_first_melody_note = 0,
+                                                transpose_visual_notation = 0L,
                                                 clef = "auto",
                                                 sound_only_first_melody_note = FALSE,
-                                                show_sheet_music = FALSE,
                                                 give_first_melody_note = FALSE,
-                                                trigger_start_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus started!'); }"),
-                                                trigger_end_of_stimuli_fun = wrap_js_fun_body("console.log('Stimulus finished!'); }"), ...) {
+                                                trigger_start_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus started!'); }"),
+                                                trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!'); }"), ...) {
 
 
   durations <- sort_durations(durations, note_length, stimuli)
-  show_sheet_music <- TRUE_to_js_true(show_sheet_music)
 
   if(sound_only_first_melody_note) {
     stimuli <- stimuli[1]
@@ -30,17 +28,17 @@ present_stimuli_midi_notes_auditory <- function(stimuli, note_length = 0.5, soun
   }
 
 
-  trigger_start_of_stimuli_fun <- NA_to_js_null(trigger_start_of_stimuli_fun)
-  trigger_end_of_stimuli_fun <- NA_to_js_null(trigger_end_of_stimuli_fun)
+  trigger_start_of_stimulus_fun <- NA_to_js_null(trigger_start_of_stimulus_fun)
+  trigger_end_of_stimulus_fun <- NA_to_js_null(trigger_end_of_stimulus_fun)
 
 
-  js_script <- paste0("playSeq(",rjson::toJSON(stimuli),", ", rjson::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimuli_fun, ', ', trigger_end_of_stimuli_fun, ')')
+  js_script <- paste0("playSeq(",rjson::toJSON(stimuli),", ", rjson::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
 
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
 
   shiny::tags$div(
     # Should the first note be shown?
-    show_first_melody_note(give_first_melody_note, stimuli, transpose_first_melody_note, clef = clef),
+    show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef),
     set_melodic_stimuli(stimuli, durations),
     shiny::tags$div(id = button_area_id, play_button),
     shiny::tags$br()
@@ -75,20 +73,28 @@ set_melodic_stimuli <- function(stimuli, durations) {
 #' @param id
 #' @param present_div
 #' @param clef
-#' @param transpose_first_melody_note
+#' @param transpose_visual_notation
 #' @param audio_play_button_id
-#' @param start_hidden
+#' @param sheet_music_start_hidden
+#' @param durations
 #'
 #' @return
 #' @export
 #'
 #' @examples
-present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FALSE,
-                                              ascending, id = "sheet_music", present_div = TRUE,
+present_stimuli_midi_notes_visual <- function(stimuli,
+                                              note_length, asChord = FALSE,
+                                              ascending, id = "sheet_music",
+                                              present_div = TRUE,
                                               clef = "auto",
-                                              transpose_first_melody_note = 0,
+                                              transpose_visual_notation = 0L,
                                               audio_play_button_id = "playButton",
-                                              start_hidden = FALSE) {
+                                              sheet_music_start_hidden = FALSE,
+                                              durations = NULL) {
+
+  if(transpose_visual_notation != 0) {
+    stimuli <- stimuli + transpose_visual_notation
+  }
 
   if(identical(stimuli, "interactive")) {
     res <- shiny::tags$div(
@@ -96,9 +102,13 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
     )
   } else {
     xml <- wrap.xml.template(type = "midi_notes", notes = stimuli, asChord = asChord, clef = clef)
-    res <- shiny::tags$div(open.music.display.wrapper(xml, id, present_div, start_hidden))
+    res <- shiny::tags$div(open.music.display.wrapper(xml, id, present_div, sheet_music_start_hidden))
   }
-  res
+
+  shiny::tags$div(
+    res,
+    set_melodic_stimuli(stimuli, durations)
+  )
 
 }
 
@@ -115,12 +125,14 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
 #' @param visual_music_notation_id
 #' @param play_button_id
 #' @param button_area_id
-#' @param start_hidden
+#' @param sheet_music_start_hidden
 #' @param sound_only_first_melody_note
-#' @param show_sheet_music
 #' @param sheet_music_id
 #' @param page_type
-#' @param ...
+#' @param durations
+#' @param trigger_start_of_stimulus_fun
+#' @param trigger_end_of_stimulus_fun
+#' @param clef
 #'
 #' @return
 #' @export
@@ -129,10 +141,12 @@ present_stimuli_midi_notes_visual <- function(stimuli, note_length, asChord = FA
 present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = "piano", asChord = FALSE, play_button_text = "Play",
                                             ascending = TRUE, visual_music_notation_id = "sheet_music",
                                             play_button_id = "playButton", button_area_id = "button_area",
-                                            start_hidden = FALSE, sound_only_first_melody_note = FALSE,
-                                            show_sheet_music = FALSE, sheet_music_id = 'sheet_music',
+                                            sheet_music_start_hidden = FALSE, sound_only_first_melody_note = FALSE,
+                                            sheet_music_id = 'sheet_music',
                                             page_type = 'null', durations = NULL,
-                                            trigger_end_of_stimuli_fun = "function() { console.log('Stimulus finished!'); }") {
+                                            trigger_start_of_stimulus_fun  = "function() { console.log('Stimulus started!'); }",
+                                            trigger_end_of_stimulus_fun = "function() { console.log('Stimulus finished!'); }",
+                                            clef = "auto") {
 
 
 
@@ -140,12 +154,13 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = 
                                                                  sound = sound, play_button_text = play_button_text,
                                                                  play_button_id = play_button_id, button_area_id = button_area_id,
                                                                  sound_only_first_melody_note = sound_only_first_melody_note,
-                                                                 show_sheet_music = show_sheet_music, sheet_music_id = sheet_music_id,
+                                                                 sheet_music_id = sheet_music_id,
                                                                  page_type = page_type, durations = durations,
-                                                                 trigger_end_of_stimuli_fun = trigger_end_of_stimuli_fun)
+                                                                 trigger_start_of_stimulus_fun = trigger_start_of_stimulus_fun,
+                                                                 trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun)
 
   return_stimuli_visual <- present_stimuli_midi_notes_visual(stimuli = stimuli, note_length = note_length, asChord = asChord, ascending = ascending,
-                                                             id = visual_music_notation_id, start_hidden = start_hidden)
+                                                             id = visual_music_notation_id, sheet_music_start_hidden = sheet_music_start_hidden, clef = clef)
 
   shiny::tags$div(return_stimuli_auditory, return_stimuli_visual)
 }
@@ -156,14 +171,15 @@ present_stimuli_midi_notes <- function(stimuli,
                                        durations = NULL, auto_next_page = FALSE,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                        button_area_id = "button_area", record_immediately = FALSE,
-                                       transpose_first_melody_note = 0,
-                                       start_hidden = FALSE, sound_only_first_melody_note = FALSE,
-                                       show_sheet_music = FALSE,
+                                       transpose_visual_notation = 0L,
+                                       sheet_music_start_hidden = FALSE,
+                                       sound_only_first_melody_note = FALSE,
                                        sheet_music_id = 'sheet_music',
                                        page_type = 'null',
                                        clef = 'auto',
                                        give_first_melody_note = FALSE,
-                                       trigger_end_of_stimuli_fun = "function() { console.log('Stimulus finished!'); }", ...) {
+                                       trigger_start_of_stimulus_fun  = "function() { console.log('Stimulus started!'); }",
+                                       trigger_end_of_stimulus_fun = "function() { console.log('Stimulus finished!'); }", ...) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
@@ -171,11 +187,12 @@ present_stimuli_midi_notes <- function(stimuli,
                                                           durations = durations,
                                                           auto_next_page = auto_next_page, play_button_id = play_button_id,
                                                           button_area_id = button_area_id, record_immediately = record_immediately,
-                                                          transpose_first_melody_note = transpose_first_melody_note,
+                                                          transpose_visual_notation = transpose_visual_notation,
                                                           sound_only_first_melody_note = sound_only_first_melody_note,
                                                           page_type = page_type,
                                                           give_first_melody_note = give_first_melody_note,
-                                                          trigger_end_of_stimuli_fun = trigger_end_of_stimuli_fun, ...)
+                                                          trigger_start_of_stimulus_fun = trigger_start_of_stimulus_fun,
+                                                          trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun, ...)
 
   } else if (display_modality == "visual") {
     return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
@@ -183,23 +200,29 @@ present_stimuli_midi_notes <- function(stimuli,
                                                         asChord = asChord,
                                                         ascending = ascending,
                                                         id = visual_music_notation_id,
-                                                        start_hidden = start_hidden, ...)
+                                                        sheet_music_start_hidden = sheet_music_start_hidden,
+                                                        durations = durations,
+                                                        clef = clef,
+                                                        transpose_visual_notation = transpose_visual_notation, ...)
   } else {
     return_stimuli <- present_stimuli_midi_notes_both(stimuli = stimuli, note_length = note_length, sound = sound,
                                                       asChord = asChord, ascending = ascending,
                                                       play_button_text = play_button_text, visual_music_notation_id = visual_music_notation_id,
                                                       play_button_id = play_button_id, button_area_id = button_area_id,
-                                                      start_hidden = start_hidden,
+                                                      sheet_music_start_hidden = sheet_music_start_hidden,
                                                       sound_only_first_melody_note = sound_only_first_melody_note,
-                                                      show_sheet_music = show_sheet_music,
-                                                      sheet_music_id = sheet_music_id, page_type = page_type, ...)
+                                                      sheet_music_id = sheet_music_id,
+                                                      page_type = page_type,
+                                                      trigger_start_of_stimulus_fun = trigger_start_of_stimulus_fun,
+                                                      trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun,
+                                                      clef = clef, ...)
   }
 
   return_stimuli
 }
 
 
-# scientific music notation
+# Scientific music notation
 
 present_stimuli_scientific_music_notation_visual <- function(stimuli, asChord = FALSE) {
 
@@ -334,16 +357,14 @@ present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "
 present_stimuli_music_xml_file <- function(stimuli,
                                            display_modality,
                                            sound_only_first_melody_note = FALSE,
-                                           start_hidden = FALSE,
-                                           show_sheet_music = FALSE,
+                                           sheet_music_start_hidden = FALSE,
                                            page_type = 'null') {
 
   if(display_modality == "visual") {
     shiny::tags$div(
       if(is.numeric(sound_only_first_melody_note)) present_stimuli_midi_notes_auditory(sound_only_first_melody_note,
-                                                                                       show_sheet_music = show_sheet_music,
                                                                                        page_type = page_type),
-      open.music.display.wrapper(stimuli, start_hidden = start_hidden)
+      open.music.display.wrapper(stimuli, sheet_music_start_hidden = sheet_music_start_hidden)
     )
   } else {
     stop('Only support for visual presentation of musicxml files currently')
@@ -757,13 +778,13 @@ play.notes.html.wrapper <- function(stimuli_pitches, stimuli_rhythms) {
 
 }
 
-open.music.display.wrapper <- function(xml, id = "sheet_music", return_div = TRUE, start_hidden = FALSE) {
+open.music.display.wrapper <- function(xml, id = "sheet_music", return_div = TRUE, sheet_music_start_hidden = FALSE) {
 
   non_underscore_id <- stringr::str_remove(id, "_")
 
   shiny::tags$div(
     shiny::tags$br(),
-    if(return_div) shiny::tags$div(id=id),
+    if(return_div) shiny::tags$div(id=id, style = "visibility: hidden;"),
     shiny::tags$script(htmltools::HTML(paste0('
                 var ', id, '_osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(\"', id, '\", {drawingParameters: "compact",
                 drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false});
@@ -776,7 +797,7 @@ open.music.display.wrapper <- function(xml, id = "sheet_music", return_div = TRU
                               ', non_underscore_id, '.style.width = scoreWidth;
                               });'))),
 
-    if(start_hidden) shiny::tags$script(paste0('var sm = document.getElementById(\"', id, '\"); sm.style.visibility = "hidden";'))
+    if(sheet_music_start_hidden) shiny::tags$script(shiny::HTML(paste0('setTimeout(() => { var sm = document.getElementById("',id, '");  sm.style.visibility = "hidden"; } , 200);')))
   )
 
 }
@@ -791,14 +812,14 @@ sort_durations <- function(durations, note_length, stimuli) {
 
 show_first_melody_note <- function(give_first_melody_note,
                                    stimuli,
-                                   transpose_first_melody_note = 0,
+                                   transpose_visual_notation = 0,
                                    clef = "auto",
                                    show_first_melody_note_visual = TRUE, audio_play_button_id = "firstMelodyPlay") {
   if(give_first_melody_note) {
     shiny::tags$div(
       shiny::tags$p(psychTestR::i18n("first_note_is")),
-      if(transpose_first_melody_note != 0) shiny::tags$p(psychTestR::i18n("transposed")),
-      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(stimuli[1] + transpose_first_melody_note, clef = clef, id = "firstMelodyNoteVisual"),
+      if(transpose_visual_notation != 0) shiny::tags$p(psychTestR::i18n("transposed")),
+      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(stimuli[1] + transpose_visual_notation, clef = clef, id = "firstMelodyNoteVisual"),
       present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = psychTestR::i18n("play_first_note"), play_button_id = audio_play_button_id, auto_next_page = FALSE)
     )
   } else {

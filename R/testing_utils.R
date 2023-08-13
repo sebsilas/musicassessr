@@ -9,8 +9,9 @@
 #' @export
 #'
 #' @examples
-fake_range <- function(bottom_range = 48, top_range = 72) {
+set_instrument_range <- function(bottom_range = 48, top_range = 72) {
   psychTestR::code_block(function(state, ...) {
+    logging::loginfo("Setting range: %s %s", bottom_range, top_range)
     psychTestR::set_global("bottom_range", bottom_range, state)
     psychTestR::set_global("top_range", top_range, state)
     psychTestR::set_global("span", top_range-bottom_range, state)

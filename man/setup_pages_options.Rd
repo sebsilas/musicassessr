@@ -25,7 +25,7 @@ setup_pages_options(
   skip_setup = FALSE,
   get_self_chosen_anonymous_id = FALSE,
   musical_instrument = FALSE,
-  default_range = list(bottom_range = 48, top_range = 72)
+  fake_range = FALSE
 )
 }
 \arguments{
@@ -67,7 +67,7 @@ setup_pages_options(
 
 \item{musical_instrument}{Whether the participant is required to have a musical instrument.}
 
-\item{default_range}{A length 2 named list of the range that stimuli should be presented in, if not collected at test time.}
+\item{fake_range}{Should a range be faked?}
 }
 \description{
 Setup page options for a musicassessr test

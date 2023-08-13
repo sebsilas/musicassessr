@@ -72,6 +72,10 @@ sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
 #' @examples
 sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
 
+  logging::loginfo('Sample melody in key...')
+  logging::loginfo("Range: %s %s", bottom_range, top_range)
+
+
   stopifnot(tibble::is_tibble(item_bank),
             assertthat::is.string(inst),
             is_midi_note(bottom_range),
@@ -89,7 +93,7 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
   key_centre <- key$key_centre
   user_span <- top_range - bottom_range
 
-  # sample melody
+  # Sample melody
 
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
 
@@ -112,18 +116,18 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
     meta_data <- item_bank_subset %>% dplyr::slice_sample(n = 1)
 
     rel_mel <- meta_data$melody
-    # now put it in a key
+    # Now put it in a key
     key_centres <- itembankr::pitch_class_to_midi_notes(key_centre)
 
     key_centres_in_range <- key_centres[key_centres >= bottom_range & key_centres <= top_range]
 
-    # first try it with the first note as being the key centre
+    # First try it with the first note as being the key centre
     abs_mel <- itembankr::rel_to_abs_mel(itembankr::str_mel_to_vector(rel_mel, ","), start_note = key_centres_in_range[1])
 
-    # check key
+    # Check key
     mel_key <- get_implicit_harmonies(abs_mel)
     mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
-    # how far away is it from being the correct tonal centre?
+    # How far away is it from being the correct tonal centre?
 
     dist <- itembankr::pitch_class_to_numeric_pitch_class(key_centre) - itembankr::pitch_class_to_numeric_pitch_class(mel_key_centre)
 
@@ -132,20 +136,20 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
       abs_mel <- abs_mel + dist
     }
 
-    # check all notes in range
+    # Check all notes in range
     if(check_all_notes_in_range(abs_mel, bottom_range, top_range)) {
-      # in range
+      # In range
       found_melody <- TRUE
       meta_data$abs_melody <- paste0(abs_mel, collapse = ",")
       return(meta_data)
     }
     else {
-      # not in range!
+      # Not in range!
 
-      # try octave either side
+      # Try octave either side
       abs_mel_up <- abs_mel + 12
       abs_mel_down <- abs_mel - 12
-      if(check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
+      if(check_all_notes_in_range(abs_mel_up, bottom_range, top_range) && check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         # both in range, randomly select one
         snap <- sample(1:2, 1)
         if(snap == 1) {
@@ -159,29 +163,31 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
           return(meta_data)
         }
       }
-      else if (check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & !check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
+      else if (check_all_notes_in_range(abs_mel_up, bottom_range, top_range) && !check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
         # only octave up in range, return that')
         meta_data$abs_melody <- paste0(abs_mel_up, collapse = ",")
         return(meta_data)
       }
-      else if (!check_all_notes_in_range(abs_mel_up, bottom_range, top_range) & check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
+      else if (!check_all_notes_in_range(abs_mel_up, bottom_range, top_range) && check_all_notes_in_range(abs_mel_down, bottom_range, top_range)) {
         found_melody <- TRUE
-        # only octave down in range, return that
+        # Only octave down in range, return that
         meta_data$abs_melody <- paste0(abs_mel_down, collapse = ",")
         return(meta_data)
       }
       else {
+        print("Undesirable2...")
         if(count > 10) {
+          print("Undesirable2...")
           meta_data$abs_melody <- paste0(abs_mel, collapse = ",")
           return(meta_data)
         }
         found_melody <- FALSE
-        # neither is in range, try a new melody
-        # try again
+        # Neither is in range, try a new melody
+        # Try again
       }
     }
-  } # end while
+  } # End while
 
 }
 

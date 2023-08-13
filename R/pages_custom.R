@@ -37,7 +37,7 @@ select_musical_instrument_page <- function() {
                   if(length(clef) == 0) {
                     clef <- "auto"
                   }
-                  psychTestR::set_global("transpose_first_melody_note", trans_first_note, state)
+                  psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
                   psychTestR::set_global("clef", clef, state)
                 })
 }

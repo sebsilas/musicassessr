@@ -12,7 +12,7 @@ preloadImage("https://adaptiveeartraining.com/assets/img/saxophone.png");
 
 // Constants
 // A little delay after playback finishes before hitting record
-var record_delay = 400;
+var record_delay = 500;
 
 // Vars
 var confidences = [];
@@ -634,13 +634,12 @@ if(volumeMeter !== null) {
   volumeMeter.style.visibility = "visible";
 }
 
-if(show_sheet_music) {
-  showSheetMusic(sheet_music_id);
-}
 
 */
 
 function showSheetMusic(sheet_music_id) {
+  console.log('showSheetMusic');
+  console.log(sheet_music_id);
   var sheet_music = document.getElementById(sheet_music_id);
   sheet_music.style.visibility = "visible";
 }
@@ -661,16 +660,17 @@ function hideLoading() {
 
 function stopRecording(type) {
 
-  hideRecordingIcon();
-
   setTimeout(() => {
+
+    hideStopButton();
+    hideRecordingIcon();
 
     if(type === "record_audio_page") {
       stopAudioRecording();
     } else if(type === "record_midi_page") {
       stopMidiRecording();
     } else {
-      console.log('Unknown page type');
+      console.log('Unknown page type: ' + type);
     }
     next_page();
 
@@ -727,6 +727,16 @@ function hideRecordingIcon() {
     rec_icon.style.display = "block";
    } else {
     rec_icon.style.display = "none";
+   }
+}
+
+
+function hideStopButton() {
+  var stopButton = document.getElementById("stopButton");
+  if (stopButton.style.display === "none") {
+    stopButton.style.display = "block";
+   } else {
+    stopButton.style.display = "none";
    }
 }
 

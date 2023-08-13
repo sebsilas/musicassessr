@@ -323,13 +323,6 @@ item_bank_type_to_stimuli_type <- function(string_of_item_bank_type) {
   item_bank_type
 }
 
-if_example_save_answer <- function(example) {
-  if(example) {
-    save_answer <- FALSE
-  } else {
-    save_answer <- TRUE
-  }
-}
 
 # response check functions
 

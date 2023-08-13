@@ -12,13 +12,14 @@ present_stimuli_midi_notes_visual(
   id = "sheet_music",
   present_div = TRUE,
   clef = "auto",
-  transpose_first_melody_note = 0,
+  transpose_visual_notation = 0L,
   audio_play_button_id = "playButton",
-  start_hidden = FALSE
+  sheet_music_start_hidden = FALSE,
+  durations = NULL
 )
 }
 \arguments{
-\item{start_hidden}{}
+\item{durations}{}
 }
 \description{
 Present MIDI notes as musical notation

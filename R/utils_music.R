@@ -134,7 +134,8 @@ produce_stimuli_in_range <- function(rel_melody, bottom_range = 21, top_range = 
 #' @examples
 default_range <- function(instrument) {
 
-  inst <- insts_table %>% dplyr::filter(instrument_name == instrument)
+  inst <- insts_table %>%
+    dplyr::filter(en == instrument)
 
   if(nrow(inst) == 0) {
     stop("Instrument not found")

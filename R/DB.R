@@ -43,7 +43,7 @@ db_append_melodic_production <- function(db_con, trial_id, pyin_res, correct_boo
   db_append_to_table(db_con, table = "melodic_production", data = melodic_production_df)
 }
 
-#
+
 # pyin::test_pyin() %>% dplyr::select(onset:note) %>% db_append_melodic_production()
 
 db_append_trials <- function(db_con, audio_file, time_started, time_completed, instrument,
@@ -55,11 +55,11 @@ db_append_trials <- function(db_con, audio_file, time_started, time_completed, i
             is(time_completed, "POSIXct"),
             is.scalar.character(instrument),
             is.integer(attempt),
-            is.scalar.character(item_id),
+            is.scalar.character(item_id) || is.na(item_id),
             is.scalar.character(display_modality),
-            is.scalar.character(phase),
-            is.scalar.logical(rhythmic),
-            is.integer(item_bank_id),
+            is.scalar.character(phase) || is.na(phase),
+            is.scalar.logical(rhythmic) || is.na(rhythmic),
+            is.integer(item_bank_id) || is.na(item_bank_id),
             is.integer(session_id)
             )
 

@@ -62,9 +62,9 @@ reference:
   - starts_with("feedback")
 
 
-- title: "get_answer_functions"
+- title: "Get answer functions"
   desc: >
-    psychTestR get_answer functions
+    psychTestR get_answer functions (i.e., to grab recorded data)
   contents:
   - starts_with("get_answer")
 

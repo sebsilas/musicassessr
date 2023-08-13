@@ -2,3 +2,147 @@ url: https://sebsilas.github.io/musicassessr/
 template:
   bootstrap: 5
 
+reference:
+
+- title: "Top level"
+  desc: >
+    Functions used to launch musicassessr tests.
+  contents:
+  - make_musicassessr_test
+  - musicassessr_opt
+  - include_musicassessr_js
+  - setup_pages_options
+
+
+- title: "Trial blocks"
+  desc: >
+    Functions for recording data in psychTestR
+  contents:
+  - ends_with("_trials")
+  - record_audio_block
+  - record_midi_block
+
+- title: "Pages"
+  desc: >
+    Functions for recording data in psychTestR
+  contents:
+  - ends_with("page")
+  - ends_with("pages")
+  - ends_with("loop")
+
+
+- title: "Present Stimuli"
+  desc: >
+    Functions for presenting stimuli
+  contents:
+  - starts_with("present")
+
+- title: "Scoring"
+  desc: >
+    Functions for scoring results
+  contents:
+  - starts_with("score")
+  - opti3
+  - opti3_df
+  - ngrukkon
+  - rhythfuzz
+  - harmcore
+  - pmi
+
+- title: "Sampling functions"
+  desc: >
+    Functions for sampling from an item bank
+  contents:
+  - item_sampler
+
+- title: "Feedback functions"
+  desc: >
+    Functions for presenting feedback to participants
+  contents:
+  - starts_with("feedback")
+
+
+- title: "Get answer functions"
+  desc: >
+    psychTestR get_answer functions (i.e., to grab recorded data)
+  contents:
+  - starts_with("get_answer")
+
+
+- title: "Test utils"
+  desc: >
+    Functions to help test musicassessr components
+  contents:
+  - test_recording_app
+
+- title: "Database functions"
+  desc: >
+    Functions for working with MySQL Databases
+  contents:
+  - connect_to_db
+  - db_append_to_table
+  - get_table
+  - set_instrument
+  - set_instrument_range
+  - set_response_type
+  - set_test
+
+- title: "Parameter display helper functions"
+  desc: >
+    Helper functions to display what parameters can be used in musicassessr
+  contents:
+    - list_official_tests
+    - list_tone_sound_types
+
+- title: "Utilities"
+  desc: >
+    Utility/low-level functions
+  contents:
+  - add_feedback
+  - calculate_stable_part
+  - create_socials
+  - default_range
+  - deploy_demographics
+  - dict
+  - download_files_from_ec2
+  - elt_add_final_session_info_to_db
+  - empty_code_block
+  - end_of_long_note_trial_screening
+  - expand_string_df_row
+  - filler_task
+  - final_page_or_continue_to_new_test
+  - find_closest_stimuli_pitch_to_user_production_pitches
+  - get_implicit_harmonies
+  - get_long_note_pcas
+  - get_melody_dtw
+  - get_range_from_user_id
+  - grab_meta_data
+  - have_requirements
+  - insert_item_into_every_other_n_position_in_list
+  - is_null_or_not_all_TRUE
+  - long_note_pitch_metrics
+  - melconv
+  - melconv_from_pyin_res
+  - musicassessr_init
+  - musicassessr_js
+  - ngrukkon_safe
+  - paradigm
+  - plot_dtw_melody
+  - plot_longitudinal
+  - plot_normal_dist_plus_score
+  - prepare_mel_stimuli_for_dtw
+  - psych_test_snap
+  - read_melody
+  - rel_to_abs_mel_mean_centred
+  - render_scores_table
+  - sample_arrhythmic
+  - sample_from_user_range
+  - sample_melody_in_key
+  - sample_random
+  - sample_review
+  - sample_rhythmic
+  - test_acronym_to_name
+  - tidy_melodies
+  - to_string_df
+  - translate_from_dict
+  - validate_user_entry_into_test

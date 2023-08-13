@@ -10,11 +10,20 @@ feedback_melodic_production_simple <- function() {
 }
 
 
+#' Feedback for melodic production pages
+#'
+#' @param melody_dtw
+#' @param answer_meta_data
+#'
+#' @return
+#' @export
+#'
+#' @examples
 feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TRUE) {
 
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(answer$error == FALSE) {
+    if(!answer$error) {
 
       # plots
       plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)

@@ -6,12 +6,14 @@
 
 `musicassessr` is part of a network of packages. See also:
 
-- [`pyin`](https://github.com/sebsilas/pyin)
-- [`itembankr`](https://github.com/sebsilas/itembankr)
+- [`pyin`](https://github.com/sebsilas/pyin): transcribe monophonic audio in the *R* environment using the pYIN algorithm
+- [`itembankr`](https://github.com/sebsilas/itembankr): produce musicassessr-compatible item banks with useful melodic features
+- [`Berkowitz`](https://github.com/sebsilas/Berkowitz): a pre-made *itembankr* item bank of the Baker (2021) / Berkowitz (2017) sight-singing corpus.
+- [`WJD`](https://github.com/sebsilas/WJD): a pre-made *itembankr* item bank of the [Weimar Jazz Database](https://jazzomat.hfm-weimar.de/dbformat/dboverview.html).
 
 ### Musical ability tests
 
-*musicassessr* currently facilitates the following music ability tests.
+*musicassessr* currently facilitates the following music ability tests:
 
 - [`SAA`](https://saa.musicassessr.com) (singing ability assessment)
 - [`PBET`](https://github.com/sebsilas/PBET)  (playing by ear test)
@@ -24,7 +26,11 @@
 
 ## References
 
+Baker, D. (2021). MeloSol Corpus. Empirical Musicology Review, 16, 106–113. https://doi.org/10.18061/emr.v16i1.7645
+
 Beaty, R. E., Frieler, K., Norgaard, M., Merseal, H. M., MacDonald, M. C., & Weiss, D. J. (2021). Expert musical improvisations contain sequencing biases seen in language production. Journal of Experimental Psychology. https://doi.org/10.1037/xge0001107
+
+Berkowitz, S., Fontrier, G., Goldstein, P., & Smaldone, E. (2017). A new approach to sight singing (Sixth edition). W. W. Norton & Company.
 
 Cannam, C., Jewell, M. O., Rhodes, C., Sandler, M., & d’Inverno, M. (2010). Linked Data And You: Bringing music research software into the Semantic Web. Journal of New Music Research, 39(4), 313–325.
 

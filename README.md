@@ -17,9 +17,12 @@
 - [`PBET`](https://github.com/sebsilas/PBET)  (playing by ear test)
 - [`PDT`](https://github.com/sebsilas/PDT) (pitch discrimination test)
 
+### Cheat Sheet
+
+<a href="https://musicassessr.com/assets/musicassessr_cheat_sheet.pdf"><img src="https://musicassessr.com/assets/musicassessr_cheatsheet.png" width="630" height="495"/></a>
+
 
 ## References
-
 
 Beaty, R. E., Frieler, K., Norgaard, M., Merseal, H. M., MacDonald, M. C., & Weiss, D. J. (2021). Expert musical improvisations contain sequencing biases seen in language production. Journal of Experimental Psychology. https://doi.org/10.1037/xge0001107
 

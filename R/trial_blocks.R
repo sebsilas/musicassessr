@@ -819,13 +819,13 @@ long_tone_trials <- function(num_items,
                                psychTestR::conditional(function(state, ...){
                                  psychTestR::get_global("response_type", state) == "Microphone"
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
-                                                                                  example = TRUE, feedback = feedback, get_answer = get_answer, paradigm = paradigm, long_tone_length = long_tone_length))
+                                                                                  example = TRUE, feedback = feedback, get_answer = get_answer, trial_paradigm = paradigm, long_tone_length = long_tone_length))
 
                              } else {
                                multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
                                                                        example = TRUE, feedback = feedback, get_answer = get_answer,
                                                                        page_text = page_text, page_title = page_title,
-                                                                       paradigm = paradigm, long_tone_length = long_tone_length)
+                                                                       trial_paradigm = paradigm, long_tone_length = long_tone_length)
                              },
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
@@ -841,7 +841,7 @@ long_tone_trials <- function(num_items,
                                                                  page_text = page_text,
                                                                  page_title = page_title,
                                                                  show_progress = show_progress,
-                                                                 paradigm = paradigm,
+                                                                 trial_paradigm = paradigm,
                                                                  long_tone_length = long_tone_length),
 
                          psychTestR::elt_save_results_to_disk(complete = FALSE),

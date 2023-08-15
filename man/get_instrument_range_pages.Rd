@@ -6,7 +6,6 @@
 \usage{
 get_instrument_range_pages(
   input_type,
-  get_range,
   show_musical_notation = FALSE,
   adjust_range = FALSE,
   test_type = c("voice", "instrument"),

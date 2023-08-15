@@ -762,10 +762,10 @@ long_tone_trials <- function(num_items,
                                shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
                              module_name = "long_tone_trials",
                              show_progress = TRUE,
-                             paradigm = c("sing_along", "call_and_response"),
+                             paradigm = c("simultaneous_recall", "call_and_response"),
                              long_tone_length = 5) {
 
-  if(match.arg(paradigm) == "sing_along") {
+  if(match.arg(paradigm) == "simultaneous_recall") {
     instruction_text <- shiny::div(
       shiny::tags$h2(page_title),
       shiny::tags$p(psychTestR::i18n("long_tone_instruction")),

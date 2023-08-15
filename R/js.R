@@ -48,7 +48,7 @@ musicassessr_js <- function(app_name,
                             record_audio = TRUE,
                             midi_input = FALSE) {
 
-  if(record_audio == FALSE) {
+  if(!record_audio) {
     app_name <- ""
   } # This allows us to both make sure that users using musicassessr provide an app name (most use cases) by default, but allow through cases where record audio isn't used (like with the PDT)
 
@@ -140,7 +140,7 @@ create_dir_if_doesnt_exist <- function(dir) {
 }
 
 check_port <- function(port = 3000) {
-  # is something running on port xx?
+  # Is something running on port xx?
   os <- get_os()
   if(os %in% c("osx", "linux" )) {
     res <- check_port_mac()

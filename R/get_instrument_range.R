@@ -4,7 +4,6 @@
 #' Get Instrument Range Pages
 #'
 #' @param input_type
-#' @param get_range
 #' @param show_musical_notation
 #' @param adjust_range
 #' @param test_type
@@ -15,7 +14,6 @@
 #'
 #' @examples
 get_instrument_range_pages <- function(input_type,
-                                       get_range,
                                        show_musical_notation = FALSE,
                                        adjust_range = FALSE,
                                        test_type = c("voice", "instrument"),
@@ -25,7 +23,6 @@ get_instrument_range_pages <- function(input_type,
   # a short multi-page protocol to get the user's frequency range
 
   stopifnot(assertthat::is.string(input_type),
-            is.logical(get_range) | assertthat::is.string(get_range),
             is.logical(show_musical_notation),
             assertthat::is.string(test_type),
             is.scalar.logical(concise_wording))

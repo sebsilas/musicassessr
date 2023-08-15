@@ -21,7 +21,7 @@ long_tone_trials(
     shiny::tags$p(psychTestR::i18n("long_tone_instruction_3"))),
   module_name = "long_tone_trials",
   show_progress = TRUE,
-  paradigm = c("sing_along", "call_and_response"),
+  paradigm = c("simultaneous_recall", "call_and_response"),
   long_tone_length = 5
 )
 }

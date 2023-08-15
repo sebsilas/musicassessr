@@ -190,22 +190,22 @@ function playTone(tone, seconds) {
 }
 
 
-function playTones (midi_note_list) {
+function playTones (freq_list) {
 
-    midi_note_list.forEach(element => console.log(element)); // testing
-    midi_note_list = midi_note_list.map(x => Tone.Frequency(x));
-    last_note = midi_note_list[midi_note_list.length - 1];
+    freq_list.forEach(element => console.log(element)); // testing
+    freq_list = freq_list.map(x => Tone.Frequency(x));
+    last_freq = freq_list[freq_list.length - 1];
 
-    var pattern = new Tone.Sequence(function(time, note){
-    playTone(note, 0.5);
+    var pattern = new Tone.Sequence(function(time, freq){
 
-    if (note === last_note) {
-      console.log("finished!");
+    synth.triggerAttackRelease(freq, 0.5);
+
+    if (freq === last_freq) {
       pattern.stop();
       Tone.Transport.stop();
     }
 
-    }, note_list);
+    }, freq_list);
 
 
     pattern.start(0).loop = false;

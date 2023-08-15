@@ -812,7 +812,7 @@ long_tone_trials <- function(num_items,
                                  psychTestR::get_global("response_type", state) == "MIDI"
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
                                                                                   example = TRUE, feedback = feedback,
-                                                                                  get_answer = get_answer, paradigm = paradigm,
+                                                                                  get_answer = get_answer, trial_paradigm = paradigm,
                                                                                   page_text = page_text, page_title = page_title,
                                                                                   long_tone_length = long_tone_length))
 

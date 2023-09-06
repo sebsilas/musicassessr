@@ -26,7 +26,7 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     paradigm_type %in% c("simultaneous_recall", "call_and_response"),
     page_type %in% c("record_audio_page", "record_midi_page"),
     call_and_response_end %in% c("manual", "auto"),
-    is.null(stop_recording_after_x_seconds) && call_and_response_end == "manual"  | is.scalar.numeric(stop_recording_after_x_seconds) &&  call_and_response_end == "auto"
+    is.null.or(stop_recording_after_x_seconds, is.scalar.numeric)
   )
 
   if(paradigm_type == "simultaneous_recall") {
@@ -37,7 +37,7 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
       if(call_and_response_end == "manual") {
         trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type)
       } else if(call_and_response_end == "auto") {
-        trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds)
+        trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds)
       } else {
         stop('call_and_response_end not understood')
       }

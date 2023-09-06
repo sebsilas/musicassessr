@@ -152,7 +152,6 @@ record_background_page <- function() {
                               ),
                     label = "SNR_test_background",
                     record_duration = 5,
-                    auto_next_page = TRUE,
                     get_answer = get_answer_save_audio_file,
                     button_text = psychTestR::i18n("record_bg_button"),
                     on_complete = function(input, state, ...) {
@@ -167,8 +166,6 @@ record_signal_page <- function(page_text = shiny::tags$div(
   record_audio_page(page_text = page_text,
                     label = "SNR_test_signal",
                     record_duration = 5,
-                    auto_next_page = TRUE,
-                    get_answer = get_answer_save_audio_file,
                     on_complete = function(input, state, ...) {
                       psychTestR::set_global("SNR_signal", input$file_url, state)
                     })

@@ -168,7 +168,7 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = 
 present_stimuli_midi_notes <- function(stimuli,
                                        display_modality,
                                        note_length, sound = 'piano', asChord = FALSE, ascending, play_button_text = "Play",
-                                       durations = NULL, auto_next_page = FALSE,
+                                       durations = NULL,
                                        visual_music_notation_id = "sheet_music", play_button_id = "playButton",
                                        button_area_id = "button_area", record_immediately = FALSE,
                                        transpose_visual_notation = 0L,
@@ -185,7 +185,7 @@ present_stimuli_midi_notes <- function(stimuli,
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
                                                           durations = durations,
-                                                          auto_next_page = auto_next_page, play_button_id = play_button_id,
+                                                          play_button_id = play_button_id,
                                                           button_area_id = button_area_id, record_immediately = record_immediately,
                                                           transpose_visual_notation = transpose_visual_notation,
                                                           sound_only_first_melody_note = sound_only_first_melody_note,
@@ -812,15 +812,15 @@ sort_durations <- function(durations, note_length, stimuli) {
 
 show_first_melody_note <- function(give_first_melody_note,
                                    stimuli,
-                                   transpose_visual_notation = 0,
+                                   transpose_visual_notation = 0L,
                                    clef = "auto",
                                    show_first_melody_note_visual = TRUE, audio_play_button_id = "firstMelodyPlay") {
   if(give_first_melody_note) {
     shiny::tags$div(
       shiny::tags$p(psychTestR::i18n("first_note_is")),
-      if(transpose_visual_notation != 0) shiny::tags$p(psychTestR::i18n("transposed")),
+      if(transpose_visual_notation != 0L) shiny::tags$p(psychTestR::i18n("transposed")),
       if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(stimuli[1] + transpose_visual_notation, clef = clef, id = "firstMelodyNoteVisual"),
-      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = psychTestR::i18n("play_first_note"), play_button_id = audio_play_button_id, auto_next_page = FALSE)
+      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = psychTestR::i18n("play_first_note"), play_button_id = audio_play_button_id)
     )
   } else {
     return(" ")

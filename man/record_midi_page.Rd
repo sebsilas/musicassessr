@@ -18,7 +18,6 @@ record_midi_page(
   stop_button_text = psychTestR::i18n("Stop"),
   record_duration = NULL,
   on_complete = NULL,
-  auto_next_page = FALSE,
   save_answer = TRUE,
   page_text_first = TRUE,
   happy_with_response = FALSE,

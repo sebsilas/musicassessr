@@ -35,7 +35,7 @@ test_recording_app <- function(copy_audio_to = NULL) {
         musicassessr::record_audio_block(no_pages = 10, copy_audio_to = copy_audio_to),
 
         psychTestR::final_page("Finished!")
-      ), dict = musicassessr::dict(NULL)),
+      ), dict = musicassessr_dict),
     opt = psychTestR::test_options(
       title = "Record audio block test",
       admin_password = "demo",

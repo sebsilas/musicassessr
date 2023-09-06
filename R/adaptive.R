@@ -112,7 +112,7 @@ show_item_arrhythmic <- function(num_items,
                         psychTestRCAT = TRUE,
                         arrhythmic = TRUE,
                        play_button_text = psychTestR::i18n("Play") ),
-      dict = musicassessr::dict(NULL))
+      dict = musicassessr_dict)
 
     if(feedback) {
       p <- add_feedback(p, feedback_melodic_production)

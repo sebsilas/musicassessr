@@ -23,7 +23,6 @@
 #' @param start_note
 #' @param end_note
 #' @param durations
-#' @param auto_next_page
 #' @param choices
 #' @param user_rating
 #' @param page_text_first
@@ -76,15 +75,15 @@ present_stimuli <- function(stimuli,
                             play_button_text = psychTestR::i18n("Play"),
                             note_length = 0.5, sound = "piano", asChord = FALSE, ascending = TRUE,
                             start_note = 0L, end_note = "end", durations = numeric(),
-                            auto_next_page = FALSE, choices = character(), user_rating = FALSE,
+                            choices = character(), user_rating = FALSE,
                             page_text_first = TRUE, happy_with_response = FALSE,
-                            attempts_left = integer(), visual_music_notation_id = "sheet_music",
+                            attempts_left = 1L, visual_music_notation_id = "sheet_music",
                             play_button_id = "playButton", button_area_id = "button_area",
                             hideOnPlay = FALSE, record_immediately = FALSE, max_goes_forced = FALSE,
                             transpose_visual_notation = 0L,
                             clef = "auto",
                             volume = 1, audio_playback_as_single_play_button = FALSE,
-                            max_goes = 1, melody_no = 0, total_no_melodies = 0,
+                            max_goes = 1L, melody_no = 0L, total_no_melodies = 0L,
                             show_progress = FALSE,
                             sheet_music_start_hidden = FALSE,
                             sound_only_first_melody_note = FALSE,
@@ -112,7 +111,7 @@ present_stimuli <- function(stimuli,
             is.numeric(note_length), is.character(sound), is.scalar.logical(asChord), is.scalar.logical(ascending),
             is.integer(start_note), is.integer(end_note) | end_note == "end",
             is.vector(durations) & is.numeric(durations) | is.na(durations),
-            is.scalar.logical(auto_next_page), is.character(choices) & is.vector(choices), is.scalar.logical(user_rating),
+            is.character(choices) & is.vector(choices), is.scalar.logical(user_rating),
             is.scalar.logical(page_text_first), is.scalar.logical(happy_with_response),
             is.numeric(attempts_left), is.character(visual_music_notation_id),
             is.character(play_button_id), is.character(button_area_id),
@@ -151,7 +150,7 @@ present_stimuli <- function(stimuli,
   } else if (stimuli_type == "video") {
     return_stimuli <- present_stimuli_video(video_url = stimuli, ...)
   } else if (stimuli_type == "audio") {
-    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button, auto_next_page = auto_next_page, ...)
+    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button, ...)
   } else if (stimuli_type == "audio_WJD") {
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
     # Musical stimuli types
@@ -160,7 +159,6 @@ present_stimuli <- function(stimuli,
                                                  page_type = page_type,
                                                  play_button_text = play_button_text, note_length = note_length,
                                                  sound = sound, asChord = asChord, ascending = ascending, durations = durations,
-                                                 auto_next_page = auto_next_page,
                                                  visual_music_notation_id = visual_music_notation_id,
                                                  play_button_id = play_button_id, button_area_id = button_area_id,
                                                  record_immediately = record_immediately,
@@ -212,7 +210,6 @@ present_stimuli <- function(stimuli,
                               user_rating = user_rating,
                               happy_with_response = happy_with_response,
                               attempts_left = attempts_left,
-                              auto_next_page = auto_next_page,
                               page_text_first = page_text_first, max_goes_forced = max_goes_forced, max_goes = max_goes,
                               melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type,
@@ -228,7 +225,7 @@ present_stimuli <- function(stimuli,
                               get_answer = get_answer, page_label = page_label,
                               button_text = button_text, play_button_text = play_button_text, durations = durations,
                               save_answer = save_answer,
-                              auto_next_page = auto_next_page, user_rating = user_rating,
+                              user_rating = user_rating,
                               page_text_first = page_text_first,
                               happy_with_response = happy_with_response,
                               attempts_left = attempts_left, max_goes_forced = max_goes_forced, max_goes = max_goes,
@@ -259,10 +256,10 @@ retrieve_page_type <- function(page_type = character(),
                                midi_device = " ",
                                page_label = " ",
                                button_text = psychTestR::i18n("Next"), play_button_text = "Play", get_answer = function() {},
-                               save_answer = TRUE, auto_next_page = FALSE,
+                               save_answer = TRUE,
                                choices = character(), user_rating = FALSE, page_text_first = TRUE,
-                               happy_with_response = FALSE, attempts_left = integer(), max_goes_forced = FALSE, max_goes = 1,
-                               melody_no = 0, total_no_melodies = 0, show_progress = FALSE,
+                               happy_with_response = FALSE, attempts_left = 1L, max_goes_forced = FALSE, max_goes = 1L,
+                               melody_no = 0L, total_no_melodies = 0L, show_progress = FALSE,
                                slider_value = 5, slider_min = 0, slider_max = 10,
                                volume_meter = FALSE, volume_meter_type = 'default',
                                show_sheet_music_after_record = FALSE,
@@ -271,24 +268,24 @@ retrieve_page_type <- function(page_type = character(),
 
   stopifnot(assertthat::is.string(page_type),
             class(stimuli_wrapped) == "shiny.tag",
-            is.character(page_text) | class (page_text) == "shiny.tag", is.character(page_title), is.scalar.logical(interactive),
-            is.logical(stimuli_reactive),
-            is.character(answer_meta_data) | is.data.frame(answer_meta_data),
-            is.character(midi_device),
-            is.character(page_label), is.character(button_text),
-            is.character(play_button_text), is.function(get_answer),
-            is.logical(save_answer), is.logical(auto_next_page),
-            is.character(choices) & is.vector(choices), is.logical(user_rating), is.logical(page_text_first),
-            is.logical(happy_with_response), is.numeric(attempts_left), is.logical(max_goes_forced),
-            is.numeric(max_goes),
-            is.numeric(melody_no) & length(melody_no) == 1,
-            is.numeric(total_no_melodies) & length(total_no_melodies) == 1,
-            is.logical(show_progress),
-            assertthat::is.scalar(slider_value) & is.numeric(slider_value),
-            assertthat::is.scalar(slider_min) & is.numeric(slider_min),
-            assertthat::is.scalar(slider_max) & is.numeric(slider_max),
+            is.scalar.character(page_text) || class (page_text) == "shiny.tag", is.scalar.character(page_title), is.scalar.logical(interactive),
+            is.scalar.logical(stimuli_reactive),
+            is.character(answer_meta_data) || is.data.frame(answer_meta_data),
+            is.scalar.character(midi_device),
+            is.scalar.character(page_label), is.scalar.character(button_text),
+            is.scalar.character(play_button_text), is.function(get_answer),
+            is.scalar.logical(save_answer),
+            is.character(choices), is.scalar.logical(user_rating), is.scalar.logical(page_text_first),
+            is.scalar.logical(happy_with_response), is.scalar.numeric(attempts_left), is.scalar.logical(max_goes_forced),
+            is.scalar.numeric(max_goes),
+            is.scalar.numeric(melody_no),
+            is.scalar.numeric(total_no_melodies),
+            is.scalar.logical(show_progress),
+            is.scalar.numeric(slider_value),
+            is.scalar.numeric(slider_min),
+            is.scalar.numeric(slider_max),
             is.scalar.logical(volume_meter),
-            assertthat::is.string(volume_meter_type),
+            is.scalar.character(volume_meter_type),
             is.scalar.logical(show_sheet_music_after_record),
             is.scalar.logical(show_record_button)
             )
@@ -304,7 +301,7 @@ retrieve_page_type <- function(page_type = character(),
   # i.e some pages accept "body" whilst others accept "prompt"
   args <- check_correct_argument_for_body(page_type, args, stimuli_wrapped)
 
-  if (page_type == "one_button_page" | page_type == "empty_page") {
+  if (page_type %in% c("one_button_page", "empty_page") ) {
     args$button_text <- button_text
   } else if(page_type == "slider_page") {
       args$min <- slider_min
@@ -331,7 +328,6 @@ retrieve_page_type <- function(page_type = character(),
                 "label" =  page_label,
                 "play_button_text" = play_button_text,
                 "save_answer" = save_answer,
-                "auto_next_page"  = auto_next_page,
                 "user_rating" = user_rating,
                 "happy_with_response" = happy_with_response,
                 "attempts_left" = attempts_left,
@@ -383,7 +379,9 @@ page_types = c("one_button_page",
 check_correct_argument_for_body <- function(page_type_string, args, stimuli_wrapped) {
   # feed the body to the page, but using the correct argument
   # i.e some pages accept "body" whilst others accept "prompt"
-  if (page_type_string %in% c("one_button_page", "record_audio_page", "record_midi_page",  "record_key_presses_page", "empty_page")) {
+  if (page_type_string %in% c("one_button_page", "empty_page")) {
+    args[["body"]] <- stimuli_wrapped
+  } else if(page_type_string %in% c("record_audio_page", "record_midi_page",  "record_key_presses_page") ) {
     args[["stimuli"]] <- stimuli_wrapped
   } else if (page_type_string %in% c("NAFC_page", "dropdown_page", "slider_page", "text_input_page")) {
     args[["prompt"]] <- stimuli_wrapped

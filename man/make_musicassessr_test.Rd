@@ -12,7 +12,6 @@ make_musicassessr_test(
      empty_code_block()
  },
   languages = "en",
-  additional_dict = NULL,
   opt = musicassessr_opt(),
   final_page_ui = psychTestR::i18n("thank_you_for_completing"),
   welcome_page = psychTestR::one_button_page("Welcome."),
@@ -29,8 +28,6 @@ make_musicassessr_test(
 \item{elts_before_setup_pages}{Timeline to go before setup pages.}
 
 \item{languages}{Languages for the test.}
-
-\item{additional_dict}{Additional dictionary for the test.}
 
 \item{opt}{Musicassessr options.}
 

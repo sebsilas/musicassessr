@@ -1,4 +1,34 @@
 
+# TODO: Factor the record...block pages
+
+#' A block of record key press pages
+#'
+#' @param no_pages
+#' @param feedback
+#' @param get_answer
+#' @param page_text
+#' @param page_title
+#'
+#' @return
+#' @export
+#'
+#' @examples
+record_key_presses_block <- function(no_pages, feedback = NULL,
+                                     get_answer = get_answer_pyin,
+                                     page_title = psychTestR::i18n("Record_audio"),
+                                     page_text = psychTestR::i18n("click_to_record_audio")) {
+  pages <- psychTestR::join(
+
+    rep(list(record_key_presses_page(get_answer = get_answer,
+                                     page_title = page_title,
+                                     page_text = page_text)), no_pages)
+  )
+  if(!is.null(feedback)) {
+    pages <- add_feedback(pages, feedback)
+  }
+  pages
+}
+
 #' A block of record audio pages
 #'
 #' @param no_pages
@@ -896,7 +926,7 @@ find_this_note_trials <- function(num_items,
       }
     }
 
-    # sample melodies based on range
+    # Sample melodies based on range
     psychTestR::module("find_this_note_trials",
                        psychTestR::join(
                          # Set item bank ID in code block
@@ -908,17 +938,16 @@ find_this_note_trials <- function(num_items,
                          )),
                          # Examples
                          if(is.numeric(num_examples) & num_examples > 0L) {
-                           c(psychTestR::one_button_page(shiny::div(
+                           psychTestR::join(psychTestR::one_button_page(shiny::div(
                              shiny::tags$h2(page_title),
                              shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
                              sample_from_user_range(num_examples),
                              multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
-                                                                      page_text = page_text, page_title = page_title,
-                                                                      example = TRUE, feedback = feedback, get_answer = get_answer,
+                                                                     page_text = page_text, page_title = page_title,
+                                                                     example = TRUE, feedback = feedback, get_answer = get_answer,
                                                                      trial_paradigm = trial_paradigm,
                                                                      call_and_response_end = call_and_response_end,
-                                                                     singing_trial = FALSE
-                                                                     ),
+                                                                     singing_trial = FALSE),
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))))
@@ -1167,7 +1196,6 @@ audio_melodic_production_trials <- function(audio_directory,
         get_answer = get_answer,
         page_text = shiny::tags$div(set_melodic_stimuli(md_note, md_durations), page_text),
         hideOnPlay = TRUE,
-        auto_next_page = TRUE,
         page_label = page_lab,
         answer_meta_data = rjson::toJSON(md),
         audio_playback_as_single_play_button = TRUE)

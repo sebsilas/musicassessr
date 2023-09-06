@@ -241,9 +241,6 @@ log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 #'
 #' @examples
 insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 2) {
-  print('insert_item_into_every_other_n_position_in_list')
-  print(i)
-  print(n)
   for (i in seq_along(l)) {
     l <- append(l, item_to_add, after = (i * n)-1)
   }

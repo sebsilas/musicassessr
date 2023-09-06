@@ -6,7 +6,7 @@
 \usage{
 setup_pages(
   input_type = c("microphone", "midi_keyboard", "midi_keyboard_and_microphone",
-    "midi_keyboard_or_microphone"),
+    "midi_keyboard_or_microphone", "key_presses"),
   headphones = TRUE,
   SNR_test = TRUE,
   min_SNR = 14,

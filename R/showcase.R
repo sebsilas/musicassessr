@@ -248,7 +248,7 @@ test_showcase <- function() {
 
 
     psychTestR::final_page("The end")
-  ), dict = musicassessr::dict(NULL)))
+  ), dict = musicassessr_dict))
 
   psychTestR::make_test(timeline,
 

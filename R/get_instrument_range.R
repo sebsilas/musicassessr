@@ -289,7 +289,6 @@ midi_or_audio <- function(type, prompt_text, var_name) {
     record_audio_page(page_text = prompt_text,
                       label = var_name,
                       get_answer = get_answer_average_frequency_ff("round"),
-                      auto_next_page = TRUE,
                       button_text = psychTestR::i18n("Record"),
                       stop_button_text = psychTestR::i18n("Stop"))
 
@@ -305,8 +304,7 @@ midi_or_audio <- function(type, prompt_text, var_name) {
                        get_answer = get_answer_midi_note_mode,
                        midi_device = midi_device,
                        button_text = psychTestR::i18n("Record"),
-                       stop_button_text = psychTestR::i18n("Stop"),
-                       auto_next_page = TRUE)
+                       stop_button_text = psychTestR::i18n("Stop"))
     })
   }
 }
@@ -326,8 +324,7 @@ sing_happy_birthday_page <- function(feedback = FALSE, label = "sing_hbd", text 
 
   page <- record_audio_page(label = label,
                             page_text = text,
-                            get_answer = musicassessr::get_answer_simple_pyin_summary,
-                            auto_next_page = TRUE)
+                            get_answer = musicassessr::get_answer_simple_pyin_summary)
 
   if(feedback) {
     psychTestR::join(

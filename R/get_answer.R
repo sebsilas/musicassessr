@@ -281,7 +281,6 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
       audio_file <- get_audio_file_for_pyin(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
       if(is.scalar.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
-        cat(file=stderr(), 'get_answer_average_frequency_ff')
         list(user_response = NA)
       } else {
         freqs <- pyin_res$freq
@@ -442,10 +441,11 @@ get_answer_midi <- function(input, state, ...) {
 }
 
 
-#' Get a MIDI result and compute melodic production scores
+#' Get answer for rhythm production data
 #'
 #' @param input
 #' @param state
+#' @param type
 #' @param feedback
 #' @param ...
 #'
@@ -453,102 +453,114 @@ get_answer_midi <- function(input, state, ...) {
 #' @export
 #'
 #' @examples
-get_answer_midi_rhythm_production <- function(input, state, feedback = TRUE, ...) {
+get_answer_rhythm_production <- function(input, state, type = c("midi", "audio", "key_presses"), feedback = TRUE, ...) {
+
+  type <- match.arg(type)
 
   stimuli_durations <- if(is.scalar.na.or.null(input$stimuli_durations)) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
 
-  if(check_midi_melodic_production_lengths(input$user_response_midi_note_on,
-                                           input$user_response_midi_note_off,
-                                           input$onsets_noteon,
-                                           input$onsets_noteoff)) {
+  if(type == "midi") {
 
-    midi_res <- list(
-      pyin_style_res = tibble::tibble(
-        file_name = NA,
-        onset = NA,
-        dur = NA,
-        freq = NA,
-        note = NA))
+    user_durations <- get_answer_rhythm_production_midi(input, state, ...)
 
-    res <- list(
-      error = TRUE,
-      reason = "No midi notes / lengths unequal.",
+  } else if(type == "audio") {
+
+    user_durations <- get_answer_rhythm_production_audio(input, state, ...)
+
+  } else if(type == "key_presses") {
+
+    user_durations <- get_answer_rhythm_production_key_presses(input, state, ...)
+
+  } else {
+
+      stop("Unknown type.")
+
+  }
+
+  answer_meta_data <- input$answer_meta_data
+
+  bpm <- if(is.null(answer_meta_data)) NULL
+
+  res <- score_rhythm_production(stimuli_durations, user_durations, bpm = bpm)
+
+
+  # Display feedback
+  display_rhythm_production_feedback(feedback, res)
+
+
+  res <- c(
+    res,
+    list(
       user_satisfied = if (is.scalar.na.or.null(input$user_satisfied)) NA else input$user_satisfied,
       user_rating = if (is.scalar.na.or.null(input$user_rating)) NA else input$user_rating,
-      attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt),
-      stimuli_durations = stimuli_durations,
-      mean_duration = NA,
-      precision = NA,
-      accuracy = NA,
-      dtw_distance = NA,
-      tam_distance = NA,
-      user_bpm = NA,
-      user_durations = NA,
-      rhythfuzz = NA
+      attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt)
     )
+  )
+
+  return(res)
+
+}
+
+get_answer_rhythm_production_midi <- function(input, state, ...) {
+
+  if(check_midi_melodic_production_lengths(input$user_response_midi_note_on, input$user_response_midi_note_off, input$onsets_noteon, input$onsets_noteoff)) {
+
+    user_durations <- NA
 
   } else {
 
     midi_res <- get_answer_midi(input, state, ...)
-
     user_durations <- midi_res$pyin_style_res$dur
-
-    stimuli_bpm <- round(60/stimuli_durations)  # Note, this is not a good way to get the BPM for actual stimuli, but will work for the beat sync trials where the stimuli is basically a metronome :
-
-    mean_dur <- mean(user_durations, na.rm = TRUE)
-    bpm <- round(60/mean_dur)
-
-    answer_meta_data <- input$answer_meta_data
-
-    if(is.scalar.na.or.null(stimuli_durations)) {
-      dtw_dist <- NA
-      tam_dist <- NA
-    } else {
-      dtw_dist <- dtw::dtw(stimuli_durations, user_durations)$distance
-      tam_dist <- TSdist::TAMDistance(stimuli_durations, user_durations)
-    }
-
-    res <- list(
-        stimuli_durations = stimuli_durations,
-        mean_duration = mean_dur,
-        precision = sd(user_durations, na.rm = TRUE),
-        accuracy = stats::mad(user_durations, center = bpm_to_ms(stimuli_bpm)),
-        dtw_distance = dtw_dist,
-        tam_distance = tam_dist,
-        user_bpm = if(is.null(answer_meta_data$bpm)) bpm else answer_meta_data$bpm,
-        user_durations = user_durations,
-        rhythfuzz = rhythfuzz(stimuli_durations, user_durations)
-      )
-
   }
+  return(user_durations)
+}
 
 
-  if(feedback && !is.null(res$user_bpm) && !is.na(res$user_bpm)) {
-    shiny::showNotification(paste0("BPM: ", round(res$user_bpm, 2)))
+get_answer_rhythm_production_key_presses <- function(input, state, ...) {
+
+  keypress_res <- get_answer_key_presses_page(input, state, ...)
+  user_durations <- keypress_res$user_durations
+
+  return(user_durations)
+}
+
+
+get_answer_key_presses_page <- function(input, ...) {
+
+  onsets_keydown <- rjson::fromJSON(input$onsets_keydown)
+  onsets_keyup <- rjson::fromJSON(input$onsets_keyup)
+  durations <- diff(onsets_keydown)
+  last_dur <- onsets_keyup[length(onsets_keyup)]  - onsets_keydown[length(onsets_keydown)]
+  last_dur <- if(is.null(last_dur) || last_dur < 0) 0.5 else last_dur
+  durations <- c(durations, last_dur)
+
+  list(
+    keypress_keydown = rjson::fromJSON(input$keypress_keydown),
+    keypress_keyup = rjson::fromJSON(input$keypress_keyup),
+    onsets_keyup = onsets_keyup,
+    onsets_keydown = onsets_keydown,
+    user_durations = durations
+  )
+
+}
+
+
+
+get_answer_rhythm_production_audio <- function(input, state, ...) {
+
+  pyin_res <- get_answer_pyin(input, type = "notes",  state, ...)
+
+  if(is.scalar.na.or.null(pyin_res$pyin_res) | is.scalar.na.or.null(pyin_res$pyin_res$freq)) {
+
+    logging::loginfo("There was nothing in the pitch track")
+
+    res <- list(error = TRUE, reason = "There was nothing in the pitch track")
+
+    logging::loginfo("There was nothing in the pitch track")
+
+  } else {
+    return(pyin_res$pyin_res$dur)
   }
-
-  if(feedback && !is.null(res$rhythfuzz) && !is.na(res$rhythfuzz)) {
-    shiny::showNotification(paste0("Rhythfuzz: ", round(res$rhythfuzz, 2)))
-  }
-
-  if(feedback && !is.null(res$precision) && !is.na(res$precision)) {
-    shiny::showNotification(paste0("Precision: ", round(res$precision, 2)))
-  }
-
-  if(feedback && !is.null(res$accuracy) && !is.na(res$accuracy)) {
-    shiny::showNotification(paste0("Accuracy: ", round(res$accuracy, 2)))
-  }
-
-  if(feedback && !is.null(res$dtw_distance) && !is.na(res$dtw_distance)) {
-    shiny::showNotification(paste0("DTW Distance: ", round(res$dtw_distance, 2)))
-  }
-
-  if(feedback && !is.null(res$tam_distance) && !is.na(res$tam_distance)) {
-    shiny::showNotification(paste0("TAM Distance: ", round(res$tam_distance, 2)))
-  }
-
-  return(res)
-
 }
 
 bpm_to_ms <- function(bpm) {

@@ -17,7 +17,6 @@
 #' @param stop_button_text
 #' @param record_duration
 #' @param on_complete
-#' @param auto_next_page
 #' @param save_answer
 #' @param page_text_first
 #' @param happy_with_response
@@ -53,7 +52,6 @@ record_midi_page <- function(body = "",
                              stop_button_text = psychTestR::i18n("Stop"),
                              record_duration = NULL,
                              on_complete = NULL,
-                             auto_next_page = FALSE,
                              save_answer = TRUE,
                              page_text_first = TRUE,
                              happy_with_response =  FALSE,
@@ -84,7 +82,6 @@ record_midi_page <- function(body = "",
                           stop_button_text,
                           record_duration,
                           on_complete,
-                          auto_next_page,
                           save_answer,
                           page_text_first,
                           happy_with_response,

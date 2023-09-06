@@ -6,7 +6,6 @@
 #' @param elts Timeline to go after setup pages.
 #' @param elts_before_setup_pages Timeline to go before setup pages.
 #' @param languages Languages for the test.
-#' @param additional_dict Additional dictionary for the test.
 #' @param opt Musicassessr options.
 #' @param final_page_ui The UI of the final page.
 #' @param welcome_page Required because you need a page before musicassessr_init to instantiate a p_id.
@@ -21,7 +20,6 @@ make_musicassessr_test <- function(title,
                                    elts,
                                    elts_before_setup_pages = function() { empty_code_block() },
                                    languages = "en",
-                                   additional_dict = NULL,
                                    opt = musicassessr_opt(),
                                    final_page_ui = psychTestR::i18n("thank_you_for_completing"),
                                    welcome_page = psychTestR::one_button_page("Welcome."), ...) {
@@ -33,7 +31,6 @@ make_musicassessr_test <- function(title,
     is.function(elts),
     is.function(elts_before_setup_pages),
     is.scalar.character(languages),
-    is.null.or(additional_dict, is.data.frame),
     is.list(opt),
     is.character(final_page_ui) | is(final_page_ui, 'shiny.tag'),
     psychTestR::is.test_element(welcome_page)
@@ -77,12 +74,12 @@ make_musicassessr_test <- function(title,
       admin_password = admin_password,
       languages = languages,
       on_session_ended_fun = if (opt$use_musicassessr_db) db_disconnect_shiny else NULL,
-      # additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
-      #                                                    musicassessr_aws = opt$musicassessr_aws,
-      #                                                    visual_notation = opt$visual_notation,
-      #                                                    midi_file_playback = opt$midi_file_playback,
-      #                                                    record_audio = opt$record_audio,
-      #                                                    midi_input = opt$midi_input),
+      additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
+                                                         musicassessr_aws = opt$musicassessr_aws,
+                                                         visual_notation = opt$visual_notation,
+                                                         midi_file_playback = opt$midi_file_playback,
+                                                         record_audio = opt$record_audio,
+                                                         midi_input = opt$midi_input),
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,

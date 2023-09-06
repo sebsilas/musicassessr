@@ -54,10 +54,10 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       answer$pyin_pitch_track <- NULL
       answer$production <- NULL
 
-      # produce scores table
+      # Produce scores table
       scores_tab <- list_to_shiny_table(answer)
 
-      # make meta data table
+      # Make meta data table
       if(answer_meta_data & is.data.frame(amd)) {
         t_names <- names(amd)
         amd <- amd %>% dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>% base::t() %>% as.data.frame()
@@ -69,7 +69,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
         answer_meta_data_tab <- " "
       }
 
-      present_stimuli(answer$user_response_note,
+      present_stimuli(stimuli = answer$user_response_note,
                       stimuli_type = "midi_notes",
                       display_modality = "both",
                       page_title = "Your Response",
@@ -80,8 +80,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
                                                   shiny::tags$h3('Response Data'),
                                                   scores_tab,
                                                   shiny::tags$h3(stimuli_info),
-                                                  answer_meta_data_tab
-                      ),
+                                                  answer_meta_data_tab),
                       page_text_first = FALSE,
                       play_button_id = "playButtonFeedback",
                       button_area_id = "buttonArea3")
@@ -124,7 +123,7 @@ feedback_long_tone <- function() {
   # since this uses the pitch class present stimuli type, this will return in a "presentable" octave
   psychTestR::reactive_page(function(state, answer, ...) {
 
-    if(is.scalar.na(answer$onset) | isscalar.null(answer$onset) |
+    if(is.scalar.na(answer$onset) | is.scalar.null(answer$onset) |
        is.scalar.na(answer$freq) | is.scalar.null(answer$freq)) {
       plot <- "Sorry, but we cannot provide feedback for this trial. Did you sing?"
     } else {
@@ -205,5 +204,32 @@ add_feedback <- function(items, feedback, after = 2) {
   }
 }
 
+
+display_rhythm_production_feedback <- function(feedback, res) {
+
+  if(feedback && !is.null(res$user_bpm) && !is.na(res$user_bpm)) {
+    shiny::showNotification(paste0("BPM: ", round(res$user_bpm, 2)))
+  }
+
+  if(feedback && !is.null(res$rhythfuzz) && !is.na(res$rhythfuzz)) {
+    shiny::showNotification(paste0("Rhythfuzz: ", round(res$rhythfuzz, 2)))
+  }
+
+  if(feedback && !is.null(res$precision) && !is.na(res$precision)) {
+    shiny::showNotification(paste0("Precision: ", round(res$precision, 2)))
+  }
+
+  if(feedback && !is.null(res$accuracy) && !is.na(res$accuracy)) {
+    shiny::showNotification(paste0("Accuracy: ", round(res$accuracy, 2)))
+  }
+
+  if(feedback && !is.null(res$dtw_distance) && !is.na(res$dtw_distance)) {
+    shiny::showNotification(paste0("DTW Distance: ", round(res$dtw_distance, 2)))
+  }
+
+  if(feedback && !is.null(res$tam_distance) && !is.na(res$tam_distance)) {
+    shiny::showNotification(paste0("TAM Distance: ", round(res$tam_distance, 2)))
+  }
+}
 
 

@@ -26,6 +26,8 @@ var onsets_noteoff = [];
 var stop_button_text;
 var startTime;
 var midi_device;
+var recordkey;
+var file_url;
 
 // functions
 
@@ -593,17 +595,20 @@ function hideAudioFilePlayer() {
 
 function startRecording(type) {
 
+  console.log('startRecording');
+  console.log(type);
+
    // Initiate startTime
   startTime = new Date().getTime();
 
   setTimeout(() => {
 
   if (type === "record_audio_page") {
-  startAudioRecording();
+    startAudioRecording();
   } else if(type === "record_midi_page") {
-  instantiateMIDI(midi_device);
+    instantiateMIDI(midi_device);
   } else {
-  console.log('type not recognised');
+    console.log('type not recognised');
   }
 
   }, record_delay);
@@ -613,6 +618,9 @@ function startRecording(type) {
 
 
 function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true) {
+
+  console.log('recordUpdateUI');
+  console.log(page_type);
 
   if(showStop) {
     showStopButton(page_type, stop_button_text);
@@ -660,6 +668,9 @@ function hideLoading() {
 
 function stopRecording(type) {
 
+  console.log('stopRecording...');
+  console.log(type);
+
   setTimeout(() => {
 
     hideStopButton();
@@ -681,6 +692,9 @@ function stopRecording(type) {
 
 function showStopButton(type = null, stop_button_text = "Stop", show_sheet_music = false) {
 
+  console.log('showStopButton');
+  console.log(type);
+
   var stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
@@ -690,6 +704,9 @@ function showStopButton(type = null, stop_button_text = "Stop", show_sheet_music
 }
 
 function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
+
+  console.log('createCorrectStopButton');
+  console.log(type);
 
   stopButton.style.visibility = 'visible';
 
@@ -828,6 +845,8 @@ var audioContext //audio context to help us record
 
 function startAudioRecording() {
 
+  console.log('startAudioRecording');
+
     var constraints = { audio: true, video:false }
 
 	/*
@@ -907,6 +926,12 @@ function stopAudioRecording() {
 
 	//create the wav blob and pass it on to createDownloadLink
 
+	recordkey = create_recordkey();
+  file_url = recordkey + ".wav";
+
+  Shiny.setInputValue("key", recordkey);
+  Shiny.setInputValue("file_url", file_url);
+
 	rec.exportWAV(upload_file_to_s3);
 
 }
@@ -926,8 +951,6 @@ function create_recordkey() {
 
   if (typeof p_id === 'string') {
     recordkey = p_id + '.' + recordkey;
-      console.log(p_id);
-      console.log(recordkey);
   } else {
     recordkey = 'no_p_id.' + recordkey;
   }
@@ -938,11 +961,10 @@ function create_recordkey() {
 
 function upload_file_to_s3(blob) {
 
-  var recordkey = create_recordkey();
-  var file_url = recordkey + ".wav";
 	var xhr = new XMLHttpRequest();
-	var filename = new Date().toISOString();
+
 	var fd = new FormData();
+
 	fd.append("audio_data", blob, recordkey);
 
 	if (typeof shiny_app_name !== 'undefined') {
@@ -959,10 +981,9 @@ function upload_file_to_s3(blob) {
 
 	xhr.send(fd);
 
-  Shiny.setInputValue("key", recordkey);
-  Shiny.setInputValue("file_url", file_url);
 
-	xhr.onload = () => { console.log(xhr.responseText)
+	xhr.onload = () => {
+	  console.log(xhr.responseText);
 		// call next page after credentials saved
 		spinner = document.getElementsByClassName("hollow-dots-spinner");
 		if(spinner[0] !== undefined) {

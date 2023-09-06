@@ -30,9 +30,10 @@
 #'
 #' @examples
 setup_pages <- function(input_type = c("microphone",
-                                  "midi_keyboard",
-                                  "midi_keyboard_and_microphone",
-                                  "midi_keyboard_or_microphone"),
+                                       "midi_keyboard",
+                                       "midi_keyboard_and_microphone",
+                                       "midi_keyboard_or_microphone",
+                                       "key_presses"),
                         headphones = TRUE,
                         SNR_test = TRUE,
                         min_SNR = 14,
@@ -59,7 +60,8 @@ setup_pages <- function(input_type = c("microphone",
   stopifnot(input_type %in% c("microphone",
                               "midi_keyboard",
                               "midi_keyboard_and_microphone",
-                              "midi_keyboard_or_microphone"),
+                              "midi_keyboard_or_microphone",
+                              "key_presses"),
             is.scalar.logical(headphones), is.scalar.logical(SNR_test),
             is.numeric(min_SNR), is.scalar.logical(get_user_info), is.scalar.logical(demo),
             is.scalar.logical(get_instrument_range) | is.character(get_instrument_range) & length(get_instrument_range) == 1,
@@ -102,7 +104,7 @@ setup_pages <- function(input_type = c("microphone",
       correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
     )
 
-  } else if(skip_setup) {
+  } else if(skip_setup || input_type == "key_presses") {
 
     setup <- psychTestR::join(
 
@@ -317,7 +319,7 @@ fake_instrument <- function() {
 
     if( is.null(psychTestR::get_global("inst", state)) && is.null(psychTestR::get_global("instrument_id", state)) ) { # Then one hasn't been specified manually via an instrument ID
       psychTestR::set_global("inst", "Piano", state)
-      psychTestR::set_global("transpose_visual_notation", 0, state)
+      psychTestR::set_global("transpose_visual_notation", 0L, state)
       psychTestR::set_global("clef", "auto", state)
     }
 

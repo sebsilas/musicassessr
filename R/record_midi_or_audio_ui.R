@@ -14,7 +14,6 @@ record_midi_or_audio_ui <- function(body = "",
                                     stop_button_text = psychTestR::i18n("Stop"),
                                     record_duration = NULL,
                                     on_complete = NULL,
-                                    auto_next_page = FALSE,
                                     save_answer = TRUE,
                                     page_text_first = TRUE,
                                     happy_with_response =  FALSE,
@@ -31,10 +30,6 @@ record_midi_or_audio_ui <- function(body = "",
                                     show_sheet_music_after_record = FALSE,
                                     show_record_button = TRUE, ...) {
 
-
-  if(max_goes == 1) {
-    auto_next_page <- TRUE
-  }
 
   if(is.character(page_text)) {
     page_text <- shiny::tags$p(page_text)
@@ -55,8 +50,6 @@ record_midi_or_audio_ui <- function(body = "",
       if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive),
 
       if(page_type == "record_audio_page") send_page_label_to_js(label),
-
-      auto_next_page(auto_next_page),
 
       shiny::tags$script(set_answer_meta_data(answer_meta_data))
 
@@ -97,14 +90,6 @@ record_midi_or_audio_ui <- function(body = "",
 
 send_page_label_to_js <- function(label) {
   shiny::tags$script(paste0('var page_label = \"', label, '\";'))
-}
-
-auto_next_page <- function(auto_next_page) {
-  if(auto_next_page) {
-    shiny::tags$script('var auto_next_page = true;')
-  } else {
-    shiny::tags$script('var auto_next_page = false;')
-  }
 }
 
 
@@ -187,7 +172,7 @@ present_record_button <- function(show_record_button,
     shiny::tags$button(stop_button_text, id = "stopButton", class = "btn btn-default action-button", style = "visibility: hidden;"),
     shiny::tags$script(shiny::HTML(paste0('document.getElementById("recordButton").addEventListener("click", function() {
                             startRecording(type = \"', page_type, '\", stop_button_text = \"', stop_button_text, '\");
-                            recordUpdateUI();',
+                            recordUpdateUI(type = \"', page_type, '\");',
                           if(show_sheet_music_after_record) paste0("showSheetMusic('", sheet_music_id, "');") else "",
                             '});'))),
   )

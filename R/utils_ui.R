@@ -74,5 +74,5 @@ filler_task <- function(type = c("none", "surveys")) {
 
 
 wrap_musicassessr_timeline <- function(tl) {
-  psychTestR::new_timeline(tl, dict = musicassessr::dict(NULL))
+  psychTestR::new_timeline(tl, dict = musicassessr_dict)
 }

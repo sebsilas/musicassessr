@@ -74,6 +74,8 @@ load('data-raw/melody_pca2_data.rda')
 load('data-raw/melody_pca2.rda')
 
 
+musicassessr_dict <- dict(NULL)
+
 
 # test the long note predict method
 predict(long_note_pca2,
@@ -119,7 +121,9 @@ usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
 
 # Not internal
 
-use_data(key_rankings, instrument_list, keys_table, wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df,
+use_data(musicassessr_dict,
+         key_rankings, instrument_list, keys_table,
+         wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df,
          lm2.2, lm3.2, melody_pca2,
          melody_pca2_data, long_note_agg,
          overwrite = TRUE)

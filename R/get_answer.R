@@ -48,11 +48,11 @@ get_answer_pyin_melodic_production <- function(input,
   logging::loginfo("Get pyin melodic production")
 
 
-  pyin_res <- get_answer_pyin(input, type,  state, melconv, ...)
+  pyin_res <- get_answer_pyin(input, type, state, melconv, ...)
 
   logging::loginfo("Got pyin")
 
-  if(is.scalar.na.or.null(pyin_res$pyin_res) | is.scalar.na.or.null(pyin_res$pyin_res$freq)) {
+  if(is.scalar.na.or.null(pyin_res$pyin_res) || is.scalar.na.or.null(pyin_res$pyin_res$freq)) {
 
     res <- list(
       error = TRUE,
@@ -399,6 +399,8 @@ get_answer_midi <- function(input, state, ...) {
   if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
 
     list(
+      stimulus_trigger_times = NA,
+      onsets_noteon_timecode = NA,
       user_response_midi_note_on = NA,
       user_response_midi_note_off =  NA,
       onsets_noteon =  NA,
@@ -409,30 +411,31 @@ get_answer_midi <- function(input, state, ...) {
 
   } else {
 
-    notes <- as.numeric(rjson::fromJSON(input$user_response_midi_note_on))
-    notes_off <- as.numeric(rjson::fromJSON(input$user_response_midi_note_off))
-    onsets <- as.numeric(rjson::fromJSON(input$onsets_noteon))/1000
-    onsets_off <- as.numeric(rjson::fromJSON(input$onsets_noteoff))/1000
-
-
-    # durs <- onsets_off - onsets # This is not right, really
-    durs <-  c(diff(onsets), onsets_off[length(onsets_off)] - onsets[length(onsets)])
+    trial_start_time_timecode <- input$trial_start_time
+    onsets_noteon_timecode <- if(is.null(input$onsets_noteon_timecode)) NA else as.numeric(rjson::fromJSON(input$onsets_noteon_timecode))
+    notes <- if(is.null(input$user_response_midi_note_on)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_on))
+    notes_off <- if(is.null(input$user_response_midi_note_off)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_off))
+    onsets <- (onsets_noteon_timecode - trial_start_time_timecode) / 1000
+    stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
+    # We just assume the last duration is 0.5 always. There is no way of telling when the participant really designates that a "hit" is over
+    # Technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
+    last_dur <- 0.5
 
     pyin_style_res <- tibble::tibble(
       onset = onsets,
-      dur = durs,
-      freq = hrep::midi_to_freq(notes),
+      dur = c(diff(onsets), last_dur),
       note = notes,
-      file_name = NA
+      freq = hrep::midi_to_freq(notes),
+      file_name = NA,
     ) %>%
       dplyr::relocate(file_name)
 
-
     list(
+      stimulus_trigger_times = stimulus_trigger_times,
+      onsets_noteon_timecode = onsets_noteon_timecode,
       user_response_midi_note_on = notes,
       user_response_midi_note_off =  notes_off,
-      onsets_noteon =  onsets,
-      onsets_off = onsets_off,
+      onsets_noteon = onsets,
       pyin_style_res = pyin_style_res,
       stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
       )
@@ -461,15 +464,23 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   if(type == "midi") {
 
-    user_durations <- get_answer_rhythm_production_midi(input, state, ...)
+    res <- get_answer_rhythm_production_midi(input, state, ...)
+
+    if(is.scalar.na.or.null(res$pyin_style_res)) {
+      user_durations <- NA
+    } else {
+      user_durations <- res$pyin_style_res$dur
+    }
 
   } else if(type == "audio") {
 
-    user_durations <- get_answer_rhythm_production_audio(input, state, ...)
+    res <- get_answer_rhythm_production_audio(input, state, ...)
+    user_durations <- res$dur
 
   } else if(type == "key_presses") {
 
-    user_durations <- get_answer_rhythm_production_key_presses(input, state, ...)
+    res <- get_answer_rhythm_production_key_presses(input, state, ...)
+    user_durations <- res$user_durations
 
   } else {
 
@@ -481,7 +492,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   bpm <- if(is.null(answer_meta_data)) NULL
 
-  res <- score_rhythm_production(stimuli_durations, user_durations, bpm = bpm)
+  res_scored <- score_rhythm_production(stimuli_durations, user_durations, bpm = bpm)
 
 
   # Display feedback
@@ -490,6 +501,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   res <- c(
     res,
+    res_scored,
     list(
       user_satisfied = if (is.scalar.na.or.null(input$user_satisfied)) NA else input$user_satisfied,
       user_rating = if (is.scalar.na.or.null(input$user_rating)) NA else input$user_rating,
@@ -503,25 +515,17 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
 get_answer_rhythm_production_midi <- function(input, state, ...) {
 
-  if(check_midi_melodic_production_lengths(input$user_response_midi_note_on, input$user_response_midi_note_off, input$onsets_noteon, input$onsets_noteoff)) {
+  midi_res <- get_answer_midi(input, state, ...)
 
-    user_durations <- NA
-
-  } else {
-
-    midi_res <- get_answer_midi(input, state, ...)
-    user_durations <- midi_res$pyin_style_res$dur
-  }
-  return(user_durations)
+  return(midi_res)
 }
 
 
 get_answer_rhythm_production_key_presses <- function(input, state, ...) {
 
   keypress_res <- get_answer_key_presses_page(input, state, ...)
-  user_durations <- keypress_res$user_durations
 
-  return(user_durations)
+  return(keypress_res)
 }
 
 
@@ -559,7 +563,7 @@ get_answer_rhythm_production_audio <- function(input, state, ...) {
     logging::loginfo("There was nothing in the pitch track")
 
   } else {
-    return(pyin_res$pyin_res$dur)
+    return(pyin_res)
   }
 }
 
@@ -625,7 +629,6 @@ concat_mel_prod_results <- function(input,
                                     pyin_pitch_track,
                                     additional_scoring_measures = NULL, ...) {
 
-
   # Grab MIDI-specific data if available
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
@@ -688,6 +691,7 @@ concat_mel_prod_results <- function(input,
 add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores) {
 
   use_musicassessr_db <- psychTestR::get_global("use_musicassessr_db", state)
+  use_musicassessr_db <- ! is.null(use_musicassessr_db)
 
   if(use_musicassessr_db) {
 

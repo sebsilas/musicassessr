@@ -66,7 +66,8 @@ setup_pages <- function(input_type = c("microphone",
             is.numeric(min_SNR), is.scalar.logical(get_user_info), is.scalar.logical(demo),
             is.scalar.logical(get_instrument_range) | is.character(get_instrument_range) & length(get_instrument_range) == 1,
             is.character(absolute_url),
-            is.scalar.logical(select_instrument), is.scalar.logical(get_instrument_range_musical_notation),
+            is.scalar.logical(select_instrument),
+            is.scalar.logical(get_instrument_range_musical_notation),
             is.scalar.logical(adjust_range),
             is.character(test_type),
             is.scalar.logical(microphone_test),
@@ -89,9 +90,10 @@ setup_pages <- function(input_type = c("microphone",
   if(demo) {
 
     setup <- psychTestR::join(
+
       if(select_instrument) select_musical_instrument_page(),
 
-      correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure),
+      correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
 
     )
 

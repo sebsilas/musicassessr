@@ -40,23 +40,24 @@ adaptive_arrhythmic_melody_trials <- function(label,
   stopifnot(
     assertthat::is.string(label),
     is.scalar.numeric(num_items),
-    is(item_bank, "item_bank"),
+    is.data.frame(item_bank),
     is(model, "lmerModLmerTest"),
     is.character(fixed_effects) & length(fixed_effects) > 0,
-    is.logical(demo),
-    assertthat::is.string(page_type),
-    assertthat::is.string(page_title),
-    assertthat::is.string(page_text),
+    is.scalar.logical(demo),
+    is.scalar.character(page_type),
+    is.scalar.character(page_title),
+    is.scalar.character(page_text),
     is.function(get_answer),
     is.logical(give_first_melody_note),
     is.logical(play_melody_loop),
-    assertthat::is.string(melody),
-    is.logical(feedback)
+    is.scalar.character(answer_column),
+    is.scalar.logical(feedback)
   )
 
   item_bank <- item_bank %>%
-    dplyr::rename(answer = answer_column) %>%
-    dplyr::mutate(discrimination = 1, guessing = 1, inattention = 1)
+    dplyr::rename(answer = !! answer_column) %>%
+    dplyr::mutate(discrimination = 1, guessing = 1, inattention = 1) %>%
+    dplyr::filter(!is.na(difficulty))
 
   psychTestRCATME::adapt_test(label = label,
                               item_bank = item_bank,
@@ -96,7 +97,16 @@ show_item_arrhythmic <- function(num_items,
                                  get_answer = musicassessr::get_answer_pyin_melodic_production,
                                  give_first_melody_note = FALSE,
                                  play_melody_loop = FALSE,
-                                 feedback = FALSE) {
+                                 feedback = FALSE,
+                                 trial_paradigm = "call_and_response",
+                                 call_and_response_end = c("manual", "auto")) {
+
+
+  # Get trial paradigm info
+  trial_paradigm <- match.arg(trial_paradigm)
+  call_and_response_end <- match.arg(call_and_response_end)
+  paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
+
 
   if(play_melody_loop) {
 
@@ -146,7 +156,9 @@ show_item_arrhythmic <- function(num_items,
                         show_progress = TRUE,
                         melody_no = item_number,
                         total_no_melodies = num_items,
-                        give_first_melody_note = give_first_melody_note)
+                        give_first_melody_note = give_first_melody_note,
+                        trigger_start_of_stimulus_fun = paradigm$trigger_start_of_stimulus_fun,
+                        trigger_end_of_stimulus_fun= paradigm$trigger_end_of_stimulus_fun)
     }
 
   }

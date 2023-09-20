@@ -25,8 +25,11 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
     if(!answer$error) {
 
-      # plots
-      plot <- feedback_mel_plot(answer$onsets_noteon, answer$user_response_note, answer$errors_boolean_octaves_allowed, answer$stimuli)
+      # Plots
+      plot <- feedback_mel_plot(answer$onsets_noteon,
+                                answer$user_response_note,
+                                answer$errors_boolean_octaves_allowed,
+                                answer$stimuli)
 
 
       if(melody_dtw) {
@@ -101,7 +104,12 @@ list_to_shiny_table <- function(l, rownames = TRUE, colnames = FALSE) {
 
   l <- l[!is.na(l) & lengths(l) > 0]
   l_names <- names(l)
+
   l <- lapply(1:length(l), function(x) {
+
+    if(is.numeric(l[[x]])) {
+      l[[x]]<- round(l[[x]], 2)
+    }
 
     if (length(l[[x]]) > 1) {
       paste0(l[[x]], collapse = ",")

@@ -28,6 +28,8 @@ var startTime;
 var midi_device;
 var recordkey;
 var file_url;
+var onsets_noteon_timecode = [];
+var stimulus_trigger_times = [];
 
 // functions
 
@@ -161,6 +163,9 @@ function connect_sound(sound) {
 
 function triggerNote(sound, freq_tone, seconds, time) {
 
+  var triggerTime = new Date().getTime();
+  stimulus_trigger_times.push(triggerTime);
+
   if (sound === "piano") {
   	piano.triggerAttackRelease(freq_tone, seconds, time);
   } else if (sound === "voice_doo") {
@@ -239,6 +244,10 @@ function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun =
 function playSeq(note_list, dur_list = null, sound = 'piano',
                  trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
 
+  // Empty previous stimulus trigger times buffer
+  stimulus_trigger_times = [];
+  Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
+
   // Make sure not playing
   Tone.Transport.stop();
   pattern = null;
@@ -289,6 +298,9 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
                     if(trigger_end_of_stimuli_fun !== null) {
                       trigger_end_of_stimuli_fun();
                     }
+
+                  // Send trigger times to R
+                  Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
               }
                 }, notesAndDurations);
     pattern.start(0).loop = false;
@@ -600,6 +612,7 @@ function startRecording(type) {
 
    // Initiate startTime
   startTime = new Date().getTime();
+  Shiny.setInputValue('trial_start_time', startTime);
 
   setTimeout(() => {
 

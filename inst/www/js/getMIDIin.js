@@ -38,12 +38,13 @@ function instantiateMIDI(midi_device, interactive_midi) {
 
   console.log(midi_device);
 
-  // empty previous buffer
+  // Empty previous buffer
   user_response_midi_note_on = [];
   user_response_midi_note_off = [];
   user_response_midi_note_on = [];
   onsets_noteon = [];
   onsets_noteoff = [];
+  onsets_noteon_timecode = [];
 
   Shiny.setInputValue("user_response_midi_note_on", JSON.stringify(user_response_midi_note_on));
   Shiny.setInputValue("onsets_noteon", JSON.stringify(onsets_noteon));
@@ -66,7 +67,7 @@ function instantiateMIDI(midi_device, interactive_midi) {
       console.log(window.input);
       console.log(typeof(window.input));
 
-      // remove any activate noteon listeners
+      // remove any active noteon listeners
       //input.removeListener('noteon');
 
       console.log(input);
@@ -78,13 +79,14 @@ function instantiateMIDI(midi_device, interactive_midi) {
 
               console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
               console.log(e.note);
+
               var midi_note_on = e.note.number;
 
               console.log(midi_note_on);
 
               user_response_midi_note_on.push(midi_note_on);
 
-              // play note
+              // Play note
 
               // there is a bug with the piano sound where it plays an octave higher
               // need to make sure this doesn't apply to tones though FIX
@@ -97,10 +99,12 @@ function instantiateMIDI(midi_device, interactive_midi) {
               var timeElapsed = Math.abs(startTime - responseTime);
 
               onsets_noteon.push(timeElapsed);
+              onsets_noteon_timecode.push(responseTime);
 
-              // send to shiny
+              // Send to shiny
               Shiny.setInputValue("user_response_midi_note_on", JSON.stringify(user_response_midi_note_on));
               Shiny.setInputValue("onsets_noteon", JSON.stringify(onsets_noteon));
+              Shiny.setInputValue("onsets_noteon_timecode", JSON.stringify(onsets_noteon_timecode));
 
               // console
               console.log(user_response_midi_note_on);

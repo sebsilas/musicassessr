@@ -34,6 +34,9 @@
 #' @param singing_trials
 #' @param phase
 #' @param melody_trial_paradigm
+#' @param first_note_message
+#' @param transposed_message
+#' @param play_first_note_button_text
 #'
 #' @return
 #' @export
@@ -70,7 +73,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                                         singing_trials = TRUE,
                                         phase = c('test', 'learn', 'review', 'example'),
-                                        melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
+                                        melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
+                                        first_note_message = psychTestR::i18n("first_note_is"),
+                                        transposed_message = psychTestR::i18n("transposed"),
+                                        play_first_note_button_text = psychTestR::i18n("play_first_note")
                                         ) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
@@ -109,7 +115,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
             is.scalar.logical(singing_trials),
             phase %in% c('learn', 'test', 'review', 'example'),
-            melody_trial_paradigm %in% c("call_and_response", "simultaneous_recall")
+            melody_trial_paradigm %in% c("call_and_response", "simultaneous_recall"),
+            is.scalar.character(first_note_message),
+            is.scalar.character(transposed_message),
+            is.scalar.character(play_first_note_button_text)
             )
 
 
@@ -157,7 +166,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  singing_trial = singing_trials,
                                  phase = phase,
                                  melody_block_paradigm = melody_block_paradigm,
-                                 melody_trial_paradigm = melody_trial_paradigm)
+                                 melody_trial_paradigm = melody_trial_paradigm,
+                                 first_note_message = first_note_message,
+                                 transposed_message = transposed_message,
+                                 play_first_note_button_text = play_first_note_button_text)
 
         if (melody_block_paradigm == "sing_melody_first") {
 
@@ -190,7 +202,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         singing_trial = TRUE,
                                         phase = phase,
                                         melody_block_paradigm = melody_block_paradigm,
-                                        melody_trial_paradigm = melody_trial_paradigm)
+                                        melody_trial_paradigm = melody_trial_paradigm,
+                                        first_note_message = first_note_message,
+                                        transposed_message = transposed_message,
+                                        play_first_note_button_text = play_first_note_button_text)
 
           sing_then_play_pages <- psychTestR::join(sing_page, page)
 
@@ -256,7 +271,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                singing_trial = singing_trials,
                                phase = phase,
                                melody_block_paradigm = melody_block_paradigm,
-                               melody_trial_paradigm = melody_trial_paradigm)
+                               melody_trial_paradigm = melody_trial_paradigm,
+                               first_note_message = first_note_message,
+                               transposed_message = transposed_message,
+                               play_first_note_button_text = play_first_note_button_text)
 
       if (melody_block_paradigm == "sing_melody_first") {
 
@@ -289,7 +307,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                       singing_trial = TRUE,
                                       phase = phase,
                                       melody_block_paradigm = melody_block_paradigm,
-                                      melody_trial_paradigm = melody_trial_paradigm
+                                      melody_trial_paradigm = melody_trial_paradigm,
+                                      first_note_message = first_note_message,
+                                      transposed_message = transposed_message,
+                                      play_first_note_button_text = play_first_note_button_text
                                       )
 
         sing_then_play_pages <- psychTestR::join(sing_page, page)
@@ -409,6 +430,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 #' @param phase Can be one of 'learn', 'test', 'review' or 'example'
 #' @param melody_block_paradigm
 #' @param melody_trial_paradigm
+#' @param first_note_message
+#' @param transposed_message
+#' @param play_first_note_button_text
 #'
 #' @return
 #' @export
@@ -453,7 +477,10 @@ play_melody_loop <- function(item_bank = NULL,
                              singing_trial = TRUE,
                              phase = c('test', 'learn', 'review', 'example'),
                              melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
-                             melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
+                             melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
+                             first_note_message = psychTestR::i18n("first_note_is"),
+                             transposed_message = psychTestR::i18n("transposed"),
+                             play_first_note_button_text = psychTestR::i18n("play_first_note")
                              ) {
 
 
@@ -522,7 +549,10 @@ play_melody_loop <- function(item_bank = NULL,
                      singing_trial = singing_trial,
                      phase = phase,
                      melody_trial_paradigm = melody_trial_paradigm,
-                     melody_block_paradigm = melody_block_paradigm),
+                     melody_block_paradigm = melody_block_paradigm,
+                     first_note_message = first_note_message,
+                     transposed_message = transposed_message,
+                     play_first_note_button_text = play_first_note_button_text),
 
       # Update and see how to proceed
       update_play_melody_loop_and_save(state, max_goes)
@@ -570,7 +600,10 @@ present_melody <- function(stimuli,
                            user_rating = FALSE,
                            happy_with_response = FALSE,
                            melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
-                           call_and_response_end = c("manual", "auto"), ...) {
+                           call_and_response_end = c("manual", "auto"),
+                           first_note_message = psychTestR::i18n("first_note_is"),
+                           transposed_message = psychTestR::i18n("transposed"),
+                           play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
@@ -664,8 +697,10 @@ present_melody <- function(stimuli,
                     volume_meter = volume_meter,
                     volume_meter_type = volume_meter_type,
                     show_sheet_music_after_record = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
-                    show_record_button = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual"
-                    )
+                    show_record_button = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
+                    first_note_message = first_note_message,
+                    transposed_message = transposed_message,
+                    play_first_note_button_text = play_first_note_button_text)
 
   })
 }

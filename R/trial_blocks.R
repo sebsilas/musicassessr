@@ -304,6 +304,9 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param singing_trials
 #' @param review
 #' @param phase
+#' @param first_note_message
+#' @param transposed_message
+#' @param play_first_note_button_text
 #'
 #' @return
 #' @export
@@ -341,7 +344,10 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                                      singing_trials = TRUE,
                                      review = FALSE,
-                                     phase = c('test', 'learn', 'review')) {
+                                     phase = c('test', 'learn', 'review'),
+                                     first_note_message = "The first note is: ",
+                                     transposed_message = "Please note, this is transposed for your instrument.",
+                                     play_first_note_button_text = "Play First Note") {
 
 
   # Register trial block
@@ -379,7 +385,10 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 melody_block_paradigm,
                 singing_trials,
                 review,
-                phase)
+                phase,
+                first_note_message,
+                transposed_message,
+                play_first_note_button_text)
 
 }
 
@@ -421,6 +430,9 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param singing_trials
 #' @param review
 #' @param phase
+#' @param first_note_message
+#' @param transposed_message
+#' @param play_first_note_button_text
 #'
 #' @return
 #' @export
@@ -458,7 +470,10 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                                    singing_trials = TRUE,
                                    review = FALSE,
-                                   phase = c('test', 'learn', 'review')) {
+                                   phase = c('test', 'learn', 'review'),
+                                   first_note_message = "The first note is: ",
+                                   transposed_message = "Please note, this is transposed for your instrument.",
+                                   play_first_note_button_text = "Play First Note") {
 
 
   melody_trials(var_name,
@@ -494,7 +509,10 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                melody_block_paradigm,
                singing_trials,
                review,
-               phase)
+               phase,
+               first_note_message,
+               transposed_message,
+               play_first_note_button_text)
 
 }
 
@@ -538,6 +556,9 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param singing_trials
 #' @param review
 #' @param phase
+#' @param first_note_message
+#' @param transposed_message
+#' @param play_first_note_button_text
 #'
 #' @return
 #' @export
@@ -576,7 +597,10 @@ melody_trials <- function(var_name,
                           melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
                           singing_trials = TRUE,
                           review = FALSE,
-                          phase = c('test', 'learn', 'review')) {
+                          phase = c('test', 'learn', 'review'),
+                          first_note_message = psychTestR::i18n("first_note_is"),
+                          transposed_message = psychTestR::i18n("transposed"),
+                          play_first_note_button_text = psychTestR::i18n("play_first_note")) {
 
 
   if(presampled) {
@@ -623,7 +647,10 @@ melody_trials <- function(var_name,
     melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
     is.scalar.logical(singing_trials),
     is.scalar.logical(review),
-    phase %in% c('test', 'learn', 'review')
+    phase %in% c('test', 'learn', 'review'),
+    is.scalar.character(first_note_message),
+    is.scalar.character(transposed_message),
+    is.scalar.character(play_first_note_button_text)
   )
 
   # Flatten the number of items for use in some places
@@ -693,7 +720,10 @@ melody_trials <- function(var_name,
                                volume_meter_type = volume_meter_type,
                                melody_block_paradigm = melody_block_paradigm,
                                singing_trials = singing_trials,
-                               phase = "example"),
+                               phase = "example",
+                               first_note_message = first_note_message,
+                               transposed_message = transposed_message,
+                               play_first_note_button_text = play_first_note_button_text),
 
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -729,7 +759,10 @@ melody_trials <- function(var_name,
                            volume_meter = volume_meter,
                            volume_meter_type = volume_meter_type,
                            melody_block_paradigm = melody_block_paradigm,
-                           phase = phase
+                           phase = phase,
+                           first_note_message = first_note_message,
+                           transposed_message = transposed_message,
+                           play_first_note_button_text = play_first_note_button_text
                            )
                        )
     )

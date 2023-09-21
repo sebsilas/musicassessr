@@ -65,6 +65,9 @@ present_stimuli(
   show_record_button = FALSE,
   trigger_start_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
   trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
+  first_note_message = psychTestR::i18n("first_note_is"),
+  transposed_message = psychTestR::i18n("transposed"),
+  play_first_note_button_text = psychTestR::i18n("play_first_note"),
   ...
 )
 }

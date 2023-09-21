@@ -76,3 +76,15 @@ filler_task <- function(type = c("none", "surveys")) {
 wrap_musicassessr_timeline <- function(tl) {
   psychTestR::new_timeline(tl, dict = musicassessr_dict)
 }
+
+heading_page <- function(heading = "This is your heading!",
+                         after = NULL) {
+
+  ui <- shiny::tags$div(
+    shiny::tags$h1(heading),
+    if(is.null(after)) shiny::tags$p("") else after
+    )
+
+  psychTestR::one_button_page(ui)
+}
+

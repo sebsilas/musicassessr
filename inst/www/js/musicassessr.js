@@ -9,6 +9,7 @@ preloadImage("https://adaptiveeartraining.com/assets/img/record.gif");
 preloadImage("https://adaptiveeartraining.com/assets/img/SAA_intro.png");
 preloadImage("https://adaptiveeartraining.com/assets/img/music.png");
 preloadImage("https://adaptiveeartraining.com/assets/img/saxophone.png");
+preloadImage("https://adaptiveeartraining.com/assets/drum.png");
 
 // Constants
 // A little delay after playback finishes before hitting record

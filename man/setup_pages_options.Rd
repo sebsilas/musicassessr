@@ -21,7 +21,7 @@ setup_pages_options(
   microphone_test = TRUE,
   allow_repeat_SNR_tests = TRUE,
   report_SNR = FALSE,
-  concise_wording = FALSE,
+  concise_wording = TRUE,
   skip_setup = FALSE,
   get_self_chosen_anonymous_id = FALSE,
   musical_instrument = FALSE,

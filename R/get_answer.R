@@ -691,7 +691,10 @@ concat_mel_prod_results <- function(input,
 add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores) {
 
   use_musicassessr_db <- psychTestR::get_global("use_musicassessr_db", state)
-  use_musicassessr_db <- ! is.null(use_musicassessr_db)
+
+  if(is.null(use_musicassessr_db)) {
+    use_musicassessr_db <- FALSE
+  }
 
   if(use_musicassessr_db) {
 

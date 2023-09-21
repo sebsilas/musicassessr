@@ -39,11 +39,14 @@ rhythmic_melody_trials(
     "learn_phase_visual_display_modality"),
   singing_trials = TRUE,
   review = FALSE,
-  phase = c("test", "learn", "review")
+  phase = c("test", "learn", "review"),
+  first_note_message = "The first note is: ",
+  transposed_message = "Please note, this is transposed for your instrument.",
+  play_first_note_button_text = "Play First Note"
 )
 }
 \arguments{
-\item{phase}{}
+\item{play_first_note_button_text}{}
 }
 \description{
 Rhythmic melody trials block

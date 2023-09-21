@@ -38,11 +38,14 @@ multi_page_play_melody_loop(
     "learn_phase_visual_display_modality"),
   singing_trials = TRUE,
   phase = c("test", "learn", "review", "example"),
-  melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
+  melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
+  first_note_message = psychTestR::i18n("first_note_is"),
+  transposed_message = psychTestR::i18n("transposed"),
+  play_first_note_button_text = psychTestR::i18n("play_first_note")
 )
 }
 \arguments{
-\item{melody_trial_paradigm}{}
+\item{play_first_note_button_text}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

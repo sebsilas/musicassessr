@@ -46,7 +46,10 @@ play_melody_loop(
   phase = c("test", "learn", "review", "example"),
   melody_block_paradigm = c("standard", "sing_melody_first",
     "learn_phase_visual_display_modality"),
-  melody_trial_paradigm = c("call_and_response", "simultaneous_recall")
+  melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
+  first_note_message = psychTestR::i18n("first_note_is"),
+  transposed_message = psychTestR::i18n("transposed"),
+  play_first_note_button_text = psychTestR::i18n("play_first_note")
 )
 }
 \arguments{
@@ -54,7 +57,7 @@ play_melody_loop(
 
 \item{phase}{Can be one of 'learn', 'test', 'review' or 'example'}
 
-\item{melody_trial_paradigm}{}
+\item{play_first_note_button_text}{}
 }
 \description{
 Create a psychTestR test loop for having several attempts at playing back a melody.

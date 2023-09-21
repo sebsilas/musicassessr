@@ -146,11 +146,15 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
                                 microphone_test = TRUE,
                                 allow_repeat_SNR_tests = TRUE,
                                 report_SNR = FALSE,
-                                concise_wording = FALSE,
+                                concise_wording = TRUE,
                                 skip_setup = FALSE,
                                 get_self_chosen_anonymous_id = FALSE,
                                 musical_instrument = FALSE,
                                 fake_range = FALSE) {
+
+
+  input_type <- match.arg(input_type)
+  test_type <- match.arg(test_type)
 
   function() {
     musicassessr::setup_pages(input_type, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,

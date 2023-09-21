@@ -48,7 +48,7 @@ setup_pages <- function(input_type = c("microphone",
                         microphone_test = TRUE,
                         allow_repeat_SNR_tests = TRUE,
                         report_SNR = FALSE,
-                        concise_wording = FALSE,
+                        concise_wording = TRUE,
                         skip_setup = FALSE,
                         get_self_chosen_anonymous_id = FALSE,
                         musical_instrument = FALSE,
@@ -56,6 +56,9 @@ setup_pages <- function(input_type = c("microphone",
                         requirements_page = TRUE,
                         playful_volume_meter_setup = FALSE,
                         fake_range = FALSE) {
+
+  input_type <- match.arg(input_type)
+  test_type <- match.arg(test_type)
 
   stopifnot(input_type %in% c("microphone",
                               "midi_keyboard",
@@ -81,11 +84,6 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(playful_volume_meter_setup),
             is.scalar.logical(fake_range)
             )
-
-
-  input_type <- match.arg(input_type)
-  test_type <- match.arg(test_type)
-
 
   if(demo) {
 

@@ -39,11 +39,14 @@ melody_trials(
     "learn_phase_visual_display_modality"),
   singing_trials = TRUE,
   review = FALSE,
-  phase = c("test", "learn", "review")
+  phase = c("test", "learn", "review"),
+  first_note_message = psychTestR::i18n("first_note_is"),
+  transposed_message = psychTestR::i18n("transposed"),
+  play_first_note_button_text = psychTestR::i18n("play_first_note")
 )
 }
 \arguments{
-\item{phase}{}
+\item{play_first_note_button_text}{}
 }
 \description{
 Melody trials constructor

@@ -1,5 +1,5 @@
 
-test_showcase <- function() {
+showcase <- function() {
 
 
   timeline <- psychTestR::join(psychTestR::new_timeline(psychTestR::join(

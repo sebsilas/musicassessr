@@ -19,13 +19,16 @@ present_stimuli_midi_notes_both(
   sheet_music_id = "sheet_music",
   page_type = "null",
   durations = NULL,
-  trigger_start_of_stimulus_fun = "function() { console.log('Stimulus started!'); }",
-  trigger_end_of_stimulus_fun = "function() { console.log('Stimulus finished!'); }",
-  clef = "auto"
+  trigger_start_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus started!');"),
+  trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
+  clef = "auto",
+  first_note_message = psychTestR::i18n("first_note_is"),
+  transposed_message = psychTestR::i18n("transposed"),
+  play_first_note_button_text = psychTestR::i18n("play_first_note")
 )
 }
 \arguments{
-\item{clef}{}
+\item{play_first_note_button_text}{}
 }
 \description{
 Present midi notes in both visual and auditory modalities

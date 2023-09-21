@@ -125,6 +125,10 @@ play_long_tone_record_audio_page <- function(note = NULL,
     psychTestR::set_global('phase', NA, state)
     psychTestR::set_global('rhythmic', NA, state)
 
+    print('note...')
+    print(note)
+    print('freq...')
+    print(hrep::midi_to_freq(note))
 
     present_stimuli(stimuli = note,
                     stimuli_type = "midi_notes",

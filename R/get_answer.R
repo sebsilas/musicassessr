@@ -475,7 +475,11 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
   } else if(type == "audio") {
 
     res <- get_answer_rhythm_production_audio(input, state, ...)
-    user_durations <- diff(res$onset)
+    if(is.scalar.na.or.null(res$onset)) {
+      user_durations <- NA
+    } else {
+      user_durations <- diff(res$onset)
+    }
 
   } else if(type == "key_presses") {
 

@@ -20,3 +20,10 @@ backup
 www
 R/assess_longitudinal.R
 data/PBET_calibration_results.rda
+data-raw/Berkowitz_arrhythmic_mixed_effects_model.rda
+data-raw/Berkowitz_rhythmic_mixed_effects_model.rda
+data-raw/longitudinal_study_backup.rda
+data-raw/mod2.3.2.brms.rda
+data-raw/mod2.3.2.brms_beta.rda
+data-raw/plot_long.Rmd
+data-raw/plot_long.html

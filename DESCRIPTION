@@ -28,7 +28,6 @@ Imports:
     promises,
     future,
     httr,
-    async (>= 0.0.0.9004),
     stringi,
     hrep (>= 0.15.0),
     itembankr (>= 0.1.0),
@@ -69,7 +68,6 @@ Depends:
 Remotes: 
     pmcharrison/psychTestR,
     sebsilas/itembankr,
-    gaborcsardi/async,
     pmcharrison/hrep,
     klausfrieler/psyquest,
     sebsilas/pyin,

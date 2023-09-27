@@ -41,7 +41,8 @@ record_key_presses_block <- function(no_pages, feedback = NULL,
 #' @export
 #'
 #' @examples
-record_audio_block <- function(no_pages, feedback = NULL,
+record_audio_block <- function(no_pages,
+                               feedback = NULL,
                                get_answer = get_answer_pyin,
                                page_title = psychTestR::i18n("Record_audio"),
                                page_text = psychTestR::i18n("click_to_record_audio")) {

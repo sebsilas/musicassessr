@@ -284,12 +284,16 @@ feedback_image <- function(image, height = NULL, width = NULL, text = "Well done
     is.null.or(progress, is.scalar.numeric)
   )
 
+
+  if(is.null(height) || is.null(width)) {
+    img <- shiny::tags$img(src = image)
+  } else {
+    img <- shiny::tags$img(src = image, height = height, width = width)
+  }
+
   ui <- shiny::tags$div(
              if(!is.null(progress)) progress_bar(progress),
-             shiny::tags$img(src = image,
-                             if(!is.null(height)) height,
-                             if(!is.null(width)) width
-                             ),
+             img,
              shiny::tags$h3(text)
              )
 

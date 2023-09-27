@@ -249,8 +249,12 @@ insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 
 
 
 insert_item_into_every_other_n_position_in_list_with_proportion <- function(l, item_to_add, n = 2) {
+
+  orig_len <- length(l)
+
   for (i in seq_along(l)) {
-    pr <- as.integer((i/length(l)) * 100)
+    pr <- i/orig_len
+    pr <- as.integer(pr * 100)
     l <- append(l, item_to_add(progress = pr), after = (i * n)-1)
   }
   l

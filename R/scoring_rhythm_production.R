@@ -2,8 +2,11 @@
 
 score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NULL) {
 
+  print('dadauser_dur')
 
-  if(is.scalar.na.or.null(user_durations)) {
+  print(user_durations)
+
+  if(is.scalar.na.or.null(user_durations) || length(user_durations) == 0) {
 
     res <- list(
       stimuli_durations = NA,
@@ -29,11 +32,19 @@ score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NUL
       bpm <- round(60/mean_dur) # This is a proxy but not particularly sophisticated..
     }
 
+    print('user_durations..')
+    print(user_durations)
+
     if(is.scalar.na.or.null(stimuli_durations)) {
       dtw_dist <- NA
       tam_dist <- NA
     } else {
-      dtw_dist <- dtw::dtw(stimuli_durations, user_durations)$distance
+      dtw_res <- dtw::dtw(stimuli_durations, user_durations)
+      print('dtw_res')
+      print(dtw_res)
+      dtw_dist <- dtw_res$distance
+      print('dtw_dist')
+      print(dtw_dist)
       tam_dist <- TSdist::TAMDistance(stimuli_durations, user_durations)
     }
 

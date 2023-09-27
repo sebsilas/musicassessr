@@ -475,7 +475,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
   } else if(type == "audio") {
 
     res <- get_answer_rhythm_production_audio(input, state, ...)
-    if(is.scalar.na.or.null(res$onset)) {
+    if(is.scalar.na.or.null(res$onset) || "error" %in% names(res)) {
       user_durations <- NA
     } else {
       user_durations <- diff(res$onset)

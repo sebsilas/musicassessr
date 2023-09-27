@@ -18,7 +18,8 @@ musicassessr_opt(
   experiment_id = NULL,
   experiment_condition_id = NULL,
   user_id = NULL,
-  instrument_id = NULL
+  instrument_id = NULL,
+  get_p_id = FALSE
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ musicassessr_opt(
 \item{user_id}{A user ID.}
 
 \item{instrument_id}{An instrument ID.}
+
+\item{get_p_id}{Should a participant ID get collected at the beginning of the test?}
 }
 \description{
 Specify options for a musicassessr test.

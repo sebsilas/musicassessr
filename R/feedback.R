@@ -203,14 +203,39 @@ add_feedback <- function(items, feedback, after = 2) {
   if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)
   } else {
+
     res <- insert_item_into_every_other_n_position_in_list(items, feedback(), n = after)
-    res <- lapply(res, function(x) {
-      if(is.list(x)) {
-        unlist(x)
-      } else { x } })
+
+    res <- lapply(res, function(x) { if(is.list(x)) unlist(x) else x })
+
     unlist(res)
   }
 }
+
+
+#' Helper for adding a feedback function to a timeline of pages with a progress bar
+#'
+#' @param items
+#' @param feedback
+#' @param after
+#'
+#' @return
+#' @export
+#'
+#' @examples
+add_feedback_with_progress <- function(items, feedback, after = 2) {
+  if(is.null(feedback) | !is.function(feedback)) {
+    unlist(items)
+  } else {
+
+    res <- insert_item_into_every_other_n_position_in_list_with_proportion(items, feedback, n = after)
+
+    res <- lapply(res, function(x) { if(is.list(x)) unlist(x) else x })
+
+    unlist(res)
+  }
+}
+
 
 
 display_rhythm_production_feedback <- function(feedback, res) {
@@ -241,3 +266,37 @@ display_rhythm_production_feedback <- function(feedback, res) {
 }
 
 
+#' Feedback as an image
+#'
+#' @param image
+#' @param height
+#' @param width
+#' @param text
+#' @param progress
+#'
+#' @return
+#' @export
+#'
+#' @examples
+feedback_image <- function(image, height = NULL, width = NULL, text = "Well done!", progress = NULL) {
+
+  stopifnot(
+    is.null.or(progress, is.scalar.numeric)
+  )
+
+  ui <- shiny::tags$div(
+             if(!is.null(progress)) progress_bar(progress),
+             shiny::tags$img(src = image,
+                             if(!is.null(height)) height,
+                             if(!is.null(width)) width
+                             ),
+             shiny::tags$h3(text)
+             )
+
+  psychTestR::one_button_page(ui)
+}
+
+
+
+# psychTestR::one_button_page(progress_bar(60))
+# feedback_image('https://adaptiveeartraining.com/assets/drum.png', progress = 100)

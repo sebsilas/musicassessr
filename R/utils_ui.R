@@ -88,3 +88,17 @@ heading_page <- function(heading = "This is your heading!",
   psychTestR::one_button_page(ui)
 }
 
+
+progress_bar <- function(progress) {
+  shiny::HTML(
+    paste0('
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped active" role="progressbar"
+      aria-valuenow="', progress, '" aria-valuemin="0" aria-valuemax="100" style="width:', progress, '%">
+        ', progress, '%
+      </div>
+        </div>
+    ')
+  )
+}
+

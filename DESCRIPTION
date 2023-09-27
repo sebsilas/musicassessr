@@ -60,7 +60,8 @@ Imports:
     xml2,
     assertthat,
     logging,
-    changepoint
+    changepoint,
+    vampr (>= 0.1.0)
 Depends: 
     R (>= 2.10),
     itembankr (>= 0.1.0),
@@ -72,4 +73,5 @@ Remotes:
     pmcharrison/hrep,
     klausfrieler/psyquest,
     sebsilas/pyin
+    sebsilas/vampr
 URL: https://sebsilas.github.io/musicassessr/

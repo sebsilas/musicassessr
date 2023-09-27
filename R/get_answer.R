@@ -100,7 +100,7 @@ get_answer_pyin_note_only <- function(input, type = "notes", state, ...) {
 #' @examples
 get_answer_pyin_long_note <- function(input, state, ...) {
 
-  audio_file <- get_audio_file_for_pyin(input, state)
+  audio_file <- get_audio_file(input, state)
 
   pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
@@ -185,7 +185,7 @@ get_answer_pyin <- function(input,
   type <- match.arg(type)
 
   # Get file
-  audio_file <- get_audio_file_for_pyin(input, state)
+  audio_file <- get_audio_file(input, state)
 
   # Get pyin
   pyin_res <- get_pyin(audio_file, type, state)
@@ -213,7 +213,7 @@ get_answer_pyin <- function(input,
 #' @examples
 get_answer_simple_pyin_summary <- function(input, state, ...) {
 
-  audio_file <- get_audio_file_for_pyin(input, state)
+  audio_file <- get_audio_file(input, state)
 
   pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
 
@@ -235,7 +235,7 @@ get_answer_simple_pyin_summary <- function(input, state, ...) {
 
 
 
-get_audio_file_for_pyin <- function(input, state, ...) {
+get_audio_file <- function(input, state, ...) {
 
   audio_file <- paste0('www/audio/', input$file_url)
 
@@ -250,7 +250,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
   if (floor_or_ceiling == "floor") {
 
     function(input, state, ...) {
-      audio_file <- get_audio_file_for_pyin(input, state)
+      audio_file <- get_audio_file(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
       if(is.scalar.null(pyin_res$freq) | is.scalar.na(pyin_res$freq)) {
         list(user_response = NA)
@@ -263,12 +263,12 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
   } else if (floor_or_ceiling == "ceiling") {
 
     function(input, state, ...) {
-      audio_file <- get_audio_file_for_pyin(input, state)
+      audio_file <- get_audio_file(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
       if(is.scalar.null(pyin_res$freq) | is.scalar.na(pyin_res$freq)) {
         list(user_response = NA)
       } else {
-        audio_file <- get_audio_file_for_pyin(input, state)
+        audio_file <- get_audio_file(input, state)
         pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
         freqs <- pyin_res$freq
         list(user_response = ceiling(mean(hrep::freq_to_midi(freqs))))
@@ -278,7 +278,7 @@ get_answer_average_frequency_ff <- function(floor_or_ceiling, ...) {
   } else {
 
     function(input, state, ...) {
-      audio_file <- get_audio_file_for_pyin(input, state)
+      audio_file <- get_audio_file(input, state)
       pyin_res <- pyin::pyin(audio_file, if_bad_result_return_single_na = FALSE)
       if(is.scalar.null(pyin_res$freq) | is.logical(pyin_res$freq)) {
         list(user_response = NA)
@@ -475,7 +475,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
   } else if(type == "audio") {
 
     res <- get_answer_rhythm_production_audio(input, state, ...)
-    user_durations <- res$dur
+    user_durations <- diff(res$onset)
 
   } else if(type == "key_presses") {
 
@@ -552,18 +552,21 @@ get_answer_key_presses_page <- function(input, ...) {
 
 get_answer_rhythm_production_audio <- function(input, state, ...) {
 
-  pyin_res <- get_answer_pyin(input, type = "notes",  state, ...)
+  #pyin_res <- get_answer_pyin(input, type = "notes",  state, ...)
+  onset_res <- get_answer_onset_detection(input, state, ...)
 
-  if(is.scalar.na.or.null(pyin_res$pyin_res) | is.scalar.na.or.null(pyin_res$pyin_res$freq)) {
 
-    logging::loginfo("There was nothing in the pitch track")
+  if(is.scalar.na.or.null(onset_res) | is.scalar.na.or.null(onset_res)) {
 
-    res <- list(error = TRUE, reason = "There was nothing in the pitch track")
+    logging::loginfo("There was nothing in the onset track")
 
-    logging::loginfo("There was nothing in the pitch track")
+    res <- list(error = TRUE,
+                reason = "There was nothing in the onset track")
+
+    logging::loginfo("There was nothing in the onset track")
 
   } else {
-    return(pyin_res)
+    return(onset_res)
   }
 }
 
@@ -669,7 +672,7 @@ concat_mel_prod_results <- function(input,
 
 
   results <- c(
-    list(file = get_audio_file_for_pyin(input, state),
+    list(file = get_audio_file(input, state),
          error = FALSE,
          attempt = if(length(input$attempt) == 0) NA  else as.numeric(input$attempt),
          user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
@@ -763,6 +766,23 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
   }
 }
 
+
+#' Get onset information from an audio file
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_onset_detection <- function(input, state, ...) {
+
+  audio_file <- get_audio_file(input, state, ...)
+
+  onset_res <- vampr::onset_detection(audio_file)
+
+  list(file = audio_file,
+       onset = if(is.scalar.na.or.null(onset_res)) NA else onset_res$onset)
+
+}
 
 
 # Utils

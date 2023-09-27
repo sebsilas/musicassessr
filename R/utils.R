@@ -247,6 +247,15 @@ insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 
   l
 }
 
+
+insert_item_into_every_other_n_position_in_list_with_proportion <- function(l, item_to_add, n = 2) {
+  for (i in seq_along(l)) {
+    pr <- as.integer((i/length(l)) * 100)
+    l <- append(l, item_to_add(progress = pr), after = (i * n)-1)
+  }
+  l
+}
+
 TRUE_to_js_true <- function(cond) {
   if(cond) {
     "true"

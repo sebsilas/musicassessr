@@ -62,7 +62,7 @@ musical_test_showcase <- function(app_name = "test_showcase",
       # Playing By Ear Test
       PBET::PBET(app_name = app_name,
                  musicassessr_aws = musicassessr_aws,
-                 input_type = "microphone",
+                 input_type = "midi_keyboard",
                  num_items = num_items_pbet,
                  max_goes = 1L,
                  examples = PBET::no_examples(),

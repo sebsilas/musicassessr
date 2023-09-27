@@ -43,6 +43,9 @@ make_musicassessr_test <- function(title,
 
       welcome_page,
 
+      # Get participant ID
+      if(opt$get_p_id) psychTestR::get_p_id(),
+
       # Init musicassessr
       musicassessr_init(
         use_musicassessr_db = opt$use_musicassessr_db,
@@ -183,6 +186,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param experiment_condition_id An experiment condition ID.
 #' @param user_id A user ID.
 #' @param instrument_id An instrument ID.
+#' @param get_p_id Should a participant ID get collected at the beginning of the test?
 #'
 #' @return
 #' @export
@@ -201,7 +205,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              experiment_id = NULL,
                              experiment_condition_id = NULL,
                              user_id = NULL,
-                             instrument_id = NULL) {
+                             instrument_id = NULL,
+                             get_p_id = FALSE) {
 
   stopifnot(
     is.scalar(setup_pages),
@@ -217,7 +222,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(experiment_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(experiment_condition_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(user_id, function(x) is.scalar.character(x) || is.integer(x) ),
-    is.null.or(instrument_id, function(x) is.scalar.character(x) || is.integer(x) )
+    is.null.or(instrument_id, function(x) is.scalar.character(x) || is.integer(x) ),
+    is.scalar.logical(get_p_id)
   )
 
   list(
@@ -234,7 +240,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     experiment_id = experiment_id,
     experiment_condition_id = experiment_condition_id,
     user_id = user_id,
-    instrument_id = instrument_id
+    instrument_id = instrument_id,
+    get_p_id = get_p_id
   )
 
 }

@@ -1,4 +1,41 @@
 
+
+#' A block for playing melodies as audio then recording the participant response
+#'
+#' @param files_list
+#' @param page_text
+#' @param get_answer
+#'
+#' @return
+#' @export
+#'
+#' @examples
+record_and_present_audio_block <- function(files_list,
+                                           page_text = "Press play to hear a melody, then sing it back.",
+                                           get_answer = musicassessr::get_answer_pyin) {
+
+  block <- purrr::map(files_list, function(file) {
+
+    musicassessr::present_stimuli(
+      stimuli = file,
+      stimuli_type = "audio",
+      display_modality = "auditory",
+      page_type = "record_audio_page",
+      get_answer = get_answer,
+      page_text = page_text,
+      hideOnPlay = TRUE,
+      page_label = basename(file), # Check this also includes participant etc.
+      volume = 0.60)
+
+  })
+
+  block <- musicassessr::insert_item_into_every_other_n_position_in_list(block, psychTestR::elt_save_results_to_disk(complete = FALSE))
+
+  return(block)
+
+}
+
+
 # TODO: Factor the record...block pages
 
 #' A block of record key press pages
@@ -13,7 +50,8 @@
 #' @export
 #'
 #' @examples
-record_key_presses_block <- function(no_pages, feedback = NULL,
+record_key_presses_block <- function(no_pages,
+                                     feedback = NULL,
                                      get_answer = get_answer_pyin,
                                      page_title = psychTestR::i18n("Record_audio"),
                                      page_text = psychTestR::i18n("click_to_record_audio")) {

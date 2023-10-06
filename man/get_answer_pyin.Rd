@@ -9,10 +9,16 @@ get_answer_pyin(
   type = c("both", "notes", "pitch_track"),
   state,
   melconv = FALSE,
+  add_silence_to_beginning_of_audio_file = 0.5,
+  add_silence_to_end_of_audio_file = 0,
   ...
 )
 }
 \arguments{
+\item{add_silence_to_beginning_of_audio_file}{In seconds.}
+
+\item{add_silence_to_end_of_audio_file}{In seconds.}
+
 \item{...}{}
 }
 \description{

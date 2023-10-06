@@ -1,6 +1,5 @@
 
 
-
 #' Wrapper to add user-specified additional scoring measures to pYIN melodic production
 #'
 #' @param type
@@ -171,6 +170,8 @@ display_noise_trial_message <- function(noise_classification, state) {
 #' @param type
 #' @param state
 #' @param melconv
+#' @param add_silence_to_beginning_of_audio_file In seconds.
+#' @param add_silence_to_end_of_audio_file In seconds.
 #' @param ...
 #'
 #' @return
@@ -180,15 +181,28 @@ display_noise_trial_message <- function(noise_classification, state) {
 get_answer_pyin <- function(input,
                             type = c("both", "notes", "pitch_track"),
                             state,
-                            melconv = FALSE, ...) {
+                            melconv = FALSE,
+                            add_silence_to_beginning_of_audio_file = 0.5,
+                            add_silence_to_end_of_audio_file = 0,
+                            ...) {
 
   type <- match.arg(type)
 
   # Get file
   audio_file <- get_audio_file(input, state)
 
+  # For audio with silence added at beginning:
+  new_audio_file <- paste0(tools::file_path_sans_ext(audio_file), "_beginning_silence_added.wav")
+
+  # Add silence to beginning
+  add_silence_to_audio_file(old_file = audio_file,
+                            new_file = new_audio_file, # Note, we overwrite the old file
+                            no_seconds_silence_beginning = add_silence_to_beginning_of_audio_file,
+                            no_seconds_silence_end = add_silence_to_end_of_audio_file)
+
+
   # Get pyin
-  pyin_res <- get_pyin(audio_file, type, state)
+  pyin_res <- get_pyin(new_audio_file, type, state)
 
   # Get melconv (optionally)
   melconv_res <- get_melconv(melconv, pyin_res)
@@ -412,6 +426,8 @@ get_answer_midi <- function(input, state, ...) {
   } else {
 
     trial_start_time_timecode <- input$trial_start_time
+    trial_start_time_timecode2 <- input$trial_start_time2
+    latency_estimate <- trial_start_time_timecode2 - trial_start_time_timecode
     onsets_noteon_timecode <- if(is.null(input$onsets_noteon_timecode)) NA else as.numeric(rjson::fromJSON(input$onsets_noteon_timecode))
     notes <- if(is.null(input$user_response_midi_note_on)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_on))
     notes_off <- if(is.null(input$user_response_midi_note_off)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_off))
@@ -437,7 +453,10 @@ get_answer_midi <- function(input, state, ...) {
       user_response_midi_note_off =  notes_off,
       onsets_noteon = onsets,
       pyin_style_res = pyin_style_res,
-      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli)),
+      trial_start_time_timecode = trial_start_time_timecode,
+      trial_start_time_timecode2 = trial_start_time_timecode2,
+      latency_estimate = latency_estimate
       )
   }
 
@@ -556,7 +575,6 @@ get_answer_key_presses_page <- function(input, ...) {
 
 get_answer_rhythm_production_audio <- function(input, state, ...) {
 
-  #pyin_res <- get_answer_pyin(input, type = "notes",  state, ...)
   onset_res <- get_answer_onset_detection(input, state, ...)
 
 
@@ -771,20 +789,73 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
 }
 
 
+
 #' Get onset information from an audio file
+#'
+#' @param input
+#' @param state
+#' @param add_silence_to_beginning_of_audio_file
+#' @param add_silence_to_end_of_audio_file
+#' @param ...
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_answer_onset_detection <- function(input, state, ...) {
+get_answer_onset_detection <- function(input,
+                                       state,
+                                       add_silence_to_beginning_of_audio_file = 0.5,
+                                       add_silence_to_end_of_audio_file = 0, ...) {
 
   audio_file <- get_audio_file(input, state, ...)
 
-  onset_res <- vampr::onset_detection(audio_file)
+  # For audio with silence added at beginning:
+  new_audio_file <- paste0(tools::file_path_sans_ext(audio_file), "_beginning_silence_added.wav")
 
-  list(file = audio_file,
-       onset = if(is.scalar.na.or.null(onset_res)) NA else onset_res$onset)
+  # Make sure old original file is built
+  valid_file <- FALSE
+  while(!valid_file) {
+    print('valid_file?')
+    print(valid_file)
+    valid_file <- file.exists(audio_file)
+  }
+
+  # Add silence to beginning
+  add_silence_to_audio_file(old_file = audio_file,
+                            new_file = new_audio_file, # Note, we overwrite the old file
+                            no_seconds_silence_beginning = add_silence_to_beginning_of_audio_file,
+                            no_seconds_silence_end = add_silence_to_end_of_audio_file)
+
+  # And same with new (silence-added) file
+  valid_file <- FALSE
+  while(!valid_file) {
+    print('valid_file2?')
+    print(valid_file)
+    valid_file <- file.exists(new_audio_file)
+  }
+
+  browser()
+
+  onset_res <- vampr::onset_detection(new_audio_file)
+
+
+  trial_start_time_timecode <- input$trial_start_time
+  trial_start_time_timecode2 <- input$trial_start_time2
+  latency_estimate <- trial_start_time_timecode2 - trial_start_time_timecode
+  stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
+  # We just assume the last duration is 0.5 always. There is no way of telling when the participant really designates that a "hit" is over
+  # Technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
+  last_dur <- 0.5
+
+  list(
+    file = new_audio_file,
+    onset = if(is.scalar.na.or.null(onset_res)) NA else onset_res$onset,
+    stimulus_trigger_times = stimulus_trigger_times,
+    stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli)),
+    trial_start_time_timecode = trial_start_time_timecode,
+    trial_start_time_timecode2 = trial_start_time_timecode2,
+    latency_estimate = latency_estimate
+    )
 
 }
 

@@ -10,10 +10,9 @@ preloadImage("https://adaptiveeartraining.com/assets/img/SAA_intro.png");
 preloadImage("https://adaptiveeartraining.com/assets/img/music.png");
 preloadImage("https://adaptiveeartraining.com/assets/img/saxophone.png");
 preloadImage("https://adaptiveeartraining.com/assets/drum.png");
+preloadImage("https://adaptiveeartraining.com/assets/robot.png");
 
-// Constants
-// A little delay after playback finishes before hitting record
-var record_delay = 500;
+
 
 // Vars
 var confidences = [];
@@ -608,14 +607,13 @@ function hideAudioFilePlayer() {
 
 function startRecording(type) {
 
-  console.log('startRecording');
-  console.log(type);
 
    // Initiate startTime
   startTime = new Date().getTime();
   Shiny.setInputValue('trial_start_time', startTime);
 
-  setTimeout(() => {
+  console.log('Start time 1: ');
+  console.log(startTime);
 
   if (type === "record_audio_page") {
     startAudioRecording();
@@ -625,8 +623,12 @@ function startRecording(type) {
     console.log('type not recognised');
   }
 
-  }, record_delay);
+  // And do the same thing again to estimate potential latency
+  startTime2 = new Date().getTime();
+  Shiny.setInputValue('trial_start_time2', startTime2);
 
+  console.log('Start time 2: ');
+  console.log(startTime2);
 
 }
 
@@ -682,9 +684,6 @@ function hideLoading() {
 
 function stopRecording(type) {
 
-  console.log('stopRecording...');
-  console.log(type);
-
   setTimeout(() => {
 
     hideStopButton();
@@ -699,7 +698,7 @@ function stopRecording(type) {
     }
     next_page();
 
-  }, record_delay);
+  }, 500); /* Record a little bit more */
 
 
 }

@@ -42,6 +42,13 @@ Mauch, M., & Dixon, S. (2014). PYIN: a fundamental frequency estimator using pro
 
 Müllensiefen, D., & Frieler, K. (2007). Modelling experts’ notions of melodic similarity. Musicae Scientiae, 11(1_suppl), 183–210. https://doi.org/10.1177/102986490701100108
 
+Silas, S., & Frieler, K. (2023). The musicassessr ecosystem: Record, measure, score and present feedback about musical production behaviour in real-time, supported by psychometric models. Deutsche Gesellschaft für Musikpsychologie, Hanover.
+
 Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Singing Ability Assessment: Development and validation of a singing test based on item response theory and a general open-source software environment for singing data. Behaviour Research Methods.
+
+
+Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Utilising a new generation of musical production tests to understand musical learning: Singing ability assessment, melodic recall and playing by ear. Deutsche Gesellschaft für Musikpsychologie, Hanover.
+
+Silas, S., Kopiez, R., & Müllensiefen, D. (2021). What makes playing by ear difficult? SEMPRE conference.
 
 

@@ -2,9 +2,6 @@
 
 score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NULL) {
 
-  print('dadauser_dur')
-
-  print(user_durations)
 
   if(is.scalar.na.or.null(user_durations) || length(user_durations) == 0) {
 
@@ -32,21 +29,15 @@ score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NUL
       bpm <- round(60/mean_dur) # This is a proxy but not particularly sophisticated..
     }
 
-    print('user_durations..')
-    print(user_durations)
-
     if(is.scalar.na.or.null(stimuli_durations)) {
       dtw_dist <- NA
       tam_dist <- NA
     } else {
       dtw_res <- dtw::dtw(stimuli_durations, user_durations)
-      print('dtw_res')
-      print(dtw_res)
       dtw_dist <- dtw_res$distance
-      print('dtw_dist')
-      print(dtw_dist)
       tam_dist <- TSdist::TAMDistance(stimuli_durations, user_durations)
     }
+
 
     res <- list(
       stimuli_durations = stimuli_durations,
@@ -77,7 +68,13 @@ feedback_rhythm_production <- function() {
   psychTestR::reactive_page(function(state, answer, ...) {
 
     stimulus_trigger_times_df <- tibble::tibble(stimulus_trigger_times = answer$stimulus_trigger_times)
-    onsets_df <- answer$pyin_style_res
+
+    if(is.scalar.na.or.null(answer$pyin_style_res)) {
+      onsets_df <- tibble::tibble(onset = answer$onset)
+    } else {
+      onsets_df <- answer$pyin_style_res
+    }
+
 
     no_stimulus_trigger_times <- is.scalar.na(stimulus_trigger_times_df$stimulus_trigger_times) && nrow(stimulus_trigger_times_df)  > 0
 

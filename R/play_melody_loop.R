@@ -189,13 +189,13 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         get_trial_characteristics_function = get_trial_characteristics_function,
                                         max_goes_forced = max_goes_forced,
                                         item_bank = item_bank,
-                                        display_modality = display_modality,
+                                        display_modality = "auditory",
                                         total_no_melodies = num_items,
                                         show_progress = show_progress,
                                         sheet_music_start_hidden = sheet_music_start_hidden,
-                                        sound_only_first_melody_note = sound_only_first_melody_note,
+                                        sound_only_first_melody_note = FALSE,
                                         sheet_music_id = sheet_music_id,
-                                        give_first_melody_note = give_first_melody_note,
+                                        give_first_melody_note = FALSE,
                                         get_similarity_to_previous_melody = get_similarity_to_previous_melody,
                                         volume_meter = volume_meter,
                                         volume_meter_type = volume_meter_type,
@@ -242,6 +242,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
     # This will return a sequence of test items
     items <- purrr::map(start_from_trial_no:num_items, function(melody_no) {
 
+      print('melody_no...')
+      print(melody_no)
+
       page <- play_melody_loop(melody_no = melody_no,
                                var_name = var_name,
                                max_goes = max_goes,
@@ -278,6 +281,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 
       if (melody_block_paradigm == "sing_melody_first") {
 
+        print('melody_no_sing...')
+        print(melody_no)
+
         sing_page <- play_melody_loop(melody_no = melody_no,
                                       var_name = var_name,
                                       max_goes = max_goes,
@@ -294,13 +300,13 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                       get_trial_characteristics_function = get_trial_characteristics_function,
                                       max_goes_forced = max_goes_forced,
                                       item_bank = item_bank,
-                                      display_modality = display_modality,
+                                      display_modality = "auditory",
                                       total_no_melodies = num_items,
                                       show_progress = show_progress,
                                       sheet_music_start_hidden = sheet_music_start_hidden,
-                                      sound_only_first_melody_note = sound_only_first_melody_note,
+                                      sound_only_first_melody_note = FALSE,
                                       sheet_music_id = sheet_music_id,
-                                      give_first_melody_note = give_first_melody_note,
+                                      give_first_melody_note = FALSE,
                                       get_similarity_to_previous_melody = get_similarity_to_previous_melody,
                                       volume_meter = volume_meter,
                                       volume_meter_type = volume_meter_type,
@@ -310,8 +316,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                       melody_trial_paradigm = melody_trial_paradigm,
                                       first_note_message = first_note_message,
                                       transposed_message = transposed_message,
-                                      play_first_note_button_text = play_first_note_button_text
-                                      )
+                                      play_first_note_button_text = play_first_note_button_text)
 
         sing_then_play_pages <- psychTestR::join(sing_page, page)
 
@@ -327,9 +332,13 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
   } else {
 
     items <- purrr::map(1:nrow(presampled_items), function(x) {
+
       melody <- presampled_items %>% dplyr::slice(x)
 
       if (melody_block_paradigm == "sing_melody_first") {
+
+        print('melody_no_sing22...')
+        print(melody_no)
 
         sing_page <- play_melody_loop(melody_no = melody_no,
                                       var_name = var_name,
@@ -610,7 +619,7 @@ present_melody <- function(stimuli,
   call_and_response_end <- match.arg(call_and_response_end)
 
   if(!is.null(rel_to_abs_mel_function) & stimuli_type != "audio_WJD") {
-    # then this presumes that the melody was transposed at test time, and therefore, should be grabbed
+    # The presume that the melody was transposed at test time, and therefore, should be grabbed
     # via get_local/global
     stimuli <- NULL
   }
@@ -647,7 +656,8 @@ present_melody <- function(stimuli,
     melody_checks <- melody_checks(stimuli, state, stimuli_type, arrhythmic, note_length)
 
     if(psychTestRCAT) {
-      melody_no <- psychTestR::get_local("item", state) %>% psychTestRCAT::get_item_number()
+      melody_no <- psychTestR::get_local("item", state) %>%
+        psychTestRCAT::get_item_number()
     }
 
     # Set some vars for storing in DB
@@ -721,7 +731,6 @@ grab_sampled_melody <- function(item_bank = NULL,
                                 phase = c('test', 'learn', 'review', 'example'),
                                 display_modality = c('auditory', 'visual', 'both'), ...) {
 
-
   logging::loginfo("Grab sampled melody")
   display_modality <- match.arg(display_modality)
 
@@ -788,7 +797,8 @@ grab_sampled_melody <- function(item_bank = NULL,
   # Does the melody need putting into a certain pitch range...?
   if(is.null(rel_to_abs_mel_function)) {
     if(is.data.frame(abs_melody)) {
-      abs_melody <- melody %>% dplyr::pull(abs_melody)
+      abs_melody <- melody %>%
+        dplyr::pull(abs_melody)
     }
   } else {
     # ...then assume that the melody is in relative format and fit it into a key, based on a rel_to_abs_mel_functionw
@@ -827,6 +837,9 @@ transposition_check <- function(melody_row) {
 
 grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function = NULL) {
 
+  print('grab_melody_from_state..psychTestRCAT')
+  print(psychTestRCAT)
+
   if(psychTestRCAT) {
 
     melody_row <- psychTestR::get_local("item", state)
@@ -839,7 +852,7 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
     }
 
   } else {
-    # assume melodies sampled at test time and stored in global object
+    # Assume melodies sampled at test time and stored in global object
     trials <- psychTestR::get_global(var_name, state)
     melody_row <- trials %>% dplyr::slice(melody_no)
     rel_melody <- melody_row %>% dplyr::pull(melody) %>% itembankr::str_mel_to_vector()

@@ -222,11 +222,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                             choices = c("Yes", "No"),
                             on_complete = function(state, answer, ...) {
 
-                              print('finished_user_determined_loop on_complete...')
-
-                              print('answer...')
-                              print(answer)
-
                               if(answer == "Yes") {
                                 psychTestR::set_global("user_determined_stop", state, TRUE)
                                 reactive_melody_no <- psychTestR::get_global("reactive_melody_no", state)
@@ -241,9 +236,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 
     # This will return a sequence of test items
     items <- purrr::map(start_from_trial_no:num_items, function(melody_no) {
-
-      print('melody_no...')
-      print(melody_no)
 
       page <- play_melody_loop(melody_no = melody_no,
                                var_name = var_name,
@@ -280,9 +272,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                play_first_note_button_text = play_first_note_button_text)
 
       if (melody_block_paradigm == "sing_melody_first") {
-
-        print('melody_no_sing...')
-        print(melody_no)
 
         sing_page <- play_melody_loop(melody_no = melody_no,
                                       var_name = var_name,
@@ -336,9 +325,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
       melody <- presampled_items %>% dplyr::slice(x)
 
       if (melody_block_paradigm == "sing_melody_first") {
-
-        print('melody_no_sing22...')
-        print(melody_no)
 
         sing_page <- play_melody_loop(melody_no = melody_no,
                                       var_name = var_name,
@@ -836,9 +822,6 @@ transposition_check <- function(melody_row) {
 }
 
 grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function = NULL) {
-
-  print('grab_melody_from_state..psychTestRCAT')
-  print(psychTestRCAT)
 
   if(psychTestRCAT) {
 

@@ -72,6 +72,8 @@ set_test <- function(test_name, test_id = NULL) {
       check_id_exists(db_con, table_name = "tests", id_col = "test_id", id = test_id)
     }
 
+    logging::loginfo("Setting test ID: %s", test_id)
+
     # We need to do this at global level, becauses tests may have many modules.
     # Hence, in multi test timelines, you need overwrite the below globally when a new test begins
     psychTestR::set_global("test_name", test_name, state)

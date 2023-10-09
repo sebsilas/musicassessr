@@ -309,12 +309,8 @@ span_warning <- function(span) {
 sample_review <- function(num_review_items, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
 
-    # Get DB con
-    db_con <- psychTestR::get_global("db_con", state)
-    user_id <- psychTestR::get_global("user_id", state)
-
     # Sample arrhythmic
-    review_sample <- get_review_trials(db_con, user_id, num_review_items)
+    review_sample <- get_review_trials(num_review_items, state)
 
     psychTestR::set_global(id, review_sample, state)
   })

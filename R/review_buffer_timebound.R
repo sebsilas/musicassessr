@@ -103,7 +103,6 @@ review_buffer_timebound <- function(minimum_complete = 5) {
               if(nrow(item) == 0 & item_bank != FALSE) {
                 item <- sample_from_item_bank_and_remove(state)
               } else {
-                print('ping la')
                 item <- grab_review(review_items, state)
               }
             }

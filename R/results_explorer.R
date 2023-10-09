@@ -178,7 +178,7 @@ results_explorer <- function(app_name = "",
     output$melodyNotation <- renderUI({
 
       if (is.null(input$trials_rows_selected)) {
-        print("nothing selected")
+        logging::loginfo("Nothing selected")
       }
       else {
         stimuli <- results_df %>% dplyr::slice(input$trials_rows_selected) %>% dplyr::pull(stimuli)
@@ -195,9 +195,6 @@ results_explorer <- function(app_name = "",
       file_name <- filtered_df() %>% dplyr::slice(row) %>% dplyr::pull(key)
 
       file_path <- paste0('musicassessr-assets/PBET_calibration_audio/', file_name)
-
-      print(file_path)
-
 
       if (is.null(file_name) | is.na(file_name)) {
         shiny::tags$p("No corresponding audio")

@@ -20,11 +20,11 @@ get_instrument_range_pages <- function(input_type,
                                        concise_wording = FALSE) {
 
 
-  # a short multi-page protocol to get the user's frequency range
+  # A short multi-page protocol to get the user's frequency range
 
-  stopifnot(assertthat::is.string(input_type),
+  stopifnot(is.scalar.character(input_type),
             is.logical(show_musical_notation),
-            assertthat::is.string(test_type),
+            is.scalar.character(test_type),
             is.scalar.logical(concise_wording))
 
   if (input_type == "microphone") {

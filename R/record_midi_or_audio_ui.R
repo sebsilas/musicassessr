@@ -21,19 +21,22 @@ record_midi_or_audio_ui <- function(body = "",
                                     max_goes_forced = FALSE,
                                     autoInstantiate = FALSE,
                                     midi_device = " ",
-                                    max_goes = 1,
+                                    max_goes = 1L,
                                     show_progress = FALSE,
                                     melody_no = 0,
                                     total_no_melodies = 0,
                                     volume_meter = FALSE,
                                     volume_meter_type = 'default',
                                     show_sheet_music_after_record = FALSE,
-                                    show_record_button = TRUE, ...) {
+                                    show_record_button = TRUE,
+                                    reactive_melody_no = FALSE, ...) {
 
 
   if(is.character(page_text)) {
     page_text <- shiny::tags$p(page_text)
   }
+
+  section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
 
   interactive <- if(interactive) "true" else "false"
@@ -56,7 +59,7 @@ record_midi_or_audio_ui <- function(body = "",
     ),
     shiny::tags$body(
 
-      if(show_progress) shiny::tags$h4(paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)),
+      if(show_progress) shiny::tags$h4(section_progress),
 
       shiny::tags$br(),
 

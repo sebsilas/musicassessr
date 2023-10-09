@@ -33,6 +33,7 @@ record_midi_page(
   volume_meter_type = "default",
   show_sheet_music_after_record = FALSE,
   show_record_button = TRUE,
+  reactive_melody_no = FALSE,
   ...
 )
 }

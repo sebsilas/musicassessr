@@ -78,8 +78,7 @@ get_voice_range_page <- function(with_examples = TRUE) {
       choices = c(names(vocal_ranges), "Not sure"),
       arrange_vertically = FALSE,
       on_complete = function(state, answer, ...){
-        print('setting range...')
-        print(answer)
+        logging::loginfo('Setting range: %s', answer)
         if(answer == "Not sure") {
           answer <- "Tenor"
         }

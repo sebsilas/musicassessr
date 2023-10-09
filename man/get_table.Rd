@@ -4,10 +4,10 @@
 \alias{get_table}
 \title{Get a postgres table}
 \usage{
-get_table(db_con, name)
+get_table(db_con, name, collect = TRUE)
 }
 \arguments{
-\item{name}{}
+\item{collect}{}
 }
 \description{
 Get a postgres table

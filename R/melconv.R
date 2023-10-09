@@ -58,9 +58,6 @@ melconv_from_pyin_res <- function(pyin_res) {
 
   new_file <- paste0('/srv/shiny-server/files/csv/', paste0(sample(1:9, 20, replace = TRUE), collapse = ""), '.csv')
 
-  # new_file <- paste0('/Users/sebsilas/', paste0(sample(1:9, 20, replace = TRUE), collapse = ""), '.csv')
-
-  print(new_file)
   # write out
   write.table(pyin_res, file = new_file, row.names = FALSE, col.names = FALSE, sep=",")
 

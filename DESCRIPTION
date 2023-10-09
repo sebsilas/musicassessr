@@ -57,7 +57,6 @@ Imports:
     pyin (>= 0.1.0),
     R.utils,
     xml2,
-    assertthat,
     logging,
     changepoint,
     vampr (>= 0.1.0)

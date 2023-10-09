@@ -27,6 +27,7 @@
 #' @param volume_meter_type
 #' @param show_sheet_music_after_record
 #' @param show_record_button
+#' @param reactive_melody_no
 #' @param ...
 #'
 #' @return
@@ -58,7 +59,8 @@ record_audio_page <- function(body = "",
                              volume_meter = FALSE,
                              volume_meter_type = 'default',
                              show_sheet_music_after_record = FALSE,
-                             show_record_button = TRUE, ...) {
+                             show_record_button = TRUE,
+                             reactive_melody_no = FALSE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -88,7 +90,8 @@ record_audio_page <- function(body = "",
                           volume_meter,
                           volume_meter_type,
                           show_sheet_music_after_record,
-                          show_record_button)
+                          show_record_button,
+                          reactive_melody_no)
 
 }
 

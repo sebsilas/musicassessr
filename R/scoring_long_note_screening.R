@@ -57,7 +57,9 @@ classify_whether_noise <- function(res, display_noise_trial_notificiation = FALS
 end_of_long_note_trial_screening <- function(failure_page = 'http://www.google.com') {
   psychTestR::join(
     psychTestR::code_block(function(state, answer, ...) {
-      print('end_of_long_note_trial_screening')
+
+      logging::loginfo('End of long note trial screening')
+
       res <- as.list(psychTestR::get_results(state, complete = FALSE))$long_tone_trials
 
       if(is.null(res)) {

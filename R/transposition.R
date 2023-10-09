@@ -77,7 +77,7 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
 
   stopifnot(tibble::is_tibble(item_bank),
-            assertthat::is.string(inst),
+            is.scalar.character(inst),
             is_midi_note(bottom_range),
             is_midi_note(top_range),
             difficulty == "easy" || difficulty == "hard",
@@ -176,9 +176,9 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
         return(meta_data)
       }
       else {
-        print("Undesirable2...")
+        logging::logerror("Undesirable...")
         if(count > 10) {
-          print("Undesirable2...")
+          logging::logerror("Undesirable...")
           meta_data$abs_melody <- paste0(abs_mel, collapse = ",")
           return(meta_data)
         }
@@ -273,14 +273,7 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
 
   user_mean_corrected_to_stimuli <- round(user_mean_note - mean_of_stimuli)
 
-  cat(file=stderr(), "rel_melody", rel_melody, "\n")
-
-  cat(file=stderr(), "user_mean_corrected_to_stimuli", user_mean_corrected_to_stimuli, "\n")
-
   stimuli_centred_to_user_mean <- itembankr::rel_to_abs_mel(rel_melody, user_mean_corrected_to_stimuli)
-  # the rel melody should be the same when converted back
-  #print(diff(stimuli_centred_to_user_mean))
-  #print(rel_melody)
 
   if(plot) {
     plot_mean_centred_to_range(stimuli_centred_to_user_mean, user_mean_corrected_to_stimuli, user_mean_note, bottom_range, top_range)

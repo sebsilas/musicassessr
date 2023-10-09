@@ -68,6 +68,7 @@ present_stimuli(
   first_note_message = psychTestR::i18n("first_note_is"),
   transposed_message = psychTestR::i18n("transposed"),
   play_first_note_button_text = psychTestR::i18n("play_first_note"),
+  reactive_melody_no = FALSE,
   ...
 )
 }

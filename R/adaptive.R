@@ -38,7 +38,7 @@ adaptive_arrhythmic_melody_trials <- function(label,
                                               feedback = FALSE) {
 
   stopifnot(
-    assertthat::is.string(label),
+    is.scalar.character(label),
     is.scalar.numeric(num_items),
     is.data.frame(item_bank),
     is(model, "lmerModLmerTest"),

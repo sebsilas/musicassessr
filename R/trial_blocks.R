@@ -389,8 +389,6 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      play_first_note_button_text = "Play First Note") {
 
 
-  # Register trial block
-
   melody_trials(var_name,
                 module_name,
                 page_text,
@@ -659,11 +657,11 @@ melody_trials <- function(var_name,
     is.scalar.numeric(num_examples) | is.list(num_examples),
     is.function(feedback) | is.scalar.logical(feedback),
     is.function(get_answer),
-    assertthat::is.string(sound),
-    assertthat::is.string(page_text),
-    assertthat::is.string(page_title),
-    assertthat::is.string(page_type),
-    assertthat::is.string(instruction_text),
+    is.scalar.character(sound),
+    is.scalar.character(page_text),
+    is.scalar.character(page_title),
+    is.scalar.character(page_type),
+    is.scalar.character(instruction_text),
     is.null.or(get_trial_characteristics_function, is.function),
     is.null.or(item_characteristics_sampler_function, is.function),
     is.null.or(item_characteristics_pars, is.list),
@@ -672,17 +670,17 @@ melody_trials <- function(var_name,
     is.scalar.logical(max_goes_forced),
     display_modality %in% c("auditory", "visual"),
     is.scalar.logical(show_progress),
-    assertthat::is.string(module_name),
+    is.scalar.character(module_name),
     is.scalar.logical(sheet_music_start_hidden),
     is.scalar.logical(sound_only_first_melody_note),
-    assertthat::is.string(sheet_music_id),
+    is.scalar.character(sheet_music_id),
     is.scalar.logical(give_first_melody_note),
     is.function(sampler_function),
     is.scalar.logical(presampled),
     is.scalar.logical(arrhythmic),
     is.scalar.logical(get_similarity_to_previous_melody),
     is.scalar.logical(volume_meter),
-    assertthat::is.string(volume_meter_type),
+    is.scalar.character(volume_meter_type),
     melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
     is.scalar.logical(singing_trials),
     is.scalar.logical(review),
@@ -715,6 +713,8 @@ melody_trials <- function(var_name,
 
                         # Set item bank ID in code block
                         set_item_bank_id(item_bank),
+                        # Pre-instructions, if review
+                        if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
                          # Instructions
                          psychTestR::one_button_page(shiny::tags$div(
                            shiny::tags$h2(page_title),
@@ -728,7 +728,7 @@ melody_trials <- function(var_name,
                                shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
                              ## Sample example items
-                             handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, id, var_name),
+                             handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
                              ## Run examples
                              multi_page_play_melody_loop(
                                presampled_items = if(presampled) item_bank else NULL,
@@ -770,7 +770,7 @@ melody_trials <- function(var_name,
                            )
                          },
                          ## Sample items
-                         handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, id, var_name),
+                         handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
                          ## Trials
                          multi_page_play_melody_loop(
                            stimuli_type = "midi_notes",
@@ -794,6 +794,7 @@ melody_trials <- function(var_name,
                            sheet_music_id = sheet_music_id,
                            give_first_melody_note = give_first_melody_note,
                            arrhythmic = arrhythmic,
+                           singing_trials = singing_trials,
                            get_similarity_to_previous_melody = get_similarity_to_previous_melody,
                            volume_meter = volume_meter,
                            volume_meter_type = volume_meter_type,
@@ -810,9 +811,9 @@ melody_trials <- function(var_name,
 
 
 
-handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review = FALSE, id, var_name) {
+handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review = FALSE, var_name) {
   if(review) {
-    sample_review(num_review_items, id = id)
+    sample_review(num_items_flat, id = var_name)
   } else {
     if(is.null(item_characteristics_sampler_function)) {
       if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat)
@@ -980,7 +981,8 @@ find_this_note_trials <- function(num_items,
                                   page_type = "record_audio_page",
                                   page_text = "Press play to hear the note. Try and play it on your instrument when you can.",
                                   trial_paradigm = c("simultaneous_recall", "call_and_response"),
-                                  call_and_response_end = c("manual", "auto")) {
+                                  call_and_response_end = c("manual", "auto"),
+                                  singing_trials = FALSE) {
 
   # Get trial paradigm info
   trial_paradigm <- match.arg(trial_paradigm)

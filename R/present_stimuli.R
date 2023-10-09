@@ -56,6 +56,7 @@
 #' @param first_note_message
 #' @param transposed_message
 #' @param play_first_note_button_text
+#' @param reactive_melody_no
 #' @param ...
 #'
 #' @return
@@ -105,7 +106,8 @@ present_stimuli <- function(stimuli,
                             trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
                             first_note_message = psychTestR::i18n("first_note_is"),
                             transposed_message = psychTestR::i18n("transposed"),
-                            play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
+                            play_first_note_button_text = psychTestR::i18n("play_first_note"),
+                            reactive_melody_no = FALSE, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -136,7 +138,7 @@ present_stimuli <- function(stimuli,
             is.scalar.logical(give_first_melody_note),
             octave %in% 0:9,
             is.scalar.logical(volume_meter),
-            assertthat::is.string(volume_meter_type),
+            is.scalar.character(volume_meter_type),
             is.scalar.logical(show_sheet_music_after_record),
             is.scalar.logical(interactive),
             is.scalar.logical(show_record_button),
@@ -144,7 +146,8 @@ present_stimuli <- function(stimuli,
             is.null(trigger_end_of_stimulus_fun) || is.na(trigger_end_of_stimulus_fun) || is.scalar.character(trigger_end_of_stimulus_fun),
             is.scalar.character(first_note_message),
             is.scalar.character(transposed_message),
-            is.scalar.character(play_first_note_button_text)
+            is.scalar.character(play_first_note_button_text),
+            is.scalar.logical(reactive_melody_no)
             )
 
   # Generic stimuli types
@@ -225,7 +228,7 @@ present_stimuli <- function(stimuli,
                               page_text_first = page_text_first, max_goes_forced = max_goes_forced, max_goes = max_goes,
                               melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type,
-                              show_record_button = show_record_button, show_sheet_music_after_record = show_sheet_music_after_record, ...)
+                              show_record_button = show_record_button, show_sheet_music_after_record = show_sheet_music_after_record, reactive_melody_no = reactive_melody_no, ...)
 
   } else if(page_type == "record_audio_page") {
 
@@ -243,7 +246,8 @@ present_stimuli <- function(stimuli,
                               attempts_left = attempts_left, max_goes_forced = max_goes_forced, max_goes = max_goes,
                               melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type, show_sheet_music_after_record = show_sheet_music_after_record,
-                              show_record_button = show_record_button, ...)
+                              show_record_button = show_record_button,
+                              reactive_melody_no = reactive_melody_no, ...)
   } else {
     if(page_text_first) {
       full_page <- shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(page_text), shiny::tags$br(), return_stimuli)
@@ -275,10 +279,11 @@ retrieve_page_type <- function(page_type = character(),
                                slider_value = 5, slider_min = 0, slider_max = 10,
                                volume_meter = FALSE, volume_meter_type = 'default',
                                show_sheet_music_after_record = FALSE,
-                               show_record_button = FALSE, ...) {
+                               show_record_button = FALSE,
+                               reactive_melody_no = FALSE, ...) {
 
 
-  stopifnot(assertthat::is.string(page_type),
+  stopifnot(is.scalar.character(page_type),
             class(stimuli_wrapped) == "shiny.tag",
             is.scalar.character(page_text) || class (page_text) == "shiny.tag", is.scalar.character(page_title), is.scalar.logical(interactive),
             is.scalar.logical(stimuli_reactive),
@@ -299,7 +304,8 @@ retrieve_page_type <- function(page_type = character(),
             is.scalar.logical(volume_meter),
             is.scalar.character(volume_meter_type),
             is.scalar.logical(show_sheet_music_after_record),
-            is.scalar.logical(show_record_button)
+            is.scalar.logical(show_record_button),
+            is.scalar.logical(reactive_melody_no)
             )
 
 
@@ -351,7 +357,8 @@ retrieve_page_type <- function(page_type = character(),
                 "volume_meter" = volume_meter,
                 "volume_meter_type" = volume_meter_type,
                 "show_sheet_music_after_record" = show_sheet_music_after_record,
-                "show_record_button" = show_record_button))
+                "show_record_button" = show_record_button,
+                "reactive_melody_no" = reactive_melody_no))
 
   } else if(page_type == "record_key_presses_page") {
     args$body <- page_text

@@ -289,7 +289,7 @@ get_instrument_range <- function(inst) {
 
 set_instrument_range_code_block <- function(inst = NULL) {
   psychTestR::code_block(function(state, ...) {
-    print('setting MIDI pages default')
+    logging::loginfo('Setting MIDI pages default')
     if(is.null(inst)) {
       inst <- psychTestR::get_global("inst", state)
     }

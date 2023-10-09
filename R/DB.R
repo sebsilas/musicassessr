@@ -1,17 +1,22 @@
 
-db_append_scores_session <- function(session_id, mean_opti3_arrhythmic, mean_opti3_rhythmic,
+db_append_scores_session <- function(db_con, session_id, mean_opti3_arrhythmic, mean_opti3_arrhythmic_first_attempt, mean_opti3_arrhythmic_last_attempt,
                                      ability_estimate_arrhythmic_first_attempt, ability_estimate_arrhythmic_last_attempt,
-                                     ability_estimate_rhythmic_first_attempt, ability_estimate_rhythmic_last_attempt) {
+                                     mean_opti3_rhythmic, mean_opti3_rhythmic_first_attempt, mean_opti3_rhythmic_last_attempt,
+                                    ability_estimate_rhythmic_first_attempt, ability_estimate_rhythmic_last_attempt) {
 
   session_scores_df <- tibble::tibble(session_id = session_id,
                                       mean_opti3_arrhythmic = mean_opti3_arrhythmic,
-                                      mean_opti3_rhythmic = mean_opti3_rhythmic,
+                                      mean_opti3_arrhythmic_first_attempt = mean_opti3_arrhythmic_first_attempt,
+                                      mean_opti3_arrhythmic_last_attempt = mean_opti3_arrhythmic_last_attempt,
                                       ability_estimate_arrhythmic_first_attempt = ability_estimate_arrhythmic_first_attempt,
                                       ability_estimate_arrhythmic_last_attempt = ability_estimate_arrhythmic_last_attempt,
+                                      mean_opti3_rhythmic = mean_opti3_rhythmic,
+                                      mean_opti3_rhythmic_first_attempt = mean_opti3_rhythmic_first_attempt,
+                                      mean_opti3_rhythmic_last_attempt = mean_opti3_rhythmic_last_attempt,
                                       ability_estimate_rhythmic_first_attempt = ability_estimate_rhythmic_first_attempt,
                                       ability_estimate_rhythmic_last_attempt = ability_estimate_rhythmic_last_attempt)
 
-  db_append_to_table(table = "scores_session", data = session_scores_df, primary_key_col = "scores_session_id")
+  db_append_to_table(db_con, table = "scores_session", data = session_scores_df, primary_key_col = "scores_session_id")
 
 }
 
@@ -47,7 +52,7 @@ db_append_melodic_production <- function(db_con, trial_id, pyin_res, correct_boo
 # pyin::test_pyin() %>% dplyr::select(onset:note) %>% db_append_melodic_production()
 
 db_append_trials <- function(db_con, audio_file, time_started, time_completed, instrument,
-                             attempt, item_id, display_modality, phase, rhythmic, item_bank_id, session_id) {
+                             attempt, item_id, display_modality, phase, rhythmic, item_bank_id, session_id, test_id) {
 
   stopifnot(
             is.scalar.character(audio_file),
@@ -60,7 +65,8 @@ db_append_trials <- function(db_con, audio_file, time_started, time_completed, i
             is.scalar.character(phase) || is.na(phase),
             is.scalar.logical(rhythmic) || is.na(rhythmic),
             is.integer(item_bank_id) || is.na(item_bank_id),
-            is.integer(session_id)
+            is.integer(session_id),
+            is.integer(test_id)
             )
 
   trial_df <- tibble::tibble(audio_file = audio_file,
@@ -73,7 +79,8 @@ db_append_trials <- function(db_con, audio_file, time_started, time_completed, i
                              phase = phase,
                              rhythmic = rhythmic,
                              item_bank_id = item_bank_id,
-                             session_id = session_id)
+                             session_id = session_id,
+                             test_id = test_id)
 
   db_append_to_table(db_con, table = "trials", data = trial_df, primary_key_col = "trial_id")
 }
@@ -213,16 +220,14 @@ elt_add_final_session_info_to_db <- function() {
 
       db_con <- psychTestR::get_global('db_con', state)
 
-      browser()
-
       # Get trials
-      trial_table <- musicassessr::get_table(db_con, "trials") %>%
-        dplyr::left_join(musicassessr::get_table(db_con, "sessions"), by = "trial_id") %>%
-        dplyr::filter(session_id == !! session_id,
-                      user_id == !! user_id,
-                      test_id == !! test_id ) %>%
-        dplyr::left_join(item_bank, by = "item_id")
+      trial_table <- compile_item_trials(db_con, test_id, session_id) # Here we give a session ID, because we only want to assess trials in this session
 
+
+      # Join on scores
+      trial_table <- trial_table %>%
+        dplyr::rename(ngrukkon_between_melody_and_parent_melody = ngrukkon) %>%
+        dplyr::left_join(get_table(db_con, "scores_trial"))
 
       # First attempt
       first_attempt_trial_table <- trial_table %>%
@@ -238,65 +243,93 @@ elt_add_final_session_info_to_db <- function() {
 
       # Produce session-level scores
 
-        ## Mean opti3
-          ### First attempt
-        mean_opti3_first_attempt <- first_attempt_trial_table %>%
+        ## Arrhythmic
+
+        ### Mean opti3
+      mean_opti3_arrhythmic <- trial_table %>%
+          dplyr::filter(!rhythmic) %>%
           dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
           dplyr::pull(mean_opti3)
-          ### Last attempt
-        mean_opti3_last_attempt <- last_attempt_trial_table %>%
+          #### First attempt
+        mean_opti3_arrhythmic_first_attempt <- first_attempt_trial_table %>%
+          dplyr::filter(!rhythmic) %>%
+          dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
+          dplyr::pull(mean_opti3)
+          #### Last attempt
+        mean_opti3_arrhythmic_last_attempt <- last_attempt_trial_table %>%
+          dplyr::filter(!rhythmic) %>%
           dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
           dplyr::pull(mean_opti3)
 
-
-          # Ability estimate
-
-            ## Arrhythmic
-
-            ability_estimate_arrhythmic_first_attempt <-
-              first_attempt_trial_table %>%
-              dplyr::filter(!rhythmic) %>%
-              dplyr::select(N, step.cont.loc.var, log_freq, i.entropy, opti3) %>%
-              dplyr::mutate(tmp_scores = opti3) %>%
-              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm2.2,  new_data = .)
-
-            ability_estimate_arrhythmic_last_attempt <-
-              last_attempt_trial_table %>%
-              dplyr::filter(!rhythmic) %>%
-              dplyr::select(N, step.cont.loc.var, tonalness, log_freq, opti3) %>%
-              dplyr::mutate(tmp_scores = opti3) %>%
-              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm2.2,  new_data = . )
+        ### Ability estimate
+        #### First attempt
+        ability_estimate_arrhythmic_first_attempt <-
+          first_attempt_trial_table %>%
+          dplyr::filter(!rhythmic) %>%
+          dplyr::select(N, step.cont.loc.var, log_freq, i.entropy, opti3) %>%
+          dplyr::mutate(tmp_scores = opti3) %>%
+          psychTestRCATME::predict_based_on_mixed_effects_arrhythmic_model(Berkowitz::lm2.2,  new_data = .)
+        #### Last attempt
+        ability_estimate_arrhythmic_last_attempt <-
+          last_attempt_trial_table %>%
+          dplyr::filter(!rhythmic) %>%
+          dplyr::select(N, step.cont.loc.var, tonalness, log_freq, opti3) %>%
+          dplyr::mutate(tmp_scores = opti3) %>%
+          psychTestRCATME::predict_based_on_mixed_effects_arrhythmic_model(Berkowitz::lm2.2,  new_data = . )
 
 
-            ## Rhythmic
+        ## Rhythmic
 
-            ability_estimate_arrhythmic_first_attempt <-
-              first_attempt_trial_table %>%
-              dplyr::filter(rhythmic) %>%
-              dplyr::select(N, step.cont.loc.var, log_freq, d.entropy, i.entropy, opti3) %>%
-              dplyr::mutate(tmp_scores = opti3) %>%
-              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm3.2,  new_data = .)
+        ### Mean opti3
+        mean_opti3_rhythmic <- trial_table %>%
+          dplyr::filter(rhythmic) %>%
+          dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
+          dplyr::pull(mean_opti3)
+        #### First attempt
+        mean_opti3_rhythmic_first_attempt <- first_attempt_trial_table %>%
+          dplyr::filter(rhythmic) %>%
+          dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
+          dplyr::pull(mean_opti3)
+        #### Last attempt
+        mean_opti3_rhythmic_last_attempt <- last_attempt_trial_table %>%
+          dplyr::filter(rhythmic) %>%
+          dplyr::summarise(mean_opti3 = mean(opti3, na.rm = TRUE)) %>%
+          dplyr::pull(mean_opti3)
 
-            ability_estimate_arrhythmic_last_attempt <-
-              last_attempt_trial_table %>%
-              dplyr::filter(rhythmic) %>%
-              dplyr::select(N, step.cont.loc.var, log_freq, d.entropy, i.entropy, opti3) %>%
-              dplyr::mutate(tmp_scores = opti3) %>%
-              psychTestRCATME::predict_based_on_mixed_effects_model(Berkowitz::lm3.2,  new_data = . )
+        ### Ability estimate
+        #### First attempt
+        ability_estimate_rhythmic_first_attempt <-
+          first_attempt_trial_table %>%
+          dplyr::filter(rhythmic) %>%
+          dplyr::select(N, step.cont.loc.var, log_freq, d.entropy, i.entropy, opti3) %>%
+          dplyr::mutate(tmp_scores = opti3) %>%
+          psychTestRCATME::predict_based_on_mixed_effects_rhythmic_model(Berkowitz::lm3.2,  new_data = .)
+        #### Last attempt
+        ability_estimate_rhythmic_last_attempt <-
+          last_attempt_trial_table %>%
+          dplyr::filter(rhythmic) %>%
+          dplyr::select(N, step.cont.loc.var, log_freq, d.entropy, i.entropy, opti3) %>%
+          dplyr::mutate(tmp_scores = opti3) %>%
+          psychTestRCATME::predict_based_on_mixed_effects_rhythmic_model(Berkowitz::lm3.2,  new_data = . )
 
 
       # Append scores
-      db_append_scores_session(session_id,
-                               mean_opti3_arrhythmic, mean_opti3_rhythmic,
+      db_append_scores_session(db_con,
+                               session_id,
+                               mean_opti3_arrhythmic, mean_opti3_arrhythmic_first_attempt, mean_opti3_arrhythmic_last_attempt,
                                ability_estimate_arrhythmic_first_attempt, ability_estimate_arrhythmic_last_attempt,
+
+                               mean_opti3_rhythmic, mean_opti3_rhythmic_first_attempt, mean_opti3_rhythmic_last_attempt,
                                ability_estimate_rhythmic_first_attempt, ability_estimate_rhythmic_last_attempt)
 
       # Update sessions table with time finished
 
-      session_df <- get_table(db_con, 'sessions')
+      session_df <- get_table(db_con, 'sessions', collect = FALSE)
 
-      dplyr::rows_update(session_df, tibble::tibble(session_id = session_id, time_completed = Sys.time()),
-                         by = "session_id", in_place = TRUE)
+      update <- dbplyr::copy_inline(db_con, data.frame(session_id = session_id, time_completed = Sys.time()))
+
+
+      dplyr::rows_update(session_df, update, in_place = TRUE, by = "session_id", unmatched = "ignore")
 
 
     }
@@ -338,27 +371,32 @@ get_session_trials <- function(session_id) {
 #' @return
 #'
 #' @examples
-get_review_trials <- function(db_con, user_id, no_reviews) {
+get_review_trials <- function(no_reviews, state) {
 
-  # Grab session info
-  sessions <- musicassessr::get_table(db_con, "sessions")
+  # Get DB con
+  db_con <- psychTestR::get_global("db_con", state)
+  user_id <- psychTestR::get_global("user_id", state)
+  current_test_id <- psychTestR::get_global("test_id", state)
 
-  # Grab trial info
-  trials <- musicassessr::get_table("trials") %>%
-    dplyr::left_join(sessions, by = "session_id")
-
-  # Grab user file sessions
-  user_trials <- trials %>%
-    dplyr::filter(user_id == user_id)
+  user_trials <- compile_item_trials(db_con, current_test_id) # Note, that there is a "session_id" argument we probably want to explore using in the future
 
   # Sample from previous trials
   user_trials %>%
-    dplyr::slice_sample(n = no_reviews)
+    dplyr::select(melody, abs_melody, durations, item_id) %>%
+    dplyr::slice_sample(n = no_reviews) %>%
+    dplyr::collect() %>%
+    dplyr::mutate(melody_no = dplyr::row_number() )
 
 
 }
 
 
+item_bank_name_to_id <- function(db_con, ib_name) {
+  get_table(db_con, "item_banks") %>%
+    dplyr::filter(item_bank_name == ib_name) %>%
+    dplyr::collect() %>%
+    dplyr::pull(item_bank_id)
+}
 
 # get_user_trials_from_last_session("Seb")
 
@@ -406,7 +444,8 @@ db_append_scores_trial <- function(db_con,
                                    precision,
                                    recall,
                                    F1_score,
-                                   PMI) {
+                                   PMI,
+                                   trial_id) {
 
   scores_df <- tibble::tibble(
     trial_length = trial_length,
@@ -432,9 +471,11 @@ db_append_scores_trial <- function(db_con,
     precision = precision,
     recall = recall,
     F1_score = F1_score,
-    PMI = PMI)
+    PMI = PMI,
+    trial_id = trial_id)
 
   db_append_to_table(db_con, table = "scores_trial", data = scores_df)
 
 
 }
+

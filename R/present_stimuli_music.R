@@ -38,9 +38,6 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
 
   js_script <- paste0("playSeq(",rjson::toJSON(stimuli),", ", rjson::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
 
-  print('js_script')
-  print(js_script)
-
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
 
   shiny::tags$div(
@@ -100,11 +97,6 @@ present_stimuli_midi_notes_visual <- function(stimuli,
                                               sheet_music_start_hidden = FALSE,
                                               durations = NULL) {
 
-  print('present_stimuli_midi_notes_visual')
-  print(stimuli)
-  print('sheet_music_start_hidden')
-  print(sheet_music_start_hidden)
-
   if(transpose_visual_notation != 0) {
     stimuli <- stimuli + transpose_visual_notation
   }
@@ -117,8 +109,6 @@ present_stimuli_midi_notes_visual <- function(stimuli,
     xml <- wrap.xml.template(type = "midi_notes", notes = stimuli, asChord = asChord, clef = clef)
     res <- shiny::tags$div(open.music.display.wrapper(xml, id, present_div, sheet_music_start_hidden))
   }
-
-  print(res)
 
   shiny::tags$div(
     res,

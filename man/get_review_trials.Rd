@@ -4,7 +4,7 @@
 \alias{get_review_trials}
 \title{Get a random selection of previous trials based on a user ID}
 \usage{
-get_review_trials(db_con, user_id, no_reviews)
+get_review_trials(no_reviews, state)
 }
 \arguments{
 \item{no_reviews}{}

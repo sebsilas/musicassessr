@@ -143,7 +143,7 @@ calculate_stable_part <- function(df, plot = FALSE, return_df = FALSE) {
            beginning_of_second_cpt = beginning_of_second_cpt)
     }
   }, error = function(err) {
-    print(err)
+    logging::logerror(err)
     NA
   })
 

@@ -14,7 +14,8 @@ find_this_note_trials(
   page_text =
     "Press play to hear the note. Try and play it on your instrument when you can.",
   trial_paradigm = c("simultaneous_recall", "call_and_response"),
-  call_and_response_end = c("manual", "auto")
+  call_and_response_end = c("manual", "auto"),
+  singing_trials = FALSE
 )
 }
 \arguments{

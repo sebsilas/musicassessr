@@ -89,9 +89,6 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
             signal_file <- paste0(absolute_url, 'audio/', psychTestR::get_global("SNR_signal", state))
             noise_file <- paste0(absolute_url, 'audio/',psychTestR::get_global("SNR_noise", state))
 
-            print(signal_file)
-            print(noise_file)
-
             valid_url <- FALSE
 
             while(!valid_url) {
@@ -173,12 +170,6 @@ record_signal_page <- function(page_text = shiny::tags$div(
 
 
 SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE, allow_SNR_failure = FALSE) {
-
-  print('SNR_conclusion_loop')
-  print('report_SNR')
-  print(report_SNR)
-  print('allow_SNR_failure')
-  print(allow_SNR_failure)
 
   if(is.na(SNR)) {
     psychTestR::one_button_page(psychTestR::i18n("response_not_understood"))

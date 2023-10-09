@@ -692,7 +692,6 @@ concat_mel_prod_results <- function(input,
   ongoing_scores <- psychTestR::get_global("scores", state)
   psychTestR::set_global("scores", c(ongoing_scores, scores$opti3), state)
 
-
   results <- c(
     list(file = get_audio_file(input, state),
          error = FALSE,
@@ -728,15 +727,19 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
     logging::loginfo("Store results in SQL database")
 
     singing_trial <- psychTestR::get_global("singing_trial", state)
+    print('singing_trial??')
+    print(singing_trial)
     instrument <- if(singing_trial) "Voice" else psychTestR::get_global("inst", state)
+    print(instrument)
     trial_time_started <- psychTestR::get_global("trial_time_started", state)
     session_id <- psychTestR::get_global("session_id", state)
     item_bank_id <- psychTestR::get_global("item_bank_id", state)
-    item_id <- if(is.null(res$answer_meta_data$item_id)) NA else res$answer_meta_data$item_id
+    item_id <- if(is.null(res$answer_meta_data$item_id)) psychTestR::get_global("item_id", state) else res$answer_meta_data$item_id
     display_modality <- psychTestR::get_global("display_modality", state)
     phase <- if(is.null(psychTestR::get_global("phase", state))) res$answer_meta_data$phase else psychTestR::get_global("phase", state)
     rhythmic <- if(is.null(psychTestR::get_global("rhythmic", state))) res$answer_meta_data$rhythmic else psychTestR::get_global("rhythmic", state)
-
+    test_id <- psychTestR::get_global('test_id', state)
+    attempt <- psychTestR::get_global("number_attempts", state)
 
     # Append trials
     trial_id <- db_append_trials(
@@ -745,13 +748,14 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
                      time_started = trial_time_started,
                      time_completed = Sys.time(),
                      instrument = instrument,
-                     attempt = as.integer(res$attempt),
+                     attempt = as.integer(attempt),
                      item_id = item_id,
                      display_modality = display_modality,
                      phase = phase,
                      rhythmic = rhythmic,
                      item_bank_id = as.integer(item_bank_id),
-                     session_id = as.integer(session_id)
+                     session_id = as.integer(session_id),
+                     test_id = as.integer(test_id)
                      )
 
     # Append melodic production
@@ -782,7 +786,8 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
                            res$precision,
                            res$recall,
                            res$F1_score,
-                           res$PMI)
+                           res$PMI,
+                           trial_id)
 
 
   }
@@ -815,8 +820,6 @@ get_answer_onset_detection <- function(input,
   # Make sure old original file is built
   valid_file <- FALSE
   while(!valid_file) {
-    print('valid_file?')
-    print(valid_file)
     valid_file <- file.exists(audio_file)
   }
 
@@ -829,12 +832,8 @@ get_answer_onset_detection <- function(input,
   # And same with new (silence-added) file
   valid_file <- FALSE
   while(!valid_file) {
-    print('valid_file2?')
-    print(valid_file)
     valid_file <- file.exists(new_audio_file)
   }
-
-  browser()
 
   onset_res <- vampr::onset_detection(new_audio_file)
 

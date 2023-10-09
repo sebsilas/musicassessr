@@ -27,7 +27,7 @@ select_voice_page <- function() {
     ),
     get_answer = function(input, state, ...) {
       psychTestR::set_global("selected_voice", input$selected_voice, state)
-      print(input$selected_voice)
+      logging::loginfo("Selected voice: %s", input$selected_voice)
       list(selected_voice = input$selected_voice)
     },
     save_answer = TRUE

@@ -20,7 +20,6 @@ user_performance_plots <- function(username) {
   trials <- get_table("trials") %>% dplyr::filter(test_username == !! username)
   sessions <- get_table("sessions") %>% dplyr::filter(test_username == !! username)
 
-
   joint <- trials %>%
     dplyr::left_join(sessions, by = c("session_id", "test", "test_username")) %>%
     dplyr::mutate(session_no = as.numeric(factor(session_id))) %>%
@@ -35,9 +34,6 @@ user_performance_plots <- function(username) {
     dplyr::count(abs_melody, session_no) %>%
     dplyr::count(abs_melody) %>%
     dplyr::filter(n > 1)
-
-  print(melodies_which_appear_more_than_once)
-
 
   ability_across_sessions <- sessions %>%
       dplyr::rename(Test = test) %>%

@@ -1,30 +1,79 @@
 
 
-
-
-
 # FYI: pgAdmin 4 is what I use to monitor things
 
 # https://stackoverflow.com/questions/1110349/how-can-i-define-a-composite-primary-key-in-sql
 
+
 # time_started = as.POSIXct(character(), format = "%Y-%m-d-H:%M:%OS"),
+
+
+compile_item_trials <- function(db_con, current_test_id, session_id = NULL) {
+  # Grab session info
+  sessions <- musicassessr::get_table(db_con, "sessions", collect = FALSE) %>%
+    dplyr::rename(time_started_session = time_started,
+                  time_completed_session = time_completed)
+
+  # Grab trial info
+  trials <- musicassessr::get_table(db_con, "trials", collect = FALSE)  %>%
+    dplyr::rename(time_started_trial = time_started,
+                  time_completed_trial = time_completed) %>%
+    dplyr::left_join(sessions, by = "session_id")
+
+  # Grab trials only for the given user on the given test
+  user_trials <- trials %>%
+    dplyr::filter(user_id == user_id,
+                  test_id == current_test_id)
+
+  if(!is.null(session_id)) {
+    user_trials <- user_trials %>%
+      dplyr::filter(session_id == !! session_id)
+  }
+
+  # Join items on
+  item_banks <- user_trials %>%
+    dplyr::pull(item_id) %>%
+    sub("_[^_]+$", "", x = .) %>%
+    unique()
+
+
+  user_trials <- purrr::map_dfr(item_banks, function(item_bank) {
+    ib <- get_table(db_con, item_bank, collect = FALSE)
+
+    ib_id <- item_bank_name_to_id(db_con, item_bank)
+
+    user_trials_sub <- user_trials %>%
+      dplyr::filter(item_bank_id == ib_id) %>%
+      dplyr::left_join(ib, by = "item_id") %>%
+      dplyr::collect()
+  })
+
+  user_trials
+}
 
 #' Get a postgres table
 #'
 #' @param db_con
 #' @param name
+#' @param collect
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_table <- function(db_con, name) {
+get_table <- function(db_con, name, collect = TRUE) {
 
   logging::loginfo("Getting table %s", name)
 
-  tab <- DBI::dbReadTable(db_con, name)
+  # tab <- DBI::dbReadTable(db_con, name)
+  tab <- dplyr::tbl(db_con, name)
 
-  tab
+  if(collect) {
+    tab <- tab %>% dplyr::collect()
+  }
+
+  return(tab)
+
 }
 
 

@@ -622,7 +622,7 @@ apa_table()
 ```{r}
 
 make_vif_table <- function(mod) {
-  round(car:: vif(mod), 2) %>% 
+  round(car::vif(mod), 2) %>% 
     as.data.frame() %>% 
     tibble::rownames_to_column(var = "Predictor") %>% 
     dplyr::rename(VIF = 2)

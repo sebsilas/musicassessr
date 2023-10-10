@@ -10,6 +10,27 @@
     <loc>https://sebsilas.github.io/musicassessr/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/accuracy_vs_similarity_measures.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/intuitive_similarity.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/melodic_features.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/musicassessr_dependent_variables.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/articles/silas_and_mullensiefen_2023_online_supplement.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/authors.html</loc>
   </url>
   <url>
@@ -23,6 +44,9 @@
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/add_feedback.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/add_feedback_with_progress.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/arrhythmic_melody_trials.html</loc>
@@ -70,10 +94,16 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/expand_string_df_row.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/feedback_image.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/feedback_melodic_production.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/feedback_melodic_production_simple.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/feedback_rhythm_production.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/filler_task.html</loc>
@@ -100,7 +130,7 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_midi_melodic_production.html</loc>
   </url>
   <url>
-    <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_midi_rhythm_production.html</loc>
+    <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_onset_detection.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_pyin.html</loc>
@@ -113,6 +143,9 @@
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_pyin_melodic_production_additional_measures.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_rhythm_production.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/get_answer_save_audio_file.html</loc>
@@ -181,6 +214,9 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/list_tone_sound_types.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/long_note_agg.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/long_note_pitch_metrics.html</loc>
   </url>
   <url>
@@ -212,6 +248,12 @@
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/multi_play_long_tone_record_audio_pages.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/musical_test_showcase.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/musicassessr_dict.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/musicassessr_init.html</loc>
@@ -280,10 +322,16 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/read_melody.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/record_and_present_audio_block.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/record_audio_block.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/record_audio_page.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/record_key_presses_block.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/record_midi_block.html</loc>

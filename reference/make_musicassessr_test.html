@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">musicassessr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,17 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/accuracy_vs_similarity_measures.html">Accuracy vs. melodic similarity</a>
+    <a class="dropdown-item" href="../articles/intuitive_similarity.html">Intuitive examples of melodic similarity</a>
+    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic eatures</a>
+    <a class="dropdown-item" href="../articles/musicassessr_dependent_variables.html">musicassessr dependent variables</a>
+    <a class="dropdown-item" href="../articles/profile_basic_accuracy_measures.html">Profiling of basic accuracy measures</a>
+    <a class="dropdown-item" href="../articles/silas_and_mullensiefen_2023_online_supplement.html">Silas &amp; Müllensiefen (2023) online supplement</a>
+  </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -53,7 +64,6 @@
 <span>     <span class="fu"><a href="empty_code_block.html">empty_code_block</a></span><span class="op">(</span><span class="op">)</span></span>
 <span> <span class="op">}</span>,</span>
 <span>  languages <span class="op">=</span> <span class="st">"en"</span>,</span>
-<span>  additional_dict <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  opt <span class="op">=</span> <span class="fu"><a href="musicassessr_opt.html">musicassessr_opt</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  final_page_ui <span class="op">=</span> <span class="fu">psychTestR</span><span class="fu">::</span><span class="fu"><a href="https://pmcharrison.github.io/psychTestR/reference/i18n.html" class="external-link">i18n</a></span><span class="op">(</span><span class="st">"thank_you_for_completing"</span><span class="op">)</span>,</span>
 <span>  welcome_page <span class="op">=</span> <span class="fu">psychTestR</span><span class="fu">::</span><span class="fu"><a href="https://pmcharrison.github.io/psychTestR/reference/one_button_page.html" class="external-link">one_button_page</a></span><span class="op">(</span><span class="st">"Welcome."</span><span class="op">)</span>,</span>
@@ -81,10 +91,6 @@
 
 <dt>languages</dt>
 <dd><p>Languages for the test.</p></dd>
-
-
-<dt>additional_dict</dt>
-<dd><p>Additional dictionary for the test.</p></dd>
 
 
 <dt>opt</dt>

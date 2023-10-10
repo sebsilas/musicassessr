@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">musicassessr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,17 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/accuracy_vs_similarity_measures.html">Accuracy vs. melodic similarity</a>
+    <a class="dropdown-item" href="../articles/intuitive_similarity.html">Intuitive examples of melodic similarity</a>
+    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic eatures</a>
+    <a class="dropdown-item" href="../articles/musicassessr_dependent_variables.html">musicassessr dependent variables</a>
+    <a class="dropdown-item" href="../articles/profile_basic_accuracy_measures.html">Profiling of basic accuracy measures</a>
+    <a class="dropdown-item" href="../articles/silas_and_mullensiefen_2023_online_supplement.html">Silas &amp; Müllensiefen (2023) online supplement</a>
+  </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -59,7 +70,8 @@
 <span>  experiment_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  experiment_condition_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  user_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  instrument_id <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  instrument_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  get_p_id <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,6 +131,10 @@
 
 <dt>instrument_id</dt>
 <dd><p>An instrument ID.</p></dd>
+
+
+<dt>get_p_id</dt>
+<dd><p>Should a participant ID get collected at the beginning of the test?</p></dd>
 
 </dl></div>
 

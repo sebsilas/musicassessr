@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">musicassessr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,17 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/accuracy_vs_similarity_measures.html">Accuracy vs. melodic similarity</a>
+    <a class="dropdown-item" href="../articles/intuitive_similarity.html">Intuitive examples of melodic similarity</a>
+    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic eatures</a>
+    <a class="dropdown-item" href="../articles/musicassessr_dependent_variables.html">musicassessr dependent variables</a>
+    <a class="dropdown-item" href="../articles/profile_basic_accuracy_measures.html">Profiling of basic accuracy measures</a>
+    <a class="dropdown-item" href="../articles/silas_and_mullensiefen_2023_online_supplement.html">Silas &amp; Müllensiefen (2023) online supplement</a>
+  </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -68,6 +79,11 @@
           <code><a href="setup_pages_options.html">setup_pages_options()</a></code> 
         </dt>
         <dd>Setup page options for a musicassessr test</dd>
+      </dl><dl><dt>
+          
+          <code><a href="musical_test_showcase.html">musical_test_showcase()</a></code> 
+        </dt>
+        <dd>Launch the musical test showcase of musicassessr tests</dd>
       </dl></div><div class="section level2">
       <h2 id="trial-blocks">Trial blocks<a class="anchor" aria-label="anchor" href="#trial-blocks"></a></h2>
       
@@ -141,9 +157,24 @@
         <dd>A trial block which plays back real audio from the Weimar Jazz Database</dd>
       </dl><dl><dt>
           
+          <code><a href="empty_code_block.html">empty_code_block()</a></code> 
+        </dt>
+        <dd>An empty code block</dd>
+      </dl><dl><dt>
+          
+          <code><a href="record_and_present_audio_block.html">record_and_present_audio_block()</a></code> 
+        </dt>
+        <dd>A block for playing melodies as audio then recording the participant response</dd>
+      </dl><dl><dt>
+          
           <code><a href="record_audio_block.html">record_audio_block()</a></code> 
         </dt>
         <dd>A block of record audio pages</dd>
+      </dl><dl><dt>
+          
+          <code><a href="record_key_presses_block.html">record_key_presses_block()</a></code> 
+        </dt>
+        <dd>A block of record key press pages</dd>
       </dl><dl><dt>
           
           <code><a href="record_midi_block.html">record_midi_block()</a></code> 
@@ -387,6 +418,11 @@ returns sorted tibble of transpositions of melody2 and opti3 similarity</dd>
 
       <dl><dt>
           
+          <code><a href="feedback_image.html">feedback_image()</a></code> 
+        </dt>
+        <dd>Feedback as an image</dd>
+      </dl><dl><dt>
+          
           <code><a href="feedback_melodic_production.html">feedback_melodic_production()</a></code> 
         </dt>
         <dd>Feedback for melodic production pages</dd>
@@ -395,6 +431,16 @@ returns sorted tibble of transpositions of melody2 and opti3 similarity</dd>
           <code><a href="feedback_melodic_production_simple.html">feedback_melodic_production_simple()</a></code> 
         </dt>
         <dd>Simple melodic production feedback</dd>
+      </dl><dl><dt>
+          
+          <code><a href="feedback_rhythm_production.html">feedback_rhythm_production()</a></code> 
+        </dt>
+        <dd>Feedback for rhythm production style pages</dd>
+      </dl><dl><dt>
+          
+          <code><a href="add_feedback_with_progress.html">add_feedback_with_progress()</a></code> 
+        </dt>
+        <dd>Helper for adding a feedback function to a timeline of pages with a progress bar</dd>
       </dl></div><div class="section level2">
       <h2 id="get-answer-functions">Get answer functions<a class="anchor" aria-label="anchor" href="#get-answer-functions"></a></h2>
       
@@ -418,9 +464,9 @@ returns sorted tibble of transpositions of melody2 and opti3 similarity</dd>
         <dd>Get a MIDI result and compute melodic production scores</dd>
       </dl><dl><dt>
           
-          <code><a href="get_answer_midi_rhythm_production.html">get_answer_midi_rhythm_production()</a></code> 
+          <code><a href="get_answer_onset_detection.html">get_answer_onset_detection()</a></code> 
         </dt>
-        <dd>Get a MIDI result and compute melodic production scores</dd>
+        <dd>Get onset information from an audio file</dd>
       </dl><dl><dt>
           
           <code><a href="get_answer_pyin.html">get_answer_pyin()</a></code> 
@@ -441,6 +487,11 @@ returns sorted tibble of transpositions of melody2 and opti3 similarity</dd>
           <code><a href="get_answer_pyin_melodic_production_additional_measures.html">get_answer_pyin_melodic_production_additional_measures()</a></code> 
         </dt>
         <dd>Wrapper to add user-specified additional scoring measures to pYIN melodic production</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_answer_rhythm_production.html">get_answer_rhythm_production()</a></code> 
+        </dt>
+        <dd>Get answer for rhythm production data</dd>
       </dl><dl><dt>
           
           <code><a href="get_answer_save_audio_file.html">get_answer_save_audio_file()</a></code> 
@@ -786,6 +837,27 @@ Input: df with "freq" column</dd>
           <code><a href="validate_user_entry_into_test.html">validate_user_entry_into_test()</a></code> 
         </dt>
         <dd>Validate user entry to test based on session token look up in PostgreSQL DB</dd>
+      </dl><dl><dt>
+          
+          <code><a href="musicassessr_dict.html">musicassessr_dict</a></code> 
+        </dt>
+        <dd>The musicassessr dictionary</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a></h2>
+      
+      <p class="section-desc"></p><p>Data exports</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="long_note_agg.html">long_note_agg</a></code> 
+        </dt>
+        <dd>Aggregated long note data from SAA paper</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

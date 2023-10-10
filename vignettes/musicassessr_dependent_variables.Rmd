@@ -1,0 +1,42 @@
+
+
+---
+title: "musicassessr dependent variables"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{musicassessr dependent variables}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Note this list is currently not exhaustive. Please see the [score_melodic_production](https://github.com/sebsilas/musicassessr/blob/master/R/scoring_melodic_production.R) function for the full range of possibilities.
+
+
+```{r, echo = FALSE}
+
+library(flextable)
+
+```
+
+
+```{r tab.cap = NULL, echo = FALSE}
+
+# TODO: Add other DVs from Exp. 1
+
+appendix_b_tab <- tibble::tibble(
+  Measure = c("ngrukkon", "harmcore", "rhythfuzz", "opti3", "No. Recalled Notes", "No. Correct", "No. Errors"),
+  Definition = c("Ukkonen measures for n-grams on raw pitch values",
+                 "Edit Distance of harmonic symbols per segment, obtained via Krumhansl’s tonality vectors.",
+                 "Edit distance of classified length of melody tones.", "3.027 * ngrukkon + 2.502 * rhythfuzz + 1.439 * harmcore  - 0.146", "The number of notes the participant produced in the trial.", "The number of correct notes the participant sang (allowing octave errors).", "The number of errors participants sang (allowing octave errors)."))
+
+ft <- qflextable(appendix_b_tab)
+
+ft <- bg(ft, i = 1:4, bg = "orange", part = "body")
+
+# ft <- set_caption(ft, caption = "Full set of dependent variables. Our main similarity variables of interest are highlighted in orange.")
+
+
+set_table_properties(ft, layout = "autofit")
+
+
+```

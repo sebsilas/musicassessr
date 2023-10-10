@@ -1,0 +1,29 @@
+
+
+---
+title: "musicassessr melodic eatures"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{musicassessr melodic eatures}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+N.B. This page is currently a WIP.
+
+
+```{r, echo = FALSE}
+
+library(dplyr)
+
+```
+
+The melodic features in `musicassessr` come from *FANTASTIC* and xxx.
+
+```{r}
+
+itembankr::get_melodic_feature_table(return_kable = FALSE) %>% 
+  mutate(Feature = case_when(Feature == "target_melody_length" ~ "N", TRUE ~ Feature)) %>% 
+  knitr::kable(escape = FALSE)
+
+```

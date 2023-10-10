@@ -12,6 +12,7 @@ reference:
   - musicassessr_opt
   - include_musicassessr_js
   - setup_pages_options
+  - musical_test_showcase
 
 
 - title: "Trial blocks"
@@ -19,8 +20,7 @@ reference:
     Functions for recording data in psychTestR
   contents:
   - ends_with("_trials")
-  - record_audio_block
-  - record_midi_block
+  - ends_with("_block")
 
 - title: "Pages"
   desc: >
@@ -60,6 +60,7 @@ reference:
     Functions for presenting feedback to participants
   contents:
   - starts_with("feedback")
+  - add_feedback_with_progress
 
 
 - title: "Get answer functions"
@@ -146,3 +147,11 @@ reference:
   - to_string_df
   - translate_from_dict
   - validate_user_entry_into_test
+  - musicassessr_dict
+
+
+- title: Data
+  desc: >
+    Data exports
+  contents:
+  - long_note_agg

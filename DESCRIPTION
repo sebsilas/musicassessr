@@ -16,7 +16,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 3.0.0),
-    Biostrings
+    Biostrings,
+    musicassessrdocs
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -70,5 +71,6 @@ Remotes:
     pmcharrison/hrep,
     klausfrieler/psyquest,
     sebsilas/pyin,
-    sebsilas/vampr
+    sebsilas/vampr,
+    sebsilas/musicassessrdocs
 URL: https://sebsilas.github.io/musicassessr/

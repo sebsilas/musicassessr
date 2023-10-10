@@ -18,7 +18,8 @@ Suggests:
     testthat (>= 3.0.0),
     Biostrings,
     musicassessrdocs,
-    bookdown
+    bookdown,
+    gm
 Config/testthat/edition: 3
 Imports: 
     sjmisc,

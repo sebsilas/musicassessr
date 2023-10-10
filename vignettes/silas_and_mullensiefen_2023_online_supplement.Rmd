@@ -686,7 +686,7 @@ save(model_b_vif, file = 'model_b_vif.rda')
 load(file = 'model_b_vif.rda')
 
 
-model_b_vif.rda %>% 
+model_b_vif %>% 
   papaja::apa_table(caption = "Variation inflation factor (VIF) values for model with all features in and opti3 as dependent variable")
 
 ```

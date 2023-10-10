@@ -26,6 +26,7 @@ library(knitr)
 library(gm) # Note you will need MuseScore installed on your system for gm to work.
 library(citr)
 library(kableExtra)
+library(htmlTable)
 
 
 ```

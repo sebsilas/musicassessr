@@ -21,8 +21,6 @@ In the `musicassessr` framework, we generally reason for employing measures of m
 
 ```{r, message = FALSE, warning = FALSE, include = FALSE}
 
-Sys.setenv("MUSESCORE_PATH" = "https://cdn.jsdelivr.net/musescore/v4.1.1/MuseScore-4.1.1.232071203-x86_64.AppImage")
-
 library(dplyr)
 library(knitr)
 library(gm) # Note you will need MuseScore installed on your system for gm to work.
@@ -77,8 +75,9 @@ create_sheet <- function(target_v,
                          recall_rhythms_v = rep("quarter", length(recall_v)),
                          key = NULL,
                          target_title = "Target",
-                         recall_title = "Recall"
-                         ) {
+                         recall_title = "Recall",
+                         export = TRUE,
+                         just_return_name = FALSE) {
   l <- Line(
   pitches = as.list(target_v),
   durations = as.list(target_rhythms_v),
@@ -98,8 +97,13 @@ create_sheet <- function(target_v,
     m <- Music() + Meter(4, 4) + l + l2
   }
   
-  
-  show(m) 
+  if(export) {
+    fn <- paste0(target_title, "_", recall_title)
+    if(!just_return_name) gm::export(m, getwd(), fn, "png")
+    return(paste0(fn, ".png"))
+  } else {
+    gm::show(m) 
+  }
 }
 
 invert_melody <- function(m) {
@@ -247,66 +251,101 @@ the_lick_retrograde_inversion <- the_lick_inverted[length(the_lick_inverted):1]
 the_lick_rhythms_diff <- c(0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.5)
 the_lick_rhythms_text_diff <- c("quarter","quarter", "quarter", "quarter", "eighth", "eighth", "quarter")
 
-
-s1 <- create_sheet(ex1_t, ex1_r, ex1_rhythms_text, ex1_rhythms_text,
-                   target_title = "Ex.1 Target", recall_title = "Ex.1 Recall")
-
-s2 <- create_sheet(ex2_t, ex2_r, ex1_rhythms_text, ex1_rhythms_text,
-                   target_title = "Ex.2 Target", recall_title = "Ex.2 Recall")
-
-s3 <- create_sheet(the_lick, the_lick_retrograde, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
-                   target_title = "Ex.3 Target", recall_title = "Ex.3 Recall")
-
-s4 <- create_sheet(the_lick, the_lick_inverted, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
-                   target_title = "Ex.4 Target", recall_title = "Ex.4 Recall")
-
-s5 <- create_sheet(the_lick, the_lick_retrograde_inversion, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
-                   target_title = "Ex.5 Target", recall_title = "Ex.5 Recall")
-
-s6 <- create_sheet(the_lick, the_lick, the_lick_rhythms_text, the_lick_rhythms_text_diff, key = -1,
-                   target_title = "Ex.6 Target", recall_title = "Ex.6 Recall")
-
 ```
-
 
 ### Notation of sung recall comparison examples
 
 
 ```{r, echo = FALSE}
 
-s1
+s1 <- create_sheet(ex1_t, ex1_r, ex1_rhythms_text, ex1_rhythms_text,
+                   target_title = "Ex.1 Target", recall_title = "Ex.1 Recall",
+                   just_return_name = TRUE)
 
 ```
 
 ```{r, echo = FALSE}
 
-s2
-
-```
-
-
-```{r, echo = FALSE}
-
-s3
-
-```
-
-
-```{r, echo = FALSE}
-s4
+knitr::include_graphics(s1)
 
 ```
 
 
 ```{r, echo = FALSE}
 
-s5
+s2 <- create_sheet(ex2_t, ex2_r, ex1_rhythms_text, ex1_rhythms_text,
+                   target_title = "Ex.2 Target", recall_title = "Ex.2 Recall",
+                   just_return_name = TRUE)
+
+```
+
+
+```{r, echo = FALSE}
+
+knitr::include_graphics(s2)
+
+```
+
+
+```{r, echo = FALSE}
+
+s3 <- create_sheet(the_lick, the_lick_retrograde, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
+                   target_title = "Ex.3 Target", recall_title = "Ex.3 Recall",
+                   just_return_name = TRUE)
+
+```
+
+
+```{r, echo = FALSE}
+
+knitr::include_graphics(s3)
+
+```
+
+
+```{r, echo = FALSE}
+
+s4 <- create_sheet(the_lick, the_lick_inverted, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
+                   target_title = "Ex.4 Target", recall_title = "Ex.4 Recall",
+                   just_return_name = TRUE)
+```
+
+```{r, echo = FALSE}
+
+knitr::include_graphics(s4)
+
+
+```
+
+
+```{r, echo = FALSE}
+
+s5 <- create_sheet(the_lick, the_lick_retrograde_inversion, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
+                   target_title = "Ex.5 Target", recall_title = "Ex.5 Recall",
+                   just_return_name = TRUE)
 
 ```
 
 ```{r, echo = FALSE}
 
-s6
+knitr::include_graphics(s5)
+
+```
+
+
+```{r, echo = FALSE}
+
+s6 <- create_sheet(the_lick, the_lick, the_lick_rhythms_text, the_lick_rhythms_text_diff, key = -1,
+                   target_title = "Ex.6 Target", recall_title = "Ex.6 Recall",
+                   just_return_name = TRUE)
+
+```
+
+
+```{r, echo = FALSE}
+
+knitr::include_graphics(s6)
+
 
 ```
 
@@ -428,8 +467,9 @@ create_sheet <- function(target_v,
                          recall_rhythms_v = rep("quarter", length(recall_v)),
                          key = NULL,
                          target_title = "Target",
-                         recall_title = "Recall"
-                         ) {
+                         recall_title = "Recall",
+                         export = TRUE,
+                         just_return_name = FALSE) {
   l <- Line(
   pitches = as.list(target_v),
   durations = as.list(target_rhythms_v),
@@ -449,8 +489,13 @@ create_sheet <- function(target_v,
     m <- Music() + Meter(4, 4) + l + l2
   }
   
-  
-  show(m) 
+  if(export) {
+    fn <- paste0(target_title, "_", recall_title)
+    if(!just_return_name) gm::export(m, getwd(), fn, "png")
+    return(paste0(fn, ".png"))
+  } else {
+    gm::show(m) 
+  }
 }
 
 invert_melody <- function(m) {
@@ -506,6 +551,10 @@ the_lick_retrograde_inversion <- the_lick_inverted[length(the_lick_inverted):1]
 the_lick_rhythms_diff <- c(0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.5)
 the_lick_rhythms_text_diff <- c("quarter","quarter", "quarter", "quarter", "eighth", "eighth", "quarter")
 
+```
+
+
+```{r, eval = FALSE}
 
 s1 <- create_sheet(ex1_t, ex1_r, ex1_rhythms_text, ex1_rhythms_text,
                    target_title = "Ex.1 Target", recall_title = "Ex.1 Recall")

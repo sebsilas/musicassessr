@@ -25,7 +25,8 @@ Suggests:
     htmlTable,
     flextable,
     papaja,
-    r2glmm
+    r2glmm,
+    lavaan
 Config/testthat/edition: 3
 Imports: 
     sjmisc,

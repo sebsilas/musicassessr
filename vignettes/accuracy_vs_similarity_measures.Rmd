@@ -28,6 +28,8 @@ library(citr)
 library(kableExtra)
 library(htmlTable)
 
+knitr::opts_chunk$set(echo = FALSE)
+
 
 ```
 
@@ -117,7 +119,7 @@ invert_melody <- function(m) {
 
 
 
-# Foundations of accuracy-style measures
+# 1. Foundations of accuracy-style measures
 
 In the context of melodic recall, broadly speaking, accuracy can be defined as the number of correct notes relative to something else. That something else could be i) the number of unique notes in the target stimulus or ii) the attempt length. Let us call a note that is both contained in the target melody and the sung recall a "hit", a note recalled that is not in the target stimulus, a "false alarm" and a note in the target melody but not the sung recall, a "miss". 
 
@@ -199,7 +201,7 @@ where `Accuracy` is computed via Eq. 1 and `LogNormal` represents a log normal t
 We profile these measures of accuracy, *Accuracy*, *Recall*, *Precision*, *AccuracyAdjusted* and *F~1~*, in Experiment 1.
 
 
-## Example comparisons of accuracy vs. similarity measures on the same data
+# 2. Example comparisons of accuracy vs. similarity measures on the same data
 
 We now score some simple examples to demonstrate the difference between accuracy and similarity (see Table 1 and Figure 1). Let us take the first five notes of the C major scale as our target. If the target and recall are the same, all measures of accuracy and similarity will be 1. However, as Example 1 shows, if the pitch order is reversed, the accuracy measures will be 1, but the overall measure of similarity (*opti3*), nearly half this. This corresponds to the fact that the notes are the same, but the order highly distorts the melodic identity (note that the harmonic and rhythmic identity is preserved, however). Conversely, as Example #2 shows, transposing the recall by a semitone causes a large deterioration in the accuracy scores, since nearly all notes are different, but the similarity measure is 1, corresponding to the fact that the melodic identity is preserved under the principle of transposition invariance. For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by YouTube^[https://www.youtube.com/watch?v=krDxhnaKD7Q] and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity. Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (*opti3*), but preserves accuracy.
 
@@ -253,7 +255,7 @@ the_lick_rhythms_text_diff <- c("quarter","quarter", "quarter", "quarter", "eigh
 
 ```
 
-### Notation of sung recall comparison examples
+##  2.1 Notation of sung recall comparison examples
 
 
 ```{r, echo = FALSE}
@@ -353,6 +355,9 @@ knitr::include_graphics(s6)
 
 \newpage
 
+## 2.2 Similarity scores for the example comparison melodies
+
+
 ```{r, warning = FALSE, echo = FALSE}
 
 
@@ -401,7 +406,7 @@ main_tb <- rbind(
 )
   
 main_tb %>% 
-  knitr::kable(caption = "Examples of two comparison melodies scored for their level of similarity.")
+  knitr::kable(caption = "Similarity scores for the example comparison melodies.")
 
 ```
 
@@ -410,11 +415,11 @@ main_tb %>%
 The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity [e.g., @dowlingRecognitionMelodicTransformations1972]. However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, we now run a series of short simulation studies.
 
 
-## Code used above
+# 3. Code used above
 
 
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, echo = TRUE}
 
 library(dplyr)
 library(knitr)
@@ -425,7 +430,7 @@ library(gm)
 ```
 
 
-```{r}
+```{r, echo = TRUE}
 
 
 
@@ -507,7 +512,7 @@ invert_melody <- function(m) {
 
 ```
 
-```{r, results = FALSE}
+```{r, results = FALSE, echo = TRUE}
 
 
 # Example #1: Reversed Recall
@@ -554,7 +559,7 @@ the_lick_rhythms_text_diff <- c("quarter","quarter", "quarter", "quarter", "eigh
 ```
 
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 
 s1 <- create_sheet(ex1_t, ex1_r, ex1_rhythms_text, ex1_rhythms_text,
                    target_title = "Ex.1 Target", recall_title = "Ex.1 Recall")
@@ -577,7 +582,7 @@ s6 <- create_sheet(the_lick, the_lick, the_lick_rhythms_text, the_lick_rhythms_t
 ```
 
 
-```{r, warning = FALSE, results = FALSE}
+```{r, warning = FALSE, results = FALSE, echo = TRUE}
 
 
 

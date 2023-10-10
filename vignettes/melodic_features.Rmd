@@ -1,20 +1,20 @@
 
 
 ---
-title: "musicassessr melodic eatures"
+title: "musicassessr melodic features"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{musicassessr melodic eatures}
+  %\VignetteIndexEntry{musicassessr melodic features}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-N.B. This page is currently a WIP.
 
-
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
 
 library(dplyr)
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
 
 ```
 

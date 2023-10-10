@@ -2,14 +2,12 @@
 
 ---
 title: "Silas & Müllensiefen (2023) online supplement"
-output: rmarkdown::html_vignette
+output: bookdown::html_document2
 vignette: >
   %\VignetteIndexEntry{Silas & Müllensiefen (2023) online supplement}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{bookdown::html_document2}
   %\VignetteEncoding{UTF-8}
 ---
-
-N.B. This page is currently a WIP.
 
 
 ```{r, echo = FALSE, message = FALSE}
@@ -23,10 +21,12 @@ library(r2glmm)
 library(lme4)
 library(car)
 
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
 ```
 
 
-```{r}
+```{r, echo = FALSE}
 
 data_summary <- function(data, varname, groupnames){
   library(plyr)
@@ -50,38 +50,34 @@ plot_descriptive_vs_predicted_participant <- function(model, pretty_var_name, va
   
   var_name <- as.name(var_name)
   
-  prds <- tibble(pred = predict(model, na.action = na.exclude), 
+  prds <- tibble(pred = predict(model, na.action = na.exclude, type = "response"), 
                  attempt = musicassessrdocs::melodic_recall_paper_2023_main$attempt_numeric, 
                  p_id = musicassessrdocs::melodic_recall_paper_2023_main$p_id)
   
   prds <- prds %>%
     dplyr::group_by(attempt, p_id) %>%
     dplyr::summarise(pred = mean(pred, na.rm = TRUE)) %>%
-    ungroup()
-
+    dplyr::ungroup()
 
   mean_by_attempt <- musicassessrdocs::melodic_recall_paper_2023_main %>%
     dplyr::group_by(attempt, p_id) %>%
-    dplyr::summarise(
-      !!var_name := mean(!!var_name, na.rm = TRUE)
+    dplyr::summarise("{var_name}" := mean(!!var_name, na.rm = TRUE)
       ) %>%
-    ungroup()
-  
+    dplyr::ungroup()
 
   attempt_pred_vs_descript <- cbind(mean_by_attempt,
                                     prds %>% dplyr::select(-c(attempt, p_id))) %>%
       dplyr::rename(Attempt = attempt,
                   `Predicted Model Values` = pred,
                   `Empirical Descriptive Values` = !! var_name) %>%
-    pivot_longer(`Empirical Descriptive Values`:`Predicted Model Values`, names_to = "Name", values_to = pretty_var_name)
+    tidyr::pivot_longer(`Empirical Descriptive Values`:`Predicted Model Values`, names_to = "Name", values_to = pretty_var_name)
   
-  
-
   ggplot(attempt_pred_vs_descript, aes(x = Attempt, y = !! as.name(pretty_var_name), group = Name, color = Name, linetype = Name)) +
     geom_point() +
     geom_line() +
     theme(legend.title=element_blank()) +
-    facet_wrap(~p_id)
+    facet_wrap(~p_id) + 
+    theme_minimal()
 
 }
 
@@ -89,8 +85,8 @@ plot_descriptive_vs_predicted_participant <- function(model, pretty_var_name, va
 plot_descriptive_vs_predicted <- function(model, pretty_var_name, var_name) {
   
   var_name <- as.name(var_name)
-
-  prds <- tibble(pred = predict(model, na.action = na.exclude), 
+  
+  prds <- tibble(pred = predict(model, na.action = na.exclude, type = "response"), 
                  attempt = musicassessrdocs::melodic_recall_paper_2023_main$attempt)
   
   prds <- prds %>%
@@ -101,22 +97,21 @@ plot_descriptive_vs_predicted <- function(model, pretty_var_name, var_name) {
 
   mean_by_attempt <- musicassessrdocs::melodic_recall_paper_2023_main %>%
     dplyr::group_by(attempt) %>%
-    dplyr::summarise(
-      !!var_name := mean(!!var_name, na.rm = TRUE)
-      ) %>%
-    ungroup()
+    dplyr::summarise("{var_name}" := mean(!! var_name, na.rm = TRUE)) %>%
+    dplyr::ungroup()
 
   attempt_pred_vs_descript <- cbind(mean_by_attempt,
                                     prds %>% dplyr::select(-attempt)) %>%
       dplyr::rename(Attempt = attempt,
                   `Predicted Model Values` = pred,
                   `Empirical Descriptive Values` = !! var_name) %>%
-    pivot_longer(`Empirical Descriptive Values`:`Predicted Model Values`, names_to = "Name", values_to = pretty_var_name)
+    tidyr::pivot_longer(`Empirical Descriptive Values`:`Predicted Model Values`, names_to = "Name", values_to = pretty_var_name)
 
   ggplot(attempt_pred_vs_descript, aes(x = Attempt, y = !! as.name(pretty_var_name), group = Name, color = Name, linetype = Name)) +
     geom_point() +
     geom_line() +
-    theme(legend.title=element_blank())
+    theme(legend.title=element_blank()) + 
+    theme_minimal()
 
 }
 
@@ -125,7 +120,7 @@ plot_descriptive_vs_predicted_melody <- function(model, pretty_var_name, var_nam
   
   var_name <- as.name(var_name)
   
-  prds <- tibble(pred = predict(model, na.action = na.exclude), 
+  prds <- tibble(pred = predict(model, na.action = na.exclude, type = "response"), 
                  attempt = musicassessrdocs::melodic_recall_paper_2023_main$attempt_numeric, 
                  unique_melody_name = musicassessrdocs::melodic_recall_paper_2023_main$unique_melody_name)
   
@@ -137,10 +132,8 @@ plot_descriptive_vs_predicted_melody <- function(model, pretty_var_name, var_nam
 
   mean_by_attempt <- musicassessrdocs::melodic_recall_paper_2023_main %>%
     dplyr::group_by(attempt, unique_melody_name) %>%
-    dplyr::summarise(
-      !!var_name := mean(!!var_name, na.rm = TRUE)
-      ) %>%
-    ungroup()
+    dplyr::summarise("{var_name}" := mean(!!var_name, na.rm = TRUE)) %>%
+    dplyr::ungroup()
   
 
   attempt_pred_vs_descript <- cbind(mean_by_attempt,
@@ -156,7 +149,8 @@ plot_descriptive_vs_predicted_melody <- function(model, pretty_var_name, var_nam
     geom_point() +
     geom_line() +
     theme(legend.title=element_blank()) +
-    facet_wrap(~unique_melody_name)
+    facet_wrap(~unique_melody_name) + 
+    theme_minimal()
 
 }
 
@@ -168,9 +162,9 @@ The following are supplementary materials for:
 Silas, S., & Müllensiefen, D. (2023). Learning and recalling melodies: A computational investigation using the melodic recall paradigm. Music Perception.
 
 
-## Short melodic excerpts from pop songs used as materials in the study
+#  1. Short melodic excerpts from pop songs used as materials in the study
 
-```{r tab.cap = NULL}
+```{r tab.cap = NULL, echo = FALSE}
 
 stim_table <- musicassessrdocs::get_asset('melodic_recall_paper_2023/stimuli.xlsx') %>% 
   readxl::read_excel() %>% 
@@ -190,9 +184,7 @@ knitr::kable(stim_table)
 ```
 
 
-## Appendix D1
-
-### An example of one melody from each pop song.
+# 2. An example of one melody from each pop song.
 
 ```{r eval = FALSE}
 
@@ -205,7 +197,7 @@ purrr::walk(mid_files, ~midi2img::midi2img(f = .x))
 
 ```
 
-#### Melody No. 1: Children of the Night, R.Marx
+### 2.1.1: Melody No. 1, Children of the Night, R.Marx
 
 ```{r}
 
@@ -215,7 +207,7 @@ knitr::include_graphics('1melchil-1.png')
 ```
 
 
-#### Melody No. 2: Climb Up,	N.Sedaka
+### 2.1.2: Melody No. 2, Climb Up,	N.Sedaka
 
 ```{r}
 
@@ -223,7 +215,7 @@ knitr::include_graphics('melclimbup31-1.png')
 
 ```
 
-#### Melody No. 3: Cold Cold Heart,	M.Pellow
+### 2.1.3: Melody No. 3, Cold Cold Heart,	M.Pellow
 
 
 ```{r}
@@ -232,7 +224,7 @@ knitr::include_graphics('melcoldcold26-1.png')
 
 ```
 
-#### Melody No. 4: Do You Want To Dance?, R. Freeman
+### 2.1.4: Melody No. 4, Do You Want To Dance?, R. Freeman
 
 ```{r}
 
@@ -241,7 +233,7 @@ knitr::include_graphics('meldoyou30-1.png')
 ```
 
 
-#### Melody No. 5: Du gehörst zu mir, J. Heider
+### 2.1.5: Melody No. 5, Du gehörst zu mir, J. Heider
 
 
 ```{r}
@@ -250,7 +242,7 @@ knitr::include_graphics('meldugehoerst9-1.png')
 
 ```
 
-#### Melody No. 6: Longer, D.Fogelberg
+### 2.1.6: Melody No. 6, Longer, D.Fogelberg
 
 
 ```{r}
@@ -260,7 +252,7 @@ knitr::include_graphics('6mellonger-1.png')
 ```
 
 
-#### Melody No. 7: Oh Carol, N. Sedaka
+### 2.1.7: Melody No. 7, Oh Carol, N. Sedaka
 
 
 ```{r}
@@ -269,7 +261,7 @@ knitr::include_graphics('melohcarol25-1.png')
 
 ```
 
-#### Melody No. 8: Take Good Care, C. King
+### 2.1.8: Melody No. 8, Take Good Care, C. King
 
 
 ```{r}
@@ -279,7 +271,7 @@ knitr::include_graphics('meltakegood7-1.png')
 ```
 
 
-#### Melody No. 9: The Sky is Crying, M.Levy
+### 2.1.9: Melody No. 9, The Sky is Crying, M.Levy
 
 
 ```{r}
@@ -290,7 +282,7 @@ knitr::include_graphics('2melthesky-1.png')
 
 
 
-#### Melody No. 10: You Are My Destiny, P. Anka
+### 2.1.10: Melody No. 10, You Are My Destiny, P. Anka
 
 
 ```{r}
@@ -299,7 +291,7 @@ knitr::include_graphics('melyouare32-1.png')
 
 ```
 
-#### Melody No. 11: Goodbye My Love Goodbye,	M. Panas / D. Roussos
+### 2.1.11: Melody No. 11, Goodbye My Love Goodbye,	M. Panas / D. Roussos
 
 ```{r}
 
@@ -308,7 +300,7 @@ knitr::include_graphics('4melgoodbye-1.png')
 ```
 
 
-#### Melody No. 12	Enjoy Your Life, Funky Be
+### 2.1.12: Melody No. 12,	Enjoy Your Life, Funky Be
 
 ```{r}
 
@@ -317,7 +309,7 @@ knitr::include_graphics('melenjoy11-1.png')
 ```
 
 
-#### Melody No. 13: Love Is Like A Rainbow, T. Anders
+### 2.1.13: Melody No. 13, Love Is Like A Rainbow, T. Anders
 
 ```{r}
 
@@ -325,7 +317,7 @@ knitr::include_graphics('melloveis35-1.png')
 
 ```
 
-#### Melody No. 14: Let Me Be Your Only One, Funky Be
+### 2.1.14: Melody No. 14, Let Me Be Your Only One, Funky Be
 
 ```{r}
 
@@ -335,7 +327,7 @@ knitr::include_graphics('melletmebe36-1.png')
 
 
 
-### Description and distribution of melodic features
+## 2.2 Description and distribution of melodic features
 
 ```{r}
 
@@ -344,6 +336,8 @@ musicassessrdocs::melodic_recall_paper_2023_melodies_with_features %>%
   theme_minimal()
 
 ```
+
+## 2.3 Melodic feature summary statistics
 
 ```{r}
 
@@ -367,7 +361,7 @@ musicassessrdocs::melodic_recall_paper_2023_melodies_with_features %>%
 ```
 
 
-## Questionnaire items.
+# 3. Questionnaire items
 
 
 ```{r}
@@ -395,7 +389,7 @@ tibble::tibble(
 
 
 
-## Factor loadings for mixed type variables based on questionnaire items
+# 3.2 Factor loadings for mixed type variables based on questionnaire items
 
 
 ```{r}
@@ -417,23 +411,20 @@ fl %>% knitr::kable()
 
 
 
-# Appendix H1
-
-## Average by-participant across trials
+# 4.0 Average by-participant across trials
 
 Another way of visualising differences in performance is at the level of participant, coloured and ordered by level of musical experience. This is useful since it invokes no false dichotimisations and preserves the actual unit of participant (however, note that participant-level effects are captured by our mixed effects models).
 
 
-## Average by-participant development of attempt length
+# 4.1 Average by-participant development of attempt length
 
 
 ```{r, fig.height=10, fig.width=10}
 
-plot_descriptive_vs_predicted_participant(
-                              model = musicassessrdocs::lm.B1.2,
-                              pretty_var_name = "Mean Attempt Lengh",
-                              var_name = 'attempt_length') +
-    labs(title = "Figure 13",
+plot_descriptive_vs_predicted_participant(model = musicassessrdocs::lm.A1.2,
+                                          pretty_var_name = "Mean Attempt Lengh",
+                                          var_name = 'attempt_length') +
+    labs(title = "Figure 1",
         subtitle = "Model fitted vs. empirical descriptive means of attempt length, stratified by participant.") + 
   theme(plot.subtitle=element_text(size=7))
 
@@ -442,13 +433,13 @@ plot_descriptive_vs_predicted_participant(
 
 
 
-## Average by-participant development of opti3 across trials
+# 4.2  Average by-participant development of opti3 across trials
 
 As shown in the figure, participants seem to have vastly different slopes. The bottom right, lighter blue, higher musical experience participants (e.g., *VP5*, *VP7*, *VP30*, *VP12*, *VP17*, *VP24*, *VP2*) seem to have steeper slopes than the lower musical experience participants in the top left, darker coloured (*VP14*, *VP28*, *VP21*), suggesting that higher musical experience is related to quicker learning. However, note that this pattern is not the same for everyone e.g., *VP22* has a steep slope, but scores low on musical experience 
 
 
 
-```{r warning = FALSE, fig.width=10,fig.height=13}
+```{r warning = FALSE, fig.width = 10, fig.height = 13}
 
 vp_summary <- musicassessrdocs::melodic_recall_paper_2023_main %>% 
   dplyr::rename(`Musical Experience` = musical_experience) %>% 
@@ -466,9 +457,10 @@ vp_summary %>%
     facet_wrap(~reorder(p_id, `Musical Experience`), nrow = 3) +
     labs(x = "Attempt", 
          y = "Mean opti3",
-         title = "Figure 12",
+         title = "Figure 2",
         subtitle = "Average by-participant development of opti3 across trials."
-      )
+      ) + 
+    theme_minimal()
 
 ```
 
@@ -476,10 +468,10 @@ vp_summary %>%
 ```{r, fig.height=10, fig.width=10}
 
 plot_descriptive_vs_predicted_participant(
-                              model = musicassessrdocs::lm.A1.2,
+                              model = musicassessrdocs::lm.B1.2,
                               pretty_var_name = "Mean opti3",
                               var_name = 'opti3')  +
-    labs(title = "Figure 14",
+    labs(title = "Figure 3",
         subtitle = "Model fitted vs. empirical descriptive means of opti3, stratified by participant.") + 
   theme(plot.subtitle=element_text(size=7))
 
@@ -488,9 +480,7 @@ plot_descriptive_vs_predicted_participant(
 ```
 
 
-# Appendix H2
-
-## Average by-melody development of no. of note events across trials
+# 5.1 Average by-melody development of attempt across trials
 
 
 
@@ -526,10 +516,10 @@ Melody `r by_mel[[1, "unique_melody_name"]]` appears to be the easiest melody to
 ```{r, fig.height=10, fig.width=10}
 
 plot_descriptive_vs_predicted_melody(
-                              model = musicassessrdocs::lm.B1.2,
+                              model = musicassessrdocs::lm.A1.2,
                               pretty_var_name = "Mean Attempt Length",
                               var_name = 'attempt_length') +
-    labs(title = "Figure 13",
+    labs(title = "Figure 4",
         subtitle = "Model fitted vs. empirical descriptive means attempt length, stratified by melody") + 
   theme(plot.subtitle=element_text(size=7))
 
@@ -541,10 +531,10 @@ plot_descriptive_vs_predicted_melody(
 ```{r}
 
 plot_descriptive_vs_predicted_melody(
-                              model = musicassessrdocs::lm.A1.2,
-                              pretty_var_name = "Mean Opti3",
+                              model = musicassessrdocs::lm.B1.2,
+                              pretty_var_name = "Mean opti3",
                               var_name = 'opti3') +
-    labs(title = "Figure 13",
+    labs(title = "Figure 5",
         subtitle = "Model fitted vs. empirical descriptive means of opti3, stratified by melody") + 
   theme(plot.subtitle=element_text(size=7))
 
@@ -552,28 +542,28 @@ plot_descriptive_vs_predicted_melody(
 
 \newpage
 
-# Appendix I Linear vs. Non-Linear Models attempt length and opti3
+# 6.0 Linear vs. Non-Linear Models attempt length and opti3
 
 We proceed by using the log attempt as numeric predictor, owing to the observed non-linearities in both *opti3* and *attempt length* across attempt. A comparison of linear vs non-linear models is shown below.
 
-## Appendix I1: Linear model of attempt length across repeated attempts
+## 6.1: Linear model of attempt length across repeated attempts
 
 
-```{r, tab.cap = "A linear model of attempt length regressed onto attempt with melody item, participant and the interaction between melody item and participant as random effects. Note that the linear model is not taken forward."}
+```{r tablei}
 
 appen_g1 <- lmerTest::lmer(attempt_length ~ attempt + (1|unique_melody_name) + (1|p_id) + (1|p_id:unique_melody_name), 
                data = musicassessrdocs::melodic_recall_paper_2023_main)
 
 appen_g1 |>
 apa_print() |>
-apa_table() 
+apa_table(caption = "A linear model of attempt length regressed onto attempt with melody item, participant and the interaction between melody item and participant as random effects. Note that the linear model is not taken forward.") 
 
 
 ```
 
 
 
-Figure 12 shows that the use of the log attempt as predictor is justified, capturing the systematic non-linear pattern generally well.
+Figure 6 shows that the use of the log attempt as predictor is justified, capturing the systematic non-linear pattern generally well.
 
 
 ```{r, fig.height = 10, fig.width = 8}
@@ -592,7 +582,7 @@ lmB1.p <- plot_descriptive_vs_predicted(model = musicassessrdocs::lm.B1.2,
                               pretty_var_name = "Mean opti3", 
                               var_name = "opti3") +
       labs(
-        title = "Figure 12",
+        title = "Figure 6",
         x = "",
         subtitle = "Model fitted vs. empirical descriptive means of attempt length and opti3, by attempt.") +
   theme(legend.position = 'top',
@@ -608,7 +598,7 @@ gridExtra::grid.arrange(lmA1.p, lmB1.p)
 
 
 
-## Appendix I2: Linear model of mean similarity scores (opti3) across repeated attempts
+## Appendix 6.2: Linear model of mean similarity scores (opti3) across repeated attempts
 
 ```{r, tab.cap = "A linear model of opti3 regressed onto attempt with melody item, participant and the interaction between melody item and participant as random effects. Note that the linear model is not taken forward."}
 
@@ -632,11 +622,9 @@ make_vif_table <- function(mod) {
 
 ```
 
-# Appendix J
+# 7.0 Diagnostic statistics for models with all features in (partial R-squared and variance inflation factor values)
 
-## Diagnostic statistics for models with all features in (partial R-squared and variance inflation factor values)
-
-### With attempt length as dependent variable
+## 7.1 With attempt length as dependent variable
 
 ```{r, eval = FALSE}
 
@@ -669,7 +657,7 @@ r2beta(musicassessrdocs::melodic_recall_paper_2023_lm.A2, method = "nsj") %>%
 
 
 
-### With opti3 as dependent variable
+## 7.2 With opti3 as dependent variable
 
 
 ```{r, eval = FALSE}
@@ -704,9 +692,7 @@ r2beta(musicassessrdocs::melodic_recall_paper_2023_lm.B2, method = "nsj") %>%
 \newpage
 
 
-# Appendix K
-
-## Counts of overall number of trials that participants utilise for multiple attempts
+# 8.0 Counts of overall number of trials that participants utilise for multiple attempts
 
 
 ```{r}
@@ -721,7 +707,8 @@ musicassessrdocs::melodic_recall_paper_2023_main %>%
       geom_errorbar(aes(ymin=n-se, ymax=n+se), width=.2, position=position_dodge(0.05), color = "black") +
       ggplot2::labs(x = "Attempt", 
                     y = "Number of Trials",
-                    caption = "Error bars show the standard error.")
+                    caption = "Error bars show the standard error.") + 
+    theme_minimal()
 
 ```
 
@@ -748,11 +735,9 @@ trial_counts_mod |>
 ```
 
 
-# Appendix L
+# 9.0 Statistical models to support changes in similarity as a function of attempt and melody section
 
-## Statistical models to support changes in similarity as a function of attempt and melody section
-
-## opti3
+## 9.1 opti3
 
 ```{r}
 
@@ -767,7 +752,7 @@ early_late_o |>
 
 ```
 
-## ngrukkon
+## 9.2 ngrukkon
 
 ```{r}
 
@@ -784,7 +769,7 @@ early_late_ng |>
 
 
 
-## rhythfuzz
+## 9.3 rhythfuzz
 
 ```{r}
 
@@ -799,7 +784,7 @@ early_late_r |>
 
 ```
 
-## harmcore
+## 9.4 harmcore
 
 ```{r}
 

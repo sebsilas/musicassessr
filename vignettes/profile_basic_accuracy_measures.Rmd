@@ -15,30 +15,32 @@ pkgdown:
   as_is: true
 ---
 
+```{r, echo = FALSE}
 
-N.B. This page is currently a WIP.
+knitr::opts_chunk$set(echo = FALSE)
 
-### Standard accuracy measure results
+```
 
+## 1.1 Standard accuracy measure results
+
+As shown in Figure 1: 1A) adding jitter to duration values causes *rhythfuzz* to degrade as well as *harmcore* (because it offsets the alignment of harmonic progressions), and consequently, *opti3*. All accuracy measures are unaffected. 1B) note insertions cause all measures to degrade, except accuracy and precision, which stay constant. Similarity measures generally degrade more prominently than accuracy-style measures, particularly *ngrukkon*; 1C) note deletions cause all measures to degrade, except *accuracy* and *recall*, which stay constant. Similarity measures generally degrade more quickly than accuacy-style measures, particularly *ngrukkon*; 1D) note deletions cause all measures degrade, except *rhythfuzz*, whichs stay constant. The other similarity measures (*ngrukkon*, *harmcore*, *opti3*) degrade more prominently than accuracy-style measures, particularly *ngrukkon*. 1E) combined pitch transformations (insertions, deletions and substitutions) cause all measures to degrade, but similarity measures more prominently than accuracy-style measures; 1F) combined pitch transformations (insertions, deletions and substitutions) and rhythmic jitter cause all measures to degrade, but similarity measures more prominently than accuracy-style measures; 1G) as the length of the recall increases towards the length of the target melody, all measures increase, except recall and accuracy, which are always 1; 1H) Scrambling the order of pitches affects no accuracy measures or *rhythfuzz*. All other similarity measures deteriorate as a function of scrambling. 
 
 ```{r, fig.cap = "Simulation experiment results for non-aligned accuracy measures."}
 
-knitr::include_graphics('similarity_accuracy_simulations_nonaligned_accuracy.pdf')
+knitr::include_graphics('similarity_accuracy_simulations_nonaligned_accuracy.jpg')
 
 ```
 
 
-Table 3 presents descriptive statistics, ordered by descending magnitude of the coefficient of variation. The similarity measures, except for *rhythfuzz*, have higher coefficients of variation compared to *pmi* and *aligned ordinal recall*, suggesting that they capture more variance than accuracy measures, at least in the context of our experiments. This is also suggested by the graphs in Figure 2, whereby similarity measures tend to degrade more than accuracy measures, as a function of the musical errors we simulated. The other results shown in Figure 2 can be summarised as follows: 1A) adding jitter to duration values causes *rhythfuzz* to degrade as well as *harmcore* (because it offsets the alignment of harmonic progressions), and consequently, *opti3*. All accuracy measures are unaffected. 1B) note insertions cause all measures to degrade, except accuracy and precision, which stay constant. Similarity measures generally degrade more prominently than accuracy-style measures, particularly *ngrukkon*; 1C) note deletions cause all measures to degrade, except *accuracy* and *recall*, which stay constant. Similarity measures generally degrade more quickly than accuacy-style measures, particularly *ngrukkon*; 1D) note deletions cause all measures degrade, except *rhythfuzz*, whichs stay constant. The other similarity measures (*ngrukkon*, *harmcore*, *opti3*) degrade more prominently than accuracy-style measures, particularly *ngrukkon*. 1E) combined pitch transformations (insertions, deletions and substitutions) cause all measures to degrade, but similarity measures more prominently than accuracy-style measures; 1F) combined pitch transformations (insertions, deletions and substitutions) and rhythmic jitter cause all measures to degrade, but similarity measures more prominently than accuracy-style measures; 1G) as the length of the recall increases towards the length of the target melody, all measures increase, except recall and accuracy, which are always 1; 1H) Scrambling the order of pitches affects no accuracy measures or *rhythfuzz*. All other similarity measures deteriorate as a function of scrambling. 
+## 1.2 Standard accuracy measure results with alignment
 
-
-
-### Standard accuracy measure results with alignment
+As shown in Figure 1: 1A) adding jitter to duration values causes *rhythfuzz* to degrade as well as *harmcore* (because it offsets the alignment of harmonic progressions), and consequently, *opti3*. All accuracy measures are unaffected. 1B) note insertions cause all measures to degrade, except accuracy and precision, which stay constant. Similarity measures generally degrade more prominently than accuracy-style measures, particularly *ngrukkon*; 1C) note deletions cause all measures to degrade, except *accuracy* and *recall*, which stay constant. Similarity measures generally degrade more quickly than accuacy-style measures, particularly *ngrukkon*; 1D) note deletions cause all measures degrade, except *rhythfuzz*, whichs stay constant. The other similarity measures (*ngrukkon*, *harmcore*, *opti3*) degrade more prominently than accuracy-style measures, particularly *ngrukkon*. 1E) combined pitch transformations (insertions, deletions and substitutions) cause all measures to degrade, but similarity measures more prominently than accuracy-style measures; 1F) combined pitch transformations (insertions, deletions and substitutions) and rhythmic jitter cause all measures to degrade, but similarity measures more prominently than accuracy-style measures; 1G) as the length of the recall increases towards the length of the target melody, all measures increase, except recall and accuracy, which are always 1; 1H) Scrambling the order of pitches affects no accuracy measures or *rhythfuzz*. All other similarity measures deteriorate as a function of scrambling. 
 
 \newpage
 
 ```{r, fig.cap = "Simulation experiment results for aligned accuracy measures."}
 
-knitr::include_graphics('similarity_accuracy_simulations_aligned_accuracy.pdf')
+knitr::include_graphics('similarity_accuracy_simulations_aligned_accuracy.jpg')
 
 ```
 

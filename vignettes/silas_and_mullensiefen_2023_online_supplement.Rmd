@@ -20,8 +20,8 @@ library(itembankr)
 library(musicassessrdocs)
 library(papaja)
 library(r2glmm)
-library(car)
 library(lme4)
+library(car)
 
 ```
 
@@ -638,12 +638,21 @@ make_vif_table <- function(mod) {
 
 ### With attempt length as dependent variable
 
-```{r}
+```{r, eval = FALSE}
 
 # https://stats.stackexchange.com/questions/358927/compute-partial-eta2-for-all-fixed-effects-anovas-from-a-lme4-model
 # https://cran.r-project.org/web/packages/effectsize/vignettes/from_test_statistics.html#in-linear-mixed-models
 
 model_a_vif <- make_vif_table(musicassessrdocs::melodic_recall_paper_2023_lm.A2)
+
+save(model_a_vif, file = 'model_a_vif.rda')
+
+```
+
+
+```{r}
+
+load(file = 'model_a_vif.rda')
 
 model_a_vif %>% 
   papaja::apa_table(caption = "Variation inflation factor (VIF) values for model with all features in and attempt length as dependent variable")
@@ -663,11 +672,22 @@ r2beta(musicassessrdocs::melodic_recall_paper_2023_lm.A2, method = "nsj") %>%
 ### With opti3 as dependent variable
 
 
-```{r}
+```{r, eval = FALSE}
 
 model_b_vif <- make_vif_table(musicassessrdocs::melodic_recall_paper_2023_lm.B2)
 
-model_a_vif %>% papaja::apa_table(caption = "Variation inflation factor (VIF) values for model with all features in and opti3 as dependent variable")
+save(model_b_vif, file = 'model_b_vif.rda')
+
+```
+
+
+```{r}
+
+load(file = 'model_b_vif.rda')
+
+
+model_b_vif.rda %>% 
+  papaja::apa_table(caption = "Variation inflation factor (VIF) values for model with all features in and opti3 as dependent variable")
 
 ```
 

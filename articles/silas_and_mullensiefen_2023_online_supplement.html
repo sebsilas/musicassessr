@@ -43,7 +43,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/accuracy_vs_similarity_measures.html">Accuracy vs. melodic similarity</a>
     <a class="dropdown-item" href="../articles/intuitive_similarity.html">Intuitive examples of melodic similarity</a>
-    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic eatures</a>
+    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic features</a>
     <a class="dropdown-item" href="../articles/musicassessr_dependent_variables.html">musicassessr dependent variables</a>
     <a class="dropdown-item" href="../articles/profile_basic_accuracy_measures.html">Profiling of basic accuracy measures</a>
     <a class="dropdown-item" href="../articles/silas_and_mullensiefen_2023_online_supplement.html">Silas &amp; Müllensiefen (2023) online supplement</a>
@@ -78,162 +78,14 @@
 
     
     
-<p>N.B. This page is currently a WIP.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_summary</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">varname</span>, <span class="va">groupnames</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://had.co.nz/plyr" class="external-link">plyr</a></span><span class="op">)</span></span>
-<span>  <span class="va">summary_func</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">col</span><span class="op">)</span><span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="va">col</span><span class="op">]</span><span class="op">]</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="va">col</span><span class="op">]</span><span class="op">]</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="va">col</span><span class="op">]</span><span class="op">]</span>, na.rm<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="va">col</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span>      <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  <span class="va">data_sum</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/ddply.html" class="external-link">ddply</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">groupnames</span>, .fun<span class="op">=</span><span class="va">summary_func</span>,</span>
-<span>                  <span class="va">varname</span><span class="op">)</span></span>
-<span>  <span class="va">data_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="va">data_sum</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span> <span class="op">=</span> <span class="va">varname</span><span class="op">)</span><span class="op">)</span></span>
-<span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data_sum</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">coef_variation</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">v</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">v</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">plot_descriptive_vs_predicted_participant</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">pretty_var_name</span>, <span class="va">var_name</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="va">var_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="va">var_name</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">prds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span>, </span>
-<span>                 attempt <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">$</span><span class="va">attempt_numeric</span>, </span>
-<span>                 p_id <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">$</span><span class="va">p_id</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">prds</span> <span class="op">&lt;-</span> <span class="va">prds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">p_id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span>  <span class="va">mean_by_attempt</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">p_id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>      <span class="op">!</span><span class="op">!</span><span class="va">var_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">var_name</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>      <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  </span>
-<span></span>
-<span>  <span class="va">attempt_pred_vs_descript</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">mean_by_attempt</span>,</span>
-<span>                                    <span class="va">prds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">p_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Attempt <span class="op">=</span> <span class="va">attempt</span>,</span>
-<span>                  `Predicted Model Values` <span class="op">=</span> <span class="va">pred</span>,</span>
-<span>                  `Empirical Descriptive Values` <span class="op">=</span> <span class="op">!</span><span class="op">!</span> <span class="va">var_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">pivot_longer</span><span class="op">(</span><span class="va">`Empirical Descriptive Values`</span><span class="op">:</span><span class="va">`Predicted Model Values`</span>, names_to <span class="op">=</span> <span class="st">"Name"</span>, values_to <span class="op">=</span> <span class="va">pretty_var_name</span><span class="op">)</span></span>
-<span>  </span>
-<span>  </span>
-<span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">attempt_pred_vs_descript</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Attempt</span>, y <span class="op">=</span> <span class="op">!</span><span class="op">!</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="va">pretty_var_name</span><span class="op">)</span>, group <span class="op">=</span> <span class="va">Name</span>, color <span class="op">=</span> <span class="va">Name</span>, linetype <span class="op">=</span> <span class="va">Name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme</span><span class="op">(</span>legend.title<span class="op">=</span><span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">p_id</span><span class="op">)</span></span>
-<span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span></span>
-<span><span class="va">plot_descriptive_vs_predicted</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">pretty_var_name</span>, <span class="va">var_name</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="va">var_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="va">var_name</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">prds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span>, </span>
-<span>                 attempt <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">$</span><span class="va">attempt</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">prds</span> <span class="op">&lt;-</span> <span class="va">prds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span>  <span class="va">mean_by_attempt</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>      <span class="op">!</span><span class="op">!</span><span class="va">var_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">var_name</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>      <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">attempt_pred_vs_descript</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">mean_by_attempt</span>,</span>
-<span>                                    <span class="va">prds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">attempt</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Attempt <span class="op">=</span> <span class="va">attempt</span>,</span>
-<span>                  `Predicted Model Values` <span class="op">=</span> <span class="va">pred</span>,</span>
-<span>                  `Empirical Descriptive Values` <span class="op">=</span> <span class="op">!</span><span class="op">!</span> <span class="va">var_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">pivot_longer</span><span class="op">(</span><span class="va">`Empirical Descriptive Values`</span><span class="op">:</span><span class="va">`Predicted Model Values`</span>, names_to <span class="op">=</span> <span class="st">"Name"</span>, values_to <span class="op">=</span> <span class="va">pretty_var_name</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">attempt_pred_vs_descript</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Attempt</span>, y <span class="op">=</span> <span class="op">!</span><span class="op">!</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="va">pretty_var_name</span><span class="op">)</span>, group <span class="op">=</span> <span class="va">Name</span>, color <span class="op">=</span> <span class="va">Name</span>, linetype <span class="op">=</span> <span class="va">Name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme</span><span class="op">(</span>legend.title<span class="op">=</span><span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span></span>
-<span><span class="va">plot_descriptive_vs_predicted_melody</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">pretty_var_name</span>, <span class="va">var_name</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="va">var_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="va">var_name</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">prds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">model</span>, na.action <span class="op">=</span> <span class="va">na.exclude</span><span class="op">)</span>, </span>
-<span>                 attempt <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">$</span><span class="va">attempt_numeric</span>, </span>
-<span>                 unique_melody_name <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">$</span><span class="va">unique_melody_name</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">prds</span> <span class="op">&lt;-</span> <span class="va">prds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">unique_melody_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>pred <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">pred</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span>  <span class="va">mean_by_attempt</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">unique_melody_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>      <span class="op">!</span><span class="op">!</span><span class="va">var_name</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">var_name</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>      <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  </span>
-<span></span>
-<span>  <span class="va">attempt_pred_vs_descript</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">mean_by_attempt</span>,</span>
-<span>                                    <span class="va">prds</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">unique_melody_name</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Attempt <span class="op">=</span> <span class="va">attempt</span>,</span>
-<span>                  `Predicted Model Values` <span class="op">=</span> <span class="va">pred</span>,</span>
-<span>                  `Empirical Descriptive Values` <span class="op">=</span> <span class="op">!</span><span class="op">!</span> <span class="va">var_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">pivot_longer</span><span class="op">(</span><span class="va">`Empirical Descriptive Values`</span><span class="op">:</span><span class="va">`Predicted Model Values`</span>, names_to <span class="op">=</span> <span class="st">"Name"</span>, values_to <span class="op">=</span> <span class="va">pretty_var_name</span><span class="op">)</span></span>
-<span>  </span>
-<span>  </span>
-<span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">attempt_pred_vs_descript</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Attempt</span>, y <span class="op">=</span> <span class="op">!</span><span class="op">!</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="va">pretty_var_name</span><span class="op">)</span>, group <span class="op">=</span> <span class="va">Name</span>, color <span class="op">=</span> <span class="va">Name</span>, linetype <span class="op">=</span> <span class="va">Name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme</span><span class="op">(</span>legend.title<span class="op">=</span><span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">unique_melody_name</span><span class="op">)</span></span>
-<span></span>
-<span><span class="op">}</span></span></code></pre></div>
 <p>The following are supplementary materials for:</p>
 <p>Silas, S., &amp; Müllensiefen, D. (2023). Learning and recalling
 melodies: A computational investigation using the melodic recall
 paradigm. Music Perception.</p>
-<div class="section level3">
-<h3 id="short-melodic-excerpts-from-pop-songs-used-as-materials-in-the-study">Short melodic excerpts from pop songs used as materials in the
+<div class="section level2">
+<h2 id="short-melodic-excerpts-from-pop-songs-used-as-materials-in-the-study">1. Short melodic excerpts from pop songs used as materials in the
 study<a class="anchor" aria-label="anchor" href="#short-melodic-excerpts-from-pop-songs-used-as-materials-in-the-study"></a>
-</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">stim_table</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/musicassessrdocs/man/get_asset.html" class="external-link">get_asset</a></span><span class="op">(</span><span class="st">'melodic_recall_paper_2023/stimuli.xlsx'</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_excel</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">`Nr.`</span>, <span class="va">DATEINAME</span>, <span class="va">`KOMP./ INTERPRET`</span>, <span class="va">GENRE</span>, <span class="va">TEMPO</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Song <span class="op">=</span> <span class="va">DATEINAME</span>, `Composer/Interpreter` <span class="op">=</span> <span class="va">`KOMP./ INTERPRET`</span>, `Genre/Meter` <span class="op">=</span> <span class="va">GENRE</span>, Tempo <span class="op">=</span> <span class="va">TEMPO</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Song <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/tools/fileutils.html" class="external-link">file_path_sans_ext</a></span><span class="op">(</span><span class="va">Song</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Song</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Song <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">Song</span> <span class="op">==</span> <span class="st">"Do You Want To Dance. mid"</span> <span class="op">~</span> <span class="st">"Do You Want To Dance?"</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">Song</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">`Nr.`</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">11</span>, <span class="fl">25</span>, <span class="fl">30</span>, <span class="fl">31</span>, <span class="fl">36</span>, <span class="fl">2</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">9</span>, <span class="fl">26</span>, <span class="fl">32</span>, <span class="fl">35</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">`Nr.`</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>`No.` <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">`No.`</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>`Composer/Interpreter` <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove</a></span><span class="op">(</span><span class="va">`Composer/Interpreter`</span>, <span class="st">"u.a. "</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">stim_table</span><span class="op">)</span></span></code></pre></div>
+</h2>
 <table class="table">
 <colgroup>
 <col width="5%">
@@ -351,154 +203,88 @@ study<a class="anchor" aria-label="anchor" href="#short-melodic-excerpts-from-po
 </tbody>
 </table>
 </div>
-<div class="section level3">
-<h3 id="appendix-d1">Appendix D1<a class="anchor" aria-label="anchor" href="#appendix-d1"></a>
-</h3>
+<div class="section level2">
+<h2 id="an-example-of-one-melody-from-each-pop-song-">2. An example of one melody from each pop song.<a class="anchor" aria-label="anchor" href="#an-example-of-one-melody-from-each-pop-song-"></a>
+</h2>
 <div class="section level4">
-<h4 id="an-example-of-one-melody-from-each-pop-song-">An example of one melody from each pop song.<a class="anchor" aria-label="anchor" href="#an-example-of-one-melody-from-each-pop-song-"></a>
+<h4 id="melody-no--1-children-of-the-night-r-marx">2.1.1: Melody No. 1, Children of the Night, R.Marx<a class="anchor" aria-label="anchor" href="#melody-no--1-children-of-the-night-r-marx"></a>
 </h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create stimuli images</span></span>
-<span><span class="va">mid_files</span> <span class="op">&lt;-</span>  <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/musicassessrdocs/man/get_asset.html" class="external-link">get_asset</a></span><span class="op">(</span><span class="st">'melodic_recall_paper_2023/melausschnitte_midi'</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">'\\.mid$'</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">walk</a></span><span class="op">(</span><span class="va">mid_files</span>, <span class="op">~</span><span class="fu">midi2img</span><span class="fu">::</span><span class="fu">midi2img</span><span class="op">(</span>f <span class="op">=</span> <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="section level5">
-<h5 id="melody-no--1-children-of-the-night-r-marx">Melody No. 1: Children of the Night, R.Marx<a class="anchor" aria-label="anchor" href="#melody-no--1-children-of-the-night-r-marx"></a>
-</h5>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'1melchil-1.png'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="1melchil-1.png" width="1276"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--2-climb-up-n-sedaka">Melody No. 2: Climb Up, N.Sedaka<a class="anchor" aria-label="anchor" href="#melody-no--2-climb-up-n-sedaka"></a>
-</h5>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melclimbup31-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--2-climb-up-n-sedaka">2.1.2: Melody No. 2, Climb Up, N.Sedaka<a class="anchor" aria-label="anchor" href="#melody-no--2-climb-up-n-sedaka"></a>
+</h4>
 <p><img src="melclimbup31-1.png" width="1276"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--3-cold-cold-heart-m-pellow">Melody No. 3: Cold Cold Heart, M.Pellow<a class="anchor" aria-label="anchor" href="#melody-no--3-cold-cold-heart-m-pellow"></a>
-</h5>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melcoldcold26-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--3-cold-cold-heart-m-pellow">2.1.3: Melody No. 3, Cold Cold Heart, M.Pellow<a class="anchor" aria-label="anchor" href="#melody-no--3-cold-cold-heart-m-pellow"></a>
+</h4>
 <p><img src="melcoldcold26-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--4-do-you-want-to-dance-r--freeman">Melody No. 4: Do You Want To Dance?, R. Freeman<a class="anchor" aria-label="anchor" href="#melody-no--4-do-you-want-to-dance-r--freeman"></a>
-</h5>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'meldoyou30-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--4-do-you-want-to-dance-r--freeman">2.1.4: Melody No. 4, Do You Want To Dance?, R. Freeman<a class="anchor" aria-label="anchor" href="#melody-no--4-do-you-want-to-dance-r--freeman"></a>
+</h4>
 <p><img src="meldoyou30-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--5-du-gehörst-zu-mir-j--heider">Melody No. 5: Du gehörst zu mir, J. Heider<a class="anchor" aria-label="anchor" href="#melody-no--5-du-geh%C3%B6rst-zu-mir-j--heider"></a>
-</h5>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'meldugehoerst9-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--5-du-gehörst-zu-mir-j--heider">2.1.5: Melody No. 5, Du gehörst zu mir, J. Heider<a class="anchor" aria-label="anchor" href="#melody-no--5-du-geh%C3%B6rst-zu-mir-j--heider"></a>
+</h4>
 <p><img src="meldugehoerst9-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--6-longer-d-fogelberg">Melody No. 6: Longer, D.Fogelberg<a class="anchor" aria-label="anchor" href="#melody-no--6-longer-d-fogelberg"></a>
-</h5>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'6mellonger-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--6-longer-d-fogelberg">2.1.6: Melody No. 6, Longer, D.Fogelberg<a class="anchor" aria-label="anchor" href="#melody-no--6-longer-d-fogelberg"></a>
+</h4>
 <p><img src="6mellonger-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--7-oh-carol-n--sedaka">Melody No. 7: Oh Carol, N. Sedaka<a class="anchor" aria-label="anchor" href="#melody-no--7-oh-carol-n--sedaka"></a>
-</h5>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melohcarol25-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--7-oh-carol-n--sedaka">2.1.7: Melody No. 7, Oh Carol, N. Sedaka<a class="anchor" aria-label="anchor" href="#melody-no--7-oh-carol-n--sedaka"></a>
+</h4>
 <p><img src="melohcarol25-1.png" width="1276"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--8-take-good-care-c--king">Melody No. 8: Take Good Care, C. King<a class="anchor" aria-label="anchor" href="#melody-no--8-take-good-care-c--king"></a>
-</h5>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'meltakegood7-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--8-take-good-care-c--king">2.1.8: Melody No. 8, Take Good Care, C. King<a class="anchor" aria-label="anchor" href="#melody-no--8-take-good-care-c--king"></a>
+</h4>
 <p><img src="meltakegood7-1.png" width="1276"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--9-the-sky-is-crying-m-levy">Melody No. 9: The Sky is Crying, M.Levy<a class="anchor" aria-label="anchor" href="#melody-no--9-the-sky-is-crying-m-levy"></a>
-</h5>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'2melthesky-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--9-the-sky-is-crying-m-levy">2.1.9: Melody No. 9, The Sky is Crying, M.Levy<a class="anchor" aria-label="anchor" href="#melody-no--9-the-sky-is-crying-m-levy"></a>
+</h4>
 <p><img src="2melthesky-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--10-you-are-my-destiny-p--anka">Melody No. 10: You Are My Destiny, P. Anka<a class="anchor" aria-label="anchor" href="#melody-no--10-you-are-my-destiny-p--anka"></a>
-</h5>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melyouare32-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--10-you-are-my-destiny-p--anka">2.1.10: Melody No. 10, You Are My Destiny, P. Anka<a class="anchor" aria-label="anchor" href="#melody-no--10-you-are-my-destiny-p--anka"></a>
+</h4>
 <p><img src="melyouare32-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--11-goodbye-my-love-goodbye-m--panas-d--roussos">Melody No. 11: Goodbye My Love Goodbye, M. Panas / D. Roussos<a class="anchor" aria-label="anchor" href="#melody-no--11-goodbye-my-love-goodbye-m--panas-d--roussos"></a>
-</h5>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'4melgoodbye-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--11-goodbye-my-love-goodbye-m--panas-d--roussos">2.1.11: Melody No. 11, Goodbye My Love Goodbye, M. Panas / D.
+Roussos<a class="anchor" aria-label="anchor" href="#melody-no--11-goodbye-my-love-goodbye-m--panas-d--roussos"></a>
+</h4>
 <p><img src="4melgoodbye-1.png" width="1214"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--12-enjoy-your-life-funky-be">Melody No. 12 Enjoy Your Life, Funky Be<a class="anchor" aria-label="anchor" href="#melody-no--12-enjoy-your-life-funky-be"></a>
-</h5>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melenjoy11-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--12-enjoy-your-life-funky-be">2.1.12: Melody No. 12, Enjoy Your Life, Funky Be<a class="anchor" aria-label="anchor" href="#melody-no--12-enjoy-your-life-funky-be"></a>
+</h4>
 <p><img src="melenjoy11-1.png" width="1276"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--13-love-is-like-a-rainbow-t--anders">Melody No. 13: Love Is Like A Rainbow, T. Anders<a class="anchor" aria-label="anchor" href="#melody-no--13-love-is-like-a-rainbow-t--anders"></a>
-</h5>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melloveis35-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--13-love-is-like-a-rainbow-t--anders">2.1.13: Melody No. 13, Love Is Like A Rainbow, T. Anders<a class="anchor" aria-label="anchor" href="#melody-no--13-love-is-like-a-rainbow-t--anders"></a>
+</h4>
 <p><img src="melloveis35-1.png" width="1276"></p>
 </div>
-<div class="section level5">
-<h5 id="melody-no--14-let-me-be-your-only-one-funky-be">Melody No. 14: Let Me Be Your Only One, Funky Be<a class="anchor" aria-label="anchor" href="#melody-no--14-let-me-be-your-only-one-funky-be"></a>
-</h5>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="st">'melletmebe36-1.png'</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="melody-no--14-let-me-be-your-only-one-funky-be">2.1.14: Melody No. 14, Let Me Be Your Only One, Funky Be<a class="anchor" aria-label="anchor" href="#melody-no--14-let-me-be-your-only-one-funky-be"></a>
+</h4>
 <p><img src="melletmebe36-1.png" width="1214"></p>
 </div>
-</div>
-<div class="section level4">
-<h4 id="description-and-distribution-of-melodic-features">Description and distribution of melodic features<a class="anchor" aria-label="anchor" href="#description-and-distribution-of-melodic-features"></a>
-</h4>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_melodies_with_features.html" class="external-link">melodic_recall_paper_2023_melodies_with_features</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">itembankr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/itembankr/man/hist_item_bank.html" class="external-link">hist_item_bank</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme_minimal</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre>
+<div class="section level3">
+<h3 id="description-and-distribution-of-melodic-features">2.2 Description and distribution of melodic features<a class="anchor" aria-label="anchor" href="#description-and-distribution-of-melodic-features"></a>
+</h3>
 <p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_melodies_with_features.html" class="external-link">melodic_recall_paper_2023_melodies_with_features</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">i.entropy</span>, <span class="va">tonalness</span>, <span class="va">step.cont.loc.var</span>, <span class="va">d.entropy</span>, <span class="va">mean_int_size</span>, <span class="va">pitch_variety</span>, <span class="va">int_variety</span>, <span class="va">mean_information_content</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>mean.int.size <span class="op">=</span> <span class="va">mean_int_size</span>, pitch.variety <span class="op">=</span> <span class="va">pitch_variety</span>, int.variety <span class="op">=</span> <span class="va">int_variety</span>, mean.information.content <span class="op">=</span> <span class="va">mean_information_content</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, sd <span class="op">=</span> <span class="va">sd</span>, coef.variation <span class="op">=</span> <span class="va">coef_variation</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                   .groups <span class="op">=</span> <span class="st">'rowwise'</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">round</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">pivot_longer</span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, names_sep <span class="op">=</span> <span class="st">"_"</span>, names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"feature"</span>, <span class="st">"summary_var"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">summary_var</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Feature <span class="op">=</span> <span class="va">feature</span>,</span>
-<span>         Mean <span class="op">=</span> <span class="va">mean</span>,</span>
-<span>         SD <span class="op">=</span> <span class="va">sd</span>,</span>
-<span>         `Coefficient of Variation` <span class="op">=</span> <span class="va">coef.variation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">`Coefficient of Variation`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Melodic feature summary statistics. Note, some are not used in our modelling, but are here to show other properties of the melodies."</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: There was 1 warning in `dplyr::mutate()`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> In argument: `across(everything(), round, 2)`.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> In row 1.</span></span>
-<span><span class="co">## Caused by warning:</span></span>
-<span><span class="co">## <span style="color: #BBBB00;">!</span> The `...` argument of `across()` is deprecated as of dplyr 1.1.0.</span></span>
-<span><span class="co">## Supply arguments directly to `.fns` through an anonymous function instead.</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##   # Previously</span></span>
-<span><span class="co">##   across(a:b, mean, na.rm = TRUE)</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##   # Now</span></span>
-<span><span class="co">##   across(a:b, \(x) mean(x, na.rm = TRUE))</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="melodic-feature-summary-statistics">2.3 Melodic feature summary statistics<a class="anchor" aria-label="anchor" href="#melodic-feature-summary-statistics"></a>
+</h3>
 <table class="table">
 <caption>Melodic feature summary statistics. Note, some are not used in
 our modelling, but are here to show other properties of the
@@ -568,28 +354,9 @@ melodies.</caption>
 </table>
 </div>
 </div>
-<div class="section level3">
-<h3 id="questionnaire-items-">Questionnaire items.<a class="anchor" aria-label="anchor" href="#questionnaire-items-"></a>
-</h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  </span>
-<span>  Variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chorusin"</span>, <span class="st">"singinstr:"</span>, <span class="st">"yearsins"</span>, <span class="st">"musmakpa"</span>, <span class="st">"paidless"</span>, <span class="st">"paidgigs"</span>, <span class="st">"gigs"</span><span class="op">)</span>,</span>
-<span>    </span>
-<span>    Question <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>       <span class="st">"Do you sing in a choir?"</span>,</span>
-<span> <span class="st">"Have you ever received singing instructions?"</span>,</span>
-<span><span class="st">"For how many years have you been playing an instrument or making music?"</span>,</span>
-<span><span class="st">"During your most active musical phase how many hours per week did you make music (practice+rehearsal+gigs+lessons+playing+etc.)"</span>, </span>
-<span><span class="st">"For how many months have you received paid instrumental or singing lessons?"</span>,</span>
-<span><span class="st">"How many gigs have you played that you have been paid for?"</span>,</span>
-<span><span class="st">"Overall, how many gigs have you played in front of an audience in your life?"</span></span>
-<span>      </span>
-<span>    <span class="op">)</span>,</span>
-<span>    </span>
-<span>    `Response Format` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes/No"</span>, <span class="st">"Yes/No"</span>, <span class="st">"__years"</span>, <span class="st">"__hours/week"</span>, <span class="st">" __ months"</span>, <span class="st">"___gigs"</span>, <span class="st">"___gigs"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="questionnaire-items">3. Questionnaire items<a class="anchor" aria-label="anchor" href="#questionnaire-items"></a>
+</h2>
 <table class="table">
 <colgroup>
 <col width="7%">
@@ -646,20 +413,10 @@ audience in your life?</td>
 </tbody>
 </table>
 </div>
-<div class="section level3">
-<h3 id="factor-loadings-for-mixed-type-variables-based-on-questionnaire-items">Factor loadings for mixed type variables based on questionnaire
+<div class="section level2">
+<h2 id="factor-loadings-for-mixed-type-variables-based-on-questionnaire-items">3.2 Factor loadings for mixed type variables based on questionnaire
 items<a class="anchor" aria-label="anchor" href="#factor-loadings-for-mixed-type-variables-based-on-questionnaire-items"></a>
-</h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu">lavaan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lavaan/man/lavInspect.html" class="external-link">inspect</a></span><span class="op">(</span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_fit1.html" class="external-link">melodic_recall_paper_2023_fit1</a></span>, what<span class="op">=</span><span class="st">"std"</span><span class="op">)</span><span class="op">$</span><span class="va">lambda</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Variable"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Loading <span class="op">=</span> <span class="va">f1</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>        <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Loading <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">Loading</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>                      h2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">Loading</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>                      u2 <span class="op">=</span> <span class="fl">1</span><span class="op">-</span><span class="va">h2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</h2>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Variable</th>
@@ -714,46 +471,22 @@ items<a class="anchor" aria-label="anchor" href="#factor-loadings-for-mixed-type
 </table>
 </div>
 <div class="section level2">
-<h2 id="appendix-h1">Appendix H1<a class="anchor" aria-label="anchor" href="#appendix-h1"></a>
+<h2 id="average-by-participant-across-trials">4.0 Average by-participant across trials<a class="anchor" aria-label="anchor" href="#average-by-participant-across-trials"></a>
 </h2>
-<div class="section level3">
-<h3 id="average-by-participant-across-trials">Average by-participant across trials<a class="anchor" aria-label="anchor" href="#average-by-participant-across-trials"></a>
-</h3>
 <p>Another way of visualising differences in performance is at the level
 of participant, coloured and ordered by level of musical experience.
 This is useful since it invokes no false dichotimisations and preserves
 the actual unit of participant (however, note that participant-level
 effects are captured by our mixed effects models).</p>
 </div>
-<div class="section level3">
-<h3 id="average-by-participant-development-of-attempt-length">Average by-participant development of attempt length<a class="anchor" aria-label="anchor" href="#average-by-participant-development-of-attempt-length"></a>
-</h3>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_descriptive_vs_predicted_participant</span><span class="op">(</span></span>
-<span>                              model <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">lm.B1.2</span>,</span>
-<span>                              pretty_var_name <span class="op">=</span> <span class="st">"Mean Attempt Lengh"</span>,</span>
-<span>                              var_name <span class="op">=</span> <span class="st">'attempt_length'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Figure 13"</span>,</span>
-<span>        subtitle <span class="op">=</span> <span class="st">"Model fitted vs. empirical descriptive means of attempt length, stratified by participant."</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">theme</span><span class="op">(</span>plot.subtitle<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Loading required package: lmerTest</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'lmerTest'</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:lme4':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     lmer</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:stats':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     step</span></span></code></pre>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span>
-<span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span></code></pre>
+<div class="section level2">
+<h2 id="average-by-participant-development-of-attempt-length">4.1 Average by-participant development of attempt length<a class="anchor" aria-label="anchor" href="#average-by-participant-development-of-attempt-length"></a>
+</h2>
 <p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-23-1.png" width="960"></p>
 </div>
-<div class="section level3">
-<h3 id="average-by-participant-development-of-opti3-across-trials">Average by-participant development of opti3 across trials<a class="anchor" aria-label="anchor" href="#average-by-participant-development-of-opti3-across-trials"></a>
-</h3>
+<div class="section level2">
+<h2 id="average-by-participant-development-of-opti3-across-trials">4.2 Average by-participant development of opti3 across trials<a class="anchor" aria-label="anchor" href="#average-by-participant-development-of-opti3-across-trials"></a>
+</h2>
 <p>As shown in the figure, participants seem to have vastly different
 slopes. The bottom right, lighter blue, higher musical experience
 participants (e.g., <em>VP5</em>, <em>VP7</em>, <em>VP30</em>,
@@ -764,131 +497,36 @@ suggesting that higher musical experience is related to quicker
 learning. However, note that this pattern is not the same for everyone
 e.g., <em>VP22</em> has a steep slope, but scores low on musical
 experience</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vp_summary</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>`Musical Experience` <span class="op">=</span> <span class="va">musical_experience</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">p_id</span>, <span class="va">attempt</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_opti3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">opti3</span><span class="op">)</span>,</span>
-<span>                   mean_harmcore <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">harmcore</span><span class="op">)</span>,</span>
-<span>                   mean_rhythfuzz <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">rhythfuzz</span><span class="op">)</span>,</span>
-<span>                   mean_ngrukkon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ngrukkon</span><span class="op">)</span>,</span>
-<span>                   `Musical Experience` <span class="op">=</span> <span class="va">`Musical Experience`</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'p_id', 'attempt'. You can override using</span></span>
-<span><span class="co">## the `.groups` argument.</span></span></code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vp_summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span>, y  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">mean_opti3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, size <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">`Musical Experience`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">p_id</span>, <span class="va">`Musical Experience`</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Attempt"</span>, </span>
-<span>         y <span class="op">=</span> <span class="st">"Mean opti3"</span>,</span>
-<span>         title <span class="op">=</span> <span class="st">"Figure 12"</span>,</span>
-<span>        subtitle <span class="op">=</span> <span class="st">"Average by-participant development of opti3 across trials."</span></span>
-<span>      <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
 <p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-24-1.png" width="960"></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_descriptive_vs_predicted_participant</span><span class="op">(</span></span>
-<span>                              model <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">lm.A1.2</span>,</span>
-<span>                              pretty_var_name <span class="op">=</span> <span class="st">"Mean opti3"</span>,</span>
-<span>                              var_name <span class="op">=</span> <span class="st">'opti3'</span><span class="op">)</span>  <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Figure 14"</span>,</span>
-<span>        subtitle <span class="op">=</span> <span class="st">"Model fitted vs. empirical descriptive means of opti3, stratified by participant."</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">theme</span><span class="op">(</span>plot.subtitle<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span>
-<span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span></code></pre>
 <p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-25-1.png" width="960"></p>
 </div>
-</div>
 <div class="section level2">
-<h2 id="appendix-h2">Appendix H2<a class="anchor" aria-label="anchor" href="#appendix-h2"></a>
+<h2 id="average-by-melody-development-of-attempt-across-trials">5.1 Average by-melody development of attempt across trials<a class="anchor" aria-label="anchor" href="#average-by-melody-development-of-attempt-across-trials"></a>
 </h2>
-<div class="section level3">
-<h3 id="average-by-melody-development-of-no--of-note-events-across-trials">Average by-melody development of no. of note events across
-trials<a class="anchor" aria-label="anchor" href="#average-by-melody-development-of-no--of-note-events-across-trials"></a>
-</h3>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">by_mel</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">unique_melody_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>      attempt_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">attempt_length</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      opti3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">opti3</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      N <span class="op">=</span> <span class="va">N</span>,</span>
-<span>      <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">opti3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>opti3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">opti3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'unique_melody_name'. You can override</span></span>
-<span><span class="co">## using the `.groups` argument.</span></span></code></pre>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">by_mel_and_attempt</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">unique_melody_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>      attempt_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">attempt_length</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      opti3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">opti3</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>      <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span></code></pre>
 <p>Melody SA_B appears to be the easiest melody to recall (mean
 <em>opti3</em> across all trials = 0.61), whereas MF_B appears most
 difficult to recall (mean <em>opti3</em> across all trials = 0.11). This
 shows that there can be substantial variation in the difficulty of each
 melody.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_descriptive_vs_predicted_melody</span><span class="op">(</span></span>
-<span>                              model <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">lm.B1.2</span>,</span>
-<span>                              pretty_var_name <span class="op">=</span> <span class="st">"Mean Attempt Length"</span>,</span>
-<span>                              var_name <span class="op">=</span> <span class="st">'attempt_length'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Figure 13"</span>,</span>
-<span>        subtitle <span class="op">=</span> <span class="st">"Model fitted vs. empirical descriptive means attempt length, stratified by melody"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">theme</span><span class="op">(</span>plot.subtitle<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span>
-<span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span></code></pre>
 <p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-27-1.png" width="960"></p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">plot_descriptive_vs_predicted_melody</span><span class="op">(</span></span>
-<span>                              model <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">lm.A1.2</span>,</span>
-<span>                              pretty_var_name <span class="op">=</span> <span class="st">"Mean Opti3"</span>,</span>
-<span>                              var_name <span class="op">=</span> <span class="st">'opti3'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Figure 13"</span>,</span>
-<span>        subtitle <span class="op">=</span> <span class="st">"Model fitted vs. empirical descriptive means of opti3, stratified by melody"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu">theme</span><span class="op">(</span>plot.subtitle<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span>
-<span><span class="co">## `summarise()` has grouped output by 'attempt'. You can override using the</span></span>
-<span><span class="co">## `.groups` argument.</span></span></code></pre>
 <p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
 <div style="page-break-after: always;"></div>
 </div>
-</div>
 <div class="section level2">
-<h2 id="appendix-i-linear-vs--non-linear-models-attempt-length-and-opti3">Appendix I Linear vs. Non-Linear Models attempt length and
-opti3<a class="anchor" aria-label="anchor" href="#appendix-i-linear-vs--non-linear-models-attempt-length-and-opti3"></a>
+<h2 id="linear-vs--non-linear-models-attempt-length-and-opti3">6.0 Linear vs. Non-Linear Models attempt length and opti3<a class="anchor" aria-label="anchor" href="#linear-vs--non-linear-models-attempt-length-and-opti3"></a>
 </h2>
 <p>We proceed by using the log attempt as numeric predictor, owing to
 the observed non-linearities in both <em>opti3</em> and <em>attempt
 length</em> across attempt. A comparison of linear vs non-linear models
 is shown below.</p>
 <div class="section level3">
-<h3 id="appendix-i1-linear-model-of-attempt-length-across-repeated-attempts">Appendix I1: Linear model of attempt length across repeated
-attempts<a class="anchor" aria-label="anchor" href="#appendix-i1-linear-model-of-attempt-length-across-repeated-attempts"></a>
+<h3 id="linear-model-of-attempt-length-across-repeated-attempts">6.1: Linear model of attempt length across repeated attempts<a class="anchor" aria-label="anchor" href="#linear-model-of-attempt-length-across-repeated-attempts"></a>
 </h3>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">appen_g1</span> <span class="op">&lt;-</span> <span class="fu">lmerTest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lmerTest/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">attempt_length</span> <span class="op">~</span> <span class="va">attempt</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">unique_melody_name</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">p_id</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">p_id</span><span class="op">:</span><span class="va">unique_melody_name</span><span class="op">)</span>, </span>
-<span>               data <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">appen_g1</span> <span class="op">|&gt;</span></span>
-<span><span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu">apa_table</span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-29)</caption>
+<caption>(#tab:tablei) A linear model of attempt length regressed onto
+attempt with melody item, participant and the interaction between melody
+item and participant as random effects. Note that the linear model is
+not taken forward.</caption>
 <thead><tr class="header">
 <th align="left">Term</th>
 <th align="left"><span class="math inline">\(\hat{\beta}\)</span></th>
@@ -948,46 +586,17 @@ attempts<a class="anchor" aria-label="anchor" href="#appendix-i1-linear-model-of
 </tr>
 </tbody>
 </table>
-<p>Figure 12 shows that the use of the log attempt as predictor is
+<p>Figure 6 shows that the use of the log attempt as predictor is
 justified, capturing the systematic non-linear pattern generally
 well.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lmA1.p</span> <span class="op">&lt;-</span> <span class="fu">plot_descriptive_vs_predicted</span><span class="op">(</span>model <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">lm.A1.2</span>,</span>
-<span>                              pretty_var_name <span class="op">=</span> <span class="st">"Mean Attempt Length"</span>,</span>
-<span>                              var_name <span class="op">=</span> <span class="st">'attempt_length'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>caption <span class="op">=</span>  <span class="st">"Note: Dashed line represents changes in model-fitted values, solid line changes in empirical descriptive mean values."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="va">lmB1.p</span> <span class="op">&lt;-</span> <span class="fu">plot_descriptive_vs_predicted</span><span class="op">(</span>model <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">lm.B1.2</span>, </span>
-<span>                              pretty_var_name <span class="op">=</span> <span class="st">"Mean opti3"</span>, </span>
-<span>                              var_name <span class="op">=</span> <span class="st">"opti3"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>      <span class="fu">labs</span><span class="op">(</span></span>
-<span>        title <span class="op">=</span> <span class="st">"Figure 12"</span>,</span>
-<span>        x <span class="op">=</span> <span class="st">""</span>,</span>
-<span>        subtitle <span class="op">=</span> <span class="st">"Model fitted vs. empirical descriptive means of attempt length and opti3, by attempt."</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'top'</span>,</span>
-<span>        plot.caption<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">7</span><span class="op">)</span>,</span>
-<span>        plot.subtitle<span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">lmA1.p</span>, <span class="va">lmB1.p</span><span class="op">)</span></span></code></pre></div>
-<p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-30-1.png" width="768"></p>
+<p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-29-1.png" width="768"></p>
 </div>
 <div class="section level3">
-<h3 id="appendix-i2-linear-model-of-mean-similarity-scores-opti3-across-repeated-attempts">Appendix I2: Linear model of mean similarity scores (opti3) across
-repeated attempts<a class="anchor" aria-label="anchor" href="#appendix-i2-linear-model-of-mean-similarity-scores-opti3-across-repeated-attempts"></a>
+<h3 id="appendix-6-2-linear-model-of-mean-similarity-scores-opti3-across-repeated-attempts">Appendix 6.2: Linear model of mean similarity scores (opti3) across
+repeated attempts<a class="anchor" aria-label="anchor" href="#appendix-6-2-linear-model-of-mean-similarity-scores-opti3-across-repeated-attempts"></a>
 </h3>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">appen_g2</span> <span class="op">&lt;-</span> <span class="fu">lmerTest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lmerTest/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">opti3</span> <span class="op">~</span> <span class="va">attempt</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">unique_melody_name</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">p_id</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">p_id</span><span class="op">:</span><span class="va">unique_melody_name</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">appen_g2</span> <span class="op">|&gt;</span></span>
-<span><span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="fu">apa_table</span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-31)</caption>
+<caption>(#tab:unnamed-chunk-30)</caption>
 <thead><tr class="header">
 <th align="left">Term</th>
 <th align="left"><span class="math inline">\(\hat{\beta}\)</span></th>
@@ -1047,39 +656,17 @@ repeated attempts<a class="anchor" aria-label="anchor" href="#appendix-i2-linear
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">make_vif_table</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mod</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">car</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/vif.html" class="external-link">vif</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">rownames_to_column</a></span><span class="op">(</span>var <span class="op">=</span> <span class="st">"Predictor"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>VIF <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="appendix-j">Appendix J<a class="anchor" aria-label="anchor" href="#appendix-j"></a>
+<h2 id="diagnostic-statistics-for-models-with-all-features-in-partial-r-squared-and-variance-inflation-factor-values">7.0 Diagnostic statistics for models with all features in (partial
+R-squared and variance inflation factor values)<a class="anchor" aria-label="anchor" href="#diagnostic-statistics-for-models-with-all-features-in-partial-r-squared-and-variance-inflation-factor-values"></a>
 </h2>
 <div class="section level3">
-<h3 id="diagnostic-statistics-for-models-with-all-features-in-partial-r-squared-and-variance-inflation-factor-values">Diagnostic statistics for models with all features in (partial
-R-squared and variance inflation factor values)<a class="anchor" aria-label="anchor" href="#diagnostic-statistics-for-models-with-all-features-in-partial-r-squared-and-variance-inflation-factor-values"></a>
+<h3 id="with-attempt-length-as-dependent-variable">7.1 With attempt length as dependent variable<a class="anchor" aria-label="anchor" href="#with-attempt-length-as-dependent-variable"></a>
 </h3>
-<div class="section level4">
-<h4 id="with-attempt-length-as-dependent-variable">With attempt length as dependent variable<a class="anchor" aria-label="anchor" href="#with-attempt-length-as-dependent-variable"></a>
-</h4>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># https://stats.stackexchange.com/questions/358927/compute-partial-eta2-for-all-fixed-effects-anovas-from-a-lme4-model</span></span>
-<span><span class="co"># https://cran.r-project.org/web/packages/effectsize/vignettes/from_test_statistics.html#in-linear-mixed-models</span></span>
-<span></span>
-<span><span class="va">model_a_vif</span> <span class="op">&lt;-</span> <span class="fu">make_vif_table</span><span class="op">(</span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">melodic_recall_paper_2023_lm.A2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">model_a_vif</span>, file <span class="op">=</span> <span class="st">'model_a_vif.rda'</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">'model_a_vif.rda'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">model_a_vif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">papaja</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/papaja/man/apa_table.html" class="external-link">apa_table</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Variation inflation factor (VIF) values for model with all features in and attempt length as dependent variable"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-34) Variation inflation factor (VIF) values
+<caption>(#tab:unnamed-chunk-33) Variation inflation factor (VIF) values
 for model with all features in and attempt length as dependent
 variable</caption>
 <thead><tr class="header">
@@ -1121,11 +708,8 @@ variable</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">r2beta</span><span class="op">(</span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">melodic_recall_paper_2023_lm.A2</span>, method <span class="op">=</span> <span class="st">"nsj"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">papaja</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/papaja/man/apa_table.html" class="external-link">apa_table</a></span><span class="op">(</span><span class="st">"Partial R-Squared values for model with all features in and attempt length as dependent variable"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-35) Partial R-Squared values for model with
+<caption>(#tab:unnamed-chunk-34) Partial R-Squared values for model with
 all features in and attempt length as dependent variable</caption>
 <thead><tr class="header">
 <th align="left">Effect</th>
@@ -1231,21 +815,11 @@ all features in and attempt length as dependent variable</caption>
 </tbody>
 </table>
 </div>
-<div class="section level4">
-<h4 id="with-opti3-as-dependent-variable">With opti3 as dependent variable<a class="anchor" aria-label="anchor" href="#with-opti3-as-dependent-variable"></a>
-</h4>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model_b_vif</span> <span class="op">&lt;-</span> <span class="fu">make_vif_table</span><span class="op">(</span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">melodic_recall_paper_2023_lm.B2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">model_b_vif</span>, file <span class="op">=</span> <span class="st">'model_b_vif.rda'</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">'model_b_vif.rda'</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">model_b_vif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">papaja</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/papaja/man/apa_table.html" class="external-link">apa_table</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Variation inflation factor (VIF) values for model with all features in and opti3 as dependent variable"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="with-opti3-as-dependent-variable">7.2 With opti3 as dependent variable<a class="anchor" aria-label="anchor" href="#with-opti3-as-dependent-variable"></a>
+</h3>
 <table class="table">
-<caption>(#tab:unnamed-chunk-37) Variation inflation factor (VIF) values
+<caption>(#tab:unnamed-chunk-36) Variation inflation factor (VIF) values
 for model with all features in and opti3 as dependent variable</caption>
 <thead><tr class="header">
 <th align="left">Predictor</th>
@@ -1286,11 +860,8 @@ for model with all features in and opti3 as dependent variable</caption>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">r2beta</span><span class="op">(</span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va">melodic_recall_paper_2023_lm.B2</span>, method <span class="op">=</span> <span class="st">"nsj"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">papaja</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/papaja/man/apa_table.html" class="external-link">apa_table</a></span><span class="op">(</span><span class="st">"Partial R-Squared values for model with all features in and opti3 as dependent variable"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-38) Partial R-Squared values for model with
+<caption>(#tab:unnamed-chunk-37) Partial R-Squared values for model with
 all features in and opti3 as dependent variable</caption>
 <thead><tr class="header">
 <th align="left">Effect</th>
@@ -1398,43 +969,11 @@ all features in and opti3 as dependent variable</caption>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
-</div>
 <div class="section level2">
-<h2 id="appendix-k">Appendix K<a class="anchor" aria-label="anchor" href="#appendix-k"></a>
-</h2>
-<div class="section level3">
-<h3 id="counts-of-overall-number-of-trials-that-participants-utilise-for-multiple-attempts">Counts of overall number of trials that participants utilise for
+<h2 id="counts-of-overall-number-of-trials-that-participants-utilise-for-multiple-attempts">8.0 Counts of overall number of trials that participants utilise for
 multiple attempts<a class="anchor" aria-label="anchor" href="#counts-of-overall-number-of-trials-that-participants-utilise-for-multiple-attempts"></a>
-</h3>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">attempt</span>, <span class="va">p_id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Attempt <span class="op">=</span> <span class="va">attempt</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">data_summary</span><span class="op">(</span>varname <span class="op">=</span> <span class="st">"n"</span>, groupnames <span class="op">=</span> <span class="st">"Attempt"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Attempt</span>, y <span class="op">=</span> <span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>      <span class="fu">geom_line</span><span class="op">(</span>color <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>      <span class="fu">geom_point</span><span class="op">(</span>color <span class="op">=</span> <span class="st">'orange'</span><span class="op">)</span> <span class="op">+</span></span>
-<span>      <span class="fu">geom_errorbar</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>ymin<span class="op">=</span><span class="va">n</span><span class="op">-</span><span class="va">se</span>, ymax<span class="op">=</span><span class="va">n</span><span class="op">+</span><span class="va">se</span><span class="op">)</span>, width<span class="op">=</span><span class="fl">.2</span>, position<span class="op">=</span><span class="fu">position_dodge</span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>      <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Attempt"</span>, </span>
-<span>                    y <span class="op">=</span> <span class="st">"Number of Trials"</span>,</span>
-<span>                    caption <span class="op">=</span> <span class="st">"Error bars show the standard error."</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## ------------------------------------------------------------------------------</span></span></code></pre>
-<pre><code><span><span class="co">## You have loaded plyr after dplyr - this is likely to cause problems.</span></span>
-<span><span class="co">## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:</span></span>
-<span><span class="co">## library(plyr); library(dplyr)</span></span></code></pre>
-<pre><code><span><span class="co">## ------------------------------------------------------------------------------</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'plyr'</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:purrr':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     compact</span></span></code></pre>
-<pre><code><span><span class="co">## The following objects are masked from 'package:dplyr':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     arrange, count, desc, failwith, id, mutate, rename, summarise,</span></span>
-<span><span class="co">##     summarize</span></span></code></pre>
-<pre><code><span><span class="co">## `geom_line()`: Each group consists of only one observation.</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span></span></code></pre>
-<p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-39-1.png" width="700"></p>
+</h2>
+<p><img src="silas_and_mullensiefen_2023_online_supplement_files/figure-html/unnamed-chunk-38-1.png" width="700"></p>
 <p>To assess whether the change across attempts depended on musical
 experience, we fitted a mixed effects model with trial count as the
 dependent variable, participant as random effect and the following fixed
@@ -1442,22 +981,8 @@ effects: linear terms for attempt and musical experience; an additional
 quadratic term for attempt; a linear interaction term for attempt and
 musical experience; and a quadratic interaction interaction term for
 musical experience. The model is presented below.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trial_counts</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">attempt_numeric</span>, <span class="va">p_id</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_main.html" class="external-link">melodic_recall_paper_2023_main</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>              <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">p_id</span>, <span class="va">musical_experience</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>              <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"p_id"</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">trial_counts_mod</span> <span class="op">&lt;-</span> <span class="fu">lmerTest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lmerTest/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">n</span> <span class="op">~</span> <span class="va">attempt_numeric</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">attempt_numeric</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="va">musical_experience</span> <span class="op">+</span> <span class="va">attempt_numeric</span> <span class="op">*</span> <span class="va">musical_experience</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">attempt_numeric</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="va">musical_experience</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">p_id</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">trial_counts</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">trial_counts_mod</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_table</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-40)</caption>
+<caption>(#tab:unnamed-chunk-39)</caption>
 <thead><tr class="header">
 <th align="left">Term</th>
 <th align="left"><span class="math inline">\(\hat{\beta}\)</span></th>
@@ -1518,29 +1043,15 @@ musical experience. The model is presented below.</p>
 </tbody>
 </table>
 </div>
-</div>
 <div class="section level2">
-<h2 id="appendix-l">Appendix L<a class="anchor" aria-label="anchor" href="#appendix-l"></a>
+<h2 id="statistical-models-to-support-changes-in-similarity-as-a-function-of-attempt-and-melody-section">9.0 Statistical models to support changes in similarity as a
+function of attempt and melody section<a class="anchor" aria-label="anchor" href="#statistical-models-to-support-changes-in-similarity-as-a-function-of-attempt-and-melody-section"></a>
 </h2>
 <div class="section level3">
-<h3 id="statistical-models-to-support-changes-in-similarity-as-a-function-of-attempt-and-melody-section">Statistical models to support changes in similarity as a function of
-attempt and melody section<a class="anchor" aria-label="anchor" href="#statistical-models-to-support-changes-in-similarity-as-a-function-of-attempt-and-melody-section"></a>
+<h3 id="opti3">9.1 opti3<a class="anchor" aria-label="anchor" href="#opti3"></a>
 </h3>
-</div>
-<div class="section level3">
-<h3 id="opti3">opti3<a class="anchor" aria-label="anchor" href="#opti3"></a>
-</h3>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">early_late_o</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_early_vs_late_thirds_long.html" class="external-link">melodic_recall_paper_2023_early_vs_late_thirds_long</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>attempt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">opti3</span> <span class="op">~</span> <span class="va">melody_section</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">early_late_o</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_table</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-41)</caption>
+<caption>(#tab:unnamed-chunk-40)</caption>
 <thead><tr class="header">
 <th align="left">Predictor</th>
 <th align="left"><span class="math inline">\(b\)</span></th>
@@ -1586,19 +1097,10 @@ attempt and melody section<a class="anchor" aria-label="anchor" href="#statistic
 </table>
 </div>
 <div class="section level3">
-<h3 id="ngrukkon">ngrukkon<a class="anchor" aria-label="anchor" href="#ngrukkon"></a>
+<h3 id="ngrukkon">9.2 ngrukkon<a class="anchor" aria-label="anchor" href="#ngrukkon"></a>
 </h3>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">early_late_ng</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_early_vs_late_thirds_long.html" class="external-link">melodic_recall_paper_2023_early_vs_late_thirds_long</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>attempt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">ngrukkon</span> <span class="op">~</span> <span class="va">melody_section_n</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">early_late_ng</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_table</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-42)</caption>
+<caption>(#tab:unnamed-chunk-41)</caption>
 <thead><tr class="header">
 <th align="left">Predictor</th>
 <th align="left"><span class="math inline">\(b\)</span></th>
@@ -1644,19 +1146,10 @@ attempt and melody section<a class="anchor" aria-label="anchor" href="#statistic
 </table>
 </div>
 <div class="section level3">
-<h3 id="rhythfuzz">rhythfuzz<a class="anchor" aria-label="anchor" href="#rhythfuzz"></a>
+<h3 id="rhythfuzz">9.3 rhythfuzz<a class="anchor" aria-label="anchor" href="#rhythfuzz"></a>
 </h3>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">early_late_r</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_early_vs_late_thirds_long.html" class="external-link">melodic_recall_paper_2023_early_vs_late_thirds_long</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>attempt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">rhythfuzz</span> <span class="op">~</span> <span class="va">melody_section_r</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">early_late_r</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_table</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-43)</caption>
+<caption>(#tab:unnamed-chunk-42)</caption>
 <thead><tr class="header">
 <th align="left">Predictor</th>
 <th align="left"><span class="math inline">\(b\)</span></th>
@@ -1702,19 +1195,10 @@ attempt and melody section<a class="anchor" aria-label="anchor" href="#statistic
 </table>
 </div>
 <div class="section level3">
-<h3 id="harmcore">harmcore<a class="anchor" aria-label="anchor" href="#harmcore"></a>
+<h3 id="harmcore">9.4 harmcore<a class="anchor" aria-label="anchor" href="#harmcore"></a>
 </h3>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">early_late_hm</span> <span class="op">&lt;-</span> <span class="fu">musicassessrdocs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/musicassessrdocs/man/melodic_recall_paper_2023_early_vs_late_thirds_long.html" class="external-link">melodic_recall_paper_2023_early_vs_late_thirds_long</a></span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>attempt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">harmcore</span> <span class="op">~</span> <span class="va">melody_section_h</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">attempt</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">early_late_hm</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_print</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">apa_table</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<caption>(#tab:unnamed-chunk-44)</caption>
+<caption>(#tab:unnamed-chunk-43)</caption>
 <thead><tr class="header">
 <th align="left">Predictor</th>
 <th align="left"><span class="math inline">\(b\)</span></th>

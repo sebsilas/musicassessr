@@ -43,7 +43,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/accuracy_vs_similarity_measures.html">Accuracy vs. melodic similarity</a>
     <a class="dropdown-item" href="../articles/intuitive_similarity.html">Intuitive examples of melodic similarity</a>
-    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic eatures</a>
+    <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic features</a>
     <a class="dropdown-item" href="../articles/musicassessr_dependent_variables.html">musicassessr dependent variables</a>
     <a class="dropdown-item" href="../articles/profile_basic_accuracy_measures.html">Profiling of basic accuracy measures</a>
     <a class="dropdown-item" href="../articles/silas_and_mullensiefen_2023_online_supplement.html">Silas &amp; Müllensiefen (2023) online supplement</a>
@@ -78,7 +78,7 @@
     
 <p>In the <code>musicassessr</code> framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data. It is worth noting that this approach is quite different to using measures of <em>accuracy</em> on such data. In this document, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.</p>
 <div class="section level2">
-<h2 id="foundations-of-accuracy-style-measures">Foundations of accuracy-style measures<a class="anchor" aria-label="anchor" href="#foundations-of-accuracy-style-measures"></a>
+<h2 id="foundations-of-accuracy-style-measures">1. Foundations of accuracy-style measures<a class="anchor" aria-label="anchor" href="#foundations-of-accuracy-style-measures"></a>
 </h2>
 <p>In the context of melodic recall, broadly speaking, accuracy can be defined as the number of correct notes relative to something else. That something else could be i) the number of unique notes in the target stimulus or ii) the attempt length. Let us call a note that is both contained in the target melody and the sung recall a “hit”, a note recalled that is not in the target stimulus, a “false alarm” and a note in the target melody but not the sung recall, a “miss”.</p>
 <table class="table">
@@ -168,14 +168,15 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 \end{equation}\]</span></p>
 <p>where <code>Accuracy</code> is computed via Eq. 1 and <code>LogNormal</code> represents a log normal transformation function to map the accuracy value into the closed unit interval range.</p>
 <p>We profile these measures of accuracy, <em>Accuracy</em>, <em>Recall</em>, <em>Precision</em>, <em>AccuracyAdjusted</em> and <em>F<sub>1</sub></em>, in Experiment 1.</p>
-<div class="section level3">
-<h3 id="example-comparisons-of-accuracy-vs--similarity-measures-on-the-same-data">Example comparisons of accuracy vs. similarity measures on the same data<a class="anchor" aria-label="anchor" href="#example-comparisons-of-accuracy-vs--similarity-measures-on-the-same-data"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="example-comparisons-of-accuracy-vs--similarity-measures-on-the-same-data">2. Example comparisons of accuracy vs. similarity measures on the same data<a class="anchor" aria-label="anchor" href="#example-comparisons-of-accuracy-vs--similarity-measures-on-the-same-data"></a>
+</h2>
 <p>We now score some simple examples to demonstrate the difference between accuracy and similarity (see Table 1 and Figure 1). Let us take the first five notes of the C major scale as our target. If the target and recall are the same, all measures of accuracy and similarity will be 1. However, as Example 1 shows, if the pitch order is reversed, the accuracy measures will be 1, but the overall measure of similarity (<em>opti3</em>), nearly half this. This corresponds to the fact that the notes are the same, but the order highly distorts the melodic identity (note that the harmonic and rhythmic identity is preserved, however). Conversely, as Example #2 shows, transposing the recall by a semitone causes a large deterioration in the accuracy scores, since nearly all notes are different, but the similarity measure is 1, corresponding to the fact that the melodic identity is preserved under the principle of transposition invariance. For Examples 3-6, we take the humourous example of the “The Lick” - the archetypal jazz pattern made famous by YouTube<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;a href="https://www.youtube.com/watch?v=krDxhnaKD7Q" class="external-link uri"&gt;https://www.youtube.com/watch?v=krDxhnaKD7Q&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a> and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity. Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (<em>opti3</em>), but preserves accuracy.</p>
 <div style="page-break-after: always;"></div>
-<div class="section level4">
-<h4 id="notation-of-sung-recall-comparison-examples">Notation of sung recall comparison examples<a class="anchor" aria-label="anchor" href="#notation-of-sung-recall-comparison-examples"></a>
-</h4>
+<div class="section level3">
+<h3 id="notation-of-sung-recall-comparison-examples">2.1 Notation of sung recall comparison examples<a class="anchor" aria-label="anchor" href="#notation-of-sung-recall-comparison-examples"></a>
+</h3>
 <p><img src="Ex.1%20Target_Ex.1%20Recall.png" width="1296"></p>
 <p><img src="Ex.2%20Target_Ex.2%20Recall.png" width="1296"></p>
 <p><img src="Ex.3%20Target_Ex.3%20Recall.png" width="1296"></p>
@@ -183,9 +184,13 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 <p><img src="Ex.5%20Target_Ex.5%20Recall.png" width="1296"></p>
 <p><img src="Ex.6%20Target_Ex.6%20Recall.png" width="1296"></p>
 <div style="page-break-after: always;"></div>
+</div>
+<div class="section level3">
+<h3 id="similarity-scores-for-the-example-comparison-melodies">2.2 Similarity scores for the example comparison melodies<a class="anchor" aria-label="anchor" href="#similarity-scores-for-the-example-comparison-melodies"></a>
+</h3>
 <table class="table">
 <caption>
-<span id="tab:unnamed-chunk-18">Table 2: </span>Examples of two comparison melodies scored for their level of similarity.
+<span id="tab:unnamed-chunk-18">Table 2: </span>Similarity scores for the example comparison melodies.
 </caption>
 <thead><tr>
 <th style="text-align:right;">
@@ -459,9 +464,9 @@ NA
 <p>The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity <span class="citation">[e.g., @dowlingRecognitionMelodicTransformations1972]</span>. However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, we now run a series of short simulation studies.</p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="code-used-above">Code used above<a class="anchor" aria-label="anchor" href="#code-used-above"></a>
-</h3>
+<div class="section level2">
+<h2 id="code-used-above">3. Code used above<a class="anchor" aria-label="anchor" href="#code-used-above"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
@@ -649,7 +654,6 @@ NA
 <span>  </span>
 <span><span class="va">main_tb</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Examples of two comparison melodies scored for their level of similarity."</span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

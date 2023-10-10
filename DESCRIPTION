@@ -24,7 +24,8 @@ Suggests:
     kableExtra,
     htmlTable,
     flextable,
-    papaja
+    papaja,
+    r2glmm
 Config/testthat/edition: 3
 Imports: 
     sjmisc,

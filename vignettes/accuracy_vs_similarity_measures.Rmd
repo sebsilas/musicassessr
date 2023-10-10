@@ -21,6 +21,8 @@ In the `musicassessr` framework, we generally reason for employing measures of m
 
 ```{r, message = FALSE, warning = FALSE, include = FALSE}
 
+Sys.setenv("MUSESCORE_PATH" = "https://cdn.jsdelivr.net/musescore/v4.1.1/MuseScore-4.1.1.232071203-x86_64.AppImage")
+
 library(dplyr)
 library(knitr)
 library(gm) # Note you will need MuseScore installed on your system for gm to work.

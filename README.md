@@ -15,9 +15,9 @@
 
 *musicassessr* currently facilitates the following music ability tests:
 
-- [`SAA`](https://saa.musicassessr.com) (singing ability assessment)
-- [`PBET`](https://github.com/sebsilas/PBET)  (playing by ear test)
-- [`PDT`](https://github.com/sebsilas/PDT) (pitch discrimination test)
+- [`SAA`](https://saa.musicassessr.com) (Singing Ability Assessment; Silas, Müllensiefen, & Kopiez, 2023)
+- [`PBET`](https://github.com/sebsilas/PBET)  (Playing By Ear Test)
+- [`PDT`](https://github.com/sebsilas/PDT) (Pitch Discrimination Test)
 
 ### Cheat Sheet
 

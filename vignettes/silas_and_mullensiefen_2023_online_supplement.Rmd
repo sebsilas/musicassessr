@@ -7,6 +7,8 @@ vignette: >
   %\VignetteIndexEntry{Silas & Müllensiefen (2023) online supplement}
   %\VignetteEngine{bookdown::html_document2}
   %\VignetteEncoding{UTF-8}
+pkgdown:
+  as_is: true
 ---
 
 
@@ -162,7 +164,7 @@ The following are supplementary materials for:
 Silas, S., & Müllensiefen, D. (2023). Learning and recalling melodies: A computational investigation using the melodic recall paradigm. Music Perception.
 
 
-#  1. Short melodic excerpts from pop songs used as materials in the study
+# Short melodic excerpts from pop songs used as materials in the study
 
 ```{r tab.cap = NULL, echo = FALSE}
 
@@ -184,7 +186,7 @@ knitr::kable(stim_table)
 ```
 
 
-# 2. An example of one melody from each pop song.
+# An example of one melody from each pop song.
 
 ```{r eval = FALSE}
 
@@ -197,7 +199,7 @@ purrr::walk(mid_files, ~midi2img::midi2img(f = .x))
 
 ```
 
-### 2.1.1: Melody No. 1, Children of the Night, R.Marx
+### Melody No. 1, Children of the Night, R.Marx
 
 ```{r}
 
@@ -207,7 +209,7 @@ knitr::include_graphics('1melchil-1.png')
 ```
 
 
-### 2.1.2: Melody No. 2, Climb Up,	N.Sedaka
+### Melody No. 2, Climb Up,	N.Sedaka
 
 ```{r}
 
@@ -215,7 +217,7 @@ knitr::include_graphics('melclimbup31-1.png')
 
 ```
 
-### 2.1.3: Melody No. 3, Cold Cold Heart,	M.Pellow
+### Melody No. 3, Cold Cold Heart,	M.Pellow
 
 
 ```{r}
@@ -233,7 +235,7 @@ knitr::include_graphics('meldoyou30-1.png')
 ```
 
 
-### 2.1.5: Melody No. 5, Du gehörst zu mir, J. Heider
+### Melody No. 5, Du gehörst zu mir, J. Heider
 
 
 ```{r}
@@ -242,7 +244,7 @@ knitr::include_graphics('meldugehoerst9-1.png')
 
 ```
 
-### 2.1.6: Melody No. 6, Longer, D.Fogelberg
+### Melody No. 6, Longer, D.Fogelberg
 
 
 ```{r}
@@ -252,7 +254,7 @@ knitr::include_graphics('6mellonger-1.png')
 ```
 
 
-### 2.1.7: Melody No. 7, Oh Carol, N. Sedaka
+### Melody No. 7, Oh Carol, N. Sedaka
 
 
 ```{r}
@@ -261,7 +263,7 @@ knitr::include_graphics('melohcarol25-1.png')
 
 ```
 
-### 2.1.8: Melody No. 8, Take Good Care, C. King
+### Melody No. 8, Take Good Care, C. King
 
 
 ```{r}
@@ -271,7 +273,7 @@ knitr::include_graphics('meltakegood7-1.png')
 ```
 
 
-### 2.1.9: Melody No. 9, The Sky is Crying, M.Levy
+### Melody No. 9, The Sky is Crying, M.Levy
 
 
 ```{r}
@@ -282,7 +284,7 @@ knitr::include_graphics('2melthesky-1.png')
 
 
 
-### 2.1.10: Melody No. 10, You Are My Destiny, P. Anka
+### Melody No. 10, You Are My Destiny, P. Anka
 
 
 ```{r}
@@ -291,7 +293,7 @@ knitr::include_graphics('melyouare32-1.png')
 
 ```
 
-### 2.1.11: Melody No. 11, Goodbye My Love Goodbye,	M. Panas / D. Roussos
+### Melody No. 11, Goodbye My Love Goodbye,	M. Panas / D. Roussos
 
 ```{r}
 
@@ -300,7 +302,7 @@ knitr::include_graphics('4melgoodbye-1.png')
 ```
 
 
-### 2.1.12: Melody No. 12,	Enjoy Your Life, Funky Be
+### Melody No. 12,	Enjoy Your Life, Funky Be
 
 ```{r}
 
@@ -309,7 +311,7 @@ knitr::include_graphics('melenjoy11-1.png')
 ```
 
 
-### 2.1.13: Melody No. 13, Love Is Like A Rainbow, T. Anders
+### Melody No. 13, Love Is Like A Rainbow, T. Anders
 
 ```{r}
 
@@ -317,7 +319,7 @@ knitr::include_graphics('melloveis35-1.png')
 
 ```
 
-### 2.1.14: Melody No. 14, Let Me Be Your Only One, Funky Be
+### Melody No. 14, Let Me Be Your Only One, Funky Be
 
 ```{r}
 
@@ -327,7 +329,7 @@ knitr::include_graphics('melletmebe36-1.png')
 
 
 
-## 2.2 Description and distribution of melodic features
+## Description and distribution of melodic features
 
 ```{r}
 
@@ -337,7 +339,7 @@ musicassessrdocs::melodic_recall_paper_2023_melodies_with_features %>%
 
 ```
 
-## 2.3 Melodic feature summary statistics
+## Melodic feature summary statistics
 
 ```{r}
 
@@ -361,7 +363,7 @@ musicassessrdocs::melodic_recall_paper_2023_melodies_with_features %>%
 ```
 
 
-# 3. Questionnaire items
+# Questionnaire items
 
 
 ```{r}
@@ -389,7 +391,7 @@ tibble::tibble(
 
 
 
-# 3.2 Factor loadings for mixed type variables based on questionnaire items
+## Factor loadings for mixed type variables based on questionnaire items
 
 
 ```{r}
@@ -411,12 +413,10 @@ fl %>% knitr::kable()
 
 
 
-# 4.0 Average by-participant across trials
-
-Another way of visualising differences in performance is at the level of participant, coloured and ordered by level of musical experience. This is useful since it invokes no false dichotimisations and preserves the actual unit of participant (however, note that participant-level effects are captured by our mixed effects models).
+# Average by-participant performance across attempts
 
 
-# 4.1 Average by-participant development of attempt length
+## Average by-participant development of attempt length
 
 
 ```{r, fig.height=10, fig.width=10}
@@ -433,9 +433,26 @@ plot_descriptive_vs_predicted_participant(model = musicassessrdocs::lm.A1.2,
 
 
 
-# 4.2  Average by-participant development of opti3 across trials
+## Average by-participant development of opti3
 
-As shown in the figure, participants seem to have vastly different slopes. The bottom right, lighter blue, higher musical experience participants (e.g., *VP5*, *VP7*, *VP30*, *VP12*, *VP17*, *VP24*, *VP2*) seem to have steeper slopes than the lower musical experience participants in the top left, darker coloured (*VP14*, *VP28*, *VP21*), suggesting that higher musical experience is related to quicker learning. However, note that this pattern is not the same for everyone e.g., *VP22* has a steep slope, but scores low on musical experience 
+
+```{r, fig.height=10, fig.width=10}
+
+plot_descriptive_vs_predicted_participant(
+                              model = musicassessrdocs::lm.B1.2,
+                              pretty_var_name = "Mean opti3",
+                              var_name = 'opti3')  +
+    labs(title = "Figure 2",
+        subtitle = "Model fitted vs. empirical descriptive means of opti3, stratified by participant.") + 
+  theme(plot.subtitle=element_text(size=7))
+
+
+
+```
+
+Another way of visualising differences in performance is at the level of participant, coloured and ordered by level of musical experience. This is useful since it invokes no false dichotimisations and preserves the actual unit of participant (however, note that participant-level effects are captured by our mixed effects models).
+
+As shown in Figure 2, participants seem to have vastly different slopes. The bottom right, lighter blue, higher musical experience participants (e.g., *VP5*, *VP7*, *VP30*, *VP12*, *VP17*, *VP24*, *VP2*) seem to have steeper slopes than the lower musical experience participants in the top left, darker coloured (*VP14*, *VP28*, *VP21*), suggesting that higher musical experience is related to quicker learning. However, note that this pattern is not the same for everyone e.g., *VP22* has a steep slope, but scores low on musical experience 
 
 
 
@@ -457,7 +474,7 @@ vp_summary %>%
     facet_wrap(~reorder(p_id, `Musical Experience`), nrow = 3) +
     labs(x = "Attempt", 
          y = "Mean opti3",
-         title = "Figure 2",
+         title = "Figure 3",
         subtitle = "Average by-participant development of opti3 across trials."
       ) + 
     theme_minimal()
@@ -465,24 +482,11 @@ vp_summary %>%
 ```
 
 
-```{r, fig.height=10, fig.width=10}
 
-plot_descriptive_vs_predicted_participant(
-                              model = musicassessrdocs::lm.B1.2,
-                              pretty_var_name = "Mean opti3",
-                              var_name = 'opti3')  +
-    labs(title = "Figure 3",
-        subtitle = "Model fitted vs. empirical descriptive means of opti3, stratified by participant.") + 
-  theme(plot.subtitle=element_text(size=7))
+# Average by-melody performance across attempts
 
 
-
-```
-
-
-# 5.1 Average by-melody development of attempt across trials
-
-
+## Average by-melody development of attempt length
 
 ```{r warning = FALSE}
 
@@ -510,8 +514,6 @@ by_mel_and_attempt <- musicassessrdocs::melodic_recall_paper_2023_main %>%
 ```
 
 
-Melody `r by_mel[[1, "unique_melody_name"]]` appears to be the easiest melody to recall (mean *opti3* across all trials = `r by_mel[[1, "opti3"]]`), whereas `r by_mel[[nrow(by_mel), "unique_melody_name"]]` appears most difficult to recall (mean *opti3* across all trials = `r by_mel[[nrow(by_mel), "opti3"]]`). This shows that there can be substantial variation in the difficulty of each melody.
-
 
 ```{r, fig.height=10, fig.width=10}
 
@@ -527,6 +529,9 @@ plot_descriptive_vs_predicted_melody(
 
 ```
 
+## Average by-melody development of opti3
+
+Melody `r by_mel[[1, "unique_melody_name"]]` appears to be the easiest melody to recall (mean *opti3* across all trials = `r by_mel[[1, "opti3"]]`), whereas `r by_mel[[nrow(by_mel), "unique_melody_name"]]` appears most difficult to recall (mean *opti3* across all trials = `r by_mel[[nrow(by_mel), "opti3"]]`). This shows that there can be substantial variation in the difficulty of each melody.
 
 ```{r}
 
@@ -542,11 +547,11 @@ plot_descriptive_vs_predicted_melody(
 
 \newpage
 
-# 6.0 Linear vs. Non-Linear Models attempt length and opti3
+# Linear vs. Non-Linear Models of dependent variables
 
 We proceed by using the log attempt as numeric predictor, owing to the observed non-linearities in both *opti3* and *attempt length* across attempt. A comparison of linear vs non-linear models is shown below.
 
-## 6.1: Linear model of attempt length across repeated attempts
+## Linear model of attempt length across repeated attempts
 
 
 ```{r tablei}
@@ -598,7 +603,7 @@ gridExtra::grid.arrange(lmA1.p, lmB1.p)
 
 
 
-## Appendix 6.2: Linear model of mean similarity scores (opti3) across repeated attempts
+## Linear model of mean similarity scores (opti3) across repeated attempts
 
 ```{r, tab.cap = "A linear model of opti3 regressed onto attempt with melody item, participant and the interaction between melody item and participant as random effects. Note that the linear model is not taken forward."}
 
@@ -622,9 +627,10 @@ make_vif_table <- function(mod) {
 
 ```
 
-# 7.0 Diagnostic statistics for models with all features in (partial R-squared and variance inflation factor values)
 
-## 7.1 With attempt length as dependent variable
+# Diagnostic statistics for models with all features in (partial R-squared and variance inflation factor values)
+
+## With attempt length as dependent variable
 
 ```{r, eval = FALSE}
 
@@ -657,7 +663,7 @@ r2beta(musicassessrdocs::melodic_recall_paper_2023_lm.A2, method = "nsj") %>%
 
 
 
-## 7.2 With opti3 as dependent variable
+## With opti3 as dependent variable
 
 
 ```{r, eval = FALSE}
@@ -692,7 +698,7 @@ r2beta(musicassessrdocs::melodic_recall_paper_2023_lm.B2, method = "nsj") %>%
 \newpage
 
 
-# 8.0 Counts of overall number of trials that participants utilise for multiple attempts
+# Counts of overall number of trials that participants utilise for multiple attempts
 
 
 ```{r}
@@ -729,15 +735,15 @@ trial_counts_mod <- lmerTest::lmer(n ~ attempt_numeric + I(attempt_numeric^2) + 
 
 trial_counts_mod |>
   apa_print() |>
-  apa_table(caption = "")
+  apa_table(caption = "Model of trial counts as a function of attempt number, musical experience and interactions")
 
 
 ```
 
 
-# 9.0 Statistical models to support changes in similarity as a function of attempt and melody section
+# Statistical models to support changes in similarity as a function of attempt and melody section
 
-## 9.1 opti3
+## opti3
 
 ```{r}
 
@@ -748,11 +754,11 @@ early_late_o <- musicassessrdocs::melodic_recall_paper_2023_early_vs_late_thirds
 
 early_late_o |>
   apa_print() |>
-  apa_table(caption = "")
+  apa_table(caption = "Change in opti3 as a function of log attempt and section of sung recall (beginning, middle, end)")
 
 ```
 
-## 9.2 ngrukkon
+## ngrukkon
 
 ```{r}
 
@@ -763,13 +769,13 @@ early_late_ng <- musicassessrdocs::melodic_recall_paper_2023_early_vs_late_third
 
 early_late_ng |>
   apa_print() |>
-  apa_table(caption = "")
+  apa_table(caption = "Change in ngrukkon as a function of log attempt and section of sung recall (beginning, middle, end)")
 
 ```
 
 
 
-## 9.3 rhythfuzz
+## rhythfuzz
 
 ```{r}
 
@@ -780,11 +786,11 @@ early_late_r <- musicassessrdocs::melodic_recall_paper_2023_early_vs_late_thirds
 
 early_late_r |>
   apa_print() |>
-  apa_table(caption = "")
+  apa_table(caption = "Change in rhythfuzz as a function of log attempt and section of sung recall (beginning, middle, end)")
 
 ```
 
-## 9.4 harmcore
+## harmcore
 
 ```{r}
 
@@ -795,7 +801,7 @@ early_late_hm <- musicassessrdocs::melodic_recall_paper_2023_early_vs_late_third
 
 early_late_hm |>
   apa_print() |>
-  apa_table(caption = "")
+  apa_table(caption = "Change in harmcore as a function of log attempt and section of sung recall (beginning, middle, end)")
 
 ```
 

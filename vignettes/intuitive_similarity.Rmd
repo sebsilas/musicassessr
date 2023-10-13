@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
-```{r include = FALSE}
+```{r, message = FALSE}
 
 include_musicassessr_js(record_audio = FALSE, visual_notation = TRUE)
 

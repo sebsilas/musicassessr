@@ -15,7 +15,7 @@ pkgdown:
   as_is: true
 ---
 
-In the `musicassessr` framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data. It is worth noting that this approach is quite different to using measures of *accuracy* on such data. In this document, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.
+In the `musicassessr` framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data. It is worth noting that using measures of melodic *similarity* on such data is quite different to using measures of *accuracy*. In this vignette, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.
 
 
 
@@ -121,7 +121,9 @@ invert_melody <- function(m) {
 
 # 1. Foundations of accuracy-style measures
 
-In the context of melodic recall, broadly speaking, accuracy can be defined as the number of correct notes relative to something else. That something else could be i) the number of unique notes in the target stimulus or ii) the attempt length. Let us call a note that is both contained in the target melody and the sung recall a "hit", a note recalled that is not in the target stimulus, a "false alarm" and a note in the target melody but not the sung recall, a "miss". 
+First, let us define accuracy in the context of melodic recall research. In this context, broadly speaking, accuracy can be defined as the number of "correct" notes relative to something else, where "correct" usually means "contained in the target stimulus". The "something else" could be i) the number of unique notes in the target stimulus or ii) the attempt length. 
+
+Let us call a note that is both contained in the target melody and the sung recall a "hit", a note recalled that is not in the target stimulus, a "false alarm" and a note in the target melody but not the sung recall, a "miss". 
 
 
 ```{r, echo = FALSE}
@@ -156,6 +158,7 @@ Accuracy = \frac{NoHits}{NoHits + NoFalseAlarms + NoMisses}
 (\#eq:accuracy)
 \end{equation}
 
+
 Another measure related to accuracy is *precision*, defined as:
 
 <!-- tp / tp + fp -->
@@ -181,14 +184,14 @@ Recall = \frac{NoHits}{NoHits + NoFalseAlarms}
 
 where the denominator represents the number of notes in the sung recall.
 
-Precision and recall can be combined together into a score known as the F~1~ score, which is the harmonic mean of precision and recall, simplifying to: 
+Precision and recall can be combined together into a score known as the *F~1~ score*, which is the harmonic mean of precision and recall, simplifying to: 
 
 \begin{equation}
 F_1 = \frac{2 * NoHits}{2 * NoHits + NoMisses + NoFalseAlarms}
 (\#eq:f1score)
 \end{equation}
 
-The F~1~ score as well as precision and recall have been used extensively in computational contexts and music information retrieval contexts [@pearceMelodicGroupingMusic2010]. One issue in melodic recall research is that the length of a recall can be substantially different from that of a target melody length, in terms of number of notes. One way of dealing with this, in the context of accuracy, is to normalise based on the length of the stimuli:
+The *F~1~ score* as well as *precision* and *recall* have been used extensively in computational contexts and music information retrieval contexts [@pearceMelodicGroupingMusic2010]. One issue in melodic recall research is that the length of a recall can be substantially different from that of a target melody length, in terms of number of notes. One way of dealing with this, in the context of accuracy measurement, is to normalise based on the length of the stimuli:
 
 
 \begin{equation}
@@ -198,14 +201,7 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 
 where `Accuracy` is computed via Eq. 1 and `LogNormal` represents a log normal transformation function to map the accuracy value into the closed unit interval range.
 
-We profile these measures of accuracy, *Accuracy*, *Recall*, *Precision*, *AccuracyAdjusted* and *F~1~*, in Experiment 1.
-
-
-# 2. Example comparisons of accuracy vs. similarity measures on the same data
-
-We now score some simple examples to demonstrate the difference between accuracy and similarity (see Table 1 and Figure 1). Let us take the first five notes of the C major scale as our target. If the target and recall are the same, all measures of accuracy and similarity will be 1. However, as Example 1 shows, if the pitch order is reversed, the accuracy measures will be 1, but the overall measure of similarity (*opti3*), nearly half this. This corresponds to the fact that the notes are the same, but the order highly distorts the melodic identity (note that the harmonic and rhythmic identity is preserved, however). Conversely, as Example #2 shows, transposing the recall by a semitone causes a large deterioration in the accuracy scores, since nearly all notes are different, but the similarity measure is 1, corresponding to the fact that the melodic identity is preserved under the principle of transposition invariance. For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by YouTube^[https://www.youtube.com/watch?v=krDxhnaKD7Q] and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity. Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (*opti3*), but preserves accuracy.
-
-\newpage
+We profile these measures of accuracy, *Accuracy*, *Recall*, *Precision*, *AccuracyAdjusted* and *F~1~*, on melodic recall data [here](https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html).
 
 
 
@@ -255,7 +251,10 @@ the_lick_rhythms_text_diff <- c("quarter","quarter", "quarter", "quarter", "eigh
 
 ```
 
-##  2.1 Notation of sung recall comparison examples
+# 2. Example comparisons of accuracy vs. similarity measures on the same data
+
+We now score some simple examples to demonstrate the difference between accuracy and similarity scored on the same data. Let us take the first five notes of the C major scale as our target. If the target and recall are the same, all measures of accuracy and similarity will be 1. However, as Example 1 shows, if the pitch order is reversed, the accuracy measures will be 1, but the overall measure of similarity (*opti3*), nearly half this. This corresponds to the fact that the notes are the same, but the order highly distorts the melodic identity (note that the harmonic and rhythmic identity is preserved, however). 
+
 
 
 ```{r, echo = FALSE}
@@ -270,7 +269,13 @@ s1 <- create_sheet(ex1_t, ex1_r, ex1_rhythms_text, ex1_rhythms_text,
 
 knitr::include_graphics(s1)
 
+ sim_vs_acc(target = ex1_t, recall = ex1_r, example_no = 1, example_description = "Reversed Recall", 
+             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms)
+ 
 ```
+
+Conversely, as Example #2 shows, transposing the recall by a semitone causes a large deterioration in the accuracy scores, since nearly all notes are different, but the similarity measure is 1, corresponding to the fact that the melodic identity is preserved under the principle of transposition invariance. 
+
 
 
 ```{r, echo = FALSE}
@@ -286,7 +291,17 @@ s2 <- create_sheet(ex2_t, ex2_r, ex1_rhythms_text, ex1_rhythms_text,
 
 knitr::include_graphics(s2)
 
+  sim_vs_acc(target = ex2_t, recall = ex2_r, example_no = 2, example_description = "Transposed Recall", 
+             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms)
+
 ```
+
+
+For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by YouTube^[https://www.youtube.com/watch?v=krDxhnaKD7Q] and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity. Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (*opti3*), but preserves accuracy.
+
+\newpage
+
+
 
 
 ```{r, echo = FALSE}
@@ -294,6 +309,15 @@ knitr::include_graphics(s2)
 s3 <- create_sheet(the_lick, the_lick_retrograde, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
                    target_title = "Ex.3 Target", recall_title = "Ex.3 Recall",
                    just_return_name = TRUE)
+
+  sim_vs_acc(
+  target =  the_lick,
+  target_rhythms = the_lick_rhythms,
+  recall = the_lick_retrograde,
+  recall_rhythms = the_lick_rhythms,
+  example_no = 3,
+  example_description = "The Lick vs. its retrograde (rhythms the same)")
+  
 
 ```
 
@@ -310,6 +334,16 @@ knitr::include_graphics(s3)
 s4 <- create_sheet(the_lick, the_lick_inverted, the_lick_rhythms_text, the_lick_rhythms_text, key = -1, 
                    target_title = "Ex.4 Target", recall_title = "Ex.4 Recall",
                    just_return_name = TRUE)
+
+
+sim_vs_acc(
+  target =  the_lick,
+  target_rhythms = the_lick_rhythms,
+  recall = the_lick_inverted,
+  recall_rhythms = the_lick_rhythms,
+  example_no = 4,
+  example_description = "The Lick plus its inversion (rhythms the same)")
+
 ```
 
 ```{r, echo = FALSE}
@@ -332,6 +366,19 @@ s5 <- create_sheet(the_lick, the_lick_retrograde_inversion, the_lick_rhythms_tex
 
 knitr::include_graphics(s5)
 
+ 
+sim_vs_acc(
+  target =  the_lick,
+  target_rhythms = the_lick_rhythms,
+  recall = the_lick_retrograde_inversion,
+  recall_rhythms = the_lick_rhythms,
+  example_no = 5,
+  example_description = "The Lick plus its retrograde inversion (rhythms the same)"
+)
+  
+  
+
+  
 ```
 
 
@@ -346,73 +393,27 @@ s6 <- create_sheet(the_lick, the_lick, the_lick_rhythms_text, the_lick_rhythms_t
 
 ```{r, echo = FALSE}
 
+
 knitr::include_graphics(s6)
 
-
-```
-
-
-
-\newpage
-
-## 2.2 Similarity scores for the example comparison melodies
-
-
-```{r, warning = FALSE, echo = FALSE}
-
-
-
-main_tb <- rbind(
-  sim_vs_acc(target = ex1_t, recall = ex1_r, example_no = 1, example_description = "Reversed Recall", 
-             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms),
-  sim_vs_acc(target = ex2_t, recall = ex2_r, example_no = 2, example_description = "Transposed Recall", 
-             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms),
-  sim_vs_acc(
+sim_vs_acc(
   target =  the_lick,
   target_rhythms = the_lick_rhythms,
-  recall = the_lick_retrograde,
-  recall_rhythms = the_lick_rhythms,
-  example_no = 3,
-  example_description = "The Lick vs. its retrograde (rhythms the same)"),
-  
-  sim_vs_acc(
-    target =  the_lick,
-    target_rhythms = the_lick_rhythms,
-    recall = the_lick_inverted,
-    recall_rhythms = the_lick_rhythms,
-    example_no = 4,
-    example_description = "The Lick plus its inversion (rhythms the same)"),
-  
-  sim_vs_acc(
-    target =  the_lick,
-    target_rhythms = the_lick_rhythms,
-    recall = the_lick_retrograde_inversion,
-    recall_rhythms = the_lick_rhythms,
-    example_no = 5,
-    example_description = "The Lick plus its retrograde inversion (rhythms the same)"
-  ),
-  
-  
-  sim_vs_acc(
-    target =  the_lick,
-    target_rhythms = the_lick_rhythms,
-    recall = the_lick,
-    recall_rhythms = the_lick_rhythms_diff,
-    example_no = 6,
-    example_description = "The Lick plus its rhythm values changed."
-  )
-
-
+  recall = the_lick,
+  recall_rhythms = the_lick_rhythms_diff,
+  example_no = 6,
+  example_description = "The Lick plus its rhythm values changed."
 )
-  
-main_tb %>% 
-  knitr::kable(caption = "Similarity scores for the example comparison melodies.")
+
 
 ```
 
 
+The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity [e.g., @dowlingRecognitionMelodicTransformations1972]. However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our [simulation study](https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html). In Silas & Müllensiefen (2023), we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.
 
-The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity [e.g., @dowlingRecognitionMelodicTransformations1972]. However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, we now run a series of short simulation studies.
+# References
+
+Silas, S., & Müllensiefen, D. (2023). Learning and recalling melodies: A computational investigation using the melodic recall paradigm. Music Perception.
 
 
 # 3. Code used above

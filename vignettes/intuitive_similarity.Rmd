@@ -9,19 +9,37 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 
 library(dplyr)
 library(knitr)
 library(musicassessrdocs)
+library(musicassessr)
+
+knitr::opts_chunk$set(echo = FALSE)
+
 
 ```
 
-In this vignette, we give some examples which show the development of participant trial performance and a qualitative description of change in computed melodic similarity across multiple attempts.
+```{r}
 
-To illustrate the similarity measurement for different musical dimensions, the following figures show a typical improvement of the sung recalls of one participant of a particular test item.
+include_musicassessr_js(record_audio = FALSE, visual_notation = TRUE)
+
+```
+
+In this vignette, we give some examples which show the development of how a participant's performance may change across attempts at singing back the same melody. To illustrate the similarity measurement for different musical dimensions, the following figures show a typical improvement of the sung recalls of one participant of a particular test item.
 
 Participant *F.S.* (male, aged 29, plays bass in rock band) listened to an audio excerpt from the pop song "Cold, Cold Heart" by *Wet Wet Wet*, the vocal melody of which is depicted in Figure 1. 
+
+
+```{r}
+
+musicassessr::present_stimuli(stimuli = 'https://musicassessr.com/assets/Similarity 1.musicxml',
+                              stimuli_type = "musicxml_file",
+                              display_modality = "visual")
+
+```
 
 
 ```{r fig.cap = "Figure 1: Transcription of original melody from chorus of “Cold Cold Heart” by Wet Wet Wet", echo = FALSE}
@@ -44,6 +62,13 @@ This rendition resembles most to the third (and last) phrase of the original mel
 ```{r fig.cap = "Figure 3: Transcription of F.S.’s sung recall of the test item on the sixth trial", echo = FALSE}
 
 knitr::include_graphics('ParticipantFS_sungrecall_transcription_sixth_trial.png')
+
+```
+
+
+```{r}
+
+
 
 ```
 

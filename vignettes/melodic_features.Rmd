@@ -18,7 +18,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
 
 ```
 
-The melodic features in `musicassessr` come from *FANTASTIC* and xxx.
+The melodic features used in `musicassessr` mainly come from the *FANTASTIC* library (Müllensiefen, 2009), except where noted.
 
 ```{r}
 
@@ -27,3 +27,15 @@ itembankr::get_melodic_feature_table(return_kable = FALSE) %>%
   knitr::kable(escape = FALSE)
 
 ```
+
+
+# References
+
+
+Beaty, R. E., Frieler, K., Norgaard, M., Merseal, H. M., MacDonald, M. C., & Weiss, D. J. (2021). Expert musical improvisations contain sequencing biases seen in language production. Journal of Experimental Psychology. https://doi.org/10.1037/xge0001107
+
+
+Harrison, P. M. C., Bianco, R., Chait, M., & Pearce, M. T. (2020). PPM-Decay: A computational model of auditory prediction with memory decay. PLOS Computational Biology, 16(11), e1008304. https://doi.org/10.1371/journal.pcbi.1008304
+
+Müllensiefen, D. (2009). FANTASTIC: Feature ANalysis Technology Accessing STatistics (In a Corpus; Technical report). 37.
+

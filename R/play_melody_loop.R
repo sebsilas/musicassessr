@@ -133,7 +133,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
       psychTestR::while_loop(test = function(state, ...) {
         ! psychTestR::get_global("user_determined_stop", state)
       }, logic = psychTestR::join(
-                construct_play_melody_page(melody_no = NA,
+                construct_play_melody_page(melody = NULL,
+                                           melody_row = NULL,
+                                           melody_no = NA,
                                            var_name,
                                            max_goes,
                                            page_type,
@@ -189,7 +191,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
     # This will return a sequence of test items
     items <- purrr::map(start_from_trial_no:num_items, function(melody_no) {
 
-      construct_play_melody_page(melody_no,
+      construct_play_melody_page(melody = NULL,
+                                 melody_row = NULL,
+                                 melody_no,
                                  var_name,
                                  max_goes,
                                  page_type,
@@ -230,9 +234,11 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 
     items <- purrr::map(1:nrow(presampled_items), function(x) {
 
-      melody <- presampled_items %>% dplyr::slice(x)
+      melody <- presampled_items %>% dplyr::slice(!! x)
 
-      construct_play_melody_page(melody_no,
+      construct_play_melody_page(melody = NULL,
+                                 melody_row = melody, # We actually want to give the whole row to melody row
+                                 melody_no = x,
                                  var_name,
                                  max_goes,
                                  page_type,
@@ -265,7 +271,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  first_note_message,
                                  transposed_message,
                                  play_first_note_button_text,
-                                 reactive_melody_no = TRUE)
+                                 reactive_melody_no = FALSE)
 
     })
 
@@ -284,7 +290,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 }
 
 
-construct_play_melody_page <- function(melody_no,
+construct_play_melody_page <- function(melody = NULL,
+                                       melody_row = NULL,
+                                       melody_no,
                                        var_name,
                                        max_goes,
                                        page_type,
@@ -321,6 +329,8 @@ construct_play_melody_page <- function(melody_no,
 
 
   page <- play_melody_loop(melody_no = melody_no,
+                           melody_row = melody_row,
+                           melody = melody,
                            var_name = var_name,
                            max_goes = max_goes,
                            page_type = page_type,
@@ -646,6 +656,9 @@ present_melody <- function(stimuli,
 
     if(length(answer_meta_data) < 1L) {
       answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
+      if(is.null(answer_meta_data)) {
+        answer_meta_data <- data.frame()
+      }
     }
 
     logging::loginfo("Transpose visual notation play melody loop: %s", transpose_visual_notation)
@@ -825,8 +838,6 @@ grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, r
   range <- psychTestR::get_global("range", state)
   inst <- psychTestR::get_global("inst", state)
 
-  print("inst..")
-  print(inst)
   transpose <- transposition_check(melody_row)
 
   durations <- if(arrhythmic) NA else itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(durations))
@@ -922,6 +933,11 @@ melody_checks <- function(melody, state, stimuli_type = "midi_notes", arrhythmic
   if(is.data.frame(melody)) {
     durations <- melody %>% dplyr::pull(durations) # durations needs to be first
     melody <- melody %>% dplyr::pull(abs_melody)
+  }
+
+  if(is.scalar.character(melody)) {
+    durations <- itembankr::str_mel_to_vector(durations)
+    melody <- itembankr::str_mel_to_vector(melody)
   }
 
   start_note <- 1L

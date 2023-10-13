@@ -15,9 +15,9 @@
 
 *musicassessr* currently facilitates the following music ability tests:
 
-- [`SAA`](https://saa.musicassessr.com) (Singing Ability Assessment; Silas, Müllensiefen, & Kopiez, 2023)
-- [`PBET`](https://github.com/sebsilas/PBET)  (Playing By Ear Test)
-- [`PDT`](https://github.com/sebsilas/PDT) (Pitch Discrimination Test)
+- [`SAA`](https://saa.musicassessr.com) (*Singing Ability Assessment*; Silas, Müllensiefen, & Kopiez, 2023)
+- [`PBET`](https://github.com/sebsilas/PBET)  (*Playing By Ear Test*)
+- [`PDT`](https://github.com/sebsilas/PDT) (*Pitch Discrimination Test*; our re-implementation of Soranzo & Grassi, 2014)
 
 ### Cheat Sheet
 
@@ -51,4 +51,5 @@ Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Utilising a new generation of
 
 Silas, S., Kopiez, R., & Müllensiefen, D. (2021). What makes playing by ear difficult? SEMPRE conference.
 
+Soranzo, A., & Grassi, M. (2014). Psychoacoustics: A comprehensive Matlab toolbox for auditory testing. Frontiers in Psychology, 5. https://doi.org/10.3389/fpsyg.2014.00712
 

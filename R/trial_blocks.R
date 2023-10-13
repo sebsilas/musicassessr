@@ -728,7 +728,7 @@ melody_trials <- function(var_name,
                                shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
                              ## Sample example items
-                             handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
+                             if(!presampled) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
                              ## Run examples
                              multi_page_play_melody_loop(
                                presampled_items = if(presampled) item_bank else NULL,
@@ -770,9 +770,10 @@ melody_trials <- function(var_name,
                            )
                          },
                          ## Sample items
-                         handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
+                        if(!presampled) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
                          ## Trials
                          multi_page_play_melody_loop(
+                           presampled_items = if(presampled) item_bank else NULL,
                            stimuli_type = "midi_notes",
                            var_name = var_name,
                            num_items = num_items_flat,

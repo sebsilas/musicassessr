@@ -35,7 +35,7 @@ Participant *F.S.* (male, aged 29, plays bass in rock band) listened to an audio
 
 ```{r, warning = FALSE}
 
-musicassessr::present_stimuli(stimuli = 'Similarity 1.musicxml',
+musicassessr::present_stimuli(stimuli = 'https://musicassessr.com/assets/Similarity%201.musicxml',
                               stimuli_type = "musicxml_file",
                               display_modality = "visual")
 

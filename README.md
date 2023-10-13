@@ -24,6 +24,15 @@
 <a href="https://musicassessr.com/assets/musicassessr_cheat_sheet.pdf"><img src="https://musicassessr.com/assets/musicassessr_cheatsheet.png" width="630" height="495"/></a>
 
 
+
+### Analysis pipeline
+
+![Analysis pipeline](https://musicassessr.com/assets/analysis_pipeline.jpg)
+
+### Research and Documentation
+
+You can find several articles and tutorials [here](https://sebsilas.github.io/musicassessr/articles/), which include summarised results of research utilising this software (see: white papers). For in depth reading, follow the results to the real publications.
+
 ## References
 
 Baker, D. (2021). MeloSol Corpus. Empirical Musicology Review, 16, 106–113. https://doi.org/10.18061/emr.v16i1.7645

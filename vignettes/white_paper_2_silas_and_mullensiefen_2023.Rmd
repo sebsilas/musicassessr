@@ -8,6 +8,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+```{r, echo = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+
+```
+
 # Learning and recalling melodies. A computational investigation using the melodic recall paradigm
 
 ## Silas and Müllensiefen (2023)
@@ -27,9 +34,9 @@ It was found that, as people try to recall long melodies, their attempts tend to
 
 Different algorithmic measures were used to assess how well people recall and sing melodies. Specifically, we profiled measures related to the notion of "accuracy" against measures of melodic similarity. We found that accuracy measures have notable limitations. Measures of melodic similarity measures were preferred because they rewarded participants for singing more notes and approaching the true length of the melody, which was not always the case for accuracy measures. 
 
-```{r}
+```{r, fig.cap = "Simulation experiment results for different methods of scoring melodic recall data."}
 
-# include_graphics()
+knitr::include_graphics('similarity_accuracy_simulations_main.jpg')
 
 ```
 
@@ -42,21 +49,64 @@ We summarise the key results of Experiment 2:
 
 1. Recall of Melodies Improves Over Time: When people try to remember a melody, they tend to start with an incomplete recall on their first attempt. With each subsequent try, they usually add more notes to their recall. This process of recall improves over time, but it often doesn't reach a perfect match with the original melody, even after six attempts.
 
+
+```{r}
+
+knitr::include_graphics('white_paper_2_figure_1.png')
+
+```
+
 2. Learning Curve Resembles an Exponential Curve: The improvement in recalling melodies follows a curve that resembles an exponential shape. It keeps increasing with each attempt but eventually levels off, usually not reaching the full length of the target melody.
+
+
+
+```{r}
+
+knitr::include_graphics('white_paper_2_figure_2.png')
+
+```
+
 
 3. Different Aspects of Melodies Are Learned Differently: When people recall melodies, they tend to focus on improving the earlier parts of the melody, performing less well on the later notes they've added more recently. However, when it comes to rhythm, the middle of the melody is remembered better than the earlier or later parts.
 
+```{r, fig.width = 16, fig.height = 16}
+
+knitr::include_graphics('white_paper_2_figure_5.png')
+
+```
+
 4. Harmonic Elements May Not Improve Across Attempts: While other aspects like rhythm and intervallic structure improve across recall attempts, harmonic elements may remain stable. This suggests that people might focus on pitch and interval information first, and when they can't recall more intervals, they switch to remembering rhythmic details.
 
-5. Melodies Are Built Simultaneously Across Different Aspects: Instead of remembering different musical features separately, people tend to build representations of melodies across various aspects simultaneously. This approach may be more efficient and reflects the interconnection of different melodic features.
+
+```{r, fig.width = 16, fig.height = 16}
+
+knitr::include_graphics('white_paper_2_figure_3.png')
+
+```
+
+5. Melodies Might Be Learned Simultaneously Across Different Aspects: Instead of remembering different musical features separately, we argued that *perhaps* people tend to build representations of melodies across various aspects simultaneously. This approach may be more efficient and reflects the interconnection of different melodic features.
 
 6. Individual Differences in Melodic Recall: Some people remember certain melodies better than others, possibly due to prior familiarity with similar melodies or differences in their musical and nonmusical memory skills.
+
+
+```{r}
+
+knitr::include_graphics('white_paper_2_figure_4.png')
+
+```
 
 7. Longer Melodies Are More Challenging: Longer melodies are more difficult to remember because they require more notes to recall, and this can strain working memory. The study suggests that the main challenge in recalling melodies is often the sheer length of the melody itself.
 
 8. Audio Helps Memory: Learning melodies from full audio, rather than symbolic representations like sheet music (MIDI), makes it easier to remember. Acoustic features, lyrics, and the human voice may assist memory in recalling melodies.
 
-9. Target Melody Length Affects Sung Recall Performance *Via* The Attempt Length: 
+9. Target Melody Length Affects Sung Recall Performance *Via* The Attempt Length: In a mediation model, we show that longer melodies lead to longer attempts, which generally result in higher melodic similarity scores. However, the increased complexity of longer melodies negatively affects melodic similarity scores, balancing out the overall bivariate relationship, making it statistically insignificant.
+
+```{r}
+
+knitr::include_graphics('mediation_model.png')
+
+```
+
 
 # Conclusion
 

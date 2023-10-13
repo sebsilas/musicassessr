@@ -1,0 +1,14 @@
+
+
+
+---
+title: "musicassessr technical details"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{musicassessr technical details}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+# Microphone internal vs. external

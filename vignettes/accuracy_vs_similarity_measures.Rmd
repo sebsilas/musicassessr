@@ -28,7 +28,7 @@ library(citr)
 library(kableExtra)
 library(htmlTable)
 
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 
 ```
@@ -269,8 +269,10 @@ s1 <- create_sheet(ex1_t, ex1_r, ex1_rhythms_text, ex1_rhythms_text,
 
 knitr::include_graphics(s1)
 
- sim_vs_acc(target = ex1_t, recall = ex1_r, example_no = 1, example_description = "Reversed Recall", 
-             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms)
+sim_vs_acc(target = ex1_t, recall = ex1_r, example_no = 1, example_description = NULL, 
+           target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms) %>% 
+  dplyr::select(-PMI) %>% 
+  knitr::kable(caption = "Reversed recall similarity results")
  
 ```
 
@@ -282,7 +284,7 @@ Conversely, as Example #2 shows, transposing the recall by a semitone causes a l
 
 s2 <- create_sheet(ex2_t, ex2_r, ex1_rhythms_text, ex1_rhythms_text,
                    target_title = "Ex.2 Target", recall_title = "Ex.2 Recall",
-                   just_return_name = TRUE)
+                   just_return_name = TRUE) 
 
 ```
 
@@ -291,17 +293,15 @@ s2 <- create_sheet(ex2_t, ex2_r, ex1_rhythms_text, ex1_rhythms_text,
 
 knitr::include_graphics(s2)
 
-  sim_vs_acc(target = ex2_t, recall = ex2_r, example_no = 2, example_description = "Transposed Recall", 
-             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms)
+  sim_vs_acc(target = ex2_t, recall = ex2_r, example_no = 2, example_description = NULL, 
+             target_rhythms = ex1_rhythms, recall_rhythms = ex1_rhythms)  %>% 
+  dplyr::select(-PMI) %>% 
+  knitr::kable(caption = "Transposed recall similarity results")
 
 ```
 
 
-For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by YouTube^[https://www.youtube.com/watch?v=krDxhnaKD7Q] and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity. Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (*opti3*), but preserves accuracy.
-
-\newpage
-
-
+For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by YouTube^[https://www.youtube.com/watch?v=krDxhnaKD7Q] and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. 
 
 
 ```{r, echo = FALSE}
@@ -316,7 +316,9 @@ s3 <- create_sheet(the_lick, the_lick_retrograde, the_lick_rhythms_text, the_lic
   recall = the_lick_retrograde,
   recall_rhythms = the_lick_rhythms,
   example_no = 3,
-  example_description = "The Lick vs. its retrograde (rhythms the same)")
+  example_description = NULL)  %>% 
+  dplyr::select(-PMI) %>% 
+  knitr::kable(caption = "The Lick vs. its retrograde (rhythms the same) similarity results")
   
 
 ```
@@ -327,6 +329,9 @@ s3 <- create_sheet(the_lick, the_lick_retrograde, the_lick_rhythms_text, the_lic
 knitr::include_graphics(s3)
 
 ```
+
+
+Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity. 
 
 
 ```{r, echo = FALSE}
@@ -342,7 +347,9 @@ sim_vs_acc(
   recall = the_lick_inverted,
   recall_rhythms = the_lick_rhythms,
   example_no = 4,
-  example_description = "The Lick plus its inversion (rhythms the same)")
+  example_description = NULL)  %>% 
+  dplyr::select(-PMI) %>% 
+  knitr::kable(caption = "The Lick plus its inversion (rhythms the same) similarity results")
 
 ```
 
@@ -373,13 +380,16 @@ sim_vs_acc(
   recall = the_lick_retrograde_inversion,
   recall_rhythms = the_lick_rhythms,
   example_no = 5,
-  example_description = "The Lick plus its retrograde inversion (rhythms the same)"
-)
+  example_description = NULL) %>% 
+  dplyr::select(-PMI) %>% 
+  knitr::kable(caption = "The Lick plus its retrograde inversion (rhythms the same) similarity results")
   
   
 
   
 ```
+
+Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (*opti3*), but preserves accuracy.
 
 
 ```{r, echo = FALSE}
@@ -402,8 +412,9 @@ sim_vs_acc(
   recall = the_lick,
   recall_rhythms = the_lick_rhythms_diff,
   example_no = 6,
-  example_description = "The Lick plus its rhythm values changed."
-)
+  example_description = NULL) %>% 
+  dplyr::select(-PMI) %>% 
+  knitr::kable(caption = "The Lick plus its rhythm values changed similarity results")
 
 
 ```

@@ -20,38 +20,38 @@ Here is a high-level summary of the results of:
 
 In this paper, we discuss the development of one of *musicassessr*'s flagship tests, the *Singing Ability Assessment* (*SAA*). The [*SAA*](https://saa.musicassessr.com) test is designed to evaluate various aspects of a human singing abilities and melodic memory. The manuscript presents two online experiments with a total of 1,157 participants.
 
-The *SAA* uses a probabilistic algorithm (*pYIN*; Cannam et al., 2010) to transcribe audio of people singing and scores it in real time using various statistical modelling approaches, mainly grounded in latent variable modelling and item response theory. For long note singing, we identified three key factors: pitch accuracy, pitch volatility, and changes in pitch stability. For singing melodies, we built a model that takes into account aspects of the melody's structure, such as tonality and length, to predict how well a person can recall and sing back the melody.
+The *SAA* uses a probabilistic algorithm (*pYIN*; Cannam et al., 2010) to transcribe audio of people singing and scores it in real time using various statistical modelling approaches, mainly grounded in latent variable modelling and item response theory. For long note singing, we identified three key factors: pitch accuracy, pitch volatility, and changes in pitch stability. For singing melodies, we built a model that takes into account aspects of the melody's structure, such as tonality and target melody length, to predict how well a person can recall and sing back the melody.
 
-The results of the study show that the *SAA* scores are related to several other musical abilities, existing measures of singing accuracy, demographic factors, and the hardware equipment used by the participants.
+The results of the study show that the *SAA* scores are related to several other musical abilities, existing measures of singing accuracy, demographic factors, and the hardware equipment used by participants.
 
 
 # Introduction
 
 We discuss the importance of assessing musical production, particularly singing, and its integration with melodic memory research. The key points are:
 
-1. Lack of Attention to Musical Production: Musical production tests, which involve performing music, have been underutilized compared to tests focusing on listening skills.
+1. Lack of Attention to Musical Production: Musical production tests, which involve performing music, have been underutilised compared to tests focusing on listening skills.
 
 2. Perceptual vs. Participatory Nature: We note how perceptual musical ability tests do not consider the participatory and embodied nature of music, which involves active production.
 
 3. Importance of Music Production: Recent research highlights that understanding the production of music is crucial for a comprehensive understanding of musical ability.
 
-4. Methodological Challenges: The primary reason for the underutilization of music production tests is methodological difficulties in assessing musical behavior due to issues like "dirty data."
+4. Methodological Challenges: The primary reason for the underutilisation of music production tests is methodological difficulties in assessing musical behaviour: the issue of so-called "dirty data."
 
 5. Singing as a Musical Production Test: We introduce the development of a singing test as a representative form of music production test, which can be used to assess musical abilities and enhance music education.
 
 6. Melodic Recall and Singing Accuracy Research: Research into melodic memory and singing accuracy is often conducted separately, despite the inherent connection between the two.
 
-7. Integration of Singing Accuracy and Melodic Recall: We argue that we need to integrate singing accuracy and melodic recall research to understand the relationship between low-level singing abilities and high-level melodic memory.
+7. Integration of Singing Accuracy and Melodic Recall: We argue that we need to syntheise singing accuracy and melodic recall research to understand the relationship between low-level singing abilities and high-level melodic memory.
 
-8. Singing Accuracy and Melodic Recall Paradigms: The text discusses various paradigms used in singing accuracy and melodic recall research, including the Seattle Singing Accuracy Protocol (*SSAP*, Demorest et al. 2015) and the Melodic Recall Paradigm.
+8. Singing Accuracy and Melodic Recall Paradigms: We review various paradigms used in singing accuracy and melodic recall research, including the Seattle Singing Accuracy Protocol (*SSAP*, Demorest et al. 2015) and the Melodic Recall Paradigm (Sloboda & Parker, 1985).
 
 9. "Dirty" Musical Data: We highlight the challenges related to working with "dirty" musical data, which requires expert interpretation and transcription from audio recordings.
 
-10. Computational Approach: Advances in technology have made it possible to automate and objectively measure produced musical behavior, addressing some of the challenges of "dirty" data.
+10. Computational Approach: Advances in technology have made it possible to automate and more objectively measure produced musical behavior, addressing some of the challenges of "dirty" data.
 
-11. Singing Test Framework: We introduce an open-source framework (`musicassessr`!) for conducting singing tests and explains its features, including real-time noise measurement and presenting stimuli based on participants' vocal ranges.
+11. Singing Test Framework: We introduce an open-source framework (`musicassessr`!) for conducting music production tests and explains its features, including real-time noise measurement and presenting stimuli based on participants' vocal ranges.
 
-12. Integrating Singing Accuracy and Melodic Recall: We explain how singing accuracy and melodic recall can be integrated through item response theory (*IRT*), a psychometric modeling framework.
+12. Integrating Singing Accuracy and Melodic Recall: We explain how singing accuracy and melodic recall approaches can be integrated through item response theory (*IRT*), a psychometric modeling framework.
 
 ## Motivations
 
@@ -61,22 +61,20 @@ We discuss the importance of assessing musical production, particularly singing,
 
 15. Cognitive Modeling via *IRT*: We discuss how item response theory is used to relate structural features of melodies to cognitive difficulty in melody processing.
 
-16. The Present Study: The text introduces the Singing Ability Assessment (SAA) and describes how it was developed, tested, and validated through two experiments.
+16. The Present Study: The text introduces the Singing Ability Assessment (*SAA*) and describes how it was developed, tested, and validated through two experiments.
 
-Overall, we highlight the importance of assessing musical production, particularly singing, and discusses the challenges and advancements in this area of research.
+Overall, we highlight the importance of assessing musical production, particularly singing, and discuss the challenges and advancements in this area of research.
 
 # Experiment 1: Design, development of and calibration of the Singing Ability Assessment (SAA) task
 
 
 - We developed a prototype of the *SAA* where all scoring was done post-hoc.
 
-- We created a significant explanatory model explaining a moderate proportion of variance in the data, supporting their hypothesis that melodic complexity features are relevant predictors.
+- We created an explanatory item response theory model explaining a moderate proportion of variance in the data, supporting our hypothesis that melodic complexity features are relevant predictors of sung recall performance.
 
-- Singing ability was related to melodic discrimination, pitch imagery abilities, and mistuning perception, offering concurrent validity to the singing test.
+- Singing ability, as derived here, was related to melodic discrimination, pitch imagery abilities, and mistuning perception, offering concurrent validity to the singing test. The test scores were related to musical training, suggesting that singing abilities may be improved by musical training (or that those with naturally good singing abilities are predisposed to musical training).
 
-- The test also showed a moderate correlation with self-reported singing ability but had non-significant correlations with visuospatial working memory and pitch discrimination abilities.
-
-- The test was related to musical training, suggesting that singing abilities may be improved by such training (or that those with naturally good singing abilities are predisposed to musical training).
+- The test scores also showed a moderate correlation with self-reported singing ability but had non-significant correlations with visuospatial working memory and pitch discrimination abilities.
 
 - Experiment 1 demonstrated that the analysis pipeline produced consistent results despite "dirty musical data."
 
@@ -85,7 +83,7 @@ Overall, we highlight the importance of assessing musical production, particular
 
 - Experiment 2 aimed to work towards creating an adaptive singing test by adding new features and updating the procedure to produce cleaner data.
 
-- Long note singing and melodic singing were found to be somewhat differentiated tasks, with the former relying more on simple perceptual processes.
+- Long note singing and melodic singing were found to be somewhat differentiated tasks, with the former relying more on simpler perceptual processes.
 
 - Demographic features like musical training, age, and gender had relatively small relationships with singing ability.
 
@@ -93,9 +91,9 @@ Overall, we highlight the importance of assessing musical production, particular
 
 - The paper described the development of an open-source infrastructure for testing sung recall, bridging melodic memory and singing accuracy perspectives.
 
-- The framework allows researchers to score singing data using various measures and facilitates research in both musical abilities and production paradigms.
+- The framework allows researchers to score singing data using various measures and facilitates research about several interesting musical abilities.
 
-- The flexibility of the framework allows for adaptation in different settings and the inclusion of new singing procedures.
+- The flexibility of the framework allows for adaptation into different settings and the inclusion of new procedures.
 
 
 # References
@@ -103,3 +101,6 @@ Overall, we highlight the importance of assessing musical production, particular
 Demorest, S. M., Pfordresher, P. Q., Bella, S. D., Hutchins, S., Loui, P., Rutkowski, J., & Welch, G. F. (2015). Methodological perspectives on singing accuracy: An introduction to the special issue on singing accuracy (part 2). Music Perception, 32(3), 266–271. https://doi.org/10.1525/mp.2015.32.3.266
 
 Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Singing Ability Assessment: Development and validation of a singing test based on item response theory and a general open-source software environment for singing data. Behaviour Research Methods. https://doi.org/10.3758/s13428-023-02188-0
+
+Sloboda, J. (2004). Immediate recall of melodies. In Exploring the Musical Mind. Oxford University Press. https://doi.org/10.1093/acprof:oso/9780198530121.003.0004
+

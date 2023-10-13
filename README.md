@@ -31,7 +31,7 @@
 
 ### Research and Documentation
 
-You can find several articles and tutorials [here](https://sebsilas.github.io/musicassessr/articles/), which include summarised results of research utilising this software (see: white papers). For in depth reading, follow the results to the real publications.
+You can find several articles and tutorials [here](https://sebsilas.github.io/musicassessr/articles/), which include summarised results of research utilising this software (see: white papers). For in-depth reading, follow the results to the actual publications.
 
 ## References
 

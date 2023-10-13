@@ -93,7 +93,7 @@ Overall, we highlight the importance of assessing musical production, particular
 
 - The framework allows researchers to score singing data using various measures and facilitates research about several interesting musical abilities.
 
-- The flexibility of the framework allows for adaptation into different settings and the inclusion of new procedures.
+- The flexibility of the framework readily allows for adaptation into different settings and the inclusion of new procedures.
 
 
 # References

@@ -121,11 +121,11 @@ grounded in latent variable modelling and item response theory. For long
 note singing, we identified three key factors: pitch accuracy, pitch
 volatility, and changes in pitch stability. For singing melodies, we
 built a model that takes into account aspects of the melody’s structure,
-such as tonality and length, to predict how well a person can recall and
-sing back the melody.</p>
+such as tonality and target melody length, to predict how well a person
+can recall and sing back the melody.</p>
 <p>The results of the study show that the <em>SAA</em> scores are
 related to several other musical abilities, existing measures of singing
-accuracy, demographic factors, and the hardware equipment used by the
+accuracy, demographic factors, and the hardware equipment used by
 participants.</p>
 </div>
 <div class="section level2">
@@ -136,7 +136,7 @@ particularly singing, and its integration with melodic memory research.
 The key points are:</p>
 <ol style="list-style-type: decimal">
 <li><p>Lack of Attention to Musical Production: Musical production
-tests, which involve performing music, have been underutilized compared
+tests, which involve performing music, have been underutilised compared
 to tests focusing on listening skills.</p></li>
 <li><p>Perceptual vs. Participatory Nature: We note how perceptual
 musical ability tests do not consider the participatory and embodied
@@ -145,9 +145,9 @@ nature of music, which involves active production.</p></li>
 understanding the production of music is crucial for a comprehensive
 understanding of musical ability.</p></li>
 <li><p>Methodological Challenges: The primary reason for the
-underutilization of music production tests is methodological
-difficulties in assessing musical behavior due to issues like “dirty
-data.”</p></li>
+underutilisation of music production tests is methodological
+difficulties in assessing musical behaviour: the issue of so-called
+“dirty data.”</p></li>
 <li><p>Singing as a Musical Production Test: We introduce the
 development of a singing test as a representative form of music
 production test, which can be used to assess musical abilities and
@@ -156,26 +156,27 @@ enhance music education.</p></li>
 melodic memory and singing accuracy is often conducted separately,
 despite the inherent connection between the two.</p></li>
 <li><p>Integration of Singing Accuracy and Melodic Recall: We argue that
-we need to integrate singing accuracy and melodic recall research to
+we need to syntheise singing accuracy and melodic recall research to
 understand the relationship between low-level singing abilities and
 high-level melodic memory.</p></li>
-<li><p>Singing Accuracy and Melodic Recall Paradigms: The text discusses
-various paradigms used in singing accuracy and melodic recall research,
+<li><p>Singing Accuracy and Melodic Recall Paradigms: We review various
+paradigms used in singing accuracy and melodic recall research,
 including the Seattle Singing Accuracy Protocol (<em>SSAP</em>, Demorest
-et al. 2015) and the Melodic Recall Paradigm.</p></li>
+et al. 2015) and the Melodic Recall Paradigm (Sloboda &amp; Parker,
+1985).</p></li>
 <li><p>“Dirty” Musical Data: We highlight the challenges related to
 working with “dirty” musical data, which requires expert interpretation
 and transcription from audio recordings.</p></li>
 <li><p>Computational Approach: Advances in technology have made it
-possible to automate and objectively measure produced musical behavior,
-addressing some of the challenges of “dirty” data.</p></li>
+possible to automate and more objectively measure produced musical
+behavior, addressing some of the challenges of “dirty” data.</p></li>
 <li><p>Singing Test Framework: We introduce an open-source framework
-(<code>musicassessr</code>!) for conducting singing tests and explains
-its features, including real-time noise measurement and presenting
-stimuli based on participants’ vocal ranges.</p></li>
+(<code>musicassessr</code>!) for conducting music production tests and
+explains its features, including real-time noise measurement and
+presenting stimuli based on participants’ vocal ranges.</p></li>
 <li><p>Integrating Singing Accuracy and Melodic Recall: We explain how
-singing accuracy and melodic recall can be integrated through item
-response theory (<em>IRT</em>), a psychometric modeling
+singing accuracy and melodic recall approaches can be integrated through
+item response theory (<em>IRT</em>), a psychometric modeling
 framework.</p></li>
 </ol>
 <div class="section level3">
@@ -193,11 +194,11 @@ research.</p></li>
 theory is used to relate structural features of melodies to cognitive
 difficulty in melody processing.</p></li>
 <li><p>The Present Study: The text introduces the Singing Ability
-Assessment (SAA) and describes how it was developed, tested, and
-validated through two experiments.</p></li>
+Assessment (<em>SAA</em>) and describes how it was developed, tested,
+and validated through two experiments.</p></li>
 </ol>
 <p>Overall, we highlight the importance of assessing musical production,
-particularly singing, and discusses the challenges and advancements in
+particularly singing, and discuss the challenges and advancements in
 this area of research.</p>
 </div>
 </div>
@@ -208,18 +209,19 @@ Ability Assessment (SAA) task<a class="anchor" aria-label="anchor" href="#experi
 <ul>
 <li><p>We developed a prototype of the <em>SAA</em> where all scoring
 was done post-hoc.</p></li>
-<li><p>We created a significant explanatory model explaining a moderate
-proportion of variance in the data, supporting their hypothesis that
-melodic complexity features are relevant predictors.</p></li>
-<li><p>Singing ability was related to melodic discrimination, pitch
-imagery abilities, and mistuning perception, offering concurrent
-validity to the singing test.</p></li>
-<li><p>The test also showed a moderate correlation with self-reported
-singing ability but had non-significant correlations with visuospatial
-working memory and pitch discrimination abilities.</p></li>
-<li><p>The test was related to musical training, suggesting that singing
-abilities may be improved by such training (or that those with naturally
-good singing abilities are predisposed to musical training).</p></li>
+<li><p>We created an explanatory item response theory model explaining a
+moderate proportion of variance in the data, supporting our hypothesis
+that melodic complexity features are relevant predictors of sung recall
+performance.</p></li>
+<li><p>Singing ability, as derived here, was related to melodic
+discrimination, pitch imagery abilities, and mistuning perception,
+offering concurrent validity to the singing test. The test scores were
+related to musical training, suggesting that singing abilities may be
+improved by musical training (or that those with naturally good singing
+abilities are predisposed to musical training).</p></li>
+<li><p>The test scores also showed a moderate correlation with
+self-reported singing ability but had non-significant correlations with
+visuospatial working memory and pitch discrimination abilities.</p></li>
 <li><p>Experiment 1 demonstrated that the analysis pipeline produced
 consistent results despite “dirty musical data.”</p></li>
 </ul>
@@ -232,7 +234,7 @@ consistent results despite “dirty musical data.”</p></li>
 test by adding new features and updating the procedure to produce
 cleaner data.</p></li>
 <li><p>Long note singing and melodic singing were found to be somewhat
-differentiated tasks, with the former relying more on simple perceptual
+differentiated tasks, with the former relying more on simpler perceptual
 processes.</p></li>
 <li><p>Demographic features like musical training, age, and gender had
 relatively small relationships with singing ability.</p></li>
@@ -246,10 +248,10 @@ relatively small relationships with singing ability.</p></li>
 infrastructure for testing sung recall, bridging melodic memory and
 singing accuracy perspectives.</p></li>
 <li><p>The framework allows researchers to score singing data using
-various measures and facilitates research in both musical abilities and
-production paradigms.</p></li>
-<li><p>The flexibility of the framework allows for adaptation in
-different settings and the inclusion of new singing procedures.</p></li>
+various measures and facilitates research about several interesting
+musical abilities.</p></li>
+<li><p>The flexibility of the framework allows for adaptation into
+different settings and the inclusion of new procedures.</p></li>
 </ul>
 </div>
 <div class="section level2">
@@ -263,6 +265,8 @@ on singing accuracy (part 2). Music Perception, 32(3), 266–271. <a href="https
 Assessment: Development and validation of a singing test based on item
 response theory and a general open-source software environment for
 singing data. Behaviour Research Methods. <a href="https://doi.org/10.3758/s13428-023-02188-0" class="external-link uri">https://doi.org/10.3758/s13428-023-02188-0</a></p>
+<p>Sloboda, J. (2004). Immediate recall of melodies. In Exploring the
+Musical Mind. Oxford University Press. <a href="https://doi.org/10.1093/acprof:oso/9780198530121.003.0004" class="external-link uri">https://doi.org/10.1093/acprof:oso/9780198530121.003.0004</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -27,7 +27,7 @@ The results of the study show that the *SAA* scores are related to several other
 
 # Introduction
 
-We discuss the importance of assessing musical production, particularly singing, and its integration with melodic memory research. We highlight some key points:
+We discuss the importance of assessing musical production, particularly singing, and its integration with melodic memory research. The key points are:
 
 1. Lack of Attention to Musical Production: Musical production tests, which involve performing music, have been underutilized compared to tests focusing on listening skills.
 
@@ -83,7 +83,7 @@ Overall, we highlight the importance of assessing musical production, particular
 
 # Experiment 2: Validation of the SAA “one-shot” paradigm
 
-- Experiment 2 aimed to work towards creating an adaptive singing test by adding new features and change the procedure to produce cleaner data.
+- Experiment 2 aimed to work towards creating an adaptive singing test by adding new features and updating the procedure to produce cleaner data.
 
 - Long note singing and melodic singing were found to be somewhat differentiated tasks, with the former relying more on simple perceptual processes.
 

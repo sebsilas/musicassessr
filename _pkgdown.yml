@@ -6,8 +6,8 @@ articles:
 - title: White papers
   navbar: White papers
   contents:
-  - white_paper_1_silas_and_mullensiefen_2023
-  - white_paper_2_silas_mullensiefen_and_kopiez_2023
+  - white_paper_1_silas_mullensiefen_and_kopiez_2023
+  - white_paper_2_silas_and_mullensiefen_2023
 
 - title: Resources
   navbar: Resources

@@ -53,19 +53,18 @@ musicassessr_js <- function(app_name,
   } # This allows us to both make sure that users using musicassessr provide an app name (most use cases) by default, but allow through cases where record audio isn't used (like with the PDT)
 
   stopifnot(
-    is.logical(musicassessr_aws),
-    is.logical(visual_notation),
-    is.logical(midi_file_playback),
-    is.logical(record_audio),
+    is.scalar.logical(musicassessr_aws),
+    is.scalar.logical(visual_notation),
+    is.scalar.logical(midi_file_playback),
+    is.scalar.logical(record_audio),
     is.scalar.character(app_name),
-    is.logical(midi_input)
+    is.scalar.logical(midi_input)
   )
-
-  logging::loginfo(paste0('The current app directory is ', getwd(), '. Is that correct?'))
 
   if(musicassessr_aws) create_dir_if_doesnt_exist('tmp')
 
   if(record_audio) {
+    logging::loginfo(paste0('The current app directory is ', getwd(), '. Is that correct?'))
     shiny_app_js_id <- record_audio_setup(app_name, musicassessr_aws)
   }
 

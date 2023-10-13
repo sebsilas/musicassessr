@@ -2047,7 +2047,7 @@ listened to an audio excerpt from the pop song “Cold, Cold Heart” by
 <script>
                 var sheet_music_osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("sheet_music", {drawingParameters: "compact",
                 drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false});
-                var loadPromise = sheet_music_osmd.load(`Similarity 1.musicxml`);
+                var loadPromise = sheet_music_osmd.load(`https://musicassessr.com/assets/Similarity%201.musicxml`);
                               loadPromise.then(function(){
                               var sheetmusic = document.getElementById("sheet_music");
                               sheet_music_osmd.render();

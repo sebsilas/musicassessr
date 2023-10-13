@@ -42,8 +42,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>White papers</h6>
-    <a class="dropdown-item" href="../articles/white_paper_1_silas_and_mullensiefen_2023.html">Singing Ability Assessment</a>
-    <a class="dropdown-item" href="../articles/white_paper_2_silas_mullensiefen_and_kopiez_2023.html">Learning and recalling melodies</a>
+    <a class="dropdown-item" href="../articles/white_paper_1_silas_mullensiefen_and_kopiez_2023.html">Singing Ability Assessment</a>
+    <a class="dropdown-item" href="../articles/white_paper_2_silas_and_mullensiefen_2023.html">Learning and recalling melodies</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Resources</h6>
     <a class="dropdown-item" href="../articles/melodic_features.html">musicassessr melodic features</a>
@@ -87,7 +87,1951 @@
 
     
     
-<p>In this vignette, we give some examples which show the development of
+<script src="https://cdn.jsdelivr.net/gh/mattdiamond/Recorderjs@08e7abd9/dist/recorder.js"></script><script src="https://www.midijs.net/lib/midi.js"></script><script>/*! modernizr 3.6.0 (Custom Build) | MIT *
+ * https://modernizr.com/download/?-audio-audiopreload-webaudio-setclasses !*/
+!function(A,w,D){function P(A,w){return typeof A===w}function B(){var A,w,D,B,Q,E,a;for(var o in g)if(g.hasOwnProperty(o)){if(A=[],w=g[o],w.name&&(A.push(w.name.toLowerCase()),w.options&&w.options.aliases&&w.options.aliases.length))for(D=0;D<w.options.aliases.length;D++)A.push(w.options.aliases[D].toLowerCase());for(B=P(w.fn,"function")?w.fn():w.fn,Q=0;Q<A.length;Q++)E=A[Q],a=E.split("."),1===a.length?Modernizr[a[0]]=B:(!Modernizr[a[0]]||Modernizr[a[0]]instanceof Boolean||(Modernizr[a[0]]=new Boolean(Modernizr[a[0]])),Modernizr[a[0]][a[1]]=B),e.push((B?"":"no-")+a.join("-"))}}function Q(A){var w=C.className,D=Modernizr._config.classPrefix||"";if(n&&(w=w.baseVal),Modernizr._config.enableJSClass){var P=new RegExp("(^|\\s)"+D+"no-js(\\s|$)");w=w.replace(P,"$1"+D+"js$2")}Modernizr._config.enableClasses&&(w+=" "+D+A.join(" "+D),n?C.className.baseVal=w:C.className=w)}function E(){return"function"!=typeof w.createElement?w.createElement(arguments[0]):n?w.createElementNS.call(w,"http://www.w3.org/2000/svg",arguments[0]):w.createElement.apply(w,arguments)}function a(A,w){if("object"==typeof A)for(var D in A)I(A,D)&&a(D,A[D]);else{A=A.toLowerCase();var P=A.split("."),B=Modernizr[P[0]];if(2==P.length&&(B=B[P[1]]),"undefined"!=typeof B)return Modernizr;w="function"==typeof w?w():w,1==P.length?Modernizr[P[0]]=w:(!Modernizr[P[0]]||Modernizr[P[0]]instanceof Boolean||(Modernizr[P[0]]=new Boolean(Modernizr[P[0]])),Modernizr[P[0]][P[1]]=w),Q([(w&&0!=w?"":"no-")+P.join("-")]),Modernizr._trigger(A,w)}return Modernizr}var e=[],g=[],o={_version:"3.6.0",_config:{classPrefix:"",enableClasses:!0,enableJSClass:!0,usePrefixes:!0},_q:[],on:function(A,w){var D=this;setTimeout(function(){w(D[A])},0)},addTest:function(A,w,D){g.push({name:A,fn:w,options:D})},addAsyncTest:function(A){g.push({name:null,fn:A})}},Modernizr=function(){};Modernizr.prototype=o,Modernizr=new Modernizr,Modernizr.addTest("webaudio",function(){var w="webkitAudioContext"in A,D="AudioContext"in A;return Modernizr._config.usePrefixes?w||D:D});var C=w.documentElement,n="svg"===C.nodeName.toLowerCase();Modernizr.addTest("audio",function(){var A=E("audio"),w=!1;try{w=!!A.canPlayType,w&&(w=new Boolean(w),w.ogg=A.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,""),w.mp3=A.canPlayType('audio/mpeg; codecs="mp3"').replace(/^no$/,""),w.opus=A.canPlayType('audio/ogg; codecs="opus"')||A.canPlayType('audio/webm; codecs="opus"').replace(/^no$/,""),w.wav=A.canPlayType('audio/wav; codecs="1"').replace(/^no$/,""),w.m4a=(A.canPlayType("audio/x-m4a;")||A.canPlayType("audio/aac;")).replace(/^no$/,""))}catch(D){}return w});var I;!function(){var A={}.hasOwnProperty;I=P(A,"undefined")||P(A.call,"undefined")?function(A,w){return w in A&&P(A.constructor.prototype[w],"undefined")}:function(w,D){return A.call(w,D)}}(),o._l={},o.on=function(A,w){this._l[A]||(this._l[A]=[]),this._l[A].push(w),Modernizr.hasOwnProperty(A)&&setTimeout(function(){Modernizr._trigger(A,Modernizr[A])},0)},o._trigger=function(A,w){if(this._l[A]){var D=this._l[A];setTimeout(function(){var A,P;for(A=0;A<D.length;A++)(P=D[A])(w)},0),delete this._l[A]}},Modernizr._q.push(function(){o.addTest=a}),Modernizr.addAsyncTest(function(){function A(P){clearTimeout(w);var Q=P!==D&&"loadeddata"===P.type?!0:!1;B.removeEventListener("loadeddata",A,!1),a("audiopreload",Q),B.parentNode&&B.parentNode.removeChild(B)}var w,P=300,B=E("audio"),Q=B.style;if(!(Modernizr.audio&&"preload"in B))return void a("audiopreload",!1);Q.position="absolute",Q.height=0,Q.width=0;try{if(Modernizr.audio.mp3)B.src="data:audio/mpeg;base64,//MUxAAB6AXgAAAAAPP+c6nf//yi/6f3//MUxAMAAAIAAAjEcH//0fTX6C9Lf//0//MUxA4BeAIAAAAAAKX2/6zv//+IlR4f//MUxBMCMAH8AAAAABYWalVMQU1FMy45//MUxBUB0AH0AAAAADkuM1VVVVVVVVVV//MUxBgBUATowAAAAFVVVVVVVVVVVVVV";else if(Modernizr.audio.m4a)B.src="data:audio/x-m4a;base64,AAAAGGZ0eXBNNEEgAAACAGlzb21pc28yAAAACGZyZWUAAAAfbWRhdN4EAABsaWJmYWFjIDEuMjgAAAFoAQBHAAACiG1vb3YAAABsbXZoZAAAAAB8JbCAfCWwgAAAA+gAAAAYAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAG0dHJhawAAAFx0a2hkAAAAD3wlsIB8JbCAAAAAAQAAAAAAAAAYAAAAAAAAAAAAAAAAAQAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAABUG1kaWEAAAAgbWRoZAAAAAB8JbCAfCWwgAAArEQAAAQAVcQAAAAAAC1oZGxyAAAAAAAAAABzb3VuAAAAAAAAAAAAAAAAU291bmRIYW5kbGVyAAAAAPttaW5mAAAAEHNtaGQAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAL9zdGJsAAAAW3N0c2QAAAAAAAAAAQAAAEttcDRhAAAAAAAAAAEAAAAAAAAAAAACABAAAAAArEQAAAAAACdlc2RzAAAAAAMZAAEABBFAFQAAAAABftAAAAAABQISCAYBAgAAABhzdHRzAAAAAAAAAAEAAAABAAAEAAAAABxzdHNjAAAAAAAAAAEAAAABAAAAAQAAAAEAAAAUc3RzegAAAAAAAAAXAAAAAQAAABRzdGNvAAAAAAAAAAEAAAAoAAAAYHVkdGEAAABYbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcmFwcGwAAAAAAAAAAAAAAAAraWxzdAAAACOpdG9vAAAAG2RhdGEAAAABAAAAAExhdmY1Mi42NC4y";else if(Modernizr.audio.ogg)B.src="data:audio/ogg;base64,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lFJKKaWUUkoppZRSSimllFJKKaWUUkqppJRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoplVJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSSimllFJKKaWUUkoppZRSCgCQinAAkHowoQwUGrISAEgFAACMUUopxpyDEDHmGGPQSSgpYsw5xhyUklLlHIQQUmktt8o5CCGk1FJtmXNSWosx5hgz56SkFFvNOYdSUoux5ppr7qS0VmuuNedaWqs115xzzbm0FmuuOdecc8sx15xzzjnnGHPOOeecc84FAOA0OACAHtiwOsJJ0VhgoSErAYBUAAACGaUYc8456BBSjDnnHIQQIoUYc845CCFUjDnnHHQQQqgYc8w5CCGEkDnnHIQQQgghcw466CCEEEIHHYQQQgihlM5BCCGEEEooIYQQQgghhBA6CCGEEEIIIYQQQgghhFJKCCGEEEIJoZRQAABggQMAQIANqyOcFI0FFhqyEgAAAgCAHJagUs6EQY5Bjw1BylEzDUJMOdGZYk5qMxVTkDkQnXQSGWpB2V4yCwAAgCAAIMAEEBggKPhCCIgxAABBiMwQCYVVsMCgDBoc5gHAA0SERACQmKBIu7iALgNc0MVdB0IIQhCCWBxAAQk4OOGGJ97whBucoFNU6iAAAAAAAAwA4AEA4KAAIiKaq7C4wMjQ2ODo8AgAAAAAABYA+AAAOD6AiIjmKiwuMDI0Njg6PAIAAAAAAAAAAICAgAAAAAAAQAAAAICAT2dnUwAE7AwAAAAAAAD/QwAAAgAAADuydfsFAQEBAQEACg4ODg==";else{if(!Modernizr.audio.wav)return void a("audiopreload",!1);B.src="data:audio/wav;base64,UklGRvwZAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YdgZAAAAAAEA/v8CAP//AAABAP////8DAPz/BAD9/wEAAAAAAAAAAAABAP7/AgD//wAAAQD//wAAAQD//wAAAQD+/wIA//8AAAAAAAD//wIA/v8BAAAA//8BAAAA//8BAP//AQAAAP//AQD//wEAAAD//wEA//8BAP//AQD//wEA//8BAP//AQD+/wMA/f8DAP3/AgD+/wIA/////wMA/f8CAP7/AgD+/wMA/f8CAP7/AgD//wAAAAAAAAAAAQD+/wIA/v8CAP7/AwD9/wIA/v8BAAEA/v8CAP7/AQAAAAAAAAD//wEAAAD//wIA/f8DAP7/AQD//wEAAAD//wEA//8CAP7/AQD//wIA/v8CAP7/AQAAAAAAAAD//wEAAAAAAAAA//8BAP//AgD9/wQA+/8FAPz/AgAAAP//AgD+/wEAAAD//wIA/v8CAP3/BAD8/wQA/P8DAP7/AwD8/wQA/P8DAP7/AQAAAAAA//8BAP//AgD+/wEAAAD//wIA/v8BAP//AQD//wEAAAD//wEA//8BAAAAAAAAAP//AgD+/wEAAAAAAAAAAAD//wEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AgD+/wIA/v8BAP//AQABAP7/AQD//wIA/v8CAP3/AwD/////AgD9/wMA/v8BAP//AQAAAP//AQD//wEA//8BAP//AAABAP//AAABAP//AQD//wAAAAACAP3/AwD9/wIA//8BAP//AQD//wEA//8BAP//AgD9/wMA/v8AAAIA/f8CAAAA/v8EAPv/BAD9/wIAAAD+/wQA+v8HAPr/BAD+/wEAAAD//wIA/f8EAPz/BAD7/wUA/P8EAPz/AwD+/wEAAAD//wEAAAAAAP//AgD8/wUA+/8FAPz/AwD9/wIA//8AAAEA/v8CAP//AQD//wAAAAABAP//AgD9/wMA/f8EAPz/AwD+/wAAAwD7/wUA/P8DAP7/AQAAAP//AgD+/wEAAQD+/wIA/v8BAAEA/v8CAP7/AQAAAP//AgD9/wMA/f8DAP7/AgD+/wEAAAAAAAEA//8AAAEA/v8DAP3/AgD//wEA//8BAP7/AwD9/wMA/v8BAP//AQAAAP//AgD9/wMA/v8BAP//AQAAAP//AgD+/wEAAQD+/wIA/////wIA//8AAAEA/f8DAP//AAABAP////8DAP3/AwD+/wEA//8BAP//AQAAAAAA//8BAP//AQD//wEA//8BAP//AAAAAAEA//8BAP7/AgD//wEA//8AAAAAAAAAAAAAAAD//wIA/v8BAAAA//8BAAEA/v8BAAAA//8DAPz/AwD+/wIA/v8CAP3/AwD+/wEAAAD//wEA//8BAAAA//8BAAAA/v8EAPv/BAD+/wAAAAABAP7/AgD//wAAAAABAP7/AgD//wAAAAAAAAAAAAABAP3/BAD8/wQA/f8BAAAAAAABAP7/AgD+/wIA/v8CAP7/AgD+/wIA/v8BAAAAAAD//wIA/f8DAP7/AAABAP//AAACAPz/BAD9/wIA//8AAP//AwD9/wMA/P8EAP3/AwD9/wIA//8BAP//AQD+/wMA/f8DAP7/AAABAP//AQAAAP//AQD//wIA/f8DAP7/AQAAAP//AQAAAAAA//8CAP7/AQABAP7/AgD+/wEAAQD+/wIA/v8CAP////8CAP7/AgD//wAAAAABAP7/AwD9/wIAAAD+/wMA/f8CAP//AQD+/wMA/f8CAP//AAACAPz/BQD6/wUA/v///wIA/v8CAP3/BAD7/wYA+v8FAPz/AwD/////AgD+/wEAAAD//wEAAAD//wIA/f8DAP7/AQAAAP//AgD//wAA//8BAAAAAAAAAP//AQD//wEA//8AAAIA/f8DAP3/AgAAAP//AQD//wEA//8AAAEA//8BAP////8CAP//AAABAP3/BAD9/wIA/v8BAAEA//8BAP7/AgD//wEA//8AAAEA//8BAP//AAAAAAEA//8BAP7/AgD//wEA//8AAAAAAQD+/wIA/v8BAAAAAAD//wIA/v8BAAAAAAAAAAAAAQD+/wMA/f8CAP//AQD//wIA/f8DAP7/AQD//wEA//8CAP7/AAABAP7/AwD9/wMA/v8AAAEA//8BAAAAAAD//wIA/v8BAAAA//8CAP7/AgD+/wEA//8CAP7/AgD//wAAAAAAAAAAAQD//wEA/v8DAPz/BQD8/wIA//8AAAEAAAD//wEA//8BAP//AQAAAAAA//8BAP//AgD+/wEAAAAAAP//AQD+/wMA/////wEA/v8CAP//AQD//wEA//8AAAEA//8BAAAA/v8EAPz/AwD+/wEAAAAAAAAA//8CAP7/AQD//wEA//8BAP//AAABAP7/AwD9/wIA//8BAP//AQD//wEA//8AAAEA/v8EAPv/BAD9/wIA//8BAP7/AwD9/wIA//8AAAEA//8BAP//AQD//wAAAQD//wEAAAD+/wMA/v8AAAIA/f8DAP7/AQD//wAAAQD+/wMA/f8CAP//AAABAP7/AgD+/wMA/f8CAP7/AQABAP7/AgD+/wIA/v8CAP7/AwD8/wMA//8AAAEA//8AAAAAAAABAP//AQD//wAAAQD//wIA/f8DAP3/AwD+/wAAAgD9/wIA//8AAAEAAAD+/wMA/P8FAPv/BAD9/wIA//8AAP//AgD+/wIA/v8BAAAAAAD//wEAAAAAAP//AQD//wEA//8BAP//AAABAP7/AwD9/wIA//8BAP//AAABAP//AQD//wAAAQD//wEA//8BAP//AAABAAAA//8BAP7/AwD9/wMA/f8DAP3/AgD//wEA//8BAP7/AgD//wAAAgD8/wQA/f8CAP//AQD+/wMA/f8CAP7/AgD//wAAAAAAAAAAAAABAP7/AwD9/wIA/v8DAP3/AwD9/wIA/v8DAPz/BQD7/wQA/f8CAP7/AwD9/wMA/f8CAP//AQAAAP7/AwD+/wEA//8AAAEAAAAAAP//AAABAP//AQAAAP7/AwD9/wMA/f8CAP//AQD//wEA//8AAAIA/f8CAAAA//8BAAAA//8BAAAA/v8EAPv/BAD9/wIA//8AAAEA/v8CAP//AAABAP//AAABAP//AAABAP7/AwD8/wQA/f8CAAAA/v8DAP3/AwD9/wMA/v8BAAAA//8BAAAA//8CAP7/AQAAAAAAAAAAAAAA//8CAP7/AgD+/wIA/v8CAP7/AgD//wAAAQD//wAAAQD//wAAAQD//wAAAQD+/wIA//8AAAAAAQD+/wMA/f8CAP//AQD//wEA//8AAAEA/v8DAP3/AgD//wAAAAABAP7/AwD9/wIA//8AAAEA/v8DAP3/AgD//wAAAAABAP7/AwD8/wMA/v8CAP//AAD//wIA/v8CAP7/AQABAP7/AQAAAP//AgD/////AQD//wEAAAD//wEA/v8EAPv/BAD9/wMA/v8BAAAA//8BAAEA/P8GAPr/BQD8/wMA/v8BAAAA//8CAP7/AQABAP3/BAD7/wYA+/8EAPz/AwD//wEA//8BAP7/BAD8/wMA/v8AAAIA/v8BAAAA//8BAAAA//8BAAAA//8CAP3/AwD+/wAAAgD8/wUA/P8DAP7/AAABAAAAAAD//wEAAAD//wIA/f8DAP7/AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA/f8EAPz/AwD/////AgD+/wIA/f8DAP7/AgD+/wEA//8CAP7/AQD//wEAAAAAAP//AQAAAP//AgD9/wMA/v8BAAAA//8BAP//AQAAAP//AAACAP3/BAD7/wQA/v8BAAAA//8BAP//AQAAAP//AQAAAP7/BAD7/wUA+/8EAP3/AgD//wAAAQD+/wIA//8AAAEA/v8CAP//AQD+/wEAAAAAAAAAAAD//wEA//8CAP3/AwD9/wIA//8AAAAAAAAAAAAA//8BAP//AgD+/wEA//8CAP7/AQAAAP//AgD/////AgD/////AgD+/wIA//8AAP//AQABAP7/AgD9/wMA/v8CAP////8BAAAAAAAAAAAA//8CAP////8DAPz/AwD+/wEAAAAAAP//AQD//wEAAAD//wEAAAD+/wQA+/8FAPz/AgAAAP//AgD9/wMA/v8BAAAAAAD//wEAAAD//wIA/v8BAAAAAAD//wIA/v8BAAAA//8BAAAA//8CAP7/AQD//wEA//8BAAAA//8BAP//AAABAP//AQAAAP7/AgD//wEA//8AAAAAAQD+/wMA/P8EAP7///8DAPz/BQD8/wEAAQD+/wMA/v8AAAEA//8BAP//AQD//wEA/v8CAP//AQD//wAAAAABAAAA//8BAP//AQAAAAAA//8BAP//AgD+/wAAAQD//wIA/f8CAP//AQAAAP7/AwD9/wMA/v8BAP//AAABAP//AgD9/wIA//8BAAAA//8BAAAA//8CAP3/AwD+/wEAAAD+/wQA/P8DAP7/AAACAP7/AQAAAP//AQAAAP//AQAAAP//AgD9/wIAAAD//wIA/f8DAP7/AQD//wEA//8CAP7/AQD//wAAAQD//wEA//8AAAAAAQD//wEAAAD9/wUA+/8FAPz/AgD//wAAAQD//wAAAQD+/wMA/f8BAAEA/v8CAP7/AgD+/wIA/v8BAAAAAAAAAAAAAAD//wIA/v8CAP////8CAP7/AgD+/wIA/v8CAP7/AQAAAP//AQAAAP//AQD//wAAAQD//wAAAQD+/wMA/f8CAAAA/v8DAP3/AgAAAP//AQAAAP7/AwD9/wMA/v8BAP//AQD//wEAAAD+/wMA/f8CAAAA/v8CAP//AAAAAAEA//8AAAEA/v8DAP3/AwD9/wIA//8BAP//AgD8/wQA/v8BAAAA/v8CAP//AQD//wAAAAAAAAEA/f8EAPz/BAD9/wIA//8AAAAAAAABAP//AAAAAAAAAAABAP3/BAD9/wIA/v8BAAEA//8AAAAA//8CAP7/AgD9/wQA+/8FAPv/BQD8/wMA/f8DAP3/AwD+/wAAAgD9/wMA/f8CAAAA/v8EAPv/BQD7/wUA/P8DAP///v8DAP3/BAD8/wMA/f8DAP7/AQD//wEAAAD//wEA/v8CAAAA/v8CAP7/AgD//wAAAAAAAAAAAQD+/wIA//8AAAEA/v8DAPz/BAD9/wIA//8AAP//AgD//wEA/v8BAAAAAQD//wAAAAAAAAEA//8AAAEA//8BAP//AAABAP//AQD+/wIA/v8DAPz/BAD8/wQA/f8BAAAAAQD+/wMA/P8DAP//AAAAAAAAAAD//wMA+/8FAP3/AQABAP3/BAD8/wMA/v8BAAAA//8CAP3/AwD+/wEAAQD9/wMA/f8EAPz/BAD7/wQA/v8BAAEA/f8DAP7/AQAAAP//AgD+/wEAAAD//wIA/v8CAP7/AgD+/wEAAQD//wEA/v8CAP7/BAD7/wQA/f8CAAAA//8AAAAAAAABAP//AQD+/wEAAQD+/wMA/f8BAAEA/v8DAPz/AwD/////AwD8/wQA/P8DAP7/AgD//wAA//8BAAAAAAAAAP//AgD+/wEAAAD//wIA/v8BAAAA//8CAP3/AgD//wAAAQD+/wIA/v8BAAAA//8CAP7/AgD+/wEA//8CAP3/BAD7/wQA/v8BAAAA//8AAAEAAAD//wIA/f8DAP7/AgD+/wIA/v8CAP7/AgD+/wEAAAAAAP//AgD9/wMA/v8BAP//AgD9/wMA/v8AAAEA//8BAP//AQD//wEA//8AAAEA/v8EAPz/AgD//wAAAQAAAP//AAABAP//AQD//wEAAAD//wEA//8BAAEA/f8DAP7/AQABAP3/AwD+/wIA/////wEAAAAAAAAAAAD//wIA/v8CAP////8CAP7/AgD//wAA//8CAP3/BAD9/wAAAgD9/wMA/v8BAP//AQAAAP//AQAAAP//AgD9/wMA/f8EAPz/AwD+/wEAAAAAAAAAAAD//wIA/f8EAP3/AAABAAAA//8CAP7/AQAAAP//AQAAAAAA//8BAP//AQAAAP//AQAAAP//AQAAAP//AgD9/wMA/v8BAP//AQAAAP//AQD//wIA/v8CAP3/BAD9/wEAAAD//wEAAQD9/wMA/f8CAAAA/v8DAP3/AgD//wAAAQD+/wIA/v8CAP7/AQAAAP//AgD+/wEAAAAAAP//AwD7/wUA/f8BAAEA/v8BAAEA/v8DAP3/AgD//wEA//8BAP//AQD//wEA//8CAP3/BAD7/wQA/////wIA/v8AAAIA/v8CAP3/BAD7/wUA/P8DAP3/AwD9/wMA/v8AAAIA/v8CAP7/AgD+/wIA//8AAAEA/v8CAP7/AgD//wAAAAD//wEAAAAAAAAA//8BAP7/BAD7/wUA/P8CAAAA//8BAP//AQAAAP//AgD9/wMA/v8BAAAA//8BAAAA//8CAP3/AwD+/wEA//8CAP3/AwD+/wAAAwD8/wIAAAD//wIA/////wIA/v8CAP7/AgD+/wEAAAAAAAAAAAAAAP//AgD+/wIA//8AAAAA//8CAP7/AgD+/wEA//8CAP3/AwD9/wMA/v8BAP7/AwD9/wMA/f8CAP//AQD+/wIA//8BAP//AQD+/wMA/v8BAAAA//8BAAAA//8CAP7/AQAAAP//AgD+/wIA/v8CAP//AAAAAAEA//8BAP//AAABAAAA//8BAP//AQD//wEA//8BAP//AQAAAP//AQD//wEAAAD//wIA/f8CAAAA//8BAAAA//8BAP//AAABAP//AQD//wAAAAAAAAEA/v8CAP//AQD//wAAAAABAP7/AwD9/wIAAAD+/wIA//8BAP//AgD9/wMA/f8DAP7/AgD+/wEAAAAAAAEA/v8CAP7/AgD//wAAAAAAAAAAAAAAAP//AgD/////AgD9/wQA/f8BAAAAAAAAAAEA/f8DAP////8DAP3/AQABAP7/AgD//wAAAQD+/wMA/f8CAP7/AQABAP7/AwD7/wYA+v8FAP3/AQABAP7/AgD+/wMA/f8CAP7/AwD+/wEA//8BAP//AQAAAP7/BQD5/wcA+v8FAPz/AwD+/wIA/v8BAAAA//8DAPv/BQD8/wMA/////wEAAAAAAAAAAAD//wIA/f8DAP7/AQAAAP//AQAAAP//AgD+/wIA/v8BAAEA/f8EAPz/AwD+/wEA//8CAP7/AQD//wEA//8CAP7/AQAAAP//AgD+/wEAAAAAAAAAAAAAAAAAAAD//wIA/f8EAPz/AwD+/wEA//8CAP7/AgD+/wEAAQD+/wEAAQD+/wIA/////wIA//8AAAAAAAAAAAAAAAD//wEAAAAAAP//AgD9/wMA/v8BAP//AQAAAP//AQD//wEA//8BAP//AQD//wEA//8BAP//AQAAAP7/AwD9/wMA/v8BAP7/AwD9/wMA/v8BAP//AAABAP//AQD//wAAAAABAP//AAAAAAAAAQD//wEA/v8CAAAA/v8EAPv/BAD9/wIAAAD+/wMA/P8DAP//AAAAAP//AQD//wIA/f8DAP3/AwD9/wMA/v8BAAAA//8BAAAA//8CAP3/AwD9/wQA+/8FAPv/BQD8/wMA/v8BAAAA//8BAP//AgD+/wEAAAD//wIA/v8BAAEA/f8DAP3/AgAAAP//AQD//wAAAQD//wEA//8BAP//AQD//wEA/v8DAP3/AgAAAP7/AwD9/wIAAAD//wEAAAD//wIA/f8DAP7/AgD9/wQA+/8FAPz/AgAAAP//AgD9/wIA//8BAP//AQD//wEA//8BAP//AQD//wIA/f8DAP3/AgD//wAAAQD+/wIA/v8BAAEA/v8CAP7/AgD+/wMA/P8DAP//AAABAP7/AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA/v8CAP3/BAD8/wMA/v8BAAAAAAD//wEAAAAAAAAAAAD//wEAAAAAAAAA//8BAP//AgD+/wEA//8CAP3/AwD9/wMA/f8EAPv/BAD+/wAAAQD//wEA//8BAP//AAABAP//AQD//wEAAAD//wEA//8BAP//AgD9/wMA/v8AAAIA/f8DAP7/AAACAP3/AwD+/wEA//8BAP//AQAAAP//AQAAAP7/AwD9/wMA/v8AAAEA//8BAP//AAAAAAEA//8AAAEA/v8CAP//AAAAAAEA/v8DAPz/BAD9/wEAAQD+/wEAAQD9/wQA/P8DAP7/AQAAAAAAAAAAAAAAAAAAAAAAAQD+/wIA/////wIA/v8BAAAA//8BAP//AQD//wEA//8BAAAA/v8EAPz/AwD///7/BAD8/wMA/////wIA/v8CAP////8CAP7/AgD+/wIA/v8CAP////8CAP7/AwD9/wIA/v8CAP//AAABAP7/AwD9/wEAAQD+/wMA/f8CAP//AAAAAAEA/v8DAPz/BAD9/wIA/v8CAP7/AgD//wAAAAD//wIA/v8CAP7/AQAAAAAA//8CAP7/AgD+/wIA/v8CAP7/AwD8/wUA+v8GAPv/AwD//wAAAAAAAAAA//8DAPv/BQD9/wAAAgD9/wMA/v8BAP//AQAAAP//AgD9/wMA/v8BAAAA//8BAAAAAAAAAP//AQAAAAAAAAD//wEA//8CAP3/AwD+/wAAAgD+/wEAAAD//wIA/v8CAP7/AgD/////AwD8/wUA/P8CAP//AQD//wIA/f8DAP3/AwD+/wAAAQD+/wMA/f8DAP3/AgD//wAAAQD//wEA//8BAP7/AwD+/wEA//8AAAEA//8CAPz/BAD9/wIA//8AAAEA/v8DAPz/BAD9/wIA//8AAAEA/v8CAP7/AgD//wEA/f8EAPz/BAD+////AgD//wAAAQD//wAAAQD//wEA//8BAP7/AwD+/wEA"}}catch(e){return void a("audiopreload",!1)}B.setAttribute("preload","auto"),B.style.cssText="display:none",C.appendChild(B),setTimeout(function(){B.addEventListener("loadeddata",A,!1),w=setTimeout(A,P)},0)}),B(),Q(e),delete o.addTest,delete o.addAsyncTest;for(var v=0;v<Modernizr._q.length;v++)Modernizr._q[v]();A.Modernizr=Modernizr}(window,document);</script><script src="https://unpkg.com/tone@13.8.25/build/Tone.js"></script><script>console.log("loaded Tonejs-instruments.js");
+
+/**
+* @fileoverview A sample library and quick-loader for tone.js
+*
+* @author N.P. Brosowsky (nbrosowsky@gmail.com)
+* https://github.com/nbrosowsky/tonejs-instruments
+*/
+
+var SampleLibrary = {
+    minify: false,
+    ext: '.[mp3|ogg]', // use setExt to change the extensions on all files // do not change this variable //
+    baseUrl: 'https://adaptiveeartraining.com/assets/audio/samples/',
+    list: ['bass-electric','bassoon','cello','clarinet','contrabass','flute','french-horn','guitar-acoustic','guitar-electric','guitar-nylon', 'harmonium','harp','organ','piano', 'rhythm', 'saxophone','trombone','trumpet','tuba','violin', 'voice_daa', 'voice_doo', 'xylophone'],
+    onload: null,
+
+    setExt: function (newExt) {
+        var i
+        for (i = 0; i <= this.list.length - 1; i++) {
+            for (var property in this[this.list[i]]) {
+
+                this[this.list[i]][property] = this[this.list[i]][property].replace(this.ext, newExt)
+            }
+
+        }
+        this.ext = newExt;
+        return console.log("sample extensions set to " + this.ext)
+    },
+
+    load: function (arg) {
+        var t, rt, i;
+        (arg) ? t = arg: t = {};
+        t.instruments = t.instruments || this.list;
+        t.baseUrl = t.baseUrl || this.baseUrl;
+        t.onload = t.onload || this.onload;
+
+        // update extensions if arg given
+        if (t.ext) {
+            if (t.ext != this.ext) {
+                this.setExt(t.ext)
+            }
+            t.ext = this.ext
+        }
+
+        rt = {};
+
+        // if an array of instruments is passed...
+        if (Array.isArray(t.instruments)) {
+            for (i = 0; i <= t.instruments.length - 1; i++) {
+                var newT = this[t.instruments[i]];
+                //Minimize the number of samples to load
+                if (this.minify === true || t.minify === true) {
+                    var minBy = 1;
+                    if (Object.keys(newT).length >= 17) {
+                        minBy = 2
+                    }
+                    if (Object.keys(newT).length >= 33) {
+                        minBy = 4
+                    }
+                    if (Object.keys(newT).length >= 49) {
+                        minBy = 6
+                    }
+
+                    var filtered = Object.keys(newT).filter(function (_, i) {
+                        return i % minBy != 0;
+                    })
+                    filtered.forEach(function (f) {
+                        delete newT[f]
+                    })
+
+                }
+
+                rt[t.instruments[i]] = new Tone.Sampler(
+                    newT, {
+                        baseUrl: t.baseUrl + t.instruments[i] + "/",
+                        onload: t.onload
+                    }
+
+                )
+            }
+
+            return rt
+
+            // if a single instrument name is passed...
+        } else {
+            newT = this[t.instruments];
+
+            //Minimize the number of samples to load
+            if (this.minify === true || t.minify === true) {
+                minBy = 1;
+                if (Object.keys(newT).length >= 17) {
+                    minBy = 2
+                }
+                if (Object.keys(newT).length >= 33) {
+                    minBy = 4
+                }
+                if (Object.keys(newT).length >= 49) {
+                    minBy = 6
+                }
+
+                filtered = Object.keys(newT).filter(function (_, i) {
+                    return i % minBy != 0;
+                })
+                filtered.forEach(function (f) {
+                    delete newT[f]
+                })
+            }
+
+            var s = new Tone.Sampler(
+                newT, {
+                    baseUrl: t.baseUrl + t.instruments + "/",
+                    onload: t.onload
+                }
+            )
+
+            return s
+        }
+
+    },
+
+    'bass-electric': {
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]',
+        'A#5': 'As5.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'C#5': 'Cs5.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]'
+    },
+
+    'bassoon': {
+        'A3': 'A3.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'G1': 'G1.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'A1': 'A1.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]'
+
+    },
+
+    'cello': {
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'B4': 'B4.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]'
+
+    },
+
+    'clarinet': {
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D5': 'D5.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]'
+
+    },
+
+    'contrabass': {
+        'C1': 'C1.[mp3|ogg]',
+        'C#2': 'Cs2.[mp3|ogg]',
+        'D1': 'D1.[mp3|ogg]',
+        'E1': 'E1.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'F#0': 'Fs0.[mp3|ogg]',
+        'F#1': 'Fs1.[mp3|ogg]',
+        'G0': 'G0.[mp3|ogg]',
+        'G#1': 'Gs1.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'A1': 'A1.[mp3|ogg]',
+        'A#0': 'As0.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]'
+
+    },
+
+    'flute': {
+        'A5': 'A5.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C6': 'C6.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]'
+
+    },
+
+    'french-horn': {
+        'D2': 'D2.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D#1': 'Ds1.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'G1': 'G1.[mp3|ogg]',
+        'A0': 'A0.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'C1': 'C1.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+
+    },
+
+    'guitar-acoustic': {
+        'F3': 'F3.[mp3|ogg]',
+        'F#1': 'Fs1.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'G1': 'G1.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G#1': 'Gs1.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'A1': 'A1.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A#1': 'As1.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'B1': 'B1.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C#2': 'Cs2.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'D1': 'D1.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D#1': 'Ds1.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'E1': 'E1.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'F1': 'F1.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]'
+
+    },
+
+    'guitar-electric': {
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'D#5': 'Ds5.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C6': 'C6.[mp3|ogg]',
+        'C#2': 'Cs2.[mp3|ogg]'
+    },
+
+    'guitar-nylon': {
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G5': 'G3.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'G#5': 'Gs5.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'A#5': 'As5.[mp3|ogg]',
+        'B1': 'B1.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'B4': 'B4.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'C#5': 'Cs5.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D5': 'D5.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]'
+    },
+
+    'harmonium': {
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C#2': 'Cs2.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'C#5': 'Cs5.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D5': 'D5.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]'
+    },
+
+    'harp': {
+        'C5': 'C5.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D6': 'D6.[mp3|ogg]',
+        'D7': 'D7.[mp3|ogg]',
+        'E1': 'E1.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F6': 'F6.[mp3|ogg]',
+        'F7': 'F7.[mp3|ogg]',
+        'G1': 'G1.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A6': 'A6.[mp3|ogg]',
+        'B1': 'B1.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'B5': 'B5.[mp3|ogg]',
+        'B6': 'B6.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]'
+
+    },
+
+    'organ': {
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C6': 'C6.[mp3|ogg]',
+        'D#1': 'Ds1.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'D#5': 'Ds5.[mp3|ogg]',
+        'F#1': 'Fs1.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'A1': 'A1.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'C1': 'C1.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]'
+    },
+
+    'piano': {
+        'A0': 'A0.[mp3|ogg]',
+        'A1': 'A1.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'A6': 'A6.[mp3|ogg]',
+        'A#0': 'As0.[mp3|ogg]',
+        'A#1': 'As1.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]',
+        'A#5': 'As5.[mp3|ogg]',
+        'A#6': 'As6.[mp3|ogg]',
+        'B0': 'B0.[mp3|ogg]',
+        'B1': 'B1.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'B4': 'B4.[mp3|ogg]',
+        'B5': 'B5.[mp3|ogg]',
+        'B6': 'B6.[mp3|ogg]',
+        'C0': 'C0.[mp3|ogg]',
+        'C1': 'C1.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C6': 'C6.[mp3|ogg]',
+        'C7': 'C7.[mp3|ogg]',
+        'C#0': 'Cs0.[mp3|ogg]',
+        'C#1': 'Cs1.[mp3|ogg]',
+        'C#2': 'Cs2.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'C#5': 'Cs5.[mp3|ogg]',
+        'C#6': 'Cs6.[mp3|ogg]',
+        'D0': 'D0.[mp3|ogg]',
+        'D1': 'D1.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D5': 'D5.[mp3|ogg]',
+        'D6': 'D6.[mp3|ogg]',
+        'D#0': 'Ds0.[mp3|ogg]',
+        'D#1': 'Ds1.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'D#5': 'Ds5.[mp3|ogg]',
+        'D#6': 'Ds6.[mp3|ogg]',
+        'E0': 'E0.[mp3|ogg]',
+        'E1': 'E1.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'E6': 'E6.[mp3|ogg]',
+        'F0': 'F0.[mp3|ogg]',
+        'F1': 'F1.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F5': 'F5.[mp3|ogg]',
+        'F6': 'F6.[mp3|ogg]',
+        'F#0': 'Fs0.[mp3|ogg]',
+        'F#1': 'Fs1.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'F#6': 'Fs6.[mp3|ogg]',
+        'G0': 'G0.[mp3|ogg]',
+        'G1': 'G1.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]',
+        'G6': 'G6.[mp3|ogg]',
+        'G#0': 'Gs0.[mp3|ogg]',
+        'G#1': 'Gs1.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'G#5': 'Gs5.[mp3|ogg]',
+        'G#6': 'Gs6.[mp3|ogg]'
+    },
+
+    'rhythm': {
+        'C4': 'wood_block.mp3',
+    },
+
+    'saxophone': {
+        'D#4': 'Ds4.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C#2': 'Cs2.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]'
+
+    },
+
+    'trombone': {
+        'A#2': 'As2.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C#1': 'Cs1.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D#1': 'Ds1.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'F1': 'F1.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'G#1': 'Gs1.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'A#0': 'As0.[mp3|ogg]',
+        'A#1': 'As1.[mp3|ogg]'
+
+    },
+
+    'trumpet': {
+        'C5': 'C5.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'A2': 'A2.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]'
+
+    },
+
+    'tuba': {
+        'A#1': 'As1.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D#1': 'Ds1.[mp3|ogg]',
+        'F0': 'F0.[mp3|ogg]',
+        'F1': 'F1.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'A#0': 'As0.[mp3|ogg]'
+
+    },
+
+    'violin': {
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'A6': 'A6.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C6': 'C6.[mp3|ogg]',
+        'C7': 'C7.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'E6': 'E6.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]',
+        'G6': 'G6.[mp3|ogg]'
+
+    },
+
+     'voice_doo': {
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'A6': 'A6.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]',
+        'A#5': 'As5.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'B4': 'B4.[mp3|ogg]',
+        'B5': 'B5.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C7': 'C7.[mp3|ogg]',
+        //'C#2': 'Cs2.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'C#5': 'Cs5.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D5': 'D5.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'D#5': 'Ds5.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F5': 'F5.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        //'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]',
+        'G6': 'G6.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'G#5': 'Gs5.[mp3|ogg]',
+    },
+
+    'voice_daa': {
+        'A2': 'A2.[mp3|ogg]',
+        'A3': 'A3.[mp3|ogg]',
+        'A4': 'A4.[mp3|ogg]',
+        'A5': 'A5.[mp3|ogg]',
+        'A6': 'A6.[mp3|ogg]',
+        'A#2': 'As2.[mp3|ogg]',
+        'A#3': 'As3.[mp3|ogg]',
+        'A#4': 'As4.[mp3|ogg]',
+        'A#5': 'As5.[mp3|ogg]',
+        'B2': 'B2.[mp3|ogg]',
+        'B3': 'B3.[mp3|ogg]',
+        'B4': 'B4.[mp3|ogg]',
+        'B5': 'B5.[mp3|ogg]',
+        'C2': 'C2.[mp3|ogg]',
+        'C3': 'C3.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C7': 'C7.[mp3|ogg]',
+        //'C#2': 'Cs2.[mp3|ogg]',
+        'C#3': 'Cs3.[mp3|ogg]',
+        'C#4': 'Cs4.[mp3|ogg]',
+        'C#5': 'Cs5.[mp3|ogg]',
+        'D2': 'D2.[mp3|ogg]',
+        'D3': 'D3.[mp3|ogg]',
+        'D4': 'D4.[mp3|ogg]',
+        'D5': 'D5.[mp3|ogg]',
+        'D#2': 'Ds2.[mp3|ogg]',
+        'D#3': 'Ds3.[mp3|ogg]',
+        'D#4': 'Ds4.[mp3|ogg]',
+        'D#5': 'Ds5.[mp3|ogg]',
+        'E2': 'E2.[mp3|ogg]',
+        'E3': 'E3.[mp3|ogg]',
+        'E4': 'E4.[mp3|ogg]',
+        'E5': 'E5.[mp3|ogg]',
+        'F2': 'F2.[mp3|ogg]',
+        'F3': 'F3.[mp3|ogg]',
+        'F4': 'F4.[mp3|ogg]',
+        'F5': 'F5.[mp3|ogg]',
+        'F#2': 'Fs2.[mp3|ogg]',
+        'F#3': 'Fs3.[mp3|ogg]',
+        'F#4': 'Fs4.[mp3|ogg]',
+        'F#5': 'Fs5.[mp3|ogg]',
+        'G2': 'G2.[mp3|ogg]',
+        //'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]',
+        'G6': 'G6.[mp3|ogg]',
+        'G#2': 'Gs2.[mp3|ogg]',
+        'G#3': 'Gs3.[mp3|ogg]',
+        'G#4': 'Gs4.[mp3|ogg]',
+        'G#5': 'Gs5.[mp3|ogg]',
+    },
+
+    'xylophone': {
+        'C7': 'C7.[mp3|ogg]',
+        'G3': 'G3.[mp3|ogg]',
+        'G4': 'G4.[mp3|ogg]',
+        'G5': 'G5.[mp3|ogg]',
+        'G6': 'G6.[mp3|ogg]',
+        'C4': 'C4.[mp3|ogg]',
+        'C5': 'C5.[mp3|ogg]',
+        'C6': 'C6.[mp3|ogg]'
+
+    }
+
+
+}</script><script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@0.7.6/build/opensheetmusicdisplay.min.js"></script><script src="https://unpkg.com/tone-rhythm@2.0.0/dist/tone-rhythm.min.js"></script><script>var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var defaults = {
+    lines: 12,
+    length: 7,
+    width: 5,
+    radius: 10,
+    scale: 1.0,
+    corners: 1,
+    color: '#000',
+    fadeColor: 'transparent',
+    animation: 'spinner-line-fade-default',
+    rotate: 0,
+    direction: 1,
+    speed: 1,
+    zIndex: 2e9,
+    className: 'spinner',
+    top: '50%',
+    left: '50%',
+    shadow: '0 0 1px transparent',
+    position: 'absolute',
+};
+var Spinner = /** @class */ (function () {
+    function Spinner(opts) {
+        if (opts === void 0) { opts = {}; }
+        this.opts = __assign(__assign({}, defaults), opts);
+    }
+    /**
+     * Adds the spinner to the given target element. If this instance is already
+     * spinning, it is automatically removed from its previous target by calling
+     * stop() internally.
+     */
+    Spinner.prototype.spin = function (target) {
+        this.stop();
+        this.el = document.createElement('div');
+        this.el.className = this.opts.className;
+        this.el.setAttribute('role', 'progressbar');
+        css(this.el, {
+            position: this.opts.position,
+            width: 0,
+            zIndex: this.opts.zIndex,
+            left: this.opts.left,
+            top: this.opts.top,
+            transform: "scale(" + this.opts.scale + ")",
+        });
+        if (target) {
+            target.insertBefore(this.el, target.firstChild || null);
+        }
+        drawLines(this.el, this.opts);
+        return this;
+    };
+    /**
+     * Stops and removes the Spinner.
+     * Stopped spinners may be reused by calling spin() again.
+     */
+    Spinner.prototype.stop = function () {
+        if (this.el) {
+            if (typeof requestAnimationFrame !== 'undefined') {
+                cancelAnimationFrame(this.animateId);
+            }
+            else {
+                clearTimeout(this.animateId);
+            }
+            if (this.el.parentNode) {
+                this.el.parentNode.removeChild(this.el);
+            }
+            this.el = undefined;
+        }
+        return this;
+    };
+    return Spinner;
+}());
+export { Spinner };
+/**
+ * Sets multiple style properties at once.
+ */
+function css(el, props) {
+    for (var prop in props) {
+        el.style[prop] = props[prop];
+    }
+    return el;
+}
+/**
+ * Returns the line color from the given string or array.
+ */
+function getColor(color, idx) {
+    return typeof color == 'string' ? color : color[idx % color.length];
+}
+/**
+ * Internal method that draws the individual lines.
+ */
+function drawLines(el, opts) {
+    var borderRadius = (Math.round(opts.corners * opts.width * 500) / 1000) + 'px';
+    var shadow = 'none';
+    if (opts.shadow === true) {
+        shadow = '0 2px 4px #000'; // default shadow
+    }
+    else if (typeof opts.shadow === 'string') {
+        shadow = opts.shadow;
+    }
+    var shadows = parseBoxShadow(shadow);
+    for (var i = 0; i < opts.lines; i++) {
+        var degrees = ~~(360 / opts.lines * i + opts.rotate);
+        var backgroundLine = css(document.createElement('div'), {
+            position: 'absolute',
+            top: -opts.width / 2 + "px",
+            width: (opts.length + opts.width) + 'px',
+            height: opts.width + 'px',
+            background: getColor(opts.fadeColor, i),
+            borderRadius: borderRadius,
+            transformOrigin: 'left',
+            transform: "rotate(" + degrees + "deg) translateX(" + opts.radius + "px)",
+        });
+        var delay = i * opts.direction / opts.lines / opts.speed;
+        delay -= 1 / opts.speed; // so initial animation state will include trail
+        var line = css(document.createElement('div'), {
+            width: '100%',
+            height: '100%',
+            background: getColor(opts.color, i),
+            borderRadius: borderRadius,
+            boxShadow: normalizeShadow(shadows, degrees),
+            animation: 1 / opts.speed + "s linear " + delay + "s infinite " + opts.animation,
+        });
+        backgroundLine.appendChild(line);
+        el.appendChild(backgroundLine);
+    }
+}
+function parseBoxShadow(boxShadow) {
+    var regex = /^\s*([a-zA-Z]+\s+)?(-?\d+(\.\d+)?)([a-zA-Z]*)\s+(-?\d+(\.\d+)?)([a-zA-Z]*)(.*)$/;
+    var shadows = [];
+    for (var _i = 0, _a = boxShadow.split(','); _i < _a.length; _i++) {
+        var shadow = _a[_i];
+        var matches = shadow.match(regex);
+        if (matches === null) {
+            continue; // invalid syntax
+        }
+        var x = +matches[2];
+        var y = +matches[5];
+        var xUnits = matches[4];
+        var yUnits = matches[7];
+        if (x === 0 && !xUnits) {
+            xUnits = yUnits;
+        }
+        if (y === 0 && !yUnits) {
+            yUnits = xUnits;
+        }
+        if (xUnits !== yUnits) {
+            continue; // units must match to use as coordinates
+        }
+        shadows.push({
+            prefix: matches[1] || '',
+            x: x,
+            y: y,
+            xUnits: xUnits,
+            yUnits: yUnits,
+            end: matches[8],
+        });
+    }
+    return shadows;
+}
+/**
+ * Modify box-shadow x/y offsets to counteract rotation
+ */
+function normalizeShadow(shadows, degrees) {
+    var normalized = [];
+    for (var _i = 0, shadows_1 = shadows; _i < shadows_1.length; _i++) {
+        var shadow = shadows_1[_i];
+        var xy = convertOffset(shadow.x, shadow.y, degrees);
+        normalized.push(shadow.prefix + xy[0] + shadow.xUnits + ' ' + xy[1] + shadow.yUnits + shadow.end);
+    }
+    return normalized.join(', ');
+}
+function convertOffset(x, y, degrees) {
+    var radians = degrees * Math.PI / 180;
+    var sin = Math.sin(radians);
+    var cos = Math.cos(radians);
+    return [
+        Math.round((x * cos + y * sin) * 1000) / 1000,
+        Math.round((-x * sin + y * cos) * 1000) / 1000,
+    ];
+}</script><script>console.log("loaded musicassessr.js");
+
+
+// initialise toneJS
+toneJSInit();
+
+
+preloadImage("https://adaptiveeartraining.com/assets/img/record.gif");
+preloadImage("https://adaptiveeartraining.com/assets/img/SAA_intro.png");
+preloadImage("https://adaptiveeartraining.com/assets/img/music.png");
+preloadImage("https://adaptiveeartraining.com/assets/img/saxophone.png");
+preloadImage("https://adaptiveeartraining.com/assets/drum.png");
+preloadImage("https://adaptiveeartraining.com/assets/robot.png");
+
+
+
+// Vars
+var confidences = [];
+var user_response_frequencies = [];
+var timecodes = [];
+var rmses = [];
+var user_response_midi_note_on = [];
+var user_response_midi_note_off = [];
+var onsets_noteon = [];
+var onsets_noteoff = [];
+var stop_button_text;
+var startTime;
+var midi_device;
+var recordkey;
+var file_url;
+var onsets_noteon_timecode = [];
+var stimulus_trigger_times = [];
+
+// functions
+
+
+// // setup functions
+
+function initSynth() {
+
+    window.synthParameters = {
+      oscillator: {
+        type: 'sine',
+        partialCount: 4
+      },
+      envelope: { // http://shura.shu.ac.uk/8259/1/96913_Soranzo_psychoacoustics.pdf
+        attack: 0.01,
+        decay: 0.01,
+        sustain: 0.50, // this is changed from the parameters above, which was 0.25
+        release: 0.01,
+        attackCurve: 'cosine'
+      }
+    };
+
+  //create a synth and connect it to the master output (your speakers)
+  window.synth = new Tone.Synth(synthParameters).toMaster();
+
+}
+
+function initPiano() {
+
+  // create a piano and connect to master output
+  window.piano = SampleLibrary.load({
+    instruments: "piano",
+    minify: true
+   });
+
+  window.piano.toMaster();
+
+}
+
+function initVoiceDoo() {
+
+      // create a piano and connect to master output
+  window.voice_doo = SampleLibrary.load({
+    instruments: "voice_doo",
+    minify: true
+   });
+
+  window.voice_doo.toMaster();
+
+}
+
+function initVoiceDaa() {
+
+      // create a piano and connect to master output
+  window.voice_daa = SampleLibrary.load({
+    instruments: "voice_daa",
+    minify: true
+   });
+
+  window.voice_daa.toMaster();
+
+}
+
+
+function initRhythm() {
+
+  // create a rhythm and connect to master output
+  window.rhythm = SampleLibrary.load({
+    instruments: "rhythm",
+    minify: true
+   });
+
+  window.rhythm.toMaster();
+
+}
+
+function toneJSInit() {
+
+  // sound: i.e "tone" or "piano"
+
+  console.log("toneJS Inited!");
+
+  initPiano();
+
+  initSynth();
+
+  initRhythm();
+
+  //initVoiceDoo();
+
+  //initVoiceDaa();
+
+}
+
+function connect_sound(sound) {
+   //create a synth and connect it to the master output (your speakers)
+  if(sound === "tone") {
+    window.piano.disconnect();
+    //window.voice_doo.disconnect();
+    //window.voice_daa.disconnect();
+    //create a synth and connect it to the master output (your speakers)
+    window.synth = new Tone.Synth(synthParameters).toMaster();
+
+  } else if(sound === "voice_doo") {
+
+    window.piano.disconnect();
+    window.synth.disconnect();
+    //window.voice_daa.disconnect();
+    //window.voice_doo.toMaster();
+
+  } else if(sound === "voice_daa") {
+
+    window.piano.disconnect();
+    window.synth.disconnect();
+    //window.voice_doo.disconnect();
+    //window.voice_daa.toMaster();
+  } else if(sound === "rhythm") {
+    window.piano.disconnect();
+    window.synth.disconnect();
+  }
+  else {
+    window.synth.disconnect();
+    //window.voice_daa.disconnect();
+    //window.voice_doo.disconnect();
+    window.piano.toMaster();
+  }
+}
+
+
+// Playback functions
+
+function triggerNote(sound, freq_tone, seconds, time) {
+
+  var triggerTime = new Date().getTime();
+  stimulus_trigger_times.push(triggerTime);
+
+  if (sound === "piano") {
+    piano.triggerAttackRelease(freq_tone, seconds, time);
+  } else if (sound === "voice_doo") {
+    voice_doo.triggerAttackRelease(freq_tone, seconds, time);
+  } else if (sound === "voice_daa") {
+    voice_daa.triggerAttackRelease(freq_tone, seconds, time);
+  } else if (sound === "rhythm") {
+    rhythm.triggerAttackRelease(freq_tone, seconds, time);
+  } else {
+    synth.triggerAttackRelease(freq_tone, seconds, time);
+  }
+
+}
+
+function playTone(tone, seconds) {
+
+  // Play a tone (MIDI note) for x seconds
+
+  connect_sound('tone');
+
+  tone = Number(tone);
+
+  var freq_tone = Tone.Frequency(tone, "midi").toNote();
+
+  triggerNote('tone', freq_tone, seconds);
+
+  Shiny.setInputValue("stimuli_pitch", tone);
+
+}
+
+
+function playTones (freq_list) {
+
+    freq_list.forEach(element => console.log(element)); // testing
+    freq_list = freq_list.map(x => Tone.Frequency(x));
+    last_freq = freq_list[freq_list.length - 1];
+
+    var pattern = new Tone.Sequence(function(time, freq){
+
+    synth.triggerAttackRelease(freq, 0.5);
+
+    if (freq === last_freq) {
+      pattern.stop();
+      Tone.Transport.stop();
+    }
+
+    }, freq_list);
+
+    pattern.start(0).loop = false;
+    // begin at the beginning
+    Tone.Transport.start();
+
+}
+
+
+function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
+
+
+  var freq_list = Tone.Frequency(note_list, "midi").toNote();
+
+
+  triggerNote(sound, freq_list, dur_list);
+
+  setTimeout(() => {
+   // Execute on finish
+   if(trigger_end_of_stimuli_fun !== null) {
+      trigger_end_of_stimuli_fun();
+   }
+  }, dur_list * 1000);
+
+}
+
+
+
+function playSeq(note_list, dur_list = null, sound = 'piano',
+                 trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
+
+  // Empty previous stimulus trigger times buffer
+  stimulus_trigger_times = [];
+  Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
+
+  // Make sure not playing
+  Tone.Transport.stop();
+  pattern = null;
+
+  // Connect sound
+  connect_sound(sound);
+
+  // This should go first before the piano editing:
+  Shiny.setInputValue("stimuli_pitch", note_list);
+
+  // Trigger an arbitrary function before the stimulus plays
+  if(trigger_start_of_stimuli_fun !== null) {
+    trigger_start_of_stimuli_fun();
+  }
+
+  if(typeof note_list === 'number') {
+    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
+    note_list = note_list -12;  // There is a bug with the piano sound where it plays an octave higher
+    }
+    playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun);
+  } else {
+
+    // Convert to freqs
+    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
+
+    // There is a bug with the piano sound where it plays an octave higher
+
+    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
+        note_list = note_list.map(x => x-12);
+    }
+
+    var last_note = freq_list.length;
+    var count = 0;
+
+    var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+    notesAndDurations = notesAndDurations.map(timeFromDurations);
+
+    var pattern = new Tone.Part((time, value) => {
+                // the value is an object which contains both the note and the velocity
+
+                triggerNote(sound, value.note, 0.50);
+                count = count + 1;
+
+                  if (count === last_note) {
+                    // Stop the sequence
+                    stopSeq(pattern);
+                    // Trigger something else on stop
+                    if(trigger_end_of_stimuli_fun !== null) {
+                      trigger_end_of_stimuli_fun();
+                    }
+
+                  // Send trigger times to R
+                  Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
+              }
+                }, notesAndDurations);
+    pattern.start(0).loop = false;
+    Tone.Transport.start();
+  }
+
+}
+
+
+function playSeqArrhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
+
+  console.log('playSeqArrhythmic');
+
+  var last_note = freq_list.length;
+  var count = 0;
+
+
+  var pattern = new Tone.Sequence(function(time, note){
+
+      triggerNote(sound, note, 0.50);
+
+      count = count + 1;
+
+      if (count === last_note) {
+        // Stop playing
+        stopSeq(pattern);
+        // Trigger something else on stop
+        if(trigger_end_of_stimuli_fun !== null) {
+          trigger_end_of_stimuli_fun();
+        }
+
+     }
+
+    }, freq_list);
+}
+
+function playSeqRhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
+
+  console.log('playSeqRhythmic');
+
+  var last_note = freq_list.length;
+  var count = 0;
+
+  var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+  notesAndDurations = notesAndDurations.map(timeFromDurations);
+
+  var pattern = new Tone.Part((time, value) => {
+              // the value is an object which contains both the note and the velocity
+
+              triggerNote(sound, value.note, 0.50);
+              count = count + 1;
+
+                if (count === last_note) {
+                  // Stop the sequence
+                  stopSeq(pattern);
+                  // Trigger something else on stop
+                  if(trigger_end_of_stimuli_fun !== null) {
+                    trigger_end_of_stimuli_fun();
+                  }
+            }
+              }, notesAndDurations);
+  pattern.start(0).loop = false;
+  Tone.Transport.start();
+}
+
+
+function stopSeq(pattern) {
+  pattern.stop();
+  Tone.Transport.stop();
+}
+
+
+
+function timeFromDurations(value, i, arr) {
+  const prevTime = arr[i - 1]?.time;
+  value.time = prevTime + arr[i - 1]?.duration || 0;
+  return value;
+}
+
+function bind_notes_and_durations(notes, durations) {
+    var i;
+    var currentNote;
+    var currentDur;
+    var result = [];
+
+    for (i = 0; i < notes.length; i++) {
+        currentNote = notes[i];
+        currentDur = durations[i];
+        result[i] = { duration: currentDur, note: currentNote };
+    }
+    return(result);
+}
+
+
+/* Deprecated?
+
+function toneJSPlay (midi, start_note, end_note, transpose, id, sound, bpm = 90) {
+
+    // change tempo to whatever defined in R
+    adjusted_tempo = midi;
+    adjusted_tempo.header.tempos.bpm = bpm;
+    adjusted_tempo.header.tempos[0].bpm = bpm;
+
+    var now = Tone.now() + 0.5;
+    var synths = [];
+    adjusted_tempo.tracks.forEach(track => {
+
+        if (end_note === "end") {
+            notes_list = track.notes;
+
+            // console.log(track.notes); // need to test full notes
+            dur = track['duration'] * 1000;
+
+        } else {
+            // reduced note list
+            var dur = 0;
+            if(end_note === "end") {
+              end_note = notes_list = track['notes'].length;
+            }
+            notes_list = track['notes'].slice(start_note, end_note);
+            // get duration of contracted notes list
+            notes_list.forEach(el => {
+                   dur = dur + el['duration'];
+                })
+            dur = dur * 1000;
+
+        }
+
+        setTimeout(() => {
+          recordAndStop(null, true, hidePlay, id); }, dur);
+
+        //create a synth for each track
+        const synth = new Tone.PolySynth(2, Tone.Synth, synthParameters).toMaster();
+        synths.push(synth);
+
+        // pop end note message to end
+
+        //schedule all of the events
+        notes_list.forEach(note => {
+
+          transposed_note = Tone.Frequency(note.name).transpose(transpose);
+
+          // correct bug where piano sound plays an octave too high
+
+          if (sound === "piano") {
+            transposed_note = transposed_note.transpose(-12);
+          }
+
+          triggerNote(sound, transposed_note, note.duration, note.time + now);
+
+        });
+
+        // containers to pass to shiny
+        shiny_notes = [];
+        shiny_ticks = [];
+        shiny_durations = [];
+        shiny_durationTicks = [];
+
+        notes_list.forEach(note => {
+          shiny_notes.push(note.midi);
+          shiny_ticks.push(note.ticks);
+          shiny_durations.push(note.duration);
+          shiny_durationTicks.push(note.durationTicks);
+        });
+
+        // round the durations
+        shiny_durations_round = [];
+        shiny_durations.forEach(el => shiny_durations_round.push(el.toFixed(2)));
+
+        Shiny.setInputValue("stimuli_pitch", JSON.stringify(shiny_notes));
+        Shiny.setInputValue("stimuli_ticks", JSON.stringify(shiny_ticks));
+        Shiny.setInputValue("stimuli_durations", JSON.stringify(shiny_durations_round));
+        Shiny.setInputValue("stimuli_durationTicks", JSON.stringify(shiny_durationTicks));
+
+    });
+
+}
+*/
+
+async function midiToToneJS (url, note_no, hidePlay, transpose, id, sound, bpm) {
+  // load a midi file in the browser
+  const midi = await Midi.fromUrl(url).then(midi => {
+      toneJSPlay(midi, note_no, hidePlay, transpose, id, sound, bpm);
+
+  })
+}
+
+
+// Define a function to handle status messages
+
+  // Define a function to handle player events
+function display_time(ev) {
+
+  console.log(ev.time); // time in seconds, since start of playback
+
+  MIDIjs.get_duration(url, function(seconds) {
+    console.log("Duration: " + seconds);
+    if (ev.time > seconds) {
+        console.log("file finished!");
+        MIDIjs.player_callback = null;
+    } });
+}
+
+function display_message(mes) {
+    console.log(mes);
+}
+
+function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
+
+    console.log("bpm is " + bpm);
+
+    console.log(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm);
+
+    // hide after play
+    hidePlayButton(id);
+    // toneJS: boolean. true if file file to be played via toneJS. otherwise, via MIDIJS
+
+    if (toneJS) {
+      midiToToneJS(url, note_no, hidePlay, transpose, id, sound, bpm);
+    } else {
+
+      MIDIjs.message_callback = display_message;
+      MIDIjs.player_callback = display_time;
+      console.log(MIDIjs.get_audio_status());
+      MIDIjs.play(url);
+
+    }
+
+}
+
+
+// Define a function to handle player events
+function display_time_record_after(ev) {
+
+  console.log(ev.time); // time in seconds, since start of playback
+
+  MIDIjs.get_duration(url,  function(seconds) { console.log("Duration: " + seconds);
+
+  if (ev.time > seconds) {
+      console.log("file finished!");
+      MIDIjs.player_callback = null;
+  }
+
+  });
+
+}
+
+// Define a function to handle status messages
+
+function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
+
+    // toneJS: boolean. true if file file to be played via toneJS. otherwise, via MIDIJS
+
+    if (toneJS) {
+      midiToToneJS(url, start_note, end_note, hidePlay, transpose, id, sound, bpm);
+    }
+
+    else {
+
+      MIDIjs.message_callback = display_message;
+      MIDIjs.player_callback = display_time_record_after;
+      console.log(MIDIjs.get_audio_status());
+      MIDIjs.play(url);
+    }
+
+}
+
+
+// UI functions
+
+function show_happy_with_response_message() {
+  happy_with_response = document.getElementById("happy_with_response");
+  happy_with_response.style.display = "block";
+  if (!file_is_ready){
+    spinner = document.getElementsByClassName("hollow-dots-spinner");
+    if(typeof spinner[0] !== "undefined") {
+      spinner[0].style.display = "block";
+    }
+   }
+}
+
+function hide_happy_with_response_message() {
+  happy_with_response = document.getElementById("happy_with_response");
+  happy_with_response.style.display = "none";
+}
+
+
+function hidePlayButton(play_button_id = "playButton") {
+  // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
+  var playButton = document.getElementById(play_button_id);
+  if (playButton !== null) {
+    playButton.style.display = "none";
+  }
+
+}
+
+function hideAudioFilePlayer() {
+  var player = document.getElementById("player");
+  player.style.display = "none";
+}
+
+
+
+function startRecording(type) {
+
+
+   // Initiate startTime
+  startTime = new Date().getTime();
+  Shiny.setInputValue('trial_start_time', startTime);
+
+  console.log('Start time 1: ');
+  console.log(startTime);
+
+  if (type === "record_audio_page") {
+    startAudioRecording();
+  } else if(type === "record_midi_page") {
+    instantiateMIDI(midi_device);
+  } else {
+    console.log('type not recognised');
+  }
+
+  // And do the same thing again to estimate potential latency
+  startTime2 = new Date().getTime();
+  Shiny.setInputValue('trial_start_time2', startTime2);
+
+  console.log('Start time 2: ');
+  console.log(startTime2);
+
+}
+
+
+function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true) {
+
+  console.log('recordUpdateUI');
+  console.log(page_type);
+
+  if(showStop) {
+    showStopButton(page_type, stop_button_text);
+  }
+
+  if(hideRecord) {
+    hideRecordButton();
+  }
+
+  if(showRecording) {
+    showRecordingIcon();
+  }
+}
+
+
+/*
+var volumeMeter = document.getElementById('volumeMeter');
+if(volumeMeter !== null) {
+  volumeMeter.style.visibility = "visible";
+}
+
+
+*/
+
+function showSheetMusic(sheet_music_id) {
+  console.log('showSheetMusic');
+  console.log(sheet_music_id);
+  var sheet_music = document.getElementById(sheet_music_id);
+  sheet_music.style.visibility = "visible";
+}
+
+function hideSheetMusic(sheet_music_id) {
+  var sheet_music = document.getElementById(sheet_music_id);
+  sheet_music.style.visibility = "hidden";
+}
+
+
+function hideLoading() {
+  var loading = document.getElementById("loading");
+  if (loading !== undefined) {
+    loading.style.visibility = 'hidden';
+  }
+}
+
+
+function stopRecording(type) {
+
+  setTimeout(() => {
+
+    hideStopButton();
+    hideRecordingIcon();
+
+    if(type === "record_audio_page") {
+      stopAudioRecording();
+    } else if(type === "record_midi_page") {
+      stopMidiRecording();
+    } else {
+      console.log('Unknown page type: ' + type);
+    }
+    next_page();
+
+  }, 500); /* Record a little bit more */
+
+
+}
+
+function showStopButton(type = null, stop_button_text = "Stop", show_sheet_music = false) {
+
+  console.log('showStopButton');
+  console.log(type);
+
+  var stopButton = document.getElementById("stopButton");
+
+  if(stopButton !== undefined) {
+    createCorrectStopButton(type, show_sheet_music);
+  }
+
+}
+
+function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
+
+  console.log('createCorrectStopButton');
+  console.log(type);
+
+  stopButton.style.visibility = 'visible';
+
+  stopButton.onclick = function () {
+    if(show_happy_with_response) {
+      show_happy_with_response_message();
+    }
+    if(show_sheet_music) {
+      // Because we are hiding *after* stopping i.e., after it has already been shown
+      hideSheetMusic(sheet_music_id);
+    }
+
+    stopRecording(type);
+  };
+}
+
+
+function showRecordingIcon() {
+
+  var img = document.createElement("img");
+  img.id = "recordingIcon";
+  img.style.display = "block";
+  img.src =  "https://adaptiveeartraining.com/assets/img/record.gif";
+  img.width = "280";
+  img.height = "280";
+
+  var button_area = document.getElementById("button_area");
+  button_area.appendChild(img);
+
+}
+
+function hideRecordingIcon() {
+  var rec_icon = document.getElementById("recordingIcon");
+  if (rec_icon.style.display === "none") {
+    rec_icon.style.display = "block";
+   } else {
+    rec_icon.style.display = "none";
+   }
+}
+
+
+function hideStopButton() {
+  var stopButton = document.getElementById("stopButton");
+  if (stopButton.style.display === "none") {
+    stopButton.style.display = "block";
+   } else {
+    stopButton.style.display = "none";
+   }
+}
+
+function hideRecordButton() {
+  var recButton = document.getElementById("recordButton");
+  if (recButton.style.display === "none") {
+    recButton.style.display = "block";
+  } else {
+    recButton.style.display = "none";
+  }
+}
+
+
+// Utils
+
+function diff(ary) {
+    var newA = [];
+    for (var i = 1; i < ary.length; i++)  newA.push(ary[i] - ary[i - 1]);
+    newA.unshift(0); // pop a 0 on the front
+    return newA;
+}
+
+function preloadImage(url) {
+    var img = new Image();
+    img.src = url;
+}
+
+
+// Checks
+
+function getUserInfo () {
+    //console.log(navigator);
+    var _navigator = {};
+    for (var i in navigator) _navigator[i] = navigator[i];
+    delete _navigator.plugins;
+    delete _navigator.mimeTypes;
+    navigatorJSON = JSON.stringify(_navigator);
+    console.log(navigatorJSON);
+    console.log("Browser:" + navigator.userAgent);
+    Shiny.setInputValue("user_info", navigatorJSON);
+}
+
+function testFeatureCapability() {
+
+    console.log(testMediaRecorder());
+    console.log(Modernizr.webaudio);
+
+    if (Modernizr.webaudio & testMediaRecorder()) {
+        console.log("This browser has the necessary features");
+        Shiny.setInputValue("browser_capable", "TRUE");
+    }
+    else {
+        console.log("This browser does not have the necessary features");
+        Shiny.setInputValue("browser_capable", "FALSE");
+    }
+
+}
+
+function testMediaRecorder () {
+
+  var isMediaRecorderSupported = false;
+
+  try {
+      MediaRecorder;
+      isMediaRecorderSupported = true;
+  } catch (err) {
+      console.log("no MediaRecorder");
+  }
+  console.log(isMediaRecorderSupported);
+  return(isMediaRecorderSupported);
+}
+
+// Audio recorder stuff (previously in app.js)
+
+//webkitURL is deprecated but nevertheless
+URL = window.URL || window.webkitURL;
+//
+
+var file_is_ready = false;
+var gumStream;                      //stream from getUserMedia()
+var rec;                            //Recorder.js object
+var input;
+//MediaStreamAudioSourceNode we'll be recording
+////////
+// shim for AudioContext when it's not avb.
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+var audioContext //audio context to help us record
+
+
+function startAudioRecording() {
+
+  console.log('startAudioRecording');
+
+    var constraints = { audio: true, video:false }
+
+    /*
+        We're using the standard promise based getUserMedia()
+        https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+    */
+
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
+
+        /*
+            create an audio context after getUserMedia is called
+            sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
+            the sampleRate defaults to the one set in your OS for your playback device
+        */
+        audioContext = new AudioContext();
+
+        //update the format
+        //document.getElementById("formats").innerHTML="Format: 1 channel pcm @ "+audioContext.sampleRate/1000+"kHz"
+
+        /*  assign to gumStream for later use  */
+        gumStream = stream;
+
+        /* use the stream */
+        input = audioContext.createMediaStreamSource(stream);
+
+        /*
+            Create the Recorder object and configure to record mono sound (1 channel)
+            Recording 2 channels  will double the file size
+        */
+        rec = new Recorder(input,{numChannels:1})
+
+        //start the recording process
+        rec.record()
+
+        console.log("Recording started");
+
+    }).catch(function(err) {
+
+        console.log('error...');
+        console.log(err);
+        //enable the record button if getUserMedia() fails
+        recordButton.disabled = false;
+        stopButton.disabled = true;
+        //pauseButton.disabled = true
+    });
+}
+
+function pauseRecording(){
+    console.log("pauseButton clicked rec.recording=",rec.recording );
+    if (rec.recording){
+        // Pause
+        rec.stop();
+        pauseButton.innerHTML = "Resume";
+    } else{
+        // Resume
+        rec.record();
+        pauseButton.innerHTML = "Pause";
+
+    }
+}
+
+function hideButtonAreaShowUserRating() {
+  button_area = document.getElementById("button_area");
+    button_area.style.display = "none";
+    stop_button = document.getElementById("stopButton");
+    stop_button.style.display = "none";
+}
+
+function stopAudioRecording() {
+
+    //tell the recorder to stop the recording
+    rec.stop();
+
+    //stop microphone access
+    gumStream.getAudioTracks()[0].stop();
+
+    //create the wav blob and pass it on to createDownloadLink
+
+    recordkey = create_recordkey();
+  file_url = recordkey + ".wav";
+
+  Shiny.setInputValue("key", recordkey);
+  Shiny.setInputValue("file_url", file_url);
+
+    rec.exportWAV(upload_file_to_s3);
+
+}
+
+function stopMidiRecording() {
+  console.log('stopMidiRecording');
+  WebMidi.disable();
+}
+
+function create_recordkey() {
+  var currentDate = new Date();
+  var recordkey = currentDate.getDate().toString() + '-' + (currentDate.getMonth() + 1 ).toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
+
+  if (typeof page_label === 'string') {
+    recordkey = page_label + '.' + recordkey;
+  }
+
+  if (typeof p_id === 'string') {
+    recordkey = p_id + '.' + recordkey;
+  } else {
+    recordkey = 'no_p_id.' + recordkey;
+  }
+
+
+  return(recordkey)
+}
+
+function upload_file_to_s3(blob) {
+
+    var xhr = new XMLHttpRequest();
+
+    var fd = new FormData();
+
+    fd.append("audio_data", blob, recordkey);
+
+    if (typeof shiny_app_name !== 'undefined') {
+      fd.append("app_name", shiny_app_name);
+      Shiny.setInputValue("shiny_app_name", shiny_app_name);
+    }
+
+    if(this.musicassessr_state === "production") {
+      xhr.open("POST","/api/store_audio/",true); // production
+  } else {
+    console.log('Upload local...');
+    xhr.open("POST","http://localhost:3000/upload-audio",true); // local
+  }
+
+    xhr.send(fd);
+
+
+    xhr.onload = () => {
+      console.log(xhr.responseText);
+        // call next page after credentials saved
+        spinner = document.getElementsByClassName("hollow-dots-spinner");
+        if(spinner[0] !== undefined) {
+          spinner[0].style.display = "none";
+        }
+        file_is_ready = true;
+    };
+}</script><p>In this vignette, we give some examples which show the development of
 how a participant’s performance may change across attempts at singing
 back the same melody. To illustrate the similarity measurement for
 different musical dimensions, the following figures show a typical

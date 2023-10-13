@@ -14,88 +14,85 @@ vignette: >
 
 Here is a high-level summary of the results of:
 
-Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Singing Ability Assessment: Development and validation of a singing test based on item response theory and a general open-source software environment for singing data. Behaviour Research Methods. https://doi.org/10.3758/s13428-023-02188-0
+[Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Singing Ability Assessment: Development and validation of a singing test based on item response theory and a general open-source software environment for singing data. Behaviour Research Methods. https://doi.org/10.3758/s13428-023-02188-0](https://link.springer.com/article/10.3758/s13428-023-02188-0)
 
-# Overview
+# Birds-eye view
 
-In this paper, we discuss the development of one of *musicassessr*'s flagship tests, the *Singing Ability Assessment* (*SAA*). The [*SAA*](https://saa.musicassessr.com) is designed to evaluate various aspects of a human singing abilities and melodic memory. The manuscript presents two online experiments with a total of 1,157 participants.
+In this paper, we discuss the development of one of *musicassessr*'s flagship tests, the *Singing Ability Assessment* (*SAA*). The [*SAA*](https://saa.musicassessr.com) test is designed to evaluate various aspects of a human singing abilities and melodic memory. The manuscript presents two online experiments with a total of 1,157 participants.
 
-The *SAA* uses a probabilistic algorithm (*pYIN*; Cannam et al., 2010) to transcribe audio of people singing and scores it using statistical techniques. For long note singing, it identifies three key factors: pitch accuracy, pitch volatility, and changes in pitch stability. For singing melodies, the research uses a model that takes into account aspects of the melody's structure, such as tonality and length, to predict how well a person can recall and sing back the melody.
+The *SAA* uses a probabilistic algorithm (*pYIN*; Cannam et al., 2010) to transcribe audio of people singing and scores it in real time using various statistical modelling approaches, mainly grounded in latent variable modelling and item response theory approaches. For long note singing, we identified three key factors: pitch accuracy, pitch volatility, and changes in pitch stability. For singing melodies, we built a model that takes into account aspects of the melody's structure, such as tonality and length, to predict how well a person can recall and sing back the melody.
 
-The results of the study show that the SAA scores are related to existing measures of singing accuracy, demographic factors, and the equipment used by the participants. As a result of this research, the authors have also developed five open-source R packages to help researchers conduct similar tests and experiments. These packages are easy to access and can be adapted for various research settings.
+The results of the study show that the *SAA* scores are related to several other musical abilities, existing measures of singing accuracy, demographic factors, and the hardware equipment used by the participants.
 
 
-# Introduction and motivations
+# Introduction
 
-The text discusses the importance of assessing musical production, particularly singing, and its integration with melodic memory research. Here are the key points:
+In the paper, we discuss the importance of assessing musical production, particularly singing, and its integration with melodic memory research. We highlight some key points:
 
-1. Lack of Attention to Musical Production: The text emphasizes that musical production tests, which involve performing music, have been underutilized compared to tests focusing on listening skills.
+1. Lack of Attention to Musical Production: Musical production tests, which involve performing music, have been underutilized compared to tests focusing on listening skills.
 
-2. Perceptual vs. Participatory Nature: Perceptual musical ability tests are criticized for not considering the participatory and embodied nature of music, which involves active production.
+2. Perceptual vs. Participatory Nature: We note how perceptual musical ability tests do not consider the participatory and embodied nature of music, which involves active production.
 
 3. Importance of Music Production: Recent research highlights that understanding the production of music is crucial for a comprehensive understanding of musical ability.
 
 4. Methodological Challenges: The primary reason for the underutilization of music production tests is methodological difficulties in assessing musical behavior due to issues like "dirty data."
 
-5. Singing as a Musical Production Test: The text introduces the development of a singing test as a representative form of music production test, which can be used to assess musical abilities and enhance music education.
+5. Singing as a Musical Production Test: We introduce the development of a singing test as a representative form of music production test, which can be used to assess musical abilities and enhance music education.
 
-6. Melodic Recall and Singing Accuracy Research: The text points out that research into melodic memory and singing accuracy is often conducted separately, despite the inherent connection between the two.
+6. Melodic Recall and Singing Accuracy Research: Research into melodic memory and singing accuracy is often conducted separately, despite the inherent connection between the two.
 
-7. Integration of Singing Accuracy and Melodic Recall: The text emphasizes the need to integrate singing accuracy and melodic recall research to understand the relationship between low-level singing abilities and high-level melodic memory.
+7. Integration of Singing Accuracy and Melodic Recall: We argue that we need to integrate singing accuracy and melodic recall research to understand the relationship between low-level singing abilities and high-level melodic memory.
 
-8. Singing Accuracy and Melodic Recall Paradigms: The text discusses various paradigms used in singing accuracy and melodic recall research, including the Seattle Singing Accuracy Protocol (SSAP) and the Melodic Recall Paradigm.
+8. Singing Accuracy and Melodic Recall Paradigms: The text discusses various paradigms used in singing accuracy and melodic recall research, including the Seattle Singing Accuracy Protocol (*SSAP*, Demorest et al. 2015) and the Melodic Recall Paradigm.
 
-9. "Dirty" Musical Data: The text highlights the challenges related to working with "dirty" musical data, which requires expert interpretation and transcription from audio recordings.
+9. "Dirty" Musical Data: We highlight the challenges related to working with "dirty" musical data, which requires expert interpretation and transcription from audio recordings.
 
 10. Computational Approach: Advances in technology have made it possible to automate and objectively measure produced musical behavior, addressing some of the challenges of "dirty" data.
 
-11. Singing Test Framework: The text introduces an open-source framework for conducting singing tests and explains its features, including real-time noise measurement and presenting stimuli based on participants' vocal ranges.
+11. Singing Test Framework: We introduce an open-source framework (`musicassessr`!) for conducting singing tests and explains its features, including real-time noise measurement and presenting stimuli based on participants' vocal ranges.
 
-12. Integrating Singing Accuracy and Melodic Recall: The text explains how singing accuracy and melodic recall can be integrated through item response theory (IRT), a psychometric modeling framework.
+12. Integrating Singing Accuracy and Melodic Recall: We explain how singing accuracy and melodic recall can be integrated through item response theory (*IRT*), a psychometric modeling framework.
 
-13. Motivations: The research aims to make singing tests more accessible through an open-source framework and advances methodological approaches in sung recall research.
+## Motivations
+
+13. The research aims to make singing tests more accessible through an open-source framework and advances methodological approaches in sung recall research.
 
 14. Two-Fold Contribution: The research contributes to accessibility and methodological advances by providing a transparent, open-source singing test framework and addressing issues in sung recall research.
 
-15. Cognitive Modeling via IRT: The text discusses how item response theory is used to relate structural features of melodies to cognitive difficulty in melody processing.
+15. Cognitive Modeling via *IRT*: We discuss how item response theory is used to relate structural features of melodies to cognitive difficulty in melody processing.
 
 16. The Present Study: The text introduces the Singing Ability Assessment (SAA) and describes how it was developed, tested, and validated through two experiments.
 
-Overall, the text highlights the importance of assessing musical production, particularly singing, and discusses the challenges and advancements in this area of research.
+Overall, we highlight the importance of assessing musical production, particularly singing, and discusses the challenges and advancements in this area of research.
 
-## Experiment 1
+## Experiment 1: Design, development of and calibration of the Singing Ability Assessment (SAA) task
 
-Different measures were used to assess how well people recall and sing melodies. Some measures produced similar results, while others, like "aligned ordinal recall" and "PMI," had limitations.
 
-"Aligned ordinal recall" had issues with sensitivity to errors in rhythm and harmony and did not penalize missed notes effectively. It also had a strange effect where participants could score higher by missing notes at the end of a melody.
+* 		Researchers developed an online singing test for data collection and analyzed it.
+* 		They created a significant explanatory model explaining a moderate proportion of variance in the data, supporting their hypothesis that melodic complexity features are relevant predictors.
+* 		Singing ability was related to melodic discrimination, pitch imagery abilities, and mistuning perception, offering concurrent validity to the singing test.
+* 		The test also showed a moderate correlation with self-reported singing ability but had non-significant correlations with visuospatial working memory and pitch discrimination abilities.
+* 		The test was related to musical training, suggesting that singing abilities may be improved by such training.
+* 		The study demonstrated that the analysis pipeline produced consistent results despite "dirty musical data."
 
-Other measures were preferred because they rewarded participants for singing more notes and approaching the true length of the melody. This was not the case with "aligned ordinal recall."
 
-"Opti3," a measure that considers various musical dimensions beyond pitch and intervals, was found to be more comprehensive and ecologically valid. It accounted for a wider range of musical errors and could measure different aspects of musical accuracy simultaneously.
+## Experiment 2: Validation of the SAA “one-shot” paradigm
 
-The use of "opti3" was chosen as the main way to measure how well people remember and sing melodies in the next experiment.
+* 		Experiment 2 aimed to create an adaptive singing test by adding new features and implementing a one-shot paradigm for cleaner data.
+* 		Long note singing and melodic singing were found to be somewhat differentiated tasks, with the former relying more on simple perceptual processes.
+* 		Demographic features like musical training, age, and gender had relatively small effects on singing ability.
+* 		Automated transcription of sung recall data was compared to human transcription, with promising accuracy.
+General Conclusions:
+* 		The paper described the development of an open-source infrastructure for testing sung recall, bridging melodic memory and singing accuracy perspectives.
+* 		The framework allows researchers to score singing data using various measures and facilitates research in both musical abilities and production paradigms.
+* 		The flexibility of the framework allows for adaptation in different settings and the inclusion of new singing procedures.
+* 		The paper also has implications for the automatic assessment of musical performance in education.
+* 		The work is open-source and encourages contributions from others in the field.
 
-## Experiment 2
 
-1. Recall of Melodies Improves Over Time: When people try to remember a melody, they tend to start with an incomplete recall on their first attempt. With each subsequent try, they usually add more notes to their recall. This process of recall improves over time, but it often doesn't reach a perfect match with the original melody, even after six attempts.
-
-2. Learning Curve Resembles an Exponential Curve: The improvement in recalling melodies follows a curve that resembles an exponential shape. It keeps increasing with each attempt but eventually levels off, usually not reaching the full length of the target melody.
-
-3. Different Aspects of Melodies Are Learned Differently: When people recall melodies, they tend to focus on improving the earlier parts of the melody, performing less well on the later notes they've added more recently. However, when it comes to rhythm, the middle of the melody is remembered better than the earlier or later parts.
-
-4. Harmonic Elements May Not Improve Across Attempts: While other aspects like rhythm and intervallic structure improve across recall attempts, harmonic elements may remain stable. This suggests that people might focus on pitch and interval information first, and when they can't recall more intervals, they switch to remembering rhythmic details.
-
-5. Melodies Are Built Simultaneously Across Different Aspects: Instead of remembering different musical features separately, people tend to build representations of melodies across various aspects simultaneously. This approach may be more efficient and reflects the interconnection of different melodic features.
-
-6. Individual Differences in Melodic Recall: Some people remember certain melodies better than others, possibly due to prior familiarity with similar melodies or differences in their musical and nonmusical memory skills.
-
-7. Longer Melodies Are More Challenging: Longer melodies are more difficult to remember because they require more notes to recall, and this can strain working memory. The study suggests that the main challenge in recalling melodies is often the sheer length of the melody itself.
-
-8. Audio Helps Memory: Learning melodies from full audio, rather than symbolic representations like sheet music (MIDI), makes it easier to remember. Acoustic features, lyrics, and the human voice may assist memory in recalling melodies.
-
-In conclusion, this research suggests that the recall of melodies improves over time, with the length of the melody being a significant factor. Melodic features and musical experience also play a role in memory, but the main challenge is often the sheer number of notes in longer melodies. Learning melodies from audio tends to be more effective, and musical expertise can help but isn't always necessary for better recall.
 
 # References
 
+Demorest, S. M., Pfordresher, P. Q., Bella, S. D., Hutchins, S., Loui, P., Rutkowski, J., & Welch, G. F. (2015). Methodological perspectives on singing accuracy: An introduction to the special issue on singing accuracy (part 2). Music Perception, 32(3), 266–271. https://doi.org/10.1525/mp.2015.32.3.266
 
 Silas, S., Müllensiefen, D., & Kopiez, R. (2023). Singing Ability Assessment: Development and validation of a singing test based on item response theory and a general open-source software environment for singing data. Behaviour Research Methods. https://doi.org/10.3758/s13428-023-02188-0

@@ -15,7 +15,7 @@ pkgdown:
   as_is: true
 ---
 
-In the `musicassessr` framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data. It is worth noting that using measures of melodic *similarity* on such data is quite different to using measures of *accuracy*. In this vignette, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.
+In the `musicassessr` framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data (as argued in our [Music Perception paper](https://sebsilas.github.io/musicassessr/articles/white_paper_2_silas_and_mullensiefen_2023.html)). It is worth noting that using measures of melodic *similarity* on such data is quite different to using measures of *accuracy*. In this vignette, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.
 
 
 
@@ -301,7 +301,7 @@ knitr::include_graphics(s2)
 ```
 
 
-For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by YouTube^[https://www.youtube.com/watch?v=krDxhnaKD7Q] and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. 
+For Examples 3-6, we take the humourous example of the "The Lick" - the archetypal jazz pattern made famous by [YouTube](https://www.youtube.com/watch?v=krDxhnaKD7Q) and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity. 
 
 
 ```{r, echo = FALSE}
@@ -420,9 +420,11 @@ sim_vs_acc(
 ```
 
 
-The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity [e.g., @dowlingRecognitionMelodicTransformations1972]. However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our [simulation study](https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html). In Silas & Müllensiefen (2023), we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.
+The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity (e.g., Dowling, 1972). However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our [simulation study](https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html). In [Silas & Müllensiefen (2023)](https://sebsilas.github.io/musicassessr/articles/white_paper_2_silas_and_mullensiefen_2023.html), we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.
 
 # References
+
+Dowling, W. J. (1972). Recognition of melodic transformations: Inversion, retrograde, and retrograde inversion. Perception & Psychophysics, 12(5), 417–421. https://doi.org/10.3758/BF03205852
 
 Silas, S., & Müllensiefen, D. (2023). Learning and recalling melodies: A computational investigation using the melodic recall paradigm. Music Perception.
 

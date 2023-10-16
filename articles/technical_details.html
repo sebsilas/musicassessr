@@ -89,10 +89,53 @@
     
     
 <div class="section level2">
-<h2 id="microphone-internal-vs--external">Microphone internal vs. external<a class="anchor" aria-label="anchor" href="#microphone-internal-vs--external"></a>
+<h2 id="usage-of-internal-vs--external-microphone">1. Usage of internal vs. external microphone<a class="anchor" aria-label="anchor" href="#usage-of-internal-vs--external-microphone"></a>
 </h2>
+<p>When comparing the effect of using an internal vs. external
+microphone, as self-selected by the user at the beginning of entry to
+the <em>SAA</em> test, the results published in our <a href="https://link.springer.com/article/10.3758/s13428-023-02188-0" class="external-link">Behavior
+Research Methods paper</a> (Silas, Müllensiefen, &amp; Kopiez, 2023)
+suggest there is no difference in <em>opti3</em> scores.</p>
+<p>A mixed-effects model with microphone type as fixed-effects
+categorical predictor (<em>External</em>, <em>Internal</em>, <em>Not
+sure</em>) and participant as a random effect intercept revealed that
+there was no statistically significant difference in <em>opti3</em>
+scores between the microphone types (<em>p</em> &lt; .05). See the table
+below for model parameters.</p>
+<p>This suggest that our audio transcription pipeline is relatively
+robust, once certain constraints have been fulfilled (e.g., a certain
+<em>SNR</em>).</p>
+<div class="figure">
+<img src="tech_details_1.png" alt="Boxplot, dot plot and SEM plot of opti3 for self-reported microphone type" width="728"><p class="caption">
+Boxplot, dot plot and SEM plot of opti3 for self-reported microphone
+type
+</p>
 </div>
-  </main>
+</div>
+<div class="section level2">
+<h2 id="signal-to-noise-ratio-snr">2. Signal-to-noise ratio (SNR)<a class="anchor" aria-label="anchor" href="#signal-to-noise-ratio-snr"></a>
+</h2>
+<p>The graphs in Kim et al. (2018) suggest that the transcription
+accuracy of pitch detection algorithm we use (<em>pYIN</em>) starts
+failing from around a <em>SNR</em> &lt; 14. Thus, we use this as the
+default cutoff for whether a participant can proceed with a test, if
+their <em>SNR</em> is collected before proceeding with the main trial
+blocks.</p>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Kim, J. W., Salamon, J., Li, P., &amp; Bello, J. P. (2018). Crepe: A
+Convolutional Representation for Pitch Estimation. 2018 IEEE
+International Conference on Acoustics, Speech and Signal Processing
+(ICASSP), 161–165. <a href="https://doi.org/10.1109/ICASSP.2018.8461329" class="external-link uri">https://doi.org/10.1109/ICASSP.2018.8461329</a></p>
+<p>Silas, S., Müllensiefen, D., &amp; Kopiez, R. (2023). Singing Ability
+Assessment: Development and validation of a singing test based on item
+response theory and a general open-source software environment for
+singing data. Behaviour Research Methods. <a href="https://doi.org/10.3758/s13428-023-02188-0" class="external-link uri">https://doi.org/10.3758/s13428-023-02188-0</a></p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

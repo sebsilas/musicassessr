@@ -104,13 +104,13 @@ paradigm. Music Perception.</p>
 <div class="section level2">
 <h2 id="birds-eye-view">Birds-eye view<a class="anchor" aria-label="anchor" href="#birds-eye-view"></a>
 </h2>
-<p>In this paper, we examined how people learn and recall melodies over
-multiple attempts. In a first simulation experiment, we reasoned for
-using similarity measures rather than accuracy-based measures to score
-how well melodies are recalled. In a second experiment, 31 participants
-sang back 28 melodies, and the analysis aimed to predict how similar
-their sung recalls were to the original melodies over multiple
-attempts.</p>
+<p>In this paper, we examined how people learn and recall (i.e., sing
+back) melodies over multiple attempts. In a first simulation experiment,
+we reasoned for using similarity measures rather than accuracy-based
+measures to score how well melodies are recalled. In a second
+experiment, 31 participants sang back 28 melodies, and the analysis
+aimed to predict how similar their sung recalls were to the original
+melodies over multiple attempts.</p>
 <p>It was found that, as people try to recall long melodies, their
 attempts tend to get longer over multiple attempts, and their overall
 performance improves too. We concluded that when a melody is long enough
@@ -119,21 +119,25 @@ determining performance is the length of the target melody. Melodic
 structure (e.g., tonality, intervals, rhythms) may be more critical for
 shorter melodies or when dealing with more diverse types of melodies
 than those used in this study.</p>
-<div class="section level3">
-<h3 id="experiment-1-similarity-measures-as-a-methodological-advance-for-scoring-melodic-recall-data">Experiment 1: Similarity Measures as a Methodological Advance for
-Scoring Melodic Recall Data<a class="anchor" aria-label="anchor" href="#experiment-1-similarity-measures-as-a-methodological-advance-for-scoring-melodic-recall-data"></a>
-</h3>
-<p>Different algorithmic measures were used to assess how well people
-recall and sing melodies. Specifically, we profiled measures related to
-the notion of “accuracy” against measures of melodic similarity. We
-found that accuracy measures have notable limitations. Measures of
-melodic similarity measures were preferred because they reward
-participants for singing more notes - and approaching the true length of
-the melody. This was not always the case for accuracy measures.</p>
-<div class="figure">
-<img src="similarity_accuracy_simulations_main.jpg" alt=""><p class="caption">Simulation experiment results for different methods
-of scoring melodic recall data.</p>
+<p>pkgdown::build_articles()</p>
 </div>
+<div class="section level2">
+<h2 id="experiment-1-similarity-measures-as-a-methodological-advance-for-scoring-melodic-recall-data">Experiment 1: Similarity Measures as a Methodological Advance for
+Scoring Melodic Recall Data<a class="anchor" aria-label="anchor" href="#experiment-1-similarity-measures-as-a-methodological-advance-for-scoring-melodic-recall-data"></a>
+</h2>
+<p>Different algorithmic measures which can assess how well people
+recall and sing melodies were profiled. Specifically, we profiled
+measures related to the notion of “accuracy” against measures of melodic
+similarity. We found that accuracy measures have notable limitations.
+Measures of melodic similarity measures were preferred because they
+reward participants for singing more notes - and approaching the true
+length of the melody. This was not always the case for accuracy
+measures.</p>
+<div class="figure">
+<img src="similarity_accuracy_simulations_main.jpg" alt=""><p class="caption">Figure 1: Simulation experiment results for different
+methods of scoring melodic recall data.</p>
+</div>
+<p><br></p>
 <p><em>opti3</em> (Müllensiefen &amp; Frieler, 2004), a measure of of
 melodic similarity that considers various musical dimensions beyond
 pitch and intervals, was argued to be more comprehensive and
@@ -143,43 +147,66 @@ behaviour simultaneously. We chose <em>opti3</em> as the main way to
 measure how well people remember and sing melodies in Experiment 2 (and
 in the <code>musicassessr</code> framework!).</p>
 </div>
-<div class="section level3">
-<h3 id="experiment-2-how-do-we-learn-melodies-a-melodic-similarity-based-perspective-">Experiment 2: How Do We Learn Melodies? A Melodic Similarity-based
+<div class="section level2">
+<h2 id="experiment-2-how-do-we-learn-melodies-a-melodic-similarity-based-perspective-">Experiment 2: How Do We Learn Melodies? A Melodic Similarity-based
 Perspective.<a class="anchor" aria-label="anchor" href="#experiment-2-how-do-we-learn-melodies-a-melodic-similarity-based-perspective-"></a>
-</h3>
+</h2>
 <p>We summarise the key results of Experiment 2:</p>
 <ol style="list-style-type: decimal">
-<li>Recall of Melodies Improves Over Time: When people try to remember
-and recall a melody, they tend to start with an incomplete recall on
-their first attempt. With each subsequent try, they usually add more
-notes to their recall. This process of recall improves over time, but it
-often doesn’t reach a perfect match with the original melody, even after
-six attempts.</li>
+<li>Length Of Recall and Overall Recall Performance Grow Over Attempts:
+When people try to remember and recall a melody, they tend to start with
+an incomplete recall on their first attempt. With each subsequent try,
+they usually add more notes to their recall, and the similarity of their
+recall to the target also improves over attempts. However, their
+performance often doesn’t reach a perfect match with the original
+melody, even after six attempts.</li>
 </ol>
-<p><img src="white_paper_2_figure_1.png" width="500"></p>
+<div class="figure">
+<img src="white_paper_2_figure_1.png" alt="Figure 2: Development of mean attempt length (red) and opti3 (blue), rescaled [0,1]" width="1091"><p class="caption">
+Figure 2: Development of mean attempt length (red) and opti3 (blue),
+rescaled [0,1]
+</p>
+</div>
 <ol start="2" style="list-style-type: decimal">
 <li>The Learning Curve Resembles an Exponential Curve: The improvement
 in recalling melodies follows a curve that resembles an exponential
 shape. It keeps increasing with each attempt but eventually levels off,
 usually not reaching the full length of the target melody.</li>
 </ol>
-<p><img src="white_paper_2_figure_2.png" width="768"></p>
+<div class="figure">
+<img src="white_paper_2_figure_2.png" alt="Figure 3: Model predicted values with a log term for attempt vs. empirical descriptive results" width="768"><p class="caption">
+Figure 3: Model predicted values with a log term for attempt
+vs. empirical descriptive results
+</p>
+</div>
 <ol start="3" style="list-style-type: decimal">
 <li>Different Sections of Melodies Are Learned Differently: When people
 recall melodies, they tend to focus on improving the earlier parts of
 the melody, performing less well on the later notes they’ve added more
 recently. However, when it comes to rhythm, the middle of the melody is
-remembered better than the earlier or later parts. This resonates with
-the idea of domain-specific interference in working memory (Jarrold et
-al., 2011).</li>
+remembered better than the earlier or later parts. Perhaps participants
+first focus on intervallic information, then switch to focusing on
+rhythmic information (a different type of musical information) when they
+have recalled all the intervallic information they can remember. This
+resonates with the idea of domain-specific interference in working
+memory (Jarrold et al., 2011).</li>
 </ol>
-<p><img src="white_paper_2_figure_5.png" width="470"></p>
+<div class="figure">
+<img src="white_paper_2_figure_5.png" alt="Figure 4: Melodic similarity as a function of attempt and melody section." width="1800"><p class="caption">
+Figure 4: Melodic similarity as a function of attempt and melody
+section.
+</p>
+</div>
 <ol start="4" style="list-style-type: decimal">
-<li>Harmonic Elements May Not Improve Across Attempts: While other
-aspects like rhythm and intervallic structure improve across recall
-attempts, harmonic elements may remain stable.</li>
+<li>Harmonic Performance May Not Improve Across Attempts: While other
+aspects like rhythm and intervallic structure show clear improvements
+across recall attempts, harmonic elements seem to remain stable.</li>
 </ol>
-<p><img src="white_paper_2_figure_3.png" width="516"></p>
+<div class="figure">
+<img src="white_paper_2_figure_3.png" alt="Figure 5: Mean similarity values as a function of attempt" width="1500"><p class="caption">
+Figure 5: Mean similarity values as a function of attempt
+</p>
+</div>
 <ol start="5" style="list-style-type: decimal">
 <li><p>Melodies Might Be Learned Simultaneously Across Different Musical
 Dimensions: Instead of remembering different musical features (e.g.,
@@ -191,9 +218,16 @@ correlate with one another (Baker, 2021).</p></li>
 <li><p>Individual Differences in Melodic Recall: Some people remember
 certain melodies better than others, possibly due to prior familiarity
 with similar melodies or differences in their musical and nonmusical
-memory skills.</p></li>
+memory skills. However, not all recall performance is explained in terms
+of musical experience, suggesting a role for domain-general memory
+faculties.</p></li>
 </ol>
-<p><img src="white_paper_2_figure_4.png" width="960"></p>
+<div class="figure">
+<img src="white_paper_2_figure_4.png" alt="Figure 6: Average by-participant development of opti3 across trials, coloured by musical experience scores." width="960"><p class="caption">
+Figure 6: Average by-participant development of opti3 across trials,
+coloured by musical experience scores.
+</p>
+</div>
 <ol start="7" style="list-style-type: decimal">
 <li><p>Longer Melodies Are More Challenging: Longer melodies are more
 difficult to remember because they require more notes to recall, and
@@ -218,7 +252,11 @@ relationship between target melody length and sung recall performance
 as “inconsistent mediation” whereby two opposing effects work against
 each other.</p></li>
 </ol>
-<p><img src="mediation_model.png" width="651"></p>
+<div class="figure">
+<img src="mediation_model.png" alt="Figure 7: An (inconsistent) mediation model with target melody length as predictor of melodic similarity via the attempt length" width="651"><p class="caption">
+Figure 7: An (inconsistent) mediation model with target melody length as
+predictor of melodic similarity via the attempt length
+</p>
 </div>
 </div>
 <div class="section level2">

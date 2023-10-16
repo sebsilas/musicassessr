@@ -86,7 +86,7 @@
 
     
     
-<p>In the <code>musicassessr</code> framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data. It is worth noting that using measures of melodic <em>similarity</em> on such data is quite different to using measures of <em>accuracy</em>. In this vignette, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.</p>
+<p>In the <code>musicassessr</code> framework, we generally reason for employing measures of melodic similarity for scoring melodic recall data (as argued in our <a href="https://sebsilas.github.io/musicassessr/articles/white_paper_2_silas_and_mullensiefen_2023.html">Music Perception paper</a>). It is worth noting that using measures of melodic <em>similarity</em> on such data is quite different to using measures of <em>accuracy</em>. In this vignette, we intuitively demonstrate the difference between accuracy and melodic similarity approaches to scoring melodic recall data.</p>
 <div class="section level2">
 <h2 id="foundations-of-accuracy-style-measures">1. Foundations of accuracy-style measures<a class="anchor" aria-label="anchor" href="#foundations-of-accuracy-style-measures"></a>
 </h2>
@@ -323,7 +323,7 @@ harmcore
 </td>
 </tr></tbody>
 </table>
-<p>For Examples 3-6, we take the humourous example of the “The Lick” - the archetypal jazz pattern made famous by YouTube<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;a href="https://www.youtube.com/watch?v=krDxhnaKD7Q" class="external-link uri"&gt;https://www.youtube.com/watch?v=krDxhnaKD7Q&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a> and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity.</p>
+<p>For Examples 3-6, we take the humourous example of the “The Lick” - the archetypal jazz pattern made famous by <a href="https://www.youtube.com/watch?v=krDxhnaKD7Q" class="external-link">YouTube</a> and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity.</p>
 <table class="table">
 <caption>
 <span id="tab:unnamed-chunk-10">Table 4: </span>The Lick vs. its retrograde (rhythms the same) similarity results
@@ -604,11 +604,12 @@ harmcore
 </td>
 </tr></tbody>
 </table>
-<p>The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity <span class="citation">[e.g., @dowlingRecognitionMelodicTransformations1972]</span>. However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our <a href="https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html">simulation study</a>. In Silas &amp; Müllensiefen (2023), we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.</p>
+<p>The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity (e.g., Dowling, 1972). However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our <a href="https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html">simulation study</a>. In <a href="https://sebsilas.github.io/musicassessr/articles/white_paper_2_silas_and_mullensiefen_2023.html">Silas &amp; Müllensiefen (2023)</a>, we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<p>Dowling, W. J. (1972). Recognition of melodic transformations: Inversion, retrograde, and retrograde inversion. Perception &amp; Psychophysics, 12(5), 417–421. <a href="https://doi.org/10.3758/BF03205852" class="external-link uri">https://doi.org/10.3758/BF03205852</a></p>
 <p>Silas, S., &amp; Müllensiefen, D. (2023). Learning and recalling melodies: A computational investigation using the melodic recall paradigm. Music Perception.</p>
 </div>
 <div class="section level2">
@@ -802,7 +803,6 @@ harmcore
 <span><span class="va">main_tb</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Examples of two comparison melodies scored for their level of similarity."</span><span class="op">)</span></span></code></pre></div>
 </div>
-
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>

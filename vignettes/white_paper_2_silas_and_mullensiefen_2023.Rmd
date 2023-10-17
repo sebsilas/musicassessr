@@ -29,8 +29,6 @@ In this paper, we examined how people learn and recall (i.e., sing back) melodie
 
 It was found that, as people try to recall long melodies, their attempts tend to get longer over multiple attempts, and their overall performance improves too. We concluded that when a melody is long enough to require multiple attempts to sing back in full, the main factor determining performance is the length of the target melody. Melodic structure (e.g., tonality, intervals, rhythms) may be more critical for shorter melodies or when dealing with more diverse types of melodies than those used in this study.
 
-pkgdown::build_articles()
-
 # Experiment 1: Similarity Measures as a Methodological Advance for Scoring Melodic Recall Data
 
 Different algorithmic measures which can assess how well people recall and sing melodies were profiled. Specifically, we profiled measures related to the notion of "accuracy" against measures of melodic similarity. We found that accuracy measures have notable limitations. Measures of melodic similarity measures were preferred because they reward participants for singing more notes - and approaching the true length of the melody. This was not always the case for accuracy measures. 

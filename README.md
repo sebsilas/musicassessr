@@ -33,6 +33,12 @@
 
 You can find several articles and tutorials [here](https://sebsilas.github.io/musicassessr/articles/), which include summarised results of research utilising this software (see: white papers). For in-depth reading, follow the results to the actual publications.
 
+# Setup
+
+- If you are running *musicassessr* on Linux, you will need to install [*SoX*](https://sox.sourceforge.net) manually. 
+
+- You will also need to install *NodeJS*.
+
 ## References
 
 Baker, D. (2021). MeloSol Corpus. Empirical Musicology Review, 16, 106–113. https://doi.org/10.18061/emr.v16i1.7645

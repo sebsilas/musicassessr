@@ -503,6 +503,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
   } else if(type == "audio") {
 
     res <- get_answer_rhythm_production_audio(input, state, ...)
+
     if(is.scalar.na.or.null(res$dur) || "error" %in% names(res)) {
       user_durations <- NA
     } else {
@@ -596,16 +597,14 @@ get_answer_rhythm_production_audio <- function(input, state, ...) {
 
   if(is.scalar.na.or.null(onset_res) || is.scalar.na.or.null(onset_res$onset)) {
 
+    onset_res <- list(error = TRUE,
+                      reason = "There was nothing in the onset track",
+                      dur = NA)
+
     logging::loginfo("There was nothing in the onset track")
 
-    res <- list(error = TRUE,
-                reason = "There was nothing in the onset track")
-
-    logging::loginfo("There was nothing in the onset track")
-
-  } else {
-    return(onset_res)
   }
+  return(onset_res)
 }
 
 bpm_to_ms <- function(bpm) {
@@ -871,13 +870,15 @@ get_answer_onset_detection <- function(input,
     last_dur <- stimulus[length(stimulus)]
   }
 
-  onsets <- onset_res$onset
-  durs <- c(diff(onsets), last_dur)
+  onsets <- if(is.scalar.na.or.null(onset_res)) NA else onset_res$onset
+  durs <- if(is.scalar.na.or.null(onset_res)) NA else c(diff(onsets), last_dur)
+
+  logging::loginfo("Onsets: %s", paste0(round(onsets, 2), collapse = " | "))
 
   list(
     file = new_audio_file,
-    onset = if(is.scalar.na.or.null(onset_res)) NA else onsets,
-    dur = if(is.scalar.na.or.null(onset_res)) NA else durs,
+    onset = onsets,
+    dur = durs,
     stimulus_trigger_times = stimulus_trigger_times,
     stimuli = stimulus,
     trial_start_time_timecode = trial_start_time_timecode,

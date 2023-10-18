@@ -433,11 +433,12 @@ get_answer_midi <- function(input, state, ...) {
     notes_off <- if(is.null(input$user_response_midi_note_off)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_off))
     onsets <- (onsets_noteon_timecode - trial_start_time_timecode) / 1000
     stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
-    # We just assume the last duration is 0.5 always. There is no way of telling when the participant really designates that a "hit" is over
-    # Technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
 
     stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
 
+    # We just assume the last duration is 0.5 always (or the last duration of the stimulus, if there is one).
+    # There is no way of telling when the participant really designates that a "hit" is over
+    # Well, technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
     if(is.scalar.na.or.null(stimulus)) {
       last_dur <- 0.5
     } else {
@@ -492,7 +493,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
     res <- get_answer_rhythm_production_midi(input, state, ...)
 
-    if(is.scalar.na.or.null(res$pyin_style_res)) {
+    if(is.scalar.na.or.null(res$pyin_style_res) || is.scalar.na.or.null(res$pyin_style_res$dur)) {
       user_durations <- NA
     } else {
       user_durations <- res$pyin_style_res$dur
@@ -501,10 +502,10 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
   } else if(type == "audio") {
 
     res <- get_answer_rhythm_production_audio(input, state, ...)
-    if(is.scalar.na.or.null(res$onset) || "error" %in% names(res)) {
+    if(is.scalar.na.or.null(res$dur) || "error" %in% names(res)) {
       user_durations <- NA
     } else {
-      user_durations <- diff(res$onset)
+      user_durations <- res$dur
     }
 
   } else if(type == "key_presses") {
@@ -513,9 +514,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
     user_durations <- res$user_durations
 
   } else {
-
       stop("Unknown type.")
-
   }
 
   answer_meta_data <- input$answer_meta_data
@@ -594,8 +593,7 @@ get_answer_rhythm_production_audio <- function(input, state, ...) {
 
   onset_res <- get_answer_onset_detection(input, state, ...)
 
-
-  if(is.scalar.na.or.null(onset_res) | is.scalar.na.or.null(onset_res)) {
+  if(is.scalar.na.or.null(onset_res) || is.scalar.na.or.null(onset_res$onset)) {
 
     logging::loginfo("There was nothing in the onset track")
 
@@ -868,9 +866,13 @@ get_answer_onset_detection <- function(input,
     last_dur <- stimulus[length(stimulus)]
   }
 
+  onsets <- onset_res$onset
+  durs <- c(diff(onsets), last_dur)
+
   list(
     file = new_audio_file,
-    onset = if(is.scalar.na.or.null(onset_res)) NA else c(onset_res$onset, last_dur),
+    onset = if(is.scalar.na.or.null(onset_res)) NA else onsets,
+    dur = if(is.scalar.na.or.null(onset_res)) NA else durs,
     stimulus_trigger_times = stimulus_trigger_times,
     stimuli = stimulus,
     trial_start_time_timecode = trial_start_time_timecode,

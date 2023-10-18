@@ -10,7 +10,7 @@ wjd_audio_melody_trials(
   num_examples = 0L,
   feedback = FALSE,
   item_length = c(3, 15),
-  get_answer = get_answer_pyin_melodic_production_additional_measures,
+  get_answer = get_answer_pyin_melodic_production,
   sound = "piano",
   page_text =
     "Press play to hear the melody, then play it back as best as you can when it finishes.",

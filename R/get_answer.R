@@ -435,7 +435,14 @@ get_answer_midi <- function(input, state, ...) {
     stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
     # We just assume the last duration is 0.5 always. There is no way of telling when the participant really designates that a "hit" is over
     # Technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
-    last_dur <- 0.5
+
+    stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+
+    if(is.scalar.na.or.null(stimulus)) {
+      last_dur <- 0.5
+    } else {
+      last_dur <- stimulus[length(stimulus)]
+    }
 
     pyin_style_res <- tibble::tibble(
       onset = onsets,
@@ -453,7 +460,7 @@ get_answer_midi <- function(input, state, ...) {
       user_response_midi_note_off =  notes_off,
       onsets_noteon = onsets,
       pyin_style_res = pyin_style_res,
-      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli)),
+      stimuli = stimulus,
       trial_start_time_timecode = trial_start_time_timecode,
       trial_start_time_timecode2 = trial_start_time_timecode2,
       latency_estimate = latency_estimate
@@ -557,8 +564,18 @@ get_answer_key_presses_page <- function(input, ...) {
   onsets_keydown <- rjson::fromJSON(input$onsets_keydown)
   onsets_keyup <- rjson::fromJSON(input$onsets_keyup)
   durations <- diff(onsets_keydown)
-  last_dur <- onsets_keyup[length(onsets_keyup)]  - onsets_keydown[length(onsets_keydown)]
-  last_dur <- if(is.null(last_dur) || last_dur < 0) 0.5 else last_dur
+
+  stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+
+  if(is.scalar.na.or.null(stimulus)) {
+    last_dur <- 0.5
+  } else {
+    last_dur <- stimulus[length(stimulus)]
+  }
+
+  # last_dur <- onsets_keyup[length(onsets_keyup)]  - onsets_keydown[length(onsets_keydown)]
+  # last_dur <- if(is.null(last_dur) || last_dur < 0) 0.5 else last_dur
+
   durations <- c(durations, last_dur)
 
   list(
@@ -837,20 +854,25 @@ get_answer_onset_detection <- function(input,
 
   onset_res <- vampr::onset_detection(new_audio_file)
 
-
   trial_start_time_timecode <- input$trial_start_time
   trial_start_time_timecode2 <- input$trial_start_time2
   latency_estimate <- trial_start_time_timecode2 - trial_start_time_timecode
   stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
   # We just assume the last duration is 0.5 always. There is no way of telling when the participant really designates that a "hit" is over
   # Technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
-  last_dur <- 0.5
+  stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+
+  if(is.scalar.na.or.null(stimulus)) {
+    last_dur <- 0.5
+  } else {
+    last_dur <- stimulus[length(stimulus)]
+  }
 
   list(
     file = new_audio_file,
-    onset = if(is.scalar.na.or.null(onset_res)) NA else onset_res$onset,
+    onset = if(is.scalar.na.or.null(onset_res)) NA else c(onset_res$onset, last_dur),
     stimulus_trigger_times = stimulus_trigger_times,
-    stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli)),
+    stimuli = stimulus,
     trial_start_time_timecode = trial_start_time_timecode,
     trial_start_time_timecode2 = trial_start_time_timecode2,
     latency_estimate = latency_estimate

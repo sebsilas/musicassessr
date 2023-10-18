@@ -6,6 +6,7 @@
 \usage{
 record_key_presses_block(
   no_pages,
+  label = "record_key_presses",
   feedback = NULL,
   get_answer = get_answer_pyin,
   page_title = psychTestR::i18n("Record_audio"),

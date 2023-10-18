@@ -69,6 +69,9 @@ make_musicassessr_test <- function(title,
       # Disconnect from database at end of test, if it was being used
       if (opt$use_musicassessr_db) elt_disconnect_from_db(),
 
+      # Save results
+      psychTestR::elt_save_results_to_disk(complete = TRUE),
+
       wrap_musicassessr_timeline( psychTestR::final_page(final_page_ui) )
 
     ),

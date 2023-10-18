@@ -6,6 +6,7 @@
 \usage{
 record_midi_block(
   no_pages,
+  label = "record_midi_page",
   feedback = NULL,
   get_answer = get_answer_midi,
   page_title = psychTestR::i18n("Record_audio"),

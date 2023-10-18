@@ -13,7 +13,7 @@ audio_melodic_production_trials(
   grab_meta_data,
   meta_data_df,
   meta_data_lookup_column,
-  get_answer = get_answer_pyin_melodic_production_additional_measures,
+  get_answer = get_answer_pyin_melodic_production,
   feedback = FALSE
 )
 }

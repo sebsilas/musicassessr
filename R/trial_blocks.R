@@ -41,6 +41,7 @@ record_and_present_audio_block <- function(files_list,
 #' A block of record key press pages
 #'
 #' @param no_pages
+#' @param label
 #' @param feedback
 #' @param get_answer
 #' @param page_text
@@ -51,6 +52,7 @@ record_and_present_audio_block <- function(files_list,
 #'
 #' @examples
 record_key_presses_block <- function(no_pages,
+                                     label = "record_key_presses",
                                      feedback = NULL,
                                      get_answer = get_answer_pyin,
                                      page_title = psychTestR::i18n("Record_audio"),
@@ -58,6 +60,7 @@ record_key_presses_block <- function(no_pages,
   pages <- psychTestR::join(
 
     rep(list(record_key_presses_page(get_answer = get_answer,
+                                     label = label,
                                      page_title = page_title,
                                      page_text = page_text)), no_pages)
   )
@@ -70,6 +73,7 @@ record_key_presses_block <- function(no_pages,
 #' A block of record audio pages
 #'
 #' @param no_pages
+#' @param label
 #' @param feedback
 #' @param get_answer
 #' @param page_text
@@ -80,6 +84,7 @@ record_key_presses_block <- function(no_pages,
 #'
 #' @examples
 record_audio_block <- function(no_pages,
+                               label = "record_audio",
                                feedback = NULL,
                                get_answer = get_answer_pyin,
                                page_title = psychTestR::i18n("Record_audio"),
@@ -87,6 +92,7 @@ record_audio_block <- function(no_pages,
   pages <- psychTestR::join(
 
     rep(list(record_audio_page(get_answer = get_answer,
+                               label = label,
                                page_title = page_title,
                                page_text = page_text)), no_pages)
   )
@@ -100,6 +106,7 @@ record_audio_block <- function(no_pages,
 #' A block of record MIDI pages
 #'
 #' @param no_pages
+#' @param label
 #' @param feedback
 #' @param get_answer
 #' @param page_title
@@ -111,6 +118,7 @@ record_audio_block <- function(no_pages,
 #'
 #' @examples
 record_midi_block <- function(no_pages,
+                              label = "record_midi_page",
                               feedback = NULL,
                               get_answer = get_answer_midi,
                               page_title = psychTestR::i18n("Record_audio"),
@@ -124,6 +132,7 @@ record_midi_block <- function(no_pages,
     if(is.null(midi_device)) { shiny::showNotification(psychTestR::i18n("no_midi_device_selected")) }
 
       record_midi_page(get_answer = get_answer,
+                       label = label,
                        page_title = page_title,
                        page_text = page_text,
                        midi_device = midi_device,
@@ -178,7 +187,7 @@ sing_arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                           num_items = integer(),
                                           num_examples = 0L,
                                           feedback = FALSE,
-                                          get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                          get_answer = get_answer_pyin_melodic_production,
                                           sound = "piano",
                                           page_type = "record_audio_page",
                                           get_trial_characteristics_function = NULL,
@@ -261,7 +270,7 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                         num_items = integer(),
                                         num_examples = 0L,
                                         feedback = FALSE,
-                                        get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                        get_answer = get_answer_pyin_melodic_production,
                                         sound = "piano",
                                         page_type = "record_audio_page",
                                         get_trial_characteristics_function = NULL,
@@ -361,7 +370,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      num_items = integer(),
                                      num_examples = 0L,
                                      feedback = FALSE,
-                                     get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                     get_answer = get_answer_pyin_melodic_production,
                                      sound = "piano",
                                      page_type = "record_audio_page",
                                      get_trial_characteristics_function = NULL,
@@ -485,7 +494,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    num_items = integer(),
                                    num_examples = 0L,
                                    feedback = FALSE,
-                                   get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                   get_answer = get_answer_pyin_melodic_production,
                                    sound = "piano",
                                    page_type = "record_audio_page",
                                    get_trial_characteristics_function = NULL,
@@ -611,7 +620,7 @@ melody_trials <- function(var_name,
                           num_items = integer(),
                           num_examples = 0L,
                           feedback = FALSE,
-                          get_answer = get_answer_pyin_melodic_production_additional_measures,
+                          get_answer = get_answer_pyin_melodic_production,
                           sound = "piano",
                           page_type = "record_audio_page",
                           get_trial_characteristics_function = NULL,
@@ -1068,7 +1077,7 @@ wjd_audio_melody_trials <- function(item_bank,
                                     num_examples = 0L,
                                     feedback = FALSE,
                                     item_length = c(3,15),
-                                    get_answer = get_answer_pyin_melodic_production_additional_measures, sound = "piano",
+                                    get_answer = get_answer_pyin_melodic_production, sound = "piano",
                                     page_text = "Press play to hear the melody, then play it back as best as you can when it finishes.",
                                     page_title = "Play the Melody And Rhythm from Audio",
                                     instruction_text = "Now you will hear some melodies as audio. Please try and play back the melodies and rhythms as best as you can.") {
@@ -1217,7 +1226,7 @@ audio_melodic_production_trials <- function(audio_directory,
                                             grab_meta_data,
                                             meta_data_df,
                                             meta_data_lookup_column,
-                                            get_answer = get_answer_pyin_melodic_production_additional_measures,
+                                            get_answer = get_answer_pyin_melodic_production,
                                             feedback = FALSE) {
 
   shiny_prefix <- paste0("audio_", paste(sample(1:9, 20, replace = TRUE), sep="", collapse="")) # NB: for cases where multiple blocks with different directories are used

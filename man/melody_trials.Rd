@@ -15,7 +15,7 @@ melody_trials(
   num_items = integer(),
   num_examples = 0L,
   feedback = FALSE,
-  get_answer = get_answer_pyin_melodic_production_additional_measures,
+  get_answer = get_answer_pyin_melodic_production,
   sound = "piano",
   page_type = "record_audio_page",
   get_trial_characteristics_function = NULL,

@@ -4,12 +4,13 @@
 #' @param item_bank
 #' @param no_items
 #' @param replace
+#' @param shuffle
 #'
 #' @return
 #' @export
 #'
 #' @examples
-item_sampler <- function(item_bank, no_items, replace = FALSE) {
+item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
 
   stopifnot(
     tibble::is_tibble(item_bank),
@@ -44,6 +45,10 @@ item_sampler <- function(item_bank, no_items, replace = FALSE) {
 
   res <- dplyr::bind_rows(sample_dat)
 
+  if(shuffle) {
+    res <- res[sample(1:nrow(res)), ]
+  }
+
   res$trial_no <- 1:nrow(res)
   res
 }
@@ -51,6 +56,9 @@ item_sampler <- function(item_bank, no_items, replace = FALSE) {
 
 sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
   psychTestR::code_block(function(state, ...) {
+
+    logging::loginfo("Calling sample_item_characteristics function")
+
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
     psychTestR::set_global(var_name, item_chars, state)
   })
@@ -229,9 +237,9 @@ sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_
       arrhythmic_item_bank_subset <- item_bank
     }
     if(nrow(arrhythmic_item_bank_subset) < num_items_arrhythmic) {
-      arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic, replace = TRUE)
+      arrhythmic_sample <- item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic, replace = TRUE)
     } else {
-      arrhythmic_sample <- musicassessr::item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
+      arrhythmic_sample <- item_sampler(arrhythmic_item_bank_subset, num_items_arrhythmic)
     }
     psychTestR::set_global(id, arrhythmic_sample, state)
   })

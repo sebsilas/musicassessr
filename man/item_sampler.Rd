@@ -4,10 +4,10 @@
 \alias{item_sampler}
 \title{Item sampler}
 \usage{
-item_sampler(item_bank, no_items, replace = FALSE)
+item_sampler(item_bank, no_items, replace = FALSE, shuffle = TRUE)
 }
 \arguments{
-\item{replace}{}
+\item{shuffle}{}
 }
 \description{
 Item sampler

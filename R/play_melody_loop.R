@@ -759,7 +759,7 @@ grab_sampled_melody <- function(item_bank = NULL,
 
   # Has melody been specified directly, or sampled at test time?
   if(is.null(melody_row)) {
-
+    logging::loginfo("Sample at test time")
     # Assume melodies sampled at test time and stored in global object
     if(is.null(get_trial_characteristics_function)) {
 
@@ -785,12 +785,15 @@ grab_sampled_melody <- function(item_bank = NULL,
     }
 
   } else {
+    logging::loginfo("Melody has been specified.")
     transpose <- transposition_check(melody_row)
     rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
+    logging::loginfo("Rel melody: %s", melody_row %>% dplyr::pull(melody))
   }
 
   # Does the melody need to be rhythmic or arrhythmic?
   durations <- if(arrhythmic) NA else itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(durations))
+  logging::loginfo("Durations: %s", melody_row %>% dplyr::pull(durations))
   melody <- sort_arrhythmic(arrhythmic, rel_melody, durations, note_length)$melody
   durations <- sort_arrhythmic(arrhythmic, rel_melody, durations, note_length)$durations
 
@@ -850,6 +853,10 @@ grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, r
 }
 
 transpose_melody <- function(rel_to_abs_mel_function, rel_melody, abs_melody, melody, bottom_range, top_range, range, transpose) {
+
+  logging::loginfo('Transpose melody...')
+  logging::loginfo("Rel melody: %s", paste0(rel_melody, collapse = ", "))
+
   if(is.null(rel_to_abs_mel_function)) {
     if(is.data.frame(abs_melody)) {
       abs_melody <- melody %>%

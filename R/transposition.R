@@ -223,7 +223,7 @@ sample_keys_by_difficulty <- function(inst, n_easy, n_hard) {
 
 
 mean_of_stimuli <- function(rel_melody) {
-  if(class(rel_melody) == "character") {
+  if(is.character(rel_melody)) {
     rel_melody <- itembankr::str_mel_to_vector(rel_melody)
   }
   round(mean(itembankr::rel_to_abs_mel(rel_melody, start_note = 0)))
@@ -262,7 +262,7 @@ rel_to_abs_mel_mean_centred <- function(rel_melody, bottom_range, top_range, plo
   # produce a melody which is centered on the user's range.
   # NB: the "mean stimuli note" could/should be sampled from around the user's mean range i.e +/- 3 semitones
 
-  if(class(rel_melody) == "character") {
+  if(is.scalar.character(rel_melody)) {
     rel_melody <- itembankr::str_mel_to_vector(rel_melody, ",")
   }
 

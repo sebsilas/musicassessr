@@ -662,9 +662,9 @@ melody_trials <- function(var_name,
 
   stopifnot(
     is(item_bank, "item_bank"),
-    is.scalar.numeric(num_items) | is.list(num_items) | presampled,
-    is.scalar.numeric(num_examples) | is.list(num_examples),
-    is.function(feedback) | is.scalar.logical(feedback),
+    is.scalar.numeric(num_items) || is.list(num_items) || presampled,
+    is.scalar.numeric(num_examples) || is.list(num_examples),
+    is.function(feedback) || is.scalar.logical(feedback),
     is.function(get_answer),
     is.scalar.character(sound),
     is.scalar.character(page_text),
@@ -703,6 +703,12 @@ melody_trials <- function(var_name,
   num_examples_flat <- flatten_no_item_list(num_examples)
   num_items_flat <- flatten_no_item_list(num_items)
 
+  print('num_examples_flat')
+  print(num_examples_flat)
+
+  print('num_items_flat')
+  print(num_items_flat)
+
   # Unclass item bank, so it can work with dplyr
   item_bank <- item_bank %>% tibble::as_tibble()
 
@@ -730,14 +736,14 @@ melody_trials <- function(var_name,
                            shiny::tags$p(instruction_text)
                          ), button_text = psychTestR::i18n("Next")),
                          # Examples
-                         if(is.numeric(num_examples_flat) & num_examples_flat > 0L) {
+                         if(is.numeric(num_examples_flat) && num_examples_flat > 0L) {
                            psychTestR::join(
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
                              ## Sample example items
-                             if(!presampled) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
+                             if(!presampled) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name),
                              ## Run examples
                              multi_page_play_melody_loop(
                                presampled_items = if(presampled) item_bank else NULL,
@@ -823,14 +829,20 @@ melody_trials <- function(var_name,
 
 handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review = FALSE, var_name) {
   if(review) {
-    sample_review(num_items_flat, id = var_name)
+    res <- sample_review(num_items_flat, id = var_name)
   } else {
+
     if(is.null(item_characteristics_sampler_function)) {
-      if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat)
+      if(!is.null(sampler_function)) {
+        res <- sampler_function(item_bank, num_items_flat)
+      }
     } else {
-      sample_item_characteristics(var_name = var_name, item_characteristics_sampler_function, item_characteristics_pars)
+      res <- sample_item_characteristics(var_name = var_name, item_characteristics_sampler_function, item_characteristics_pars)
     }
+
   }
+
+  return(res)
 
 }
 
@@ -1107,12 +1119,12 @@ wjd_audio_melody_trials <- function(item_bank,
         shiny::tags$p(instruction_text)
       ), button_text = psychTestR::i18n("Next")))
 
-    # examples
+    # Examples
     if(is.numeric(num_examples_flat) & num_examples_flat > 0L) {
 
       examples <- item_sampler(item_bank, num_examples_flat)
 
-      ## sample
+      ## Sample
       example_tl <- psychTestR::join(
         psychTestR::one_button_page(shiny::tags$div(
           shiny::tags$h2(page_title),

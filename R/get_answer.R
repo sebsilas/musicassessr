@@ -195,14 +195,15 @@ get_answer_pyin <- function(input,
   new_audio_file <- paste0(tools::file_path_sans_ext(audio_file), "_beginning_silence_added.wav")
 
   # Add silence to beginning
-  add_silence_to_audio_file(old_file = audio_file,
+  silence_file <- add_silence_to_audio_file(old_file = audio_file,
                             new_file = new_audio_file, # Note, we overwrite the old file
                             no_seconds_silence_beginning = add_silence_to_beginning_of_audio_file,
                             no_seconds_silence_end = add_silence_to_end_of_audio_file)
 
+  file_to_use <- if(identical(silence_file, "ERROR")) audio_file else new_audio_file
 
   # Get pyin
-  pyin_res <- get_pyin(new_audio_file, type, state)
+  pyin_res <- get_pyin(file_to_use, type, state)
 
   # Get melconv (optionally)
   melconv_res <- get_melconv(melconv, pyin_res)
@@ -839,18 +840,22 @@ get_answer_onset_detection <- function(input,
   }
 
   # Add silence to beginning
-  add_silence_to_audio_file(old_file = audio_file,
-                            new_file = new_audio_file, # Note, we overwrite the old file
-                            no_seconds_silence_beginning = add_silence_to_beginning_of_audio_file,
-                            no_seconds_silence_end = add_silence_to_end_of_audio_file)
+  silence_file <- add_silence_to_audio_file(old_file = audio_file,
+                                            new_file = new_audio_file, # Note, we overwrite the old file
+                                            no_seconds_silence_beginning = add_silence_to_beginning_of_audio_file,
+                                            no_seconds_silence_end = add_silence_to_end_of_audio_file)
+
+  file_to_use <- if(identical(silence_file, "ERROR")) audio_file else new_audio_file
 
   # And same with new (silence-added) file
   valid_file <- FALSE
   while(!valid_file) {
-    valid_file <- file.exists(new_audio_file)
+    valid_file <- file.exists(file_to_use)
   }
 
-  onset_res <- vampr::onset_detection(new_audio_file)
+
+
+  onset_res <- vampr::onset_detection(file_to_use)
 
   trial_start_time_timecode <- input$trial_start_time
   trial_start_time_timecode2 <- input$trial_start_time2

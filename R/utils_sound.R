@@ -9,7 +9,15 @@ add_silence_to_audio_file <- function(old_file = "/Users/sebsilas/true.wav",
   cmd <- paste0(sox_location, " ",  old_file, " ", new_file, " pad ", no_seconds_silence_beginning, " ", no_seconds_silence_end)
 
   logging::loginfo("Running sox cmd: %s", cmd)
-  system(cmd)
+
+  res <- tryCatch({
+    system(cmd)
+  }, error = function(err) {
+    logging::logerror(err)
+    "ERROR"
+  })
+
+  return(res)
 }
 
 

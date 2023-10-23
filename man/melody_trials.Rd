@@ -42,11 +42,12 @@ melody_trials(
   phase = c("test", "learn", "review"),
   first_note_message = psychTestR::i18n("first_note_is"),
   transposed_message = psychTestR::i18n("transposed"),
-  play_first_note_button_text = psychTestR::i18n("play_first_note")
+  play_first_note_button_text = psychTestR::i18n("play_first_note"),
+  learn_test_paradigm = FALSE
 )
 }
 \arguments{
-\item{play_first_note_button_text}{}
+\item{learn_test_paradigm}{}
 }
 \description{
 Melody trials constructor

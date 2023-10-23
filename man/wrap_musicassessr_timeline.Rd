@@ -4,10 +4,10 @@
 \alias{wrap_musicassessr_timeline}
 \title{Wrap a timeline with musicassessr dict}
 \usage{
-wrap_musicassessr_timeline(tl)
+wrap_musicassessr_timeline(tl, language = "en")
 }
 \arguments{
-\item{tl}{}
+\item{language}{}
 }
 \description{
 Wrap a timeline with musicassessr dict

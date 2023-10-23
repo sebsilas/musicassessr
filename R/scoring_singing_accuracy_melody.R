@@ -21,7 +21,7 @@ score_melody_interval_accuracy <- function(sung_interval,
                                            sung_interval_cents,
                                            stimuli_interval) {
 
-  if (all( c(!is.na(sung_interval), !is.na(sung_interval_cents), is.na(stimuli_interval) ) ) ) {
+  if (!is.scalar.na.or.null(sung_interval) && !is.scalar.na.or.null(sung_interval_cents) && !is.scalar.na.or.null(stimuli_interval)) {
 
 
     sung_interval_cents <- sung_interval_cents[2:length(sung_interval_cents)] %>% abs()

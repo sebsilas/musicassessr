@@ -74,7 +74,7 @@ load('data-raw/melody_pca2_data.rda')
 load('data-raw/melody_pca2.rda')
 
 
-musicassessr_dict <- dict(NULL)
+musicassessr_dict <- musicassessr::dict(NULL)
 
 
 # test the long note predict method

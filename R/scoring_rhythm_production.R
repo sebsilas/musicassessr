@@ -33,9 +33,9 @@ score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NUL
       dtw_dist <- NA
       tam_dist <- NA
     } else {
-      dtw_res <- dtw::dtw(stimuli_durations, user_durations)
-      dtw_dist <- dtw_res$distance
-      tam_dist <- TSdist::TAMDistance(stimuli_durations, user_durations)
+      dtw_res <- tryCatch(dtw::dtw(stimuli_durations, user_durations), error = log_err, warning = log_warn)
+      dtw_dist <- if(is.na(dtw_res$distance)) NA else dtw_res$distance
+      tam_dist <- tryCatch(TSdist::TAMDistance(stimuli_durations, user_durations), error = log_err, warning = log_warn)
     }
 
 

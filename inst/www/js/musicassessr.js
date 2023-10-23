@@ -955,7 +955,9 @@ function stopMidiRecording() {
 }
 
 function create_recordkey() {
+
   var currentDate = new Date();
+
   var recordkey = currentDate.getDate().toString() + '-' + (currentDate.getMonth() + 1 ).toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
 
   if (typeof page_label === 'string') {

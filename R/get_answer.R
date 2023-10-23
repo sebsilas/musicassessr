@@ -74,7 +74,8 @@ get_answer_pyin_melodic_production <- function(input,
                                    melconv_res = pyin_res$melconv_res,
                                    pyin_style_res = pyin_res,
                                    pyin_pitch_track = pyin_res$pyin_pitch_track,
-                                   additional_scoring_measures = additional_scoring_measures)
+                                   additional_scoring_measures = additional_scoring_measures,
+                                   file_used = pyin_res$file_used)
 
   }
 
@@ -210,7 +211,8 @@ get_answer_pyin <- function(input,
 
   list(pyin_res = pyin_res$pyin_res,
        pyin_pitch_track = pyin_res$pyin_pitch_track,
-       melconv_res = melconv_res)
+       melconv_res = melconv_res,
+       file_used = file_to_use)
 
 }
 
@@ -667,7 +669,8 @@ concat_mel_prod_results <- function(input,
                                     melconv_res,
                                     pyin_style_res,
                                     pyin_pitch_track,
-                                    additional_scoring_measures = NULL, ...) {
+                                    additional_scoring_measures = NULL,
+                                    file_used = NULL, ...) {
 
   # Grab MIDI-specific data if available
   if(length(input$user_response_midi_note_off) == 0) {
@@ -708,7 +711,7 @@ concat_mel_prod_results <- function(input,
   psychTestR::set_global("scores", c(ongoing_scores, scores$opti3), state)
 
   results <- c(
-    list(file = get_audio_file(input, state),
+    list(file = if(is.null(file_used)) get_audio_file(input, state) else file_used,
          error = FALSE,
          attempt = if(length(input$attempt) == 0) NA  else as.numeric(input$attempt),
          user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
@@ -742,10 +745,9 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
     logging::loginfo("Store results in SQL database")
 
     singing_trial <- psychTestR::get_global("singing_trial", state)
-    print('singing_trial??')
-    print(singing_trial)
+
     instrument <- if(singing_trial) "Voice" else psychTestR::get_global("inst", state)
-    print(instrument)
+
     trial_time_started <- psychTestR::get_global("trial_time_started", state)
     session_id <- psychTestR::get_global("session_id", state)
     item_bank_id <- psychTestR::get_global("item_bank_id", state)

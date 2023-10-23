@@ -7,10 +7,9 @@
 rhythmic_melody_trials(
   var_name = "rhythmic_melody",
   module_name = "rhythmic_melodies",
-  page_text = "Press play to hear the melody. Play back the melody plus rhythm.",
-  page_title = "Play this melody plus rhythm",
-  instruction_text =
-    "Now you will hear melodies with rhythms. Please try and play the melodies with the correct rhythm.",
+  page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
+  page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
+  instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
   sampler_function = sample_rhythmic,
   item_bank,
   num_items = integer(),
@@ -42,11 +41,12 @@ rhythmic_melody_trials(
   phase = c("test", "learn", "review"),
   first_note_message = "The first note is: ",
   transposed_message = "Please note, this is transposed for your instrument.",
-  play_first_note_button_text = "Play First Note"
+  play_first_note_button_text = "Play First Note",
+  learn_test_paradigm = FALSE
 )
 }
 \arguments{
-\item{play_first_note_button_text}{}
+\item{learn_test_paradigm}{}
 }
 \description{
 Rhythmic melody trials block

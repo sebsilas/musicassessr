@@ -326,8 +326,11 @@ elt_add_final_session_info_to_db <- function() {
 
       session_df <- get_table(db_con, 'sessions', collect = FALSE)
 
-      update <- dbplyr::copy_inline(db_con, data.frame(session_id = session_id, time_completed = Sys.time()))
+      complete_time <- Sys.time()
 
+      logging::loginfo("Storing complete time as %s", complete_time)
+
+      update <- dbplyr::copy_inline(db_con, data.frame(session_id = session_id, time_completed = complete_time))
 
       dplyr::rows_update(session_df, update, in_place = TRUE, by = "session_id", unmatched = "ignore")
 

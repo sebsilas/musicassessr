@@ -7,10 +7,9 @@
 arrhythmic_melody_trials(
   var_name = "arrhythmic_melody",
   module_name = "arrhythmic_melodies",
-  page_text = "Press play to hear the melody. Play back the melody.",
-  page_title = "Play this melody.",
-  instruction_text =
-    "Now you will hear some melodies. Please try and play back the melodies.",
+  page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
+  page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
+  instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
   sampler_function = sample_arrhythmic,
   item_bank,
   num_items = integer(),
@@ -42,11 +41,12 @@ arrhythmic_melody_trials(
   phase = c("test", "learn", "review"),
   first_note_message = "The first note is: ",
   transposed_message = "Please note, this is transposed for your instrument.",
-  play_first_note_button_text = "Play First Note"
+  play_first_note_button_text = "Play First Note",
+  learn_test_paradigm = FALSE
 )
 }
 \arguments{
-\item{play_first_note_button_text}{}
+\item{learn_test_paradigm}{}
 }
 \description{
 Arrhythmic melody trials block

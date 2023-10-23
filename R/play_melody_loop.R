@@ -37,6 +37,7 @@
 #' @param first_note_message
 #' @param transposed_message
 #' @param play_first_note_button_text
+#' @param learn_test_paradigm
 #'
 #' @return
 #' @export
@@ -76,12 +77,14 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
                                         first_note_message = psychTestR::i18n("first_note_is"),
                                         transposed_message = psychTestR::i18n("transposed"),
-                                        play_first_note_button_text = psychTestR::i18n("play_first_note")
-                                        ) {
+                                        play_first_note_button_text = psychTestR::i18n("play_first_note"),
+                                        learn_test_paradigm = FALSE) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
   phase <- match.arg(phase)
+
+  #browser()
 
 
   stopifnot(is.null.or(item_bank, tibble::is_tibble),
@@ -118,7 +121,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             melody_trial_paradigm %in% c("call_and_response", "simultaneous_recall"),
             is.scalar.character(first_note_message),
             is.scalar.character(transposed_message),
-            is.scalar.character(play_first_note_button_text)
+            is.scalar.character(play_first_note_button_text),
+            is.scalar.logical(learn_test_paradigm)
             )
 
   if(is.null(presampled_items) && is.infinite(num_items)) {
@@ -168,7 +172,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                            first_note_message,
                                            transposed_message,
                                            play_first_note_button_text,
-                                           reactive_melody_no = TRUE),
+                                           reactive_melody_no = TRUE,
+                                           learn_test_paradigm),
 
       psychTestR::NAFC_page(label = "finished_user_determined_loop",
                             choices = c("Yes", "No"),
@@ -226,7 +231,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  first_note_message,
                                  transposed_message,
                                  play_first_note_button_text,
-                                 reactive_melody_no = FALSE)
+                                 reactive_melody_no = FALSE,
+                                 learn_test_paradigm)
     })
 
 
@@ -271,7 +277,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  first_note_message,
                                  transposed_message,
                                  play_first_note_button_text,
-                                 reactive_melody_no = FALSE)
+                                 reactive_melody_no = FALSE,
+                                 learn_test_paradigm)
 
     })
 
@@ -325,7 +332,8 @@ construct_play_melody_page <- function(melody = NULL,
                                        first_note_message,
                                        transposed_message,
                                        play_first_note_button_text,
-                                       reactive_melody_no = FALSE) {
+                                       reactive_melody_no = FALSE,
+                                       learn_test_paradigm = FALSE) {
 
 
   page <- play_melody_loop(melody_no = melody_no,
@@ -364,7 +372,8 @@ construct_play_melody_page <- function(melody = NULL,
                            transposed_message = transposed_message,
                            play_first_note_button_text = play_first_note_button_text,
                            skip_sampling_and_take_from_last_melody = melody_block_paradigm == "sing_melody_first",
-                           reactive_melody_no = reactive_melody_no)
+                           reactive_melody_no = reactive_melody_no,
+                           learn_test_paradigm = learn_test_paradigm)
                            # In the case of putting a sing melody page first, we do the sampling on the sing page (in code below, but which chronogically comes first); then we skip sampling on the "real" (instrument) version, and just use the sampled melody from the sing page
 
   if (melody_block_paradigm == "sing_melody_first") {
@@ -402,7 +411,8 @@ construct_play_melody_page <- function(melody = NULL,
                                   first_note_message = first_note_message,
                                   transposed_message = transposed_message,
                                   play_first_note_button_text = play_first_note_button_text,
-                                  reactive_melody_no = reactive_melody_no)
+                                  reactive_melody_no = reactive_melody_no,
+                                  learn_test_paradigm = learn_test_paradigm)
 
     sing_then_play_pages <- psychTestR::join(sing_page, page)
 
@@ -463,6 +473,7 @@ construct_play_melody_page <- function(melody = NULL,
 #' @param play_first_note_button_text
 #' @param skip_sampling_and_take_from_last_melody
 #' @param reactive_melody_no
+#' @param learn_test_paradigm
 #'
 #' @return
 #' @export
@@ -512,7 +523,10 @@ play_melody_loop <- function(item_bank = NULL,
                              transposed_message = psychTestR::i18n("transposed"),
                              play_first_note_button_text = psychTestR::i18n("play_first_note"),
                              skip_sampling_and_take_from_last_melody = FALSE,
-                             reactive_melody_no = FALSE) {
+                             reactive_melody_no = FALSE,
+                             learn_test_paradigm = FALSE) {
+
+  #browser()
 
   save_answer <- ! example
 
@@ -534,7 +548,7 @@ play_melody_loop <- function(item_bank = NULL,
       psychTestR::set_global("phase", phase, state)
       psychTestR::set_global("rhythmic", ! arrhythmic, state)
       # Grab sampled melody for this trial (if one not specified)
-      if(is.null(melody) && ! skip_sampling_and_take_from_last_melody && phase != "review") grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT, get_similarity_to_previous_melody, phase, display_modality, reactive_melody_no)
+      if(is.null(melody) && ! skip_sampling_and_take_from_last_melody && phase != "review") grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT, get_similarity_to_previous_melody, phase, display_modality, reactive_melody_no, learn_test_paradigm)
       if(phase == "review") grab_sampled_melody_review(var_name, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length)
     }),
 
@@ -746,7 +760,8 @@ grab_sampled_melody <- function(item_bank = NULL,
                                 get_similarity_to_previous_melody = FALSE,
                                 phase = c('test', 'learn', 'review', 'example'),
                                 display_modality = c('auditory', 'visual', 'both'),
-                                reactive_melody_no = FALSE, ...) {
+                                reactive_melody_no = FALSE,
+                                learn_test_paradigm = FALSE, ...) {
 
   logging::loginfo("Grab sampled melody")
   display_modality <- match.arg(display_modality)
@@ -757,13 +772,22 @@ grab_sampled_melody <- function(item_bank = NULL,
   range <- psychTestR::get_global("range", state)
   inst <- psychTestR::get_global("inst", state)
 
+  print('melody_row')
+  print(melody_row)
+  print('get_trial_characteristics_function')
+  print(get_trial_characteristics_function)
+  print('learn_test_paradigm')
+  print(learn_test_paradigm)
+  print('phase')
+  print(phase)
+
   # Has melody been specified directly, or sampled at test time?
   if(is.null(melody_row)) {
     logging::loginfo("Sample at test time")
     # Assume melodies sampled at test time and stored in global object
-    if(is.null(get_trial_characteristics_function)) {
+    if(is.null(get_trial_characteristics_function) || learn_test_paradigm && phase == "test") {
 
-      melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT, rel_to_abs_mel_function)
+      melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT, rel_to_abs_mel_function, learn_test_paradigm, phase)
       rel_melody <- melody_from_state$rel_melody
       melody_row <- melody_from_state$melody_row
       abs_melody <- melody_from_state$abs_melody
@@ -805,13 +829,25 @@ grab_sampled_melody <- function(item_bank = NULL,
 
 
   # Attach generated absolute melody to meta data
-  answer_meta_data <- cbind(melody_row,
-                            tibble::tibble(abs_melody = paste0(abs_melody, collapse = ","),
-                                           similarity_to_previous_melody = similarity_to_previous_melody,
-                                           phase = phase,
-                                           display_modality = display_modality,
-                                           rhythmic = !arrhythmic
-                            ))
+
+  answer_meta_data <- melody_row %>%
+    dplyr::mutate(similarity_to_previous_melody = similarity_to_previous_melody,
+                  phase = phase,
+                  rhythmic = !arrhythmic,
+                  abs_melody = paste0(abs_melody, collapse = ","), # Thus, we overwrite what was in melody_row (abs_melody may have been transposed)
+                  display_modality = display_modality)
+
+  previous_melodies_var_name <- paste0("previous_melodies_", var_name)
+
+  if(is.null(psychTestR::get_global(previous_melodies_var_name, state))) {
+    psychTestR::set_global(previous_melodies_var_name, answer_meta_data, state)
+  } else {
+    prev <- psychTestR::get_global(previous_melodies_var_name, state)
+    psychTestR::set_global(previous_melodies_var_name, rbind(prev, answer_meta_data), state)
+  }
+
+  print('current..')
+  print(psychTestR::get_global(previous_melodies_var_name, state))
 
   # Set the melody to be used
   psychTestR::set_global("melody", list("melody" = abs_melody, "durations" = durations), state)
@@ -875,7 +911,7 @@ transposition_check <- function(melody_row) {
   }
 }
 
-grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function = NULL) {
+grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function = NULL, learn_test_paradigm = FALSE, phase = "test") {
 
   if(psychTestRCAT) {
 

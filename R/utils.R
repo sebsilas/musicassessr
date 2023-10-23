@@ -437,3 +437,13 @@ NA_to_js_null <- function(x) {
   if(is.na(x)) 'null' else x
 }
 
+log_err <- function(err) {
+  logging::logerror(err)
+  return(NA)
+}
+
+log_warn <- function(warn) {
+  logging::logwarn(warn)
+  return(NA)
+}
+

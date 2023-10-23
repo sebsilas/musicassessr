@@ -101,6 +101,8 @@ setup_pages <- function(input_type = c("microphone",
 
       fake_instrument(),
 
+      if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id() else pass_p_id_to_js(),
+
       correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
     )
 

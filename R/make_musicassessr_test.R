@@ -39,40 +39,40 @@ make_musicassessr_test <- function(title,
   psychTestR::make_test(
     psychTestR::join(
 
-      if (opt$fake_range) set_instrument_range(),
+      # if (opt$fake_range) set_instrument_range(),
+      #
+      # welcome_page,
+      #
+      # # Get participant ID
+      # if(opt$get_p_id) psychTestR::get_p_id(),
+      #
+      # # Init musicassessr
+      # musicassessr_init(
+      #   use_musicassessr_db = opt$use_musicassessr_db,
+      #   app_name = opt$app_name,
+      #   experiment_id = opt$experiment_id,
+      #   experiment_condition_id = opt$experiment_condition_id,
+      #   user_id = opt$user_id
+      #   ),
+      #
+      # # Timeline before setup pages
+      # elts_before_setup_pages(),
+      #
+      #
+      # # Setup pages
+      # if (opt$setup_pages) wrap_musicassessr_timeline( opt$setup_page_options() ),
+      #
+      # # Timeline after setup pages
+      #
+      # elts(),
+      #
+      # # Disconnect from database at end of test, if it was being used
+      # if (opt$use_musicassessr_db) elt_disconnect_from_db(),
+      #
+      # # Save results
+      # psychTestR::elt_save_results_to_disk(complete = TRUE),
 
-      welcome_page,
-
-      # Get participant ID
-      if(opt$get_p_id) psychTestR::get_p_id(),
-
-      # Init musicassessr
-      musicassessr_init(
-        use_musicassessr_db = opt$use_musicassessr_db,
-        app_name = opt$app_name,
-        experiment_id = opt$experiment_id,
-        experiment_condition_id = opt$experiment_condition_id,
-        user_id = opt$user_id
-        ),
-
-      # Timeline before setup pages
-      elts_before_setup_pages(),
-
-
-      # Setup pages
-      if (opt$setup_pages) wrap_musicassessr_timeline( opt$setup_page_options() ),
-
-      # Timeline after setup pages
-
-      elts(),
-
-      # Disconnect from database at end of test, if it was being used
-      if (opt$use_musicassessr_db) elt_disconnect_from_db(),
-
-      # Save results
-      psychTestR::elt_save_results_to_disk(complete = TRUE),
-
-      wrap_musicassessr_timeline( psychTestR::final_page(final_page_ui) )
+      psychTestR::final_page(final_page_ui) %>% wrap_musicassessr_timeline()
 
     ),
     opt = psychTestR::test_options(

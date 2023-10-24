@@ -54,6 +54,10 @@ is.scalar.na.or.null <- function(x) {
   is.scalar.na(x) | is.scalar.null(x)
 }
 
+is.scalar.na.or.null.or.length.zero <- function(x) {
+  is.scalar.na(x) | is.scalar.null(x) | length(x) == 0
+}
+
 
 
 #' Is NULL or not all TRUE?

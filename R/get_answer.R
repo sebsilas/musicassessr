@@ -412,7 +412,6 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 #' @examples
 get_answer_midi <- function(input, state, ...) {
 
-
   if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
 
     list(
@@ -423,7 +422,8 @@ get_answer_midi <- function(input, state, ...) {
       onsets_noteon =  NA,
       onsets_off = NA,
       pyin_style_res = NA,
-      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli)),
+      velocities = NA
       )
 
   } else {
@@ -436,7 +436,7 @@ get_answer_midi <- function(input, state, ...) {
     notes_off <- if(is.null(input$user_response_midi_note_off)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_off))
     onsets <- (onsets_noteon_timecode - trial_start_time_timecode) / 1000
     stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
-
+    velocities <- if(is.scalar.na.or.null(input$velocities)) NA else as.numeric(rjson::fromJSON(input$velocities))
     stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
 
     # We just assume the last duration is 0.5 always (or the last duration of the stimulus, if there is one).
@@ -467,8 +467,8 @@ get_answer_midi <- function(input, state, ...) {
       stimuli = stimulus,
       trial_start_time_timecode = trial_start_time_timecode,
       trial_start_time_timecode2 = trial_start_time_timecode2,
-      latency_estimate = latency_estimate
-      )
+      latency_estimate = latency_estimate,
+      velocities = velocities)
   }
 
 }
@@ -490,7 +490,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   type <- match.arg(type)
 
-  stimuli_durations <- if(is.scalar.na.or.null(input$stimuli_durations)) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(rjson::fromJSON(input$stimuli_durations))) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
 
   if(type == "midi") {
 

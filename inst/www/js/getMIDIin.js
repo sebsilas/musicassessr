@@ -45,11 +45,13 @@ function instantiateMIDI(midi_device, interactive_midi) {
   onsets_noteon = [];
   onsets_noteoff = [];
   onsets_noteon_timecode = [];
+  velocities = [];
 
   Shiny.setInputValue("user_response_midi_note_on", JSON.stringify(user_response_midi_note_on));
   Shiny.setInputValue("onsets_noteon", JSON.stringify(onsets_noteon));
   Shiny.setInputValue("user_response_midi_note_off", JSON.stringify(user_response_midi_note_off));
   Shiny.setInputValue("onsets_noteoff", JSON.stringify(onsets_noteoff));
+  Shiny.setInputValue("velocities", JSON.stringify(velocities));
 
   console.log(user_response_midi_note_on);
 
@@ -82,15 +84,17 @@ function instantiateMIDI(midi_device, interactive_midi) {
               // Get volumeMeter, if there is one..
               var volumeMeter = document.getElementById('volumeMeter');
 
-              console.log("Raw velocity: (" + e.rawVelocity + ").");
+              var velocity = e.rawVelocity;
+              console.log("Raw velocity: (" + velocity + ").");
 
-              if(typeof(volumeMeter) !== "undefined") {
-                volumeMeter.value = e.rawVelocity;
+              if(volumeMeter !== null) {
+                volumeMeter.value = velocity;
+                // (asynchronously set back the volume meter to 0 )
+                delayAsync(() => {
+                  volumeMeter.value = 0;
+                });
               }
-              // (asynchronously set back the volume meter to 0 )
-              delayAsync(() => {
-                volumeMeter.value = 0;
-              });
+
               var midi_note_on = e.note.number;
 
               console.log(midi_note_on);
@@ -111,11 +115,13 @@ function instantiateMIDI(midi_device, interactive_midi) {
 
               onsets_noteon.push(timeElapsed);
               onsets_noteon_timecode.push(responseTime);
+              velocities.push(velocity);
 
               // Send to shiny
               Shiny.setInputValue("user_response_midi_note_on", JSON.stringify(user_response_midi_note_on));
               Shiny.setInputValue("onsets_noteon", JSON.stringify(onsets_noteon));
               Shiny.setInputValue("onsets_noteon_timecode", JSON.stringify(onsets_noteon_timecode));
+              Shiny.setInputValue("velocities", JSON.stringify(velocities));
 
               // console
               console.log(user_response_midi_note_on);

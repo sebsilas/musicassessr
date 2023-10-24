@@ -447,3 +447,8 @@ log_warn <- function(warn) {
   return(NA)
 }
 
+
+get_answer_fake <- function(input, ...) {
+  list(fake = NA)
+}
+

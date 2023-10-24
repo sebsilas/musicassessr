@@ -164,9 +164,11 @@ test_midi_page <- function() {
                     display_modality = "visual",
                     page_title = "MIDI test",
                     page_text = shiny::tags$div(volume_meter(high = "30", max = "127"),
-                                                tags$p("See if you get feedback when you use your MIDI device.")),
+                                                tags$p("See if you get feedback when you use your MIDI device."),
+                                                psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
                     autoInstantiate = TRUE,
                     interactive = TRUE,
+                    get_answer = get_answer_fake,
                     midi_device = psychTestR::get_global("midi_device", state))
 
   })

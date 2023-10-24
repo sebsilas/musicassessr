@@ -37,10 +37,10 @@ microphone_calibration_page <- function(button_text = psychTestR::i18n("Start_te
   psychTestR::page(ui = ui, admin_ui = NULL, on_complete = NULL, label = NULL, save_answer = FALSE)
 }
 
-volume_meter <- function(type = "default", start_hidden = FALSE) {
+volume_meter <- function(type = "default", start_hidden = FALSE, high = "0.25", max = "1") {
 
   if(type == "default") {
-    v <- shiny::tags$meter(id = "volumeMeter", high = "0.25", max = "1", value = "0", style = "width: 400px; height: 50px; margin: 20px 0 20px 0;")
+    v <- shiny::tags$meter(id = "volumeMeter", high = high, max = max, value = "0", style = "width: 400px; height: 50px; margin: 20px 0 20px 0;")
   } else if(type == "playful") {
     if(start_hidden) {
       v <- shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/SAA_intro.png', id = "volumeMeter", height = 200, width = 200, style = "visibility:hidden;")

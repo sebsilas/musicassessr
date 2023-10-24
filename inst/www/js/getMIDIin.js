@@ -78,8 +78,19 @@ function instantiateMIDI(midi_device, interactive_midi) {
           function (e) {
 
               console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
-              console.log(e.note);
 
+              // Get volumeMeter, if there is one..
+              var volumeMeter = document.getElementById('volumeMeter');
+
+              console.log("Raw velocity: (" + e.rawVelocity + ").");
+
+              if(typeof(volumeMeter) !== "undefined") {
+                volumeMeter.value = e.rawVelocity;
+              }
+              // (asynchronously set back the volume meter to 0 )
+              delayAsync(() => {
+                volumeMeter.value = 0;
+              });
               var midi_note_on = e.note.number;
 
               console.log(midi_note_on);
@@ -313,3 +324,6 @@ function fromMidi (midi) {
   return name + oct;
 }
 
+function delayAsync(callback) {
+  setTimeout(callback, 200);
+}

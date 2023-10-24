@@ -38,9 +38,6 @@ record_midi_or_audio_ui <- function(body = "",
 
   section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
-
-  interactive <- if(interactive) "true" else "false"
-
   psychTestR::page(ui = shiny::tags$div(
 
     shiny::tags$head(
@@ -50,6 +47,7 @@ record_midi_or_audio_ui <- function(body = "",
       ),
 
       shiny::tags$script(paste0('console.log(\"this is a ', page_type, '\");')),
+
       if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive),
 
       if(page_type == "record_audio_page") send_page_label_to_js(label),

@@ -148,12 +148,29 @@ select_midi_device_page <- function(title = "Select MIDI device",
 
 autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive) {
   if (instantiate) {
-    shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', interactive, ');'))
+    shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', TRUE_to_js_true(interactive), ');'))
   } else {
     shiny::tags$script(paste0('var midi_device = \"', midi_device, '\";'))
   }
 }
 
+
+test_midi_page <- function() {
+  psychTestR::reactive_page(function(state, ...) {
+
+    present_stimuli(stimuli = "interactive",
+                    stimuli_type = "midi_notes",
+                    page_type = "record_midi_page",
+                    display_modality = "visual",
+                    page_title = "MIDI test",
+                    page_text = shiny::tags$div(volume_meter(high = "30", max = "127"),
+                                                tags$p("See if you get feedback when you use your MIDI device.")),
+                    autoInstantiate = TRUE,
+                    interactive = TRUE,
+                    midi_device = psychTestR::get_global("midi_device", state))
+
+  })
+}
 
 
 

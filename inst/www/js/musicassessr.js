@@ -811,8 +811,8 @@ function getUserInfo () {
 
 function testFeatureCapability() {
 
-    console.log(testMediaRecorder());
-    console.log(Modernizr.webaudio);
+    // console.log(testMediaRecorder());
+    // console.log(Modernizr.webaudio);
 
     if (Modernizr.webaudio & testMediaRecorder()) {
         console.log("This browser has the necessary features");
@@ -835,7 +835,7 @@ function testMediaRecorder () {
   } catch (err) {
       console.log("no MediaRecorder");
   }
-  console.log(isMediaRecorderSupported);
+  //console.log(isMediaRecorderSupported);
   return(isMediaRecorderSupported);
 }
 

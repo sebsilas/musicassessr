@@ -302,7 +302,7 @@ set_instrument_range_code_block <- function(inst = NULL) {
 
 midi_setup <- function() {
 
-  c(
+  psychTestR::join(
     select_midi_device_page(title = psychTestR::i18n("select_midi_device_title"),
                             message = psychTestR::i18n("select_midi_device_message"),
                             button_text = psychTestR::i18n("Next"),
@@ -310,7 +310,8 @@ midi_setup <- function() {
     psychTestR::code_block(fun = function(state, ...) {
       psychTestR::set_global("inst", "Piano", state)
     }),
-    set_instrument_range_code_block("Piano")
+    set_instrument_range_code_block("Piano"),
+    test_midi_page()
   )
 }
 

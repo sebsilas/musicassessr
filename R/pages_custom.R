@@ -152,6 +152,17 @@ multi_interval_page <- function(num_items = 26L,
   )
 }
 
+#' A page for redirecting a participant after x ms
+#'
+#' @param text
+#' @param ms
+#' @param url
+#' @param final
+#'
+#' @return
+#' @export
+#'
+#' @examples
 redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 5000, url = "http://www.google.com", final = TRUE) {
 
   content <- shiny::tags$div(

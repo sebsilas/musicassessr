@@ -77,7 +77,16 @@ record_midi_or_audio_ui <- function(body = "",
 
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced, max_goes),
 
-      if(!page_text_first) page_text
+      if(!page_text_first) page_text,
+
+      shiny::tags$script(htmltools::HTML(
+        paste0('var destBucket = "', Sys.getenv("DESTINATION_BUCKET"), '";
+                        var api_url = "', Sys.getenv("API_URL"),'";
+                        var bucketName = "', Sys.getenv("BUCKET_NAME"),'";
+                        var bucketRegion = "', Sys.getenv("BUCKET_REGION"),'";
+                        var IdentityPoolId = "', Sys.getenv("IDENTITY_POOL_ID"),'";')
+          )
+        )
     )
   ),
   label = label,

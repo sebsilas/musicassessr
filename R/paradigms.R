@@ -6,6 +6,8 @@
 #' @param page_type
 #' @param call_and_response_end
 #' @param stop_recording_after_x_seconds
+#' @param instantiate_midi
+#' @param midi_device
 #'
 #' @return
 #' @export
@@ -14,7 +16,9 @@
 paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall"),
                      page_type = c("record_audio_page", "record_midi_page"),
                      call_and_response_end = c("manual", "auto"),
-                     stop_recording_after_x_seconds = NULL) {
+                     stop_recording_after_x_seconds = NULL,
+                     instantiate_midi = FALSE,
+                     midi_device = NULL) {
 
   # call_and_response_end if "manual", user clicks stop, if "auto" - automatically triggered
 
@@ -26,11 +30,13 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     paradigm_type %in% c("simultaneous_recall", "call_and_response"),
     page_type %in% c("record_audio_page", "record_midi_page"),
     call_and_response_end %in% c("manual", "auto"),
-    is.null.or(stop_recording_after_x_seconds, is.scalar.numeric)
+    is.null.or(stop_recording_after_x_seconds, is.scalar.numeric),
+    is.scalar.logical(instantiate_midi),
+    is.null.or(midi_device, is.scalar.numeric)
   )
 
   if(paradigm_type == "simultaneous_recall") {
-    trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE)
+    trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE, midi_device = midi_device, instantiate_midi = instantiate_midi)
     trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type)
   } else if(paradigm_type == "call_and_response") {
     trigger_start_of_stimulus_fun <- NA
@@ -55,7 +61,9 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
 record_triggers <- function(record = c("start", "stop"),
                             page_type = c("record_audio_page", "record_midi_page"),
                             stop_recording_after_x_seconds = NULL,
-                            show_stop = TRUE) {
+                            show_stop = TRUE,
+                            instantiate_midi = FALSE,
+                            midi_device = NULL) {
 
 
   record <- match.arg(record)
@@ -65,7 +73,13 @@ record_triggers <- function(record = c("start", "stop"),
   stopifnot(record %in% c("start", "stop"),
             page_type %in% c("record_audio_page", "record_midi_page"),
             is.null.or(stop_recording_after_x_seconds, is.scalar.numeric),
-            is.scalar.logical(show_stop))
+            is.scalar.logical(show_stop),
+            is.scalar.logical(instantiate_midi),
+            is.null.or(midi_device, is.scalar.character))
+
+  if(instantiate_midi && is.null(midi_device)) {
+    stop("If instantiate_midi is TRUE, midi_device must be a character string")
+  }
 
   show_stop <- if(show_stop) "true" else "false"
 
@@ -79,6 +93,11 @@ record_triggers <- function(record = c("start", "stop"),
     paste0("setTimeout(() => { stopRecording('", page_type, "') }, ", stop_recording_after_x_seconds * 1000, ");")
   }
 
+  if(instantiate_midi) {
+    instantiate_midi_fun <- shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", false);'))
+    funs <- paste0(funs, instantiate_midi_fun)
+  }
+
   funs <- paste0(funs, stop_recording_after)
 
   wrap_js_fun_body(funs)
@@ -87,6 +106,14 @@ record_triggers <- function(record = c("start", "stop"),
 
 
 
+#' Helper to wrap some JS code in a function
+#'
+#' @param js_code
+#'
+#' @return
+#' @export
+#'
+#' @examples
 wrap_js_fun_body <- function(js_code) {
 
   stopifnot(is.scalar.character(js_code))

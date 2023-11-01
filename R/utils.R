@@ -456,3 +456,16 @@ get_answer_fake <- function(input, ...) {
   list(fake = NA)
 }
 
+
+get_test_name <- function(test, get_local, state) {
+  if(is.null(test)) {
+    if(get_local) {
+      test <- psychTestR::get_local("test", state)
+    } else {
+      test <- psychTestR::get_global("test", state)
+    }
+  }
+  test
+}
+
+

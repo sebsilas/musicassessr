@@ -7,7 +7,7 @@
 #' @param elts_before_setup_pages Timeline to go before setup pages.
 #' @param languages Languages for the test.
 #' @param opt Musicassessr options.
-#' @param final_page_ui The UI of the final page.
+#' @param final_page The UI of the final page.
 #' @param welcome_page Required because you need a page before musicassessr_init to instantiate a p_id.
 #' @param ...
 #'
@@ -21,7 +21,7 @@ make_musicassessr_test <- function(title,
                                    elts_before_setup_pages = function() { empty_code_block() },
                                    languages = "en",
                                    opt = musicassessr_opt(),
-                                   final_page_ui = psychTestR::i18n("thank_you_for_completing"),
+                                   final_page = wrap_musicassessr_timeline(psychTestR::final_page(psychTestR::i18n("thank_you_for_completing"))),
                                    welcome_page = psychTestR::one_button_page("Welcome."), ...) {
 
 
@@ -32,7 +32,7 @@ make_musicassessr_test <- function(title,
     is.function(elts_before_setup_pages),
     is.scalar.character(languages),
     is.list(opt),
-    is.character(final_page_ui) | is(final_page_ui, 'shiny.tag'),
+    is(final_page, "page"),
     psychTestR::is.test_element(welcome_page)
   )
 
@@ -72,7 +72,8 @@ make_musicassessr_test <- function(title,
       # Save results
       psychTestR::elt_save_results_to_disk(complete = TRUE),
 
-      psychTestR::final_page(final_page_ui) %>% wrap_musicassessr_timeline()
+      # Final page
+      final_page
 
     ),
     opt = psychTestR::test_options(

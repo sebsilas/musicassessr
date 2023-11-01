@@ -30,6 +30,7 @@ var recordkey;
 var file_url;
 var onsets_noteon_timecode = [];
 var stimulus_trigger_times = [];
+var upload_to_s3 = true;
 
 // functions
 
@@ -945,7 +946,12 @@ function stopAudioRecording() {
   Shiny.setInputValue("key", recordkey);
   Shiny.setInputValue("file_url", file_url);
 
-	rec.exportWAV(upload_file_to_s3);
+  if(upload_to_s3) {
+    rec.exportWAV(upload_file_to_s3);
+  } else {
+    rec.exportWAV(store_file_locally);
+  }
+
 
 }
 
@@ -974,7 +980,7 @@ function create_recordkey() {
   return(recordkey)
 }
 
-function upload_file_to_s3(blob) {
+function store_file_locally(blob) {
 
 	var xhr = new XMLHttpRequest();
 
@@ -1006,4 +1012,56 @@ function upload_file_to_s3(blob) {
 		}
 		file_is_ready = true;
 	};
+}
+
+
+
+function upload_file_to_s3(blob){
+
+
+    var currentDate = new Date();
+
+    var recordkey = create_recordkey();
+    var file_url = recordkey + ".wav";
+
+    AWS.config.update({
+        region: bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: IdentityPoolId
+        })
+    });
+
+    var s3 = new AWS.S3({
+        apiVersion: "2006-03-01",
+        params: { Bucket: bucketName }
+    });
+
+    var upload = new AWS.S3.ManagedUpload({
+        params: {
+            Bucket: bucketName,
+            Key: file_url,
+            ContentType: 'audio/wav',
+            ACL: 'public-read',
+            Body: blob
+        }
+    });
+
+    console.log(bucketName);
+    console.log(file_url);
+    console.log(destBucket);
+
+    Shiny.setInputValue("sourceBucket", bucketName);
+    Shiny.setInputValue("key", file_url);
+    Shiny.setInputValue("destBucket", destBucket);
+
+    var promise = upload.promise();
+
+    promise.then(
+        function (data) {
+            console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
+        },
+        function (err) {
+            return alert("There was an error uploading your record: ", err.message);
+        }
+    );
 }

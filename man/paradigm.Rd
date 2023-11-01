@@ -8,11 +8,13 @@ paradigm(
   paradigm_type = c("call_and_response", "simultaneous_recall"),
   page_type = c("record_audio_page", "record_midi_page"),
   call_and_response_end = c("manual", "auto"),
-  stop_recording_after_x_seconds = NULL
+  stop_recording_after_x_seconds = NULL,
+  instantiate_midi = FALSE,
+  midi_device = NULL
 )
 }
 \arguments{
-\item{stop_recording_after_x_seconds}{}
+\item{midi_device}{}
 }
 \description{
 Choose a melody paradigm

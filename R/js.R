@@ -82,7 +82,8 @@ musicassessr_js <- function(app_name,
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    if(record_audio & musicassessr_aws) paste0("tmp/", shiny_app_js_id)
+    if(record_audio & musicassessr_aws) paste0("tmp/", shiny_app_js_id),
+    "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js"
   )
 }
 

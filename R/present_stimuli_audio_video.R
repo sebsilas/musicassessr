@@ -14,7 +14,8 @@ present_stimuli_audio <- function(audio_url,
                                   answer_meta_data = data.frame(),
                                   volume = 1,
                                   audio_playback_as_single_play_button = FALSE,
-                                  auto_next_page = FALSE, ...) {
+                                  auto_next_page = FALSE,
+                                  trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"), ...) {
 
   if(page_type == "record_audio_page") {
     on_finish <- paste0('recordAndStop(ms = null, showStop = true, hidePlay = false, id = null, type = \"record_audio_page\", stop_button_text = \"', stop_button_text, '\");')
@@ -38,20 +39,19 @@ present_stimuli_audio <- function(audio_url,
       shiny::tags$script(paste0('var player = document.getElementById("player");
                                  player.volume = ', volume, ';'))
     },
-    if(auto_next_page) {
-      shiny::tags$script(
-        'var player = document.getElementById("player");
-        if(typeof player !== "undefined") {
-          console.log(\'in this if\');
-            player.addEventListener("play", function () {
-            hideAudioFilePlayer();
-            var audio_duration = player.duration * 1000; // to ms
-            setTimeout(function() {
-              next_page();
-            }, audio_duration);
-        })
-        }')
-    },
+
+    # Trigger at end of stimulus
+    shiny::tags$script(paste0(
+      'var player = document.getElementById("player");
+      if(typeof player !== "undefined") {
+        console.log(\'in this if\');
+          player.addEventListener("play", function () {
+          hideAudioFilePlayer();
+          var audio_duration = player.duration * 1000; // to ms
+          setTimeout(', trigger_end_of_stimulus_fun, ', audio_duration);
+      })
+      }')),
+
     if(hideOnPlay) {
       shiny::tags$script(paste0('
         function hide_spinner(){

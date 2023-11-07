@@ -162,7 +162,7 @@ present_stimuli <- function(stimuli,
   } else if (stimuli_type == "video") {
     return_stimuli <- present_stimuli_video(video_url = stimuli, ...)
   } else if (stimuli_type == "audio") {
-    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button, ...)
+    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button, trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun, ...)
   } else if (stimuli_type == "audio_WJD") {
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
     # Musical stimuli types

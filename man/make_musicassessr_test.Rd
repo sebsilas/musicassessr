@@ -13,7 +13,8 @@ make_musicassessr_test(
  },
   languages = "en",
   opt = musicassessr_opt(),
-  final_page_ui = psychTestR::i18n("thank_you_for_completing"),
+  final_page =
+    wrap_musicassessr_timeline(psychTestR::final_page(psychTestR::i18n("thank_you_for_completing"))),
   welcome_page = psychTestR::one_button_page("Welcome."),
   ...
 )
@@ -31,7 +32,7 @@ make_musicassessr_test(
 
 \item{opt}{Musicassessr options.}
 
-\item{final_page_ui}{The UI of the final page.}
+\item{final_page}{The UI of the final page.}
 
 \item{welcome_page}{Required because you need a page before musicassessr_init to instantiate a p_id.}
 

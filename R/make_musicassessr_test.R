@@ -32,7 +32,7 @@ make_musicassessr_test <- function(title,
     is.function(elts_before_setup_pages),
     is.scalar.character(languages),
     is.list(opt),
-    is(final_page, "page"),
+    is(final_page, "page") || is(final_page, "reactive_page"),
     psychTestR::is.test_element(welcome_page)
   )
 

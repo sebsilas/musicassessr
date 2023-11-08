@@ -14,7 +14,6 @@ present_stimuli_audio <- function(audio_url,
                                   answer_meta_data = data.frame(),
                                   volume = 1,
                                   audio_playback_as_single_play_button = FALSE,
-                                  auto_next_page = FALSE,
                                   trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"), ...) {
 
   if(page_type == "record_audio_page") {

@@ -189,14 +189,24 @@ redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 
 #' @param button_text
 #' @param on_complete
 #' @param page_title
+#' @param get_answer
+#' @param save_answer
+#' @param label
 #'
 #' @return
 #' @export
 #'
 #' @examples
-empty_page <- function(body = "", admin_ui = NULL, button_text = psychTestR::i18n("Next"), on_complete = NULL, page_title = "") {
+empty_page <- function(body = "",
+                       admin_ui = NULL,
+                       button_text = psychTestR::i18n("Next"),
+                       on_complete = NULL, page_title = "",
+                       answer_meta_data = tibble::tibble(),
+                       get_answer = get_answer_meta_data,
+                       save_answer = FALSE,
+                       label = "") {
   body <- tagify(body)
   stopifnot(is.scalar.character(button_text))
-  ui <- shiny::div(page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))
-  page(ui = ui, admin_ui = admin_ui, on_complete = on_complete)
+  ui <- shiny::div(shiny::tags$script(set_answer_meta_data(answer_meta_data)), page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))
+  psychTestR::page(ui = ui, admin_ui = admin_ui, on_complete = on_complete, save_answer = save_answer, get_answer = get_answer, label = label)
 }

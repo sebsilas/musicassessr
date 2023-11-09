@@ -254,7 +254,7 @@ present_stimuli <- function(stimuli,
     } else {
       full_page <- shiny::tags$div(shiny::tags$h2(page_title), return_stimuli, shiny::tags$p(page_text))
     }
-    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, slider_value = slider_value, slider_min = slider_min, slider_max = slider_max, ...)
+    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, slider_value = slider_value, slider_min = slider_min, slider_max = slider_max, answer_meta_data = answer_meta_data, get_answer = get_answer, save_answer = save_answer, ...)
   }
 
   res
@@ -319,8 +319,13 @@ retrieve_page_type <- function(page_type = character(),
   # i.e some pages accept "body" whilst others accept "prompt"
   args <- check_correct_argument_for_body(page_type, args, stimuli_wrapped)
 
-  if (page_type %in% c("one_button_page", "empty_page") ) {
+  if (page_type == "one_button_page") {
     args$button_text <- button_text
+  } else if(page_type == "empty_page") {
+    args$button_text <- button_text
+    args$answer_meta_data <- answer_meta_data
+    args$get_answer <- get_answer
+    args$save_answer <- save_answer
   } else if(page_type == "slider_page") {
       args$min <- slider_min
       args$max <- slider_max

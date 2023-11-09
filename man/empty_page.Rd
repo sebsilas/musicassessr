@@ -9,11 +9,15 @@ empty_page(
   admin_ui = NULL,
   button_text = psychTestR::i18n("Next"),
   on_complete = NULL,
-  page_title = ""
+  page_title = "",
+  answer_meta_data = tibble::tibble(),
+  get_answer = get_answer_meta_data,
+  save_answer = FALSE,
+  label = ""
 )
 }
 \arguments{
-\item{page_title}{}
+\item{label}{}
 }
 \description{
 An empty page (with trigger button hidden and possible to show on demand.)

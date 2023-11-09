@@ -908,3 +908,29 @@ check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
   any(lengths == 0) | ! are_lengths_equal
 }
 
+
+#' Store answer meta data
+#'
+#' @param input
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_meta_data <- function(input, ...) {
+
+  amd <- input$answer_meta_data
+
+  if(length(amd) == 0) {
+    amd <- list(answer_meta_data = NA)
+    return(amd)
+  } else if(is.scalar.character(amd)) {
+    amd <- rjson::fromJSON(amd)
+    return(amd)
+  } else{
+    return(amd)
+  }
+
+}
+

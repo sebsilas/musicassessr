@@ -254,7 +254,7 @@ present_stimuli <- function(stimuli,
     } else {
       full_page <- shiny::tags$div(shiny::tags$h2(page_title), return_stimuli, shiny::tags$p(page_text))
     }
-    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, slider_value = slider_value, slider_min = slider_min, slider_max = slider_max, answer_meta_data = answer_meta_data, get_answer = get_answer, save_answer = save_answer, ...)
+    res <- retrieve_page_type(page_type = page_type, stimuli_wrapped = full_page, button_text = button_text, choices = choices, slider_value = slider_value, slider_min = slider_min, slider_max = slider_max, answer_meta_data = answer_meta_data, get_answer = get_answer, save_answer = save_answer, page_label = page_label, ...)
   }
 
   res
@@ -326,6 +326,7 @@ retrieve_page_type <- function(page_type = character(),
     args$answer_meta_data <- answer_meta_data
     args$get_answer <- get_answer
     args$save_answer <- save_answer
+    args$label <- page_label
   } else if(page_type == "slider_page") {
       args$min <- slider_min
       args$max <- slider_max

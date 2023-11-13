@@ -174,7 +174,6 @@ reference:
   - tidy_melodies
   - to_string_df
   - translate_from_dict
-  - validate_user_entry_into_test
   - musicassessr_dict
 
 

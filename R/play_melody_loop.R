@@ -84,9 +84,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
   phase <- match.arg(phase)
 
-  #browser()
-
-
   stopifnot(is.null.or(item_bank, tibble::is_tibble),
             is.null.or(presampled_items, is.data.frame),
             is.null.or(num_items, is.scalar.numeric),
@@ -526,7 +523,6 @@ play_melody_loop <- function(item_bank = NULL,
                              reactive_melody_no = FALSE,
                              learn_test_paradigm = FALSE) {
 
-  #browser()
 
   save_answer <- ! example
 
@@ -666,7 +662,9 @@ present_melody <- function(stimuli,
     max_goes <- psychTestR::get_global("max_goes", state)
     attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
     transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
+    transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
     clef <- psychTestR::get_global("clef", state)
+    clef <- if(is.null(clef)) "auto" else clef
 
     if(length(answer_meta_data) < 1L) {
       answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
@@ -772,15 +770,6 @@ grab_sampled_melody <- function(item_bank = NULL,
   range <- psychTestR::get_global("range", state)
   inst <- psychTestR::get_global("inst", state)
 
-  print('melody_row')
-  print(melody_row)
-  print('get_trial_characteristics_function')
-  print(get_trial_characteristics_function)
-  print('learn_test_paradigm')
-  print(learn_test_paradigm)
-  print('phase')
-  print(phase)
-
   # Has melody been specified directly, or sampled at test time?
   if(is.null(melody_row)) {
     logging::loginfo("Sample at test time")
@@ -843,11 +832,10 @@ grab_sampled_melody <- function(item_bank = NULL,
     psychTestR::set_global(previous_melodies_var_name, answer_meta_data, state)
   } else {
     prev <- psychTestR::get_global(previous_melodies_var_name, state)
+    logging::logdebug("prev %s", prev)
+    logging::logdebug("answer_meta_data %s", answer_meta_data)
     psychTestR::set_global(previous_melodies_var_name, rbind(prev, answer_meta_data), state)
   }
-
-  print('current..')
-  print(psychTestR::get_global(previous_melodies_var_name, state))
 
   # Set the melody to be used
   psychTestR::set_global("melody", list("melody" = abs_melody, "durations" = durations), state)

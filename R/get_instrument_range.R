@@ -148,7 +148,9 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
   psychTestR::reactive_page(function(answer, state, ...) {
 
     transpose <- psychTestR::get_global("transpose_visual_notation", state)
+    transpose <- if(is.null(transpose)) 0L else transpose
     clef <- psychTestR::get_global("clef", state)
+    clef <- if(is.null(clef)) "auto" else clef
 
     if(transpose != 0) {
       transposed_note_message <- psychTestR::i18n("transposed")

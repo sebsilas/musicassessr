@@ -80,6 +80,8 @@ remove_duplicates_and_resample <- function(df, item_bank) {
     for (n in duplicates$N) {
       N.subset <- df[df[, "N"] == n, ]
       rand.samp.i <- sample(1:nrow(N.subset), 1)
+      logging::logdebug("df %s", df)
+      logging::logdebug("item_bank[rand.samp.i, ] %s", item_bank[rand.samp.i, ])
       df <- rbind(df, item_bank[rand.samp.i, ])
     }
 
@@ -102,6 +104,8 @@ item_sampler_by_N_list <- function(item_bank, no_items) {
     N.subset <- item_bank[item_bank[, "N"] == i, ]
     rand.samp.i <- sample(1:nrow(N.subset), as.numeric(no_items[[i]]), replace = FALSE)
     rand.samp <- N.subset[rand.samp.i, ]
+    logging::logdebug("sample %s", sample)
+    logging::logdebug("rand.samp %s", rand.samp)
     sample <- rbind(sample, rand.samp)
   }
 

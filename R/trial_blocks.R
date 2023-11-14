@@ -412,8 +412,6 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      play_first_note_button_text = "Play First Note",
                                      learn_test_paradigm = FALSE) {
 
-  #browser()
-
 
   melody_trials(var_name,
                 module_name,
@@ -671,7 +669,6 @@ melody_trials <- function(var_name,
                           play_first_note_button_text = psychTestR::i18n("play_first_note"),
                           learn_test_paradigm = FALSE) {
 
-  #browser()
 
   if(presampled) {
     num_items <- nrow(item_bank)
@@ -840,7 +837,14 @@ melody_trials <- function(var_name,
                            transposed_message = transposed_message,
                            play_first_note_button_text = play_first_note_button_text,
                            learn_test_paradigm = learn_test_paradigm
-                           )
+                           ),
+
+                        # At end of block, clear this var, otherwise can lead to issues between trial blocks.
+                        # Another option would be to revert everything to set_local.
+                        # Should probably do this in future release.
+                        psychTestR::code_block(function(state, ...) {
+                          psychTestR::set_global(paste0("previous_melodies_", var_name), NULL, state)
+                        })
                        )
     )
   }

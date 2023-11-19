@@ -28,7 +28,8 @@ Suggests:
     r2glmm,
     lavaan,
     car,
-    lme4
+    lme4,
+    warbleR
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -48,7 +49,6 @@ Imports:
     ggplot2,
     tuneR,
     seewave,
-    warbleR,
     psyquest (>= 1.3.0),
     RCurl,
     DT,

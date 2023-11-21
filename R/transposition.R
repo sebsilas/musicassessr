@@ -45,15 +45,15 @@ sample_from_df <- function(df, no_to_sample, replacement = FALSE) {
 }
 
 sample_easy_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
-  res <- sample_from_df(easy_keys_for_inst(inst_name), no_to_sample, replacement = replacement)
-  res$difficulty <- rep("easy", no_to_sample)
+  res <- easy_keys_for_inst(inst_name) %>% dplyr::slice_sample(n = no_to_sample, replace = replacement)
+  res <- res %>% dplyr::mutate(difficulty = "easy")
   res
 }
 
 
 sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
-  res <- sample_from_df(hard_keys_for_inst(inst_name), no_to_sample, replace = replacement)
-  res$difficulty <- rep("hard", no_to_sample)
+  res <- hard_keys_for_inst(inst_name) %>% dplyr::slice_sample(n = no_to_sample, replace = replacement)
+  res <- res %>% dplyr::mutate(difficulty = "hard")
   res
 }
 
@@ -89,8 +89,8 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
     key <- sample_hard_key(inst)
   }
 
-  key_tonality <- key$key_tonality
-  key_centre <- key$key_centre
+  key_tonality <- key %>% dplyr::pull(key_tonality)
+  key_centre <- key  %>% dplyr::pull(key_centre)
   user_span <- top_range - bottom_range
 
   # Sample melody

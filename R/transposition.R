@@ -97,11 +97,11 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
   item_bank_subset <- itembankr::subset_item_bank(item_bank, tonality = key_tonality, span_max = user_span, item_length = length)
 
-  if(nrow(item_bank_subset) == 0) {
+  if(get_nrows(item_bank_subset) == 0) {
     item_bank_subset <- itembankr::subset_item_bank(item_bank, span_max = user_span, item_length = length)
   }
 
-  if(nrow(item_bank_subset) == 0) {
+  if(get_nrows(item_bank_subset) == 0) {
     item_bank_subset <- itembankr::subset_item_bank(item_bank, item_length = length)
   }
   # failure for major, span == 24, length = 15
@@ -113,7 +113,7 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
     count <- count + 1
 
-    meta_data <- item_bank_subset %>% dplyr::slice_sample(n = 1)
+    meta_data <- item_bank_subset %>% dplyr::slice_sample(n = 1) %>% dplyr::collect()
 
     rel_mel <- meta_data$melody
     # Now put it in a key

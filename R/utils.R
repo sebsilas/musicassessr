@@ -468,4 +468,13 @@ get_test_name <- function(test, get_local, state) {
   test
 }
 
+get_nrows <- function(df) {
+  # Workaround for backends
+  nrows <- df %>%
+    dplyr::summarise(num_rows = dplyr::n()) %>%
+    dplyr::pull(num_rows) %>%
+    as.integer()
+}
+
+
 

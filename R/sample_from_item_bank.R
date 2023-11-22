@@ -27,7 +27,8 @@ item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
   sampled_data <- item_bank %>%
     dplyr::slice_sample(n = ceiling(proportion), by = "N") %>% # First get roughly the amount per stratified N
     dplyr::slice_sample(n = no_items) %>% # Then make sure there the correct number of items in the end. We do this randomly.
-    dplyr::mutate(trial_no = dplyr::row_number())
+    dplyr::mutate(trial_no = dplyr::row_number()) %>%
+    dplyr::collect()
 
   # Shuffle the row order
   if(shuffle) {

@@ -1,5 +1,5 @@
 
-#' Item sampler
+#' Item sampler (stratified sampling)
 #'
 #' @param item_bank
 #' @param no_items
@@ -13,44 +13,28 @@
 item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
 
   stopifnot(
-    tibble::is_tibble(item_bank),
+    is(item_bank, "tbl"),
     is.scalar.numeric(no_items),
     is.scalar.logical(replace)
   )
 
-  item_bank <- item_bank %>%
-    dplyr::arrange(N)
+  no_Ns <- item_bank %>% dplyr::pull(N) %>% unique() %>% length()
 
-  # what values are there?
-  N_values <- unique(item_bank$N)
-  no_of_Ns <- length(N_values)
-  # given the no. of items, how many of each N will we need? let's count
+  proportion <- no_items/no_Ns
 
-  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
-  count <- 1
-  N_list <- c()
+  # This gives you rough stratified sampling, but with a pre-determined number of items.
+  # There won't be a perfect number of items per N, but it should work out across many participants
+  sampled_data <- item_bank %>%
+    dplyr::slice_sample(n = ceiling(proportion), by = "N") %>% # First get roughly the amount per stratified N
+    dplyr::slice_sample(n = no_items) %>% # Then make sure there the correct number of items in the end. We do this randomly.
+    dplyr::mutate(trial_no = dplyr::row_number())
 
-  while(count < no_items+1) {
-    N_list <- c(N_list, N_values[idxes[count]])
-    count <- count + 1
-  }
-
-  tabl <- as.data.frame(table(N_list))
-
-  sample_dat <- apply(tabl, MARGIN = 1, function(x) {
-    dat_subset <- item_bank[item_bank$N == as.integer(x["N_list"]), ]
-    sample_i <- sample(1:nrow(dat_subset), x["Freq"], replace = replace)
-    sampl <- dat_subset[sample_i, ]
-  })
-
-  res <- dplyr::bind_rows(sample_dat)
-
+  # Shuffle the row order
   if(shuffle) {
-    res <- res[sample(1:nrow(res)), ]
+    sampled_data <- sampled_data[sample(1:nrow(sampled_data)), ]
   }
 
-  res$trial_no <- 1:nrow(res)
-  res
+  sampled_data
 }
 
 

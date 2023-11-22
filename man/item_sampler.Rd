@@ -2,7 +2,7 @@
 % Please edit documentation in R/sample_from_item_bank.R
 \name{item_sampler}
 \alias{item_sampler}
-\title{Item sampler}
+\title{Item sampler (stratified sampling)}
 \usage{
 item_sampler(item_bank, no_items, replace = FALSE, shuffle = TRUE)
 }
@@ -10,5 +10,5 @@ item_sampler(item_bank, no_items, replace = FALSE, shuffle = TRUE)
 \item{shuffle}{}
 }
 \description{
-Item sampler
+Item sampler (stratified sampling)
 }

@@ -29,8 +29,7 @@ Suggests:
     lavaan,
     car,
     lme4,
-    warbleR,
-    musicassessrdb (>= 0.1.0)
+    warbleR
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -85,6 +84,5 @@ Remotes:
     sebsilas/pyin,
     sebsilas/vampr,
     sebsilas/musicassessrdocs,
-    crsh/citr,
-    sebsilas/musicassessrdb
+    crsh/citr
 URL: https://sebsilas.github.io/musicassessr/

@@ -1,5 +1,34 @@
 
+
 #' Item sampler (stratified sampling)
+#'
+#' @param item_bank
+#' @param no_items
+#' @param replace
+#' @param shuffle
+#' @param version
+#'
+#' @return
+#' @export
+#'
+#' @examples
+item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE, version = c("1", "2")) {
+
+  version <- match.arg(version)
+
+  if(version == "1") {
+    res <- item_sampler_v1(item_bank, no_items, replace, shuffle)
+  } else if(version == "2") {
+    res <- item_sampler_v2(item_bank, no_items, replace, shuffle)
+  } else {
+    stop("Not a valid version")
+  }
+
+  return(res)
+}
+
+
+#' Item sampler (stratified sampling) v2
 #'
 #' @param item_bank
 #' @param no_items
@@ -10,7 +39,7 @@
 #' @export
 #'
 #' @examples
-item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
+item_sampler_v2 <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
 
   stopifnot(
     is(item_bank, "tbl"),
@@ -36,6 +65,61 @@ item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
   }
 
   sampled_data
+}
+
+
+#' Item sampler (stratified sampling)
+#'
+#' @param item_bank
+#' @param no_items
+#' @param replace
+#' @param shuffle
+#'
+#' @return
+#' @export
+#'
+#' @examples
+item_sampler_v1 <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE) {
+
+  stopifnot(
+    tibble::is_tibble(item_bank),
+    is.scalar.numeric(no_items),
+    is.scalar.logical(replace)
+  )
+
+  item_bank <- item_bank %>%
+    dplyr::arrange(N)
+
+  # what values are there?
+  N_values <- unique(item_bank$N)
+  no_of_Ns <- length(N_values)
+  # given the no. of items, how many of each N will we need? let's count
+
+  idxes <- rep(1:no_of_Ns, ceiling(no_items/no_of_Ns))
+  count <- 1
+  N_list <- c()
+
+  while(count < no_items+1) {
+    N_list <- c(N_list, N_values[idxes[count]])
+    count <- count + 1
+  }
+
+  tabl <- as.data.frame(table(N_list))
+
+  sample_dat <- apply(tabl, MARGIN = 1, function(x) {
+    dat_subset <- item_bank[item_bank$N == as.integer(x["N_list"]), ]
+    sample_i <- sample(1:nrow(dat_subset), x["Freq"], replace = replace)
+    sampl <- dat_subset[sample_i, ]
+  })
+
+  res <- dplyr::bind_rows(sample_dat)
+
+  if(shuffle) {
+    res <- res[sample(1:nrow(res)), ]
+  }
+
+  res$trial_no <- 1:nrow(res)
+  res
 }
 
 

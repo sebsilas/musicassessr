@@ -405,7 +405,8 @@ test_acronym_to_name <- function(acronym) {
     "PBET" = "Play By Ear Test",
     "SST" = "Sight Singing Test",
     "SRT" = "Sight Reading Test",
-    "PDT" = "Pitch Discrimination Test"
+    "PDT" = "Pitch Discrimination Test",
+    "RTT" = "Rhythm Tapping Test"
   )
   l[[acronym]]
 }

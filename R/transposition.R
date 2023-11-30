@@ -1,60 +1,38 @@
 
-key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
-  if(nchar(inst) > 4) {
-    inst <- instrument_list[[inst]]
+
+#' Sample melody in key (v2)
+#'
+#' @param item_bank
+#' @param inst
+#' @param bottom_range
+#' @param top_range
+#' @param difficulty
+#' @param length
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sample_melody_in_key_v2 <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
+
+  logging::loginfo('Sample melody in key...')
+  logging::loginfo("Range: %s %s", bottom_range, top_range)
+
+
+  stopifnot(is(item_bank, "tbl"), # This checks for a tibble, but allows a database backend too (i.e., from tbl(db_con, "tbl_name"))
+            is.scalar.character(inst),
+            is_midi_note(bottom_range),
+            is_midi_note(top_range),
+            difficulty == "easy" || difficulty == "hard",
+            is.null.or(length, is.scalar.numeric))
+
+  if (difficulty == "easy") {
+    key <- sample_easy_key(inst)
+  } else {
+    key <- sample_hard_key(inst)
   }
-  if(is.null(inst)) { # i.e., allow non WJD instruments through and pretend they are piano
-    inst <- "p"
-  }
-  res <- dplyr::filter(key_rankings, instrument == inst) %>%
-    dplyr::arrange(dplyr::desc(n))
-  if (remove_atonal) {
-    res <- res %>% dplyr::filter(key != "")
-  }
-  res
-}
 
 
-easy_keys_for_inst <- function(instrument_name) {
-  ranking <- key_rankings_for_inst(instrument_name)
-  easy_keys <- ranking[1:floor(nrow(ranking)/2), ]
-  warning('Manually adding easy keys for Piano: C, F,  G, D')
-
-  if(instrument_name == "Piano") {
-    easy_keys <- rbind(easy_keys,
-                  tibble::tibble(instrument = rep("p", 4),
-                            key = c("C-maj", "F-maj", "G-maj", "D-maj"),
-                            n = rep(0, 4),
-                            key_centre = c("C", "F", "G", "D"),
-                            key_tonality = rep("major", 4)))
-  }
-  easy_keys
-}
-
-
-hard_keys_for_inst <- function(instrument_name) {
-  # get the easy keys and just make sure that the sampled key is not in that list
-  easy_keys <- easy_keys_for_inst(instrument_name)$key
-  dplyr::filter(keys_table, !key %in% easy_keys)
-}
-
-
-sample_from_df <- function(df, no_to_sample, replacement = FALSE) {
-  n <- sample(x = nrow(df), size = no_to_sample, replace = replacement)
-  df[n, ]
-}
-
-sample_easy_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
-  res <- easy_keys_for_inst(inst_name) %>% dplyr::slice_sample(n = no_to_sample, replace = replacement)
-  res <- res %>% dplyr::mutate(difficulty = "easy")
-  res
-}
-
-
-sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
-  res <- hard_keys_for_inst(inst_name) %>% dplyr::slice_sample(n = no_to_sample, replace = replacement)
-  res <- res %>% dplyr::mutate(difficulty = "hard")
-  res
 }
 
 #' Sample melody in key
@@ -189,6 +167,65 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
     }
   } # End while
 
+}
+
+
+key_rankings_for_inst <- function(inst, remove_atonal = TRUE) {
+  if(nchar(inst) > 4) {
+    inst <- instrument_list[[inst]]
+  }
+  if(is.null(inst)) { # i.e., allow non WJD instruments through and pretend they are piano
+    inst <- "p"
+  }
+  res <- dplyr::filter(key_rankings, instrument == inst) %>%
+    dplyr::arrange(dplyr::desc(n))
+  if (remove_atonal) {
+    res <- res %>% dplyr::filter(key != "")
+  }
+  res
+}
+
+
+easy_keys_for_inst <- function(instrument_name) {
+  ranking <- key_rankings_for_inst(instrument_name)
+  easy_keys <- ranking[1:floor(nrow(ranking)/2), ]
+  warning('Manually adding easy keys for Piano: C, F,  G, D')
+
+  if(instrument_name == "Piano") {
+    easy_keys <- rbind(easy_keys,
+                       tibble::tibble(instrument = rep("p", 4),
+                                      key = c("C-maj", "F-maj", "G-maj", "D-maj"),
+                                      n = rep(0, 4),
+                                      key_centre = c("C", "F", "G", "D"),
+                                      key_tonality = rep("major", 4)))
+  }
+  easy_keys
+}
+
+
+hard_keys_for_inst <- function(instrument_name) {
+  # get the easy keys and just make sure that the sampled key is not in that list
+  easy_keys <- easy_keys_for_inst(instrument_name)$key
+  dplyr::filter(keys_table, !key %in% easy_keys)
+}
+
+
+sample_from_df <- function(df, no_to_sample, replacement = FALSE) {
+  n <- sample(x = nrow(df), size = no_to_sample, replace = replacement)
+  df[n, ]
+}
+
+sample_easy_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
+  res <- easy_keys_for_inst(inst_name) %>% dplyr::slice_sample(n = no_to_sample, replace = replacement)
+  res <- res %>% dplyr::mutate(difficulty = "easy")
+  res
+}
+
+
+sample_hard_key <- function(inst_name, no_to_sample = 1, replacement = TRUE) {
+  res <- hard_keys_for_inst(inst_name) %>% dplyr::slice_sample(n = no_to_sample, replace = replacement)
+  res <- res %>% dplyr::mutate(difficulty = "hard")
+  res
 }
 
 sample_melody_in_easy_key <- function(item_bank, inst, bottom_range, top_range) {

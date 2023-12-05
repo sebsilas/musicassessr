@@ -29,7 +29,8 @@ Suggests:
     lavaan,
     car,
     lme4,
-    warbleR
+    warbleR,
+    future
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -39,7 +40,6 @@ Imports:
     htmltools,
     readxl,
     promises,
-    future,
     httr,
     stringi,
     hrep (>= 0.15.0),

@@ -96,21 +96,6 @@ make_musicassessr_test <- function(title,
 }
 
 
-connect_to_db_state <- function(state, ...) {
-  db_con <- connect_to_db()
-  psychTestR::set_global("db_con", db_con, state)
-  return(db_con)
-}
-
-
-elt_disconnect_from_db <- function() {
-  psychTestR::code_block(function(state, ...) {
-    logging::loginfo("Disconnecting from DB")
-    db_con <- psychTestR::get_global("db_con", state)
-    DBI::dbDisconnect(db_con)
-  })
-}
-
 #' Setup page options for a musicassessr test
 #'
 #' @param input_type The form of musicassessr test.

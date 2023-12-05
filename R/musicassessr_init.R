@@ -7,6 +7,7 @@
 #' @param experiment_id
 #' @param experiment_condition_id
 #' @param user_id
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -16,7 +17,8 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
                               app_name = "",
                               experiment_id = NULL,
                               experiment_condition_id = NULL,
-                              user_id = NULL) {
+                              user_id = NULL,
+                              asynchronous_api_mode = FALSE) {
 
 
   psychTestR::code_block(function(state, ...) {
@@ -29,6 +31,11 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
         psychTestR_session_id <- session_info$p_id
         time_completed <- NULL # The test is beginning
         # time_started is auto-generated at the SQL level
+        user_id <- if(is.null(user_id)) psychTestR::get_global('user_id', state) else user_id
+
+        if(is.null(user_id)) {
+          stop("user_id should not be NULL, at this point, if using musicassessr_db. User validate_user_entry_into test or set through the test manually.")
+        }
 
         # Check the specified IDs exist in the DB
         check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
@@ -37,7 +44,7 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
         if(is.null(psychTestR::get_global("session_id", state))) { # This makes sure we don't save the same session twice in the DB (e.g., when there are multiple tests nested in one session)
           # Append session
           # N.B This session_id is the primary key in the sessions database
-          session_id <- db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+          session_id <- musicassessrdb::db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
 
           psychTestR::set_global("session_id", session_id, state)
         }

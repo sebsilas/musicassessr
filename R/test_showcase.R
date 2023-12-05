@@ -26,7 +26,9 @@ musical_test_showcase <- function(app_name = "test_showcase",
                                     wjd_audio = list(key_easy = 0L, key_hard = 0L)),
                                    showcase_name = "musicassessr") {
 
-  RTT_built <- RTT::RTT(page_type = "record_midi_page", feedback, num_items_rtt, call_and_response_end = "manual")
+  rtt_feedback <- if(feedback) RTT::rhythm_feedback(type = "researcher") else RTT::rhythm_feedback(type = "none")
+
+  RTT_built <- RTT::RTT(page_type = "record_midi_page", feedback = rtt_feedback, num_items_rtt, call_and_response_end = "manual")
 
   tl <- function() {
       psychTestR::join(
@@ -76,7 +78,7 @@ musical_test_showcase <- function(app_name = "test_showcase",
 
   musicassessr::make_musicassessr_test(
     welcome_page = heading_page(heading = paste0("Welcome to the ", showcase_name, " showcase!"), after = shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/BLUESongBirdLogo.png', width = 500, height = 189)),
-    final_page_ui = shiny::tags$div(shiny::tags$h1(paste0("Thank you for completing the ", showcase_name, " showcase!")), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/BLUESongBirdLogo.png', width = 500, height = 189)),
+    final_page = psychTestR::final_page(shiny::tags$div(shiny::tags$h1(paste0("Thank you for completing the ", showcase_name, " showcase!")), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/BLUESongBirdLogo.png', width = 500, height = 189))),
     elts = tl,
     title = paste0(showcase_name, " Showcase"),
     admin_password = "demo",

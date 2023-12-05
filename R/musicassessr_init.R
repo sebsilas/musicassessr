@@ -51,12 +51,22 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
         # N.B This session_id is the primary key in the sessions database
 
         if(asynchronous_api_mode) {
-          session_id <- musicassessrdb::db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
 
-        } else {
+          logging::loginfo("Appending session via API")
+
           session_id <- future::future({
             musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
           })
+
+          print(session_id)
+
+        } else {
+
+          logging::loginfo("Appending session directly to DB")
+
+          session_id <- musicassessrdb::db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+
+
         }
 
         psychTestR::set_global("session_id", session_id, state)

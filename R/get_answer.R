@@ -934,3 +934,60 @@ get_answer_meta_data <- function(input, ...) {
 
 }
 
+
+
+get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, midi_vs_audio = c("audio", "midi"), ...) {
+
+  logging::loginfo("get_answer_add_trial_and_compute_trial_scores")
+
+  midi_vs_audio <- match.arg(midi_vs_audio)
+
+  csv_file <- paste0(input$key, ".csv")
+
+  logging::loginfo('csv_file: %s', csv_file)
+
+  # Grab stimuli information
+  if(is.scalar.null(input$stimuli)) {
+    stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
+    stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
+  } else {
+    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
+    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
+  }
+
+  singing_trial <- psychTestR::get_global("singing_trial", state)
+
+  instrument <- if(singing_trial) "Voice" else psychTestR::get_global("inst", state)
+
+  trial_time_started <- psychTestR::get_global("trial_time_started", state)
+  session_id <- psychTestR::get_global("session_id", state)
+  item_bank_id <- psychTestR::get_global("item_bank_id", state)
+  item_id <- psychTestR::get_global("item_id", state)
+  display_modality <- psychTestR::get_global("display_modality", state)
+  phase <- psychTestR::get_global("phase", state)
+  rhythmic <- psychTestR::get_global("rhythmic", state)
+  test_id <- psychTestR::get_global('test_id', state)
+  attempt <- psychTestR::get_global("number_attempts", state)
+
+  trial_time_completed <- Sys.time()
+
+  session_id <- get_promise_value(session_id)
+
+  musicassessrdb::add_trial_and_compute_trial_scores_api(midi_vs_audio,
+                                                         pyin_file = csv_file,
+                                                         paste0(stimuli, collapse = ","),
+                                                         paste0(stimuli_durations, collapse = ","),
+                                                         trial_time_started,
+                                                         trial_time_completed,
+                                                         instrument,
+                                                         attempt,
+                                                         item_id,
+                                                         display_modality,
+                                                         phase,
+                                                         rhythmic,
+                                                         item_bank_id,
+                                                         session_id,
+                                                         test_id)
+
+}
+

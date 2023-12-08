@@ -20,16 +20,19 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
                               user_id = NULL,
                               asynchronous_api_mode = FALSE) {
 
-  psychTestR::code_block(function(state, ...) {
+  if(asynchronous_api_mode) {
+    logging::loginfo("Asynchronous API mode on.")
+    future::plan(future::multisession)
+  }
 
-    if(asynchronous_api_mode) logging::loginfo("Asynchronous API mode on.")
+  psychTestR::code_block(function(state, ...) {
 
 
     if(use_musicassessr_db) {
 
       if(!asynchronous_api_mode) {
         # Init the DB connection (and return it for immediate use)
-        db_con <- connect_to_db_state(state)
+        db_con <- musicassessrdb::connect_to_db_state(state)
       }
 
       session_info <- psychTestR::get_session_info(state, complete = FALSE)
@@ -43,7 +46,7 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
       }
 
       # Check the specified IDs exist in the DB
-      check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
+      musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
 
 
       if(is.null(psychTestR::get_global("session_id", state))) { # This makes sure we don't save the same session twice in the DB (e.g., when there are multiple tests nested in one session)
@@ -54,19 +57,26 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
           logging::loginfo("Appending session via API")
 
-          session_id <- future::future({
+          tictoc::tic()
+
+          session_id <- promise_result({
             musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+          })  %...>% (function(res) {
+            logging::loginfo("Returning promise result: %s", res)
+            if(res$status == 200) {
+              return(res$session_id)
+            } else {
+              return(NA)
+            }
           })
 
-          print(session_id)
+          tictoc::toc()
+
+          logging::loginfo("After promise")
 
         } else {
-
           logging::loginfo("Appending session directly to DB")
-
           session_id <- musicassessrdb::db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
-
-
         }
 
         psychTestR::set_global("session_id", session_id, state)
@@ -103,7 +113,7 @@ set_test <- function(test_name, test_id = NULL) {
     if(!is.null(test_id)) {
       db_con <- psychTestR::get_global("db_con", state)
       if(is.null(db_con)) stop("If test_id is non-NULL, then use_musicassessr_db must be true.")
-      check_id_exists(db_con, table_name = "tests", id_col = "test_id", id = test_id)
+      musicassessrdb::check_id_exists(db_con, table_name = "tests", id_col = "test_id", id = test_id)
     }
 
     logging::loginfo("Setting test ID: %s", test_id)
@@ -134,7 +144,7 @@ set_instrument <- function(instrument_id = NULL) {
 
       db_con <- psychTestR::get_global("db_con", state)
       if(is.null(db_con)) stop("If instrument_id is non-NULL, then use_musicassessr_db must be true.")
-      check_id_exists(db_con, table_name = "instruments", id_col = "instrument_id", id = instrument_id)
+      musicassessrdb::check_id_exists(db_con, table_name = "instruments", id_col = "instrument_id", id = instrument_id)
 
       logging::loginfo("Setting instrument ID, manually specified. ID: %s", instrument_id)
 

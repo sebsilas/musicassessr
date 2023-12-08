@@ -770,6 +770,7 @@ grab_sampled_melody <- function(item_bank = NULL,
   range <- psychTestR::get_global("range", state)
   inst <- psychTestR::get_global("inst", state)
 
+
   # Has melody been specified directly, or sampled at test time?
   if(is.null(melody_row)) {
     logging::loginfo("Sample at test time")
@@ -838,6 +839,7 @@ grab_sampled_melody <- function(item_bank = NULL,
   }
 
   # Set the melody to be used
+  psychTestR::set_global("item_id", melody_row$item_id, state)
   psychTestR::set_global("melody", list("melody" = abs_melody, "durations" = durations), state)
   psychTestR::set_global("answer_meta_data", rjson::toJSON(answer_meta_data), state)
   # And other variables

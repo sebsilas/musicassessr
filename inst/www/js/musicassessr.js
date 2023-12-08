@@ -1,7 +1,7 @@
 console.log("loaded musicassessr.js");
 
 
-// initialise toneJS
+// Initialise toneJS
 toneJSInit();
 
 
@@ -14,7 +14,7 @@ preloadImage("https://adaptiveeartraining.com/assets/robot.png");
 
 
 
-// Vars
+// Instantiate vars
 var confidences = [];
 var user_response_frequencies = [];
 var timecodes = [];
@@ -30,12 +30,12 @@ var recordkey;
 var file_url;
 var onsets_noteon_timecode = [];
 var stimulus_trigger_times = [];
-var upload_to_s3 = false;
+var upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
 
-// functions
+// Functions
 
 
-// // setup functions
+// // Setup functions
 
 function initSynth() {
 

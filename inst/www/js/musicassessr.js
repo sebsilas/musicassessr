@@ -1071,12 +1071,29 @@ function upload_file_to_s3(blob){
     });
 
     var upload = new AWS.S3.ManagedUpload({
+
         params: {
             Bucket: bucketName,
             Key: file_url,
             ContentType: 'audio/wav',
             ACL: 'public-read',
-            Body: blob
+            Body: blob,
+            Metadata: {
+              "midi_vs_audio": "audio",
+              "stimuli": "60,61,62,63",
+              "stimuli_durations": "1,1,1,0.5",
+              "trial_time_started": "2023-11-18 10:51:53 CET",
+              "trial_time_completed": "2023-11-18 10:52:53 CET",
+              "instrument": "Tenor Saxophone",
+              "attempt": 1,
+              "item_id": "Berkowitz_ngram_1",
+              "display_modality": "auditory",
+              "phase": "test",
+              "rhythmic": true,
+              "item_bank_id": 2,
+              "session_id": 2,
+              "test_id": 1
+            }
         }
     });
 

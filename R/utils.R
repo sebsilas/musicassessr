@@ -478,12 +478,6 @@ get_nrows <- function(df) {
 }
 
 
-promise_result <- function(exp) {
-  promises::future_promise(exp) %...>% (function(result) {
-    logging::loginfo("Returning promise result: %s", result)
-    result
-  })
-}
 
 get_promise_value <- function(promise) {
   if(promises::is.promise(promise)) {

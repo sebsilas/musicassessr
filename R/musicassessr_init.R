@@ -22,7 +22,7 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
   if(asynchronous_api_mode) {
     logging::loginfo("Asynchronous API mode on.")
-    future::plan(future::multisession)
+    future::plan(future::multisession, workers = 2)
   }
 
   psychTestR::code_block(function(state, ...) {
@@ -57,22 +57,17 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
           logging::loginfo("Appending session via API")
 
-          tictoc::tic()
-
-          session_id <- promise_result({
-            musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
-          })  %...>% (function(res) {
-            logging::loginfo("Returning promise result: %s", res)
-            if(res$status == 200) {
-              return(res$session_id)
-            } else {
-              return(NA)
-            }
+          session_id <- future::future({
+              musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+            }) %...>% (function(result) {
+            logging::loginfo("Returning promise result: %s", result)
+              if(result$status == 200) {
+                return(result$session_id)
+              } else {
+                return(NA)
+              }
           })
 
-          tictoc::toc()
-
-          logging::loginfo("After promise")
 
         } else {
           logging::loginfo("Appending session directly to DB")

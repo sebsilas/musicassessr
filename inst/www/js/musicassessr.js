@@ -32,6 +32,23 @@ var onsets_noteon_timecode = [];
 var stimulus_trigger_times = [];
 var upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
 
+
+// // Trial info
+
+var db_midi_vs_audio;
+// Note stimuli and stimuli_durations are instantiated elsewhere (via R)
+var db_trial_time_started;
+var db_trial_time_completed;
+var db_instrument;
+var db_attempt;
+var db_item_id;
+var db_display_modality;
+var db_phase;
+var db_rhythmic;
+var db_item_bank_id;
+var db_session_id;
+var db_test_id;
+
 // Functions
 
 
@@ -783,6 +800,14 @@ function hideRecordButton() {
 
 // Utils
 
+function vectorToString(vector) {
+  if (!Array.isArray(vector)) {
+    return "Input is not a valid array";
+  }
+
+  return vector.join(', ');
+}
+
 function diff(ary) {
     var newA = [];
     for (var i = 1; i < ary.length; i++)  newA.push(ary[i] - ary[i - 1]);
@@ -1070,6 +1095,26 @@ function upload_file_to_s3(blob){
         params: { Bucket: bucketName }
     });
 
+    var md = {
+              // Note, all metadata must be strings
+              "midi-vs-audio": String(db_midi_vs_audio),
+              "stimuli": vectorToString(stimuli),
+              "stimuli-durations": vectorToString(stimuli_durations),
+              "trial-time-started": String(db_trial_time_started),
+              "trial-time-completed": String(db_trial_time_completed),
+              "instrument": String(db_instrument),
+              "attempt": String(db_attempt),
+              "item-id": String(db_item_id),
+              "display-modality": String(db_display_modality),
+              "phase": String(db_phase),
+              "rhythmic": String(db_rhythmic),
+              "item-bank-id": String(db_item_bank_id),
+              "session-id": String(db_session_id),
+              "test-id": String(db_test_id)
+            };
+
+    console.log(md);
+
     var upload = new AWS.S3.ManagedUpload({
 
         params: {
@@ -1078,22 +1123,7 @@ function upload_file_to_s3(blob){
             ContentType: 'audio/wav',
             ACL: 'public-read',
             Body: blob,
-            Metadata: {
-              "midi_vs_audio": "audio",
-              "stimuli": "60,61,62,63",
-              "stimuli_durations": "1,1,1,0.5",
-              "trial_time_started": "2023-11-18 10:51:53 CET",
-              "trial_time_completed": "2023-11-18 10:52:53 CET",
-              "instrument": "Tenor Saxophone",
-              "attempt": 1,
-              "item_id": "Berkowitz_ngram_1",
-              "display_modality": "auditory",
-              "phase": "test",
-              "rhythmic": true,
-              "item_bank_id": 2,
-              "session_id": 2,
-              "test_id": 1
-            }
+            Metadata: md
         }
     });
 

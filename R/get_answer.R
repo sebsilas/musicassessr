@@ -973,21 +973,7 @@ get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, midi_
 
   session_id <- get_promise_value(session_id)
 
-  musicassessrdb::add_trial_and_compute_trial_scores_api(midi_vs_audio,
-                                                         pyin_file = csv_file,
-                                                         paste0(stimuli, collapse = ","),
-                                                         paste0(stimuli_durations, collapse = ","),
-                                                         trial_time_started,
-                                                         trial_time_completed,
-                                                         instrument,
-                                                         attempt,
-                                                         item_id,
-                                                         display_modality,
-                                                         phase,
-                                                         rhythmic,
-                                                         item_bank_id,
-                                                         session_id,
-                                                         test_id)
+  musicassessrdb::add_trial_and_compute_trial_scores_api(pyin_file = csv_file)
 
 }
 

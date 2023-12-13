@@ -29,12 +29,17 @@ record_midi_or_audio_ui <- function(body = "",
                                     volume_meter_type = 'default',
                                     show_sheet_music_after_record = FALSE,
                                     show_record_button = TRUE,
-                                    reactive_melody_no = FALSE, ...) {
+                                    reactive_melody_no = FALSE,
+                                    db_vars = NULL,
+                                    use_musicassessr_db = FALSE, ...) {
 
 
   if(is.character(page_text)) {
     page_text <- shiny::tags$p(page_text)
   }
+
+  attempt <- rjson::toJSON(max_goes - attempts_left)
+
 
   section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
@@ -42,17 +47,20 @@ record_midi_or_audio_ui <- function(body = "",
 
     shiny::tags$head(
 
-      shiny::tags$script( # set attempts
-        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', rjson::toJSON(max_goes - attempts_left), ');'))
-      ),
-
-      shiny::tags$script(paste0('console.log(\"this is a ', page_type, '\");')),
+      # Set attempts
+      shiny::tags$script(
+        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', attempt, ');
+                           console.log(\"This is a ', page_type, '\");'))
+        ),
 
       if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive),
 
       if(page_type == "record_audio_page") send_page_label_to_js(label),
 
-      shiny::tags$script(set_answer_meta_data(answer_meta_data))
+      shiny::tags$script(set_answer_meta_data(answer_meta_data)),
+
+      # Set JS vars for musicassessrdb
+      if(use_musicassessr_db && ! is.scalar.null(db_vars) ) set_answer_meta_data_for_db_as_js_vars(db_vars)
 
     ),
     shiny::tags$body(
@@ -97,6 +105,48 @@ record_midi_or_audio_ui <- function(body = "",
 
 }
 
+
+set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
+
+    stopifnot(
+      length(
+        setdiff(
+          c("midi_vs_audio",
+            "stimuli",
+            "stimuli_durations",
+            "trial_time_started",
+            "trial_time_completed",
+            "instrument",
+            "attempt",
+            "item_id",
+            "display_modality",
+            "phase",
+            "rhythmic",
+            "item_bank_id",
+            "session_id",
+            "test_id"),
+          names(db_vars)
+          )
+        ) == 0)
+
+  tags$script(
+    paste0('
+  var db_midi_vs_audio = \"', db_vars$midi_vs_audio,'\";
+  var db_trial_time_started = \"', db_vars$trial_time_started,'\";
+  var db_trial_time_completed = \"', db_vars$trial_time_completed,'\";
+  var db_instrument = \"', db_vars$instrument,'\";
+  var db_attempt = \"', db_vars$attempt,'\";
+  var db_item_id = \"', db_vars$item_id,'\";
+  var db_display_modality = \"', db_vars$display_modality,'\";
+  var db_phase = \"', db_vars$phase,'\";
+  var db_rhythmic = \"', db_vars$rhythmic,'\";
+  var db_item_bank_id = \"', db_vars$item_bank_id,'\";
+  var db_session_id = \"', db_vars$session_id,'\";
+  var db_test_id = \"', db_vars$test_id,'\";
+  ')
+  )
+
+}
 
 send_page_label_to_js <- function(label) {
   shiny::tags$script(paste0('var page_label = \"', label, '\";'))

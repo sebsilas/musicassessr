@@ -27,6 +27,8 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
   psychTestR::code_block(function(state, ...) {
 
+    psychTestR::set_global("musicassessr_db", use_musicassessr_db, state)
+
 
     if(use_musicassessr_db) {
 

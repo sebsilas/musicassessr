@@ -688,7 +688,8 @@ present_melody <- function(stimuli,
     }
 
     # Set some vars for storing in DB
-    psychTestR::set_global("trial_time_started", Sys.time(), state)
+    trial_time_started <- Sys.time()
+    psychTestR::set_global("trial_time_started", trial_time_started, state)
     psychTestR::set_global("singing_trial", singing_trial, state)
 
     # Use a display_modality created at test time, if appropriate
@@ -696,6 +697,25 @@ present_melody <- function(stimuli,
 
     # Get trial paradigm info
     trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
+
+    db_vars <- if(psychTestR::get_global("musicassessr_db", state)) {
+      list(
+        midi_vs_audio = stringr::str_remove(stringr::str_remove(page_type, "record_"), "_page"),
+        stimuli = paste0(melody_checks$melody, collapse = ","),
+        stimuli_durations = paste0(melody_checks$durations, collapse = ","),
+        trial_time_started = trial_time_started,
+        trial_time_completed = NULL,
+        instrument = psychTestR::get_global("inst", state),
+        attempt = number_attempts,
+        item_id = rjson::fromJSON(answer_meta_data)$item_id,
+        display_modality = display_modality,
+        phase = psychTestR::get_global("phase", state),
+        rhythmic = !arrhythmic,
+        item_bank_id = psychTestR::get_global("item_bank_id", state),
+        session_id = get_promise_value(psychTestR::get_global("session_id", state)),
+        test_id = psychTestR::get_global("test_id", state)
+      )
+    } else NULL
 
     # Present the stimulus
     present_stimuli(stimuli = melody_checks$melody,
@@ -738,7 +758,9 @@ present_melody <- function(stimuli,
                     first_note_message = first_note_message,
                     transposed_message = transposed_message,
                     play_first_note_button_text = play_first_note_button_text,
-                    reactive_melody_no = reactive_melody_no)
+                    reactive_melody_no = reactive_melody_no,
+                    db_vars = db_vars,
+                    use_musicassessr_db = psychTestR::get_global("musicassessr_db", state))
 
   })
 }

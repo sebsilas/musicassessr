@@ -60,7 +60,7 @@ record_midi_or_audio_ui <- function(body = "",
       shiny::tags$script(set_answer_meta_data(answer_meta_data)),
 
       # Set JS vars for musicassessrdb
-      if(use_musicassessr_db && ! is.scalar.null(db_vars) ) set_answer_meta_data_for_db_as_js_vars(db_vars)
+      if(!is.scalar.null(db_vars)) set_answer_meta_data_for_db_as_js_vars(db_vars)
 
     ),
     shiny::tags$body(

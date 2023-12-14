@@ -936,6 +936,17 @@ get_answer_meta_data <- function(input, ...) {
 
 
 
+#' Get answer
+#'
+#' @param input
+#' @param state
+#' @param midi_vs_audio
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, midi_vs_audio = c("audio", "midi"), ...) {
 
   logging::loginfo("get_answer_add_trial_and_compute_trial_scores")

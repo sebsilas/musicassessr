@@ -166,4 +166,8 @@ set_instrument <- function(instrument_id = NULL) {
 }
 
 
+# db_con <- musicassessrdb::musicassessr_con()
+# item_bank <- dplyr::tbl(db_con, "Berkowitz_ngram")
+# sample <- musicassessr::item_sampler(item_bank, 10, version = "2")
+
 

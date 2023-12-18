@@ -24,7 +24,7 @@ melconv <- function(file_name, return_notes_and_durs = TRUE) {
                     paste0('-o ', melconv_out)),
            stdout = TRUE, stderr = FALSE)
 
-  if(any(grepl("offending", melconv_res)) & return_notes_and_durs) {
+  if(any(grepl("offending", melconv_res)) && return_notes_and_durs) {
     res <- tibble::tibble(onset = NA, durations = NA, note = NA, midi_file = file_name, N = NA)
   } else {
     n <- paste0(melconv_out, basename(file_name))

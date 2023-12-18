@@ -89,10 +89,10 @@ record_midi_or_audio_ui <- function(body = "",
 
       shiny::tags$script(htmltools::HTML(
         paste0('var destBucket = "', Sys.getenv("DESTINATION_BUCKET"), '";
-                        var api_url = "', Sys.getenv("API_URL"),'";
-                        var bucketName = "', Sys.getenv("BUCKET_NAME"),'";
-                        var bucketRegion = "', Sys.getenv("BUCKET_REGION"),'";
-                        var IdentityPoolId = "', Sys.getenv("IDENTITY_POOL_ID"),'";')
+                var api_url = "', Sys.getenv("API_URL"),'";
+                var bucketName = "', Sys.getenv("BUCKET_NAME"),'";
+                var bucketRegion = "', Sys.getenv("BUCKET_REGION"),'";
+                var IdentityPoolId = "', Sys.getenv("IDENTITY_POOL_ID"),'";')
           )
         )
     )

@@ -9,11 +9,12 @@ musicassessr_init(
   app_name = "",
   experiment_id = NULL,
   experiment_condition_id = NULL,
-  user_id = NULL
+  user_id = NULL,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{user_id}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Initiate a musicassessr test

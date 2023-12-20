@@ -32,7 +32,7 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     call_and_response_end %in% c("manual", "auto"),
     is.null.or(stop_recording_after_x_seconds, is.scalar.numeric),
     is.scalar.logical(instantiate_midi),
-    is.null.or(midi_device, is.scalar.numeric)
+    is.null.or(midi_device, is.scalar.character)
   )
 
   if(paradigm_type == "simultaneous_recall") {

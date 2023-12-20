@@ -28,6 +28,35 @@ item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE, v
 }
 
 
+item_sampler_materialized_view <- function(db_con, no_items, table = "Berkowitz_ngram_n_view", shuffle = TRUE) {
+
+  stopifnot(
+    DBI::dbIsValid(db_con),
+    is.scalar.numeric(no_items),
+    is.scalar.character(table),
+    is.scalar.logical(shuffle)
+  )
+
+
+  max_val <- as.numeric(DBI::dbGetQuery(db_con, paste0("SELECT MAX (row_number) FROM ", table) )$max)
+
+  rnd <- sample(1:max_val, size = 1)
+
+  sampled_data <- DBI::dbGetQuery(db_con, paste0("SELECT * FROM  ", table, " WHERE row_number < ", rnd, " LIMIT ", no_items))
+
+
+  # Shuffle the row order
+  if(shuffle) {
+    sampled_data <- sampled_data[sample(1:nrow(sampled_data)), ]
+  }
+
+  sampled_data
+
+}
+
+# db_con <- musicassessrdb::musicassessr_con()
+# t <- item_sampler_materialized_view(db_con, 20)
+
 #' Item sampler (stratified sampling) v2
 #'
 #' @param item_bank

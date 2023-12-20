@@ -112,6 +112,7 @@ record_audio_block <- function(no_pages,
 #' @param page_title
 #' @param page_text
 #' @param autoInstantiate
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -123,7 +124,11 @@ record_midi_block <- function(no_pages,
                               get_answer = get_answer_midi,
                               page_title = psychTestR::i18n("Record_audio"),
                               page_text = psychTestR::i18n("click_to_record_audio"),
-                              autoInstantiate = TRUE) {
+                              autoInstantiate = TRUE,
+                              mute_midi_playback = FALSE) {
+
+  print('record_midi_block')
+  print(mute_midi_playback)
 
   page <- psychTestR::reactive_page(function(state, ...) {
 
@@ -136,7 +141,8 @@ record_midi_block <- function(no_pages,
                        page_title = page_title,
                        page_text = page_text,
                        midi_device = midi_device,
-                       autoInstantiate = autoInstantiate)
+                       autoInstantiate = autoInstantiate,
+                       mute_midi_playback = mute_midi_playback)
 
     })
 

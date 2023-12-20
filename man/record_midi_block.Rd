@@ -11,11 +11,12 @@ record_midi_block(
   get_answer = get_answer_midi,
   page_title = psychTestR::i18n("Record_audio"),
   page_text = psychTestR::i18n("click_to_record_audio"),
-  autoInstantiate = TRUE
+  autoInstantiate = TRUE,
+  mute_midi_playback = FALSE
 )
 }
 \arguments{
-\item{autoInstantiate}{}
+\item{mute_midi_playback}{}
 }
 \description{
 A block of record MIDI pages

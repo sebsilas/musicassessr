@@ -27,7 +27,7 @@ function generateDeviceDropdown(){
 
 
 
-function instantiateMIDI(midi_device, interactive_midi) {
+function instantiateMIDI(midi_device, interactive_midi = false, mute_midi_playback = false) {
 
   // reinstantiate (first disable)
   WebMidi.disable();
@@ -107,7 +107,16 @@ function instantiateMIDI(midi_device, interactive_midi) {
               // need to make sure this doesn't apply to tones though FIX
               piano_midi_note_on = midi_note_on-12;
               freq_tone = Tone.Frequency(piano_midi_note_on, "midi").toNote();
-              triggerNote("piano", freq_tone, 0.25);
+
+
+              console.log('well?');
+              console.log(!mute_midi_playback);
+
+
+              if(!mute_midi_playback) {
+                triggerNote("piano", freq_tone, 0.25);
+              }
+
 
 
               var responseTime = new Date().getTime();

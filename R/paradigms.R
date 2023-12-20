@@ -8,6 +8,7 @@
 #' @param stop_recording_after_x_seconds
 #' @param instantiate_midi
 #' @param midi_device
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -18,7 +19,8 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
                      call_and_response_end = c("manual", "auto"),
                      stop_recording_after_x_seconds = NULL,
                      instantiate_midi = FALSE,
-                     midi_device = NULL) {
+                     midi_device = NULL,
+                     mute_midi_playback = FALSE) {
 
   # call_and_response_end if "manual", user clicks stop, if "auto" - automatically triggered
 
@@ -36,8 +38,10 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
   )
 
   if(paradigm_type == "simultaneous_recall") {
-    trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE, midi_device = midi_device, instantiate_midi = instantiate_midi)
+    trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE, midi_device = midi_device, instantiate_midi = instantiate_midi, mute_midi_playback = mute_midi_playback)
     trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type)
+    print('trigger_start_of_stimulus_fun')
+    print(trigger_start_of_stimulus_fun)
   } else if(paradigm_type == "call_and_response") {
     trigger_start_of_stimulus_fun <- NA
       if(call_and_response_end == "manual") {
@@ -63,7 +67,8 @@ record_triggers <- function(record = c("start", "stop"),
                             stop_recording_after_x_seconds = NULL,
                             show_stop = TRUE,
                             instantiate_midi = FALSE,
-                            midi_device = NULL) {
+                            midi_device = NULL,
+                            mute_midi_playback = FALSE) {
 
 
   record <- match.arg(record)
@@ -94,7 +99,7 @@ record_triggers <- function(record = c("start", "stop"),
   }
 
   if(instantiate_midi) {
-    instantiate_midi_fun <- shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", false);'))
+    instantiate_midi_fun <- paste0('instantiateMIDI(\"',midi_device,'\", false, ', TRUE_to_js_true(mute_midi_playback), ');')
     funs <- paste0(funs, instantiate_midi_fun)
   }
 

@@ -34,6 +34,7 @@
 #' @param show_sheet_music_after_record
 #' @param show_record_button
 #' @param reactive_melody_no
+#' @param mute_midi_playback Should audio feedback be muted?
 #' @param ...
 #'
 #' @return
@@ -68,7 +69,8 @@ record_midi_page <- function(body = "",
                              volume_meter_type = 'default',
                              show_sheet_music_after_record = FALSE,
                              show_record_button = TRUE,
-                             reactive_melody_no = FALSE, ...) {
+                             reactive_melody_no = FALSE,
+                             mute_midi_playback = FALSE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -99,7 +101,8 @@ record_midi_page <- function(body = "",
                           volume_meter_type,
                           show_sheet_music_after_record,
                           show_record_button,
-                          reactive_melody_no)
+                          reactive_melody_no,
+                          mute_midi_playback)
 
 }
 
@@ -146,12 +149,14 @@ select_midi_device_page <- function(title = "Select MIDI device",
   )
 }
 
-autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive) {
+autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive, mute_midi_playback = FALSE) {
   if (instantiate) {
-    shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', TRUE_to_js_true(interactive), ');'))
+    scr <- shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', TRUE_to_js_true(interactive), ', ', TRUE_to_js_true(mute_midi_playback), ')'))
   } else {
-    shiny::tags$script(paste0('var midi_device = \"', midi_device, '\";'))
+    scr <- shiny::tags$script(paste0('var midi_device = \"', midi_device, '\";'))
   }
+  print(scr)
+  return(scr)
 }
 
 

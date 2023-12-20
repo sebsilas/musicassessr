@@ -29,7 +29,8 @@ record_midi_or_audio_ui <- function(body = "",
                                     volume_meter_type = 'default',
                                     show_sheet_music_after_record = FALSE,
                                     show_record_button = TRUE,
-                                    reactive_melody_no = FALSE, ...) {
+                                    reactive_melody_no = FALSE,
+                                    mute_midi_playback = FALSE, ...) {
 
 
   if(is.character(page_text)) {
@@ -48,7 +49,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       shiny::tags$script(paste0('console.log(\"this is a ', page_type, '\");')),
 
-      if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive),
+      if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive, mute_midi_playback),
 
       if(page_type == "record_audio_page") send_page_label_to_js(label),
 

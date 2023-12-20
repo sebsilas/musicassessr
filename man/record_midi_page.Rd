@@ -34,10 +34,13 @@ record_midi_page(
   show_sheet_music_after_record = FALSE,
   show_record_button = TRUE,
   reactive_melody_no = FALSE,
+  mute_midi_playback = FALSE,
   ...
 )
 }
 \arguments{
+\item{mute_midi_playback}{Should audio feedback be muted?}
+
 \item{...}{}
 }
 \description{

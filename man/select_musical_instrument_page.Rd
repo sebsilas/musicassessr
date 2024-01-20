@@ -4,7 +4,13 @@
 \alias{select_musical_instrument_page}
 \title{Page to select what instrument the participant is using}
 \usage{
-select_musical_instrument_page(use_musicassessr_db)
+select_musical_instrument_page(
+  use_musicassessr_db = FALSE,
+  set_range_based_on_selection = FALSE
+)
+}
+\arguments{
+\item{set_range_based_on_selection}{}
 }
 \description{
 Page to select what instrument the participant is using

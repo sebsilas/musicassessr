@@ -4,7 +4,7 @@
 \alias{select_musical_instrument_page}
 \title{Page to select what instrument the participant is using}
 \usage{
-select_musical_instrument_page()
+select_musical_instrument_page(use_musicassessr_db)
 }
 \description{
 Page to select what instrument the participant is using

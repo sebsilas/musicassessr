@@ -24,6 +24,7 @@
 #' @param requirements_page Show a requirements page?
 #' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
 #' @param fake_range Should the instrument/voice range be faked with a default?
+#' @param use_musicassessr_db Is musicassessr_db being used?
 #'
 #' @return
 #' @export
@@ -55,7 +56,9 @@ setup_pages <- function(input_type = c("microphone",
                         allow_SNR_failure = FALSE,
                         requirements_page = TRUE,
                         playful_volume_meter_setup = FALSE,
-                        fake_range = FALSE) {
+                        fake_range = FALSE,
+                        use_musicassessr_db = FALSE) {
+
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
@@ -82,14 +85,15 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(allow_SNR_failure),
             is.scalar.logical(requirements_page),
             is.scalar.logical(playful_volume_meter_setup),
-            is.scalar.logical(fake_range)
+            is.scalar.logical(fake_range),
+            is.scalar.logical(use_musicassessr_db)
             )
 
   if(demo) {
 
     setup <- psychTestR::join(
 
-      if(select_instrument) select_musical_instrument_page(),
+      if(select_instrument) select_musical_instrument_page(use_musicassessr_db, set_range_based_on_selection = !get_instrument_range),
 
       correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
 
@@ -127,7 +131,7 @@ setup_pages <- function(input_type = c("microphone",
 
       if(headphones) test_headphones_page(concise_wording),
 
-      if(select_instrument) select_musical_instrument_page(),
+      if(select_instrument) select_musical_instrument_page(use_musicassessr_db, set_range_based_on_selection = !get_instrument_range),
 
       correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure),
 

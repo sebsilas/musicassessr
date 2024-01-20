@@ -128,14 +128,21 @@ set_test <- function(test_name, test_id = NULL) {
 #' Set instrument ID
 #'
 #' @param instrument_id
+#' @param as_code_block
+#' @param state
+#' @param set_range
 #'
 #' @return
 #' @export
 #'
 #' @examples
-set_instrument <- function(instrument_id = NULL) {
+set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = NULL, set_range = TRUE) {
 
-  psychTestR::code_block(function(state, ...) {
+  if(!as_code_block && is.null(state)) {
+    stop("state must be a state object if as_code_block is FALSE")
+  }
+
+  set_inst <- function(state, ...) {
 
     if(!is.null(instrument_id)) {
 
@@ -159,9 +166,28 @@ set_instrument <- function(instrument_id = NULL) {
       psychTestR::set_global("transpose_visual_notation", as.integer(inst$transpose), state)
       psychTestR::set_global("clef", inst$clef, state)
 
+      if(set_range) {
+
+        logging::loginfo("Setting range based on selection")
+        logging::loginfo("Bottom range: %s", inst$low_note)
+        logging::loginfo("Top range: %s", inst$high_note)
+
+        psychTestR::set_global("bottom_range", inst$low_note, state)
+        psychTestR::set_global("top_range", inst$high_note, state)
+      }
+
+
     }
 
-  })
+  }
+
+  if(as_code_block) {
+    return(psychTestR::code_block(set_inst))
+  } else {
+    set_inst(state)
+  }
+
+
 
 }
 

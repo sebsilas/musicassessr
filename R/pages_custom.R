@@ -1,10 +1,14 @@
 #' Page to select what instrument the participant is using
 #'
+#' @param use_musicassessr_db
+#' @param set_range_based_on_selection
+#'
 #' @return
 #' @export
 #'
 #' @examples
-select_musical_instrument_page <- function() {
+select_musical_instrument_page <- function(use_musicassessr_db = FALSE, set_range_based_on_selection = FALSE) {
+
 
   # do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
   insts_dict <- lapply(musicassessr::insts, psychTestR::i18n)
@@ -18,28 +22,40 @@ select_musical_instrument_page <- function() {
                 on_complete = function(state, answer, ...) {
                   language <- psychTestR::get_url_params(state)$language
 
+
                   if(language != "en") {
                     answer <- translate_from_dict(non_english_translation = answer, language = language)
                   }
 
-                  psychTestR::set_global("inst", answer, state)
+                  if(use_musicassessr_db) {
 
-                  trans_first_note <- insts_table %>%
-                    dplyr::filter(en == answer) %>%
-                    dplyr::pull(transpose)
+                    instrument_id <- musicassessrdb::instrument_name_to_id(answer)
 
-                  if(length(trans_first_note) == 0) {
-                    trans_first_note <- 0
+                    set_instrument(instrument_id, as_code_block = FALSE, state, set_range = set_range_based_on_selection)
+
+                  } else {
+                    # Note some of the following logic is used in set_instrument, so could find a way of removing redundancy
+                    psychTestR::set_global("inst", answer, state)
+
+                    trans_first_note <- insts_table %>%
+                      dplyr::filter(en == answer) %>%
+                      dplyr::pull(transpose)
+
+                    if(length(trans_first_note) == 0) {
+                      trans_first_note <- 0
+                    }
+                    clef <- insts_table %>%
+                      dplyr::filter(en == answer) %>%
+                      dplyr::pull(clef)
+                    if(length(clef) == 0) {
+                      clef <- "auto"
+                    }
+                    psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
+                    psychTestR::set_global("clef", clef, state)
                   }
-                  clef <- insts_table %>%
-                    dplyr::filter(en == answer) %>%
-                    dplyr::pull(clef)
-                  if(length(clef) == 0) {
-                    clef <- "auto"
-                  }
-                  psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
-                  psychTestR::set_global("clef", clef, state)
-                })
+
+              })
+
 }
 
 

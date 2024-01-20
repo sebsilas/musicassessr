@@ -23,17 +23,42 @@ sample_melody_in_key_v2 <- function(item_bank, inst, bottom_range, top_range, di
             is.scalar.character(inst),
             is_midi_note(bottom_range),
             is_midi_note(top_range),
-            difficulty == "easy" || difficulty == "hard",
+            difficulty %in%c("easy", "hard"),
             is.null.or(length, is.scalar.numeric))
 
   if (difficulty == "easy") {
-    key <- sample_easy_key(inst)
+    key <- easy_keys_for_inst(inst)
   } else {
-    key <- sample_hard_key(inst)
+    keys <- hard_keys_for_inst(inst_name)
   }
+
+  user_span <- top_range - bottom_range
+
+  # Sample melody
+  item_bank_subset <- itembankr::subset_item_bank(item_bank, span_max = user_span, item_length = length)
+
+  if(get_nrows(item_bank_subset) == 0) {
+    item_bank_subset <- itembankr::subset_item_bank(item_bank, item_length = length)
+  }
+  # Failure for major, span == 24, length = 15
+
+
+  melody_row <- item_bank_subset %>%
+    dplyr::slice_sample(n = 1) %>%
+    dplyr::collect()
+
+  browser()
+
+  rel_mel <- tibble::tibble(melody = list(itembankr::str_mel_to_vector(melody_row$melody) ))
 
 
 }
+
+# db_con <- musicassessrdb::musicassessr_con()
+# item_bank <- dplyr::tbl(db_con, "WJD_ngram")
+# t <- sample_melody_in_key_v2(item_bank, inst = "Tenor Saxophone", bottom_range = 48, top_range = 72, difficulty = "easy", length = NULL)
+
+
 
 #' Sample melody in key
 #'
@@ -82,7 +107,7 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
   if(get_nrows(item_bank_subset) == 0) {
     item_bank_subset <- itembankr::subset_item_bank(item_bank, item_length = length)
   }
-  # failure for major, span == 24, length = 15
+  # Failure for major, span == 24, length = 15
 
   found_melody <- FALSE
   count <- 0

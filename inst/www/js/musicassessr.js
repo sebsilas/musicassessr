@@ -702,8 +702,6 @@ function hideLoading() {
 
 function stopRecording(type) {
 
-  var db_trial_time_completed = getDateTime();
-
   setTimeout(() => {
 
     hideStopButton();
@@ -1131,7 +1129,7 @@ function upload_file_to_s3(blob){
               "stimuli": vectorToString(stimuli),
               "stimuli-durations": vectorToString(stimuli_durations),
               "trial-time-started": String(db_trial_time_started),
-              "trial-time-completed": String(db_trial_time_completed),
+              "trial-time-completed": String(getDateTime()),
               "instrument": String(db_instrument),
               "attempt": String(db_attempt),
               "item-id": String(db_item_id),

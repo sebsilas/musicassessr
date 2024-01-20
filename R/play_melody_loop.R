@@ -701,10 +701,9 @@ present_melody <- function(stimuli,
     db_vars <- if(psychTestR::get_global("musicassessr_db", state)) {
       list(
         midi_vs_audio = stringr::str_remove(stringr::str_remove(page_type, "record_"), "_page"),
-        stimuli = paste0(melody_checks$melody, collapse = ","),
+        stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
         stimuli_durations = paste0(melody_checks$durations, collapse = ","),
         trial_time_started = trial_time_started,
-        trial_time_completed = NULL,
         instrument = psychTestR::get_global("inst", state),
         attempt = number_attempts,
         item_id = rjson::fromJSON(answer_meta_data)$item_id,

@@ -383,10 +383,8 @@ present_stimuli_music_xml_file <- function(stimuli,
                                            sheet_music_start_hidden = FALSE,
                                            page_type = 'null') {
 
-  if(display_modality == "visual") {
+  if(display_modality %in% c("visual", "both")) {
     shiny::tags$div(
-      if(is.numeric(sound_only_first_melody_note)) present_stimuli_midi_notes_auditory(sound_only_first_melody_note,
-                                                                                       page_type = page_type),
       open.music.display.wrapper(stimuli, sheet_music_start_hidden = sheet_music_start_hidden)
     )
   } else {

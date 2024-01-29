@@ -739,27 +739,99 @@ melody_trials <- function(var_name,
       }
     }
 
+
+    main_trials <-  multi_page_play_melody_loop(
+      presampled_items = if(presampled) item_bank else NULL,
+      stimuli_type = "midi_notes",
+      var_name = var_name,
+      num_items = num_items_flat,
+      page_title = page_title,
+      page_text = page_text,
+      page_type = page_type,
+      get_answer = get_answer,
+      rel_to_abs_mel_function = rel_to_abs_mel_function,
+      feedback = feedback,
+      sound = sound,
+      get_trial_characteristics_function = get_trial_characteristics_function,
+      max_goes_forced = max_goes_forced,
+      max_goes = max_goes,
+      item_bank = item_bank,
+      display_modality = display_modality,
+      show_progress = show_progress,
+      sheet_music_start_hidden = sheet_music_start_hidden,
+      sound_only_first_melody_note = sound_only_first_melody_note,
+      sheet_music_id = sheet_music_id,
+      give_first_melody_note = give_first_melody_note,
+      arrhythmic = arrhythmic,
+      singing_trials = singing_trials,
+      get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+      volume_meter = volume_meter,
+      volume_meter_type = volume_meter_type,
+      melody_block_paradigm = melody_block_paradigm,
+      phase = phase,
+      first_note_message = first_note_message,
+      transposed_message = transposed_message,
+      play_first_note_button_text = play_first_note_button_text,
+      learn_test_paradigm = learn_test_paradigm)
+
+    if(review) {
+
+      # If a review block, we wrap these conditional to check there are enough review items for a given user.
+
+      main_trials <- psychTestR::join(
+
+        # Success (IF)
+        psychTestR::conditional(function(state, ...) {
+
+        res <- nrow(psychTestR::get_global(var_name, state)) >= num_examples_flat
+
+        if(res) {
+          logging::loginfo("There are enough review items.")
+        }
+
+        return(res)
+
+      }, main_trials),
+
+      # Failure (ELSE)
+
+      psychTestR::conditional(function(state, ...) {
+
+        res <- nrow(psychTestR::get_global(var_name, state)) < num_examples_flat
+
+        if(res) {
+          logging::loginfo("There are not enough review items.")
+        }
+
+        return(res)
+
+      }, psychTestR::one_button_page("Sorry, there are not enough items for you to review!"))
+
+
+      )
+
+    }
+
     psychTestR::module(module_name,
                     psychTestR::join(
 
                         # Set item bank ID in code block
                         set_item_bank_id(item_bank),
-                        # Pre-instructions, if review
+                        # Instructions depending on review
                         if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
-                         # Instructions
-                         psychTestR::one_button_page(shiny::tags$div(
-                           shiny::tags$h2(page_title),
-                           shiny::tags$p(instruction_text)
-                         ), button_text = psychTestR::i18n("Next")),
                          # Examples
-                         if(is.numeric(num_examples_flat) && num_examples_flat > 0L) {
+                         if(is.numeric(num_examples_flat) && num_examples_flat > 0L && !review) {
                            psychTestR::join(
+
+                             # Instructions
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
+
                              ## Sample example items
-                             if(!presampled) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm),
+                             if(!presampled) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+
                              ## Run examples
                              multi_page_play_melody_loop(
                                presampled_items = if(presampled) item_bank else NULL,
@@ -802,42 +874,10 @@ melody_trials <- function(var_name,
                            )
                          },
                          ## Sample items
-                        if(!presampled) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm),
-                         ## Trials
-                         multi_page_play_melody_loop(
-                           presampled_items = if(presampled) item_bank else NULL,
-                           stimuli_type = "midi_notes",
-                           var_name = var_name,
-                           num_items = num_items_flat,
-                           page_title = page_title,
-                           page_text = page_text,
-                           page_type = page_type,
-                           get_answer = get_answer,
-                           rel_to_abs_mel_function = rel_to_abs_mel_function,
-                           feedback = feedback,
-                           sound = sound,
-                           get_trial_characteristics_function = get_trial_characteristics_function,
-                           max_goes_forced = max_goes_forced,
-                           max_goes = max_goes,
-                           item_bank = item_bank,
-                           display_modality = display_modality,
-                           show_progress = show_progress,
-                           sheet_music_start_hidden = sheet_music_start_hidden,
-                           sound_only_first_melody_note = sound_only_first_melody_note,
-                           sheet_music_id = sheet_music_id,
-                           give_first_melody_note = give_first_melody_note,
-                           arrhythmic = arrhythmic,
-                           singing_trials = singing_trials,
-                           get_similarity_to_previous_melody = get_similarity_to_previous_melody,
-                           volume_meter = volume_meter,
-                           volume_meter_type = volume_meter_type,
-                           melody_block_paradigm = melody_block_paradigm,
-                           phase = phase,
-                           first_note_message = first_note_message,
-                           transposed_message = transposed_message,
-                           play_first_note_button_text = play_first_note_button_text,
-                           learn_test_paradigm = learn_test_paradigm
-                           ),
+                        if(!presampled) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+
+                        ## Trials
+                        main_trials,
 
                         # At end of block, clear this var, otherwise can lead to issues between trial blocks.
                         # Another option would be to revert everything to set_local.
@@ -851,11 +891,12 @@ melody_trials <- function(var_name,
 }
 
 
-
-handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test", learn_test_paradigm = FALSE) {
+handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function,
+                                 item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test",
+                                 learn_test_paradigm = FALSE, rhythmic = FALSE) {
 
   if(review) {
-    sample_review(num_items_flat, id = var_name)
+    sample_review(num_items_flat, id = var_name, rhythmic = rhythmic)
   } else if(learn_test_paradigm && phase == "test") {
 
     psychTestR::code_block(function(state, ...) {

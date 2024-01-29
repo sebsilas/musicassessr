@@ -699,6 +699,7 @@ present_melody <- function(stimuli,
     trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
 
     db_vars <- if(psychTestR::get_global("musicassessr_db", state)) {
+
       list(
         midi_vs_audio = stringr::str_remove(stringr::str_remove(page_type, "record_"), "_page"),
         stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
@@ -706,7 +707,7 @@ present_melody <- function(stimuli,
         trial_time_started = trial_time_started,
         instrument = psychTestR::get_global("inst", state),
         attempt = number_attempts,
-        item_id = rjson::fromJSON(answer_meta_data)$item_id,
+        item_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
         display_modality = display_modality,
         phase = psychTestR::get_global("phase", state),
         rhythmic = !arrhythmic,
@@ -876,8 +877,9 @@ grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, r
 
   melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function)
 
-  # Hack for now
-  psychTestR::set_global("answer_meta_data", tibble::tibble(), state)
+  arrhythmic <- ! melody_from_state$rhythmic
+
+  psychTestR::set_global("answer_meta_data", melody_from_state$melody_row, state)
 
   rel_melody <- melody_from_state$rel_melody
   melody_row <- melody_from_state$melody_row
@@ -950,6 +952,7 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
        melody_row = melody_row,
        abs_melody = abs_melody,
        item_number = item_number,
+       rhythmic = melody_row %>% dplyr::pull(rhythmic),
        item_id = item_id)
 }
 

@@ -195,6 +195,15 @@ get_answer_pyin <- function(input,
   # For audio with silence added at beginning:
   new_audio_file <- paste0(tools::file_path_sans_ext(audio_file), "_beginning_silence_added.wav")
 
+  count <- 0
+
+  while(!file.exists(audio_file) && count < 100) {
+    logging::loginfo("File not ready yet %s", count)
+    count <- count + 1
+  }
+
+  logging::loginfo("File exists!")
+
   # Add silence to beginning
   silence_file <- add_silence_to_audio_file(old_file = audio_file,
                             new_file = new_audio_file, # Note, we overwrite the old file

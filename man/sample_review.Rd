@@ -4,10 +4,10 @@
 \alias{sample_review}
 \title{Sample review}
 \usage{
-sample_review(num_review_items, id = "arrhythmic_melody")
+sample_review(num_review_items, id = "arrhythmic_melody", rhythmic = FALSE)
 }
 \arguments{
-\item{id}{}
+\item{rhythmic}{}
 }
 \description{
 Sample review

@@ -262,6 +262,10 @@ function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun =
 function playSeq(note_list, dur_list = null, sound = 'piano',
                  trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
 
+
+  console.log('playSeq');
+  console.log(note_list);
+
   // Empty previous stimulus trigger times buffer
   stimulus_trigger_times = [];
   Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
@@ -283,19 +287,21 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
 
   if(typeof note_list === 'number') {
     if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-    note_list = note_list -12;  // There is a bug with the piano sound where it plays an octave higher
+    note_list = note_list - 12;  // There is a bug with the piano sound where it plays an octave higher
     }
+    console.log('just before playSingleNote...');
+    console.log(note_list);
     playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun);
   } else {
-
-    // Convert to freqs
-    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
 
     // There is a bug with the piano sound where it plays an octave higher
 
     if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-        note_list = note_list.map(x => x-12);
+      note_list = note_list.map(x => x - 12);
     }
+
+    // Convert to freqs
+    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
 
     var last_note = freq_list.length;
     var count = 0;
@@ -651,13 +657,13 @@ function startRecording(type) {
 }
 
 
-function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true) {
+function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true,
+                        trigger_next_page = true, show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
-  console.log('recordUpdateUI');
-  console.log(page_type);
+  removeElementIfExists("first_note");
 
   if(showStop) {
-    showStopButton(page_type, stop_button_text);
+    showStopButton(page_type, stop_button_text, show_sheet_music, trigger_next_page, sheet_music_id);
   }
 
   if(hideRecord) {
@@ -700,57 +706,66 @@ function hideLoading() {
 }
 
 
-function stopRecording(type) {
+function stopRecording(page_type, trigger_next_page = true) {
 
   setTimeout(() => {
 
     hideStopButton();
     hideRecordingIcon();
 
-    if(type === "record_audio_page") {
+    if(page_type === "record_audio_page") {
       stopAudioRecording();
-    } else if(type === "record_midi_page") {
+    } else if(page_type === "record_midi_page") {
       stopMidiRecording();
     } else {
-      console.log('Unknown page type: ' + type);
+      console.log('Unknown page type: ' + page_type);
     }
-    next_page();
+
+    console.log('what da?');
+    console.log(trigger_next_page);
+
+    if(trigger_next_page) {
+      next_page();
+    }
 
   }, 500); /* Record a little bit more */
 
 
 }
 
-function showStopButton(type = null, stop_button_text = "Stop", show_sheet_music = false) {
+function showStopButton(page_type = null, stop_button_text = "Stop", show_sheet_music = false, trigger_next_page = true, sheet_music_id = 'sheet_music') {
 
   console.log('showStopButton');
-  console.log(type);
+  console.log(page_type);
+
 
   var stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
-    createCorrectStopButton(type, show_sheet_music);
+    createCorrectStopButton(page_type, show_sheet_music, sheet_music_id, trigger_next_page);
   }
 
 }
 
-function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
+function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = 'sheet_music', trigger_next_page = true) {
 
   console.log('createCorrectStopButton');
-  console.log(type);
+  console.log(page_type);
 
   stopButton.style.visibility = 'visible';
 
   stopButton.onclick = function () {
     if(show_happy_with_response) {
-      show_happy_with_response_message();
+      setTimeout(() => {
+        show_happy_with_response_message();
+      }, 500)
     }
     if(show_sheet_music) {
       // Because we are hiding *after* stopping i.e., after it has already been shown
       hideSheetMusic(sheet_music_id);
     }
 
-    stopRecording(type);
+    stopRecording(page_type, trigger_next_page);
   };
 }
 
@@ -800,6 +815,18 @@ function hideRecordButton() {
 
 // Utils
 
+
+function removeElementIfExists(element) {
+  var el = document.getElementById(element);
+  if(el !== null) {
+    el.parentNode.removeChild(el);
+  }
+}
+
+function removeElement(element) {
+  var el = document.getElementById(element);
+  el.parentNode.removeChild(el);
+}
 
 function getDateTime() {
   var now = new Date();
@@ -1174,3 +1201,5 @@ function upload_file_to_s3(blob){
         }
     );
 }
+
+

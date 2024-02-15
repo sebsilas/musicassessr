@@ -696,7 +696,7 @@ present_melody <- function(stimuli,
     display_modality <- if(is.null(melody_checks$display_modality)) display_modality else melody_checks$display_modality
 
     # Get trial paradigm info
-    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
+    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left)
 
     db_vars <- if(psychTestR::get_global("musicassessr_db", state)) {
 

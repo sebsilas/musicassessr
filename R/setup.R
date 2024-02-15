@@ -325,6 +325,7 @@ fake_instrument <- function() {
   psychTestR::code_block(function(state, ...) {
 
     if( is.null(psychTestR::get_global("inst", state)) && is.null(psychTestR::get_global("instrument_id", state)) ) { # Then one hasn't been specified manually via an instrument ID
+      logging::logwarn("Faking instrument...")
       psychTestR::set_global("inst", "Piano", state)
       psychTestR::set_global("transpose_visual_notation", 0L, state)
       psychTestR::set_global("clef", "auto", state)

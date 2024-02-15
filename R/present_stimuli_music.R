@@ -24,6 +24,9 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
                                                 transposed_message = psychTestR::i18n("transposed"),
                                                 play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
+  print('present_stimuli_midi_notes_auditory')
+  print(stimuli)
+
 
   durations <- sort_durations(durations, note_length, stimuli)
 
@@ -41,7 +44,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
 
   shiny::tags$div(
-    # Should the first note be shown?
+    # Should the first note be shown/played?
     show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message, transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text),
     set_melodic_stimuli(stimuli, durations),
     shiny::tags$div(id = button_area_id, play_button),
@@ -841,12 +844,18 @@ show_first_melody_note <- function(give_first_melody_note,
                                    transposed_message = psychTestR::i18n("transposed"),
                                    play_first_note_button_text = psychTestR::i18n("play_first_note")) {
 
+  if(transpose_visual_notation  != 0L) {
+    transposed_visual_note <- stimuli[1] + transpose_visual_notation
+  }
+
   if(give_first_melody_note) {
     shiny::tags$div(
+      id = "first_note",
       shiny::tags$p(first_note_message),
       if(transpose_visual_notation != 0L) shiny::tags$p(transposed_message),
-      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(stimuli[1] + transpose_visual_notation, clef = clef, id = "firstMelodyNoteVisual"),
-      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = play_first_note_button_text, play_button_id = audio_play_button_id)
+      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(transposed_visual_note, clef = clef, id = "firstMelodyNoteVisual"),
+      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = play_first_note_button_text,
+                                          play_button_id = audio_play_button_id, transpose_visual_notation = 0L)
     )
   } else {
     return(" ")

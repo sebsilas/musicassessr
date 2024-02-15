@@ -142,7 +142,9 @@ default_range <- function(instrument) {
   } else if(nrow(inst) > 1) {
     stop("Instrument not unique")
   } else {
-    list(bottom_range = inst$low_note, top_range = inst$high_note)
+    list(bottom_range = inst$low_note,
+         top_range = inst$high_note,
+         clef = inst$clef)
   }
 
 }

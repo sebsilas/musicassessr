@@ -113,6 +113,9 @@ present_stimuli <- function(stimuli,
                             db_vars = NULL,
                             use_musicassessr_db = FALSE, ...) {
 
+  print('dadadada')
+  print(clef)
+
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
             is.character(answer_meta_data) | is.data.frame(answer_meta_data),

@@ -30,10 +30,14 @@ PBET_standalone(num_items = list("interval_perception" = 0L,
                                                    "key_hard" = 1L),
                                  "wjd_audio" = list("key_easy" = 0L,
                                                     "key_hard" = 0L)),
-                skip_setup = F,
+                skip_setup = 'except_microphone',
                 SNR_test = FALSE,
+                use_musicassessr_db = TRUE,
                 concise_wording = TRUE,
-                app_name = "PBET")
+                app_name = "PBET",
+                instrument_id = 7L,
+                user_id = 1L,
+                max_goes = Inf)
 
 
 # shiny::runApp("test_apps/PBET/app.R")

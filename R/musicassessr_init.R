@@ -36,7 +36,6 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
         # Init the DB connection (and return it for immediate use)
         db_con <- musicassessrdb::connect_to_db_state(state)
       }
-
       session_info <- psychTestR::get_session_info(state, complete = FALSE)
       psychTestR_session_id <- session_info$p_id
       time_completed <- NULL # The test is beginning

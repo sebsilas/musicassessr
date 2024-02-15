@@ -8,6 +8,7 @@
 #' @param stop_recording_after_x_seconds
 #' @param instantiate_midi
 #' @param midi_device
+#' @param attempts_left
 #'
 #' @return
 #' @export
@@ -18,7 +19,8 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
                      call_and_response_end = c("manual", "auto"),
                      stop_recording_after_x_seconds = NULL,
                      instantiate_midi = FALSE,
-                     midi_device = NULL) {
+                     midi_device = NULL,
+                     attempts_left = 1L) {
 
   # call_and_response_end if "manual", user clicks stop, if "auto" - automatically triggered
 
@@ -32,7 +34,8 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     call_and_response_end %in% c("manual", "auto"),
     is.null.or(stop_recording_after_x_seconds, is.scalar.numeric),
     is.scalar.logical(instantiate_midi),
-    is.null.or(midi_device, is.scalar.numeric)
+    is.null.or(midi_device, is.scalar.numeric),
+    is.numeric(attempts_left)
   )
 
   if(paradigm_type == "simultaneous_recall") {
@@ -41,9 +44,9 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
   } else if(paradigm_type == "call_and_response") {
     trigger_start_of_stimulus_fun <- NA
       if(call_and_response_end == "manual") {
-        trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type)
+        trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, attempts_left = attempts_left)
       } else if(call_and_response_end == "auto") {
-        trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds)
+        trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds, attempts_left = attempts_left)
       } else {
         stop('call_and_response_end not understood')
       }
@@ -63,7 +66,10 @@ record_triggers <- function(record = c("start", "stop"),
                             stop_recording_after_x_seconds = NULL,
                             show_stop = TRUE,
                             instantiate_midi = FALSE,
-                            midi_device = NULL) {
+                            midi_device = NULL,
+                            attempts_left = 1L,
+                            show_sheet_music = FALSE,
+                            sheet_music_id = 'sheet_music') {
 
 
   record <- match.arg(record)
@@ -75,18 +81,23 @@ record_triggers <- function(record = c("start", "stop"),
             is.null.or(stop_recording_after_x_seconds, is.scalar.numeric),
             is.scalar.logical(show_stop),
             is.scalar.logical(instantiate_midi),
-            is.null.or(midi_device, is.scalar.character))
+            is.null.or(midi_device, is.scalar.character),
+            is.numeric(attempts_left),
+            is.scalar.logical(show_sheet_music),
+            is.scalar.character(sheet_music_id)
+            )
 
   if(instantiate_midi && is.null(midi_device)) {
     stop("If instantiate_midi is TRUE, midi_device must be a character string")
   }
 
-  show_stop <- if(show_stop) "true" else "false"
+  show_stop <- TRUE_to_js_true(show_stop)
+  trigger_next_page <- TRUE_to_js_true(!(attempts_left > 1L))
 
   funs <- if(record == "start") {
-    paste0("startRecording('", page_type, "'); recordUpdateUI('", page_type, "', ", show_stop, "); hidePlayButton();")
+    paste0("startRecording('", page_type, "'); recordUpdateUI('", page_type, "', ", show_stop, ", true, true, ", trigger_next_page, ", ", TRUE_to_js_true(show_sheet_music), ", '", sheet_music_id, "', ); hidePlayButton();")
   } else if(record == "stop") {
-    paste0("stopRecording('", page_type, "'); ")
+    paste0("stopRecording('", page_type, "', ", trigger_next_page, "); ")
   } else ""
 
   stop_recording_after <- if(is.null(stop_recording_after_x_seconds)) NULL else {

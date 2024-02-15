@@ -4,10 +4,10 @@
 \alias{set_instrument_range}
 \title{Set a dummy range (to avoid having to manually set in the test)}
 \usage{
-set_instrument_range(bottom_range = 48, top_range = 72)
+set_instrument_range(bottom_range = 48, top_range = 72, clef = "auto")
 }
 \arguments{
-\item{top_range}{}
+\item{clef}{}
 }
 \description{
 Set a dummy range (to avoid having to manually set in the test)

@@ -846,6 +846,8 @@ show_first_melody_note <- function(give_first_melody_note,
 
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation
+  } else {
+    transposed_visual_note <- stimuli[1]
   }
 
   if(give_first_melody_note) {

@@ -286,19 +286,8 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
   }
 
   if(typeof note_list === 'number') {
-    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-    note_list = note_list - 12;  // There is a bug with the piano sound where it plays an octave higher
-    }
-    console.log('just before playSingleNote...');
-    console.log(note_list);
     playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun);
   } else {
-
-    // There is a bug with the piano sound where it plays an octave higher
-
-    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-      note_list = note_list.map(x => x - 12);
-    }
 
     // Convert to freqs
     var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
@@ -466,13 +455,6 @@ function toneJSPlay (midi, start_note, end_note, transpose, id, sound, bpm = 90)
         notes_list.forEach(note => {
 
           transposed_note = Tone.Frequency(note.name).transpose(transpose);
-
-          // correct bug where piano sound plays an octave too high
-
-          if (sound === "piano") {
-            transposed_note = transposed_note.transpose(-12);
-          }
-
 
           triggerNote(sound, transposed_note, note.duration, note.time + now);
 

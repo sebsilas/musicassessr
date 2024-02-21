@@ -84,7 +84,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(!is.null(stimuli)) shiny::tags$div(stimuli),
 
-      present_record_button(show_record_button, page_type, record_button_text, stop_button_text, show_sheet_music_after_record),
+      present_record_button(show_record_button, page_type, record_button_text, stop_button_text, show_sheet_music_after_record, stop_recording_automatically_after_ms = record_duration * 1000),
 
       if(page_type == "record_audio_page") loading(),
 
@@ -235,7 +235,19 @@ present_record_button <- function(show_record_button,
                                   record_button_text =  psychTestR::i18n("Record"),
                                   stop_button_text = psychTestR::i18n("Stop"),
                                   show_sheet_music_after_record = FALSE,
-                                  sheet_music_id = "sheet_music") {
+                                  sheet_music_id = "sheet_music",
+                                  stop_recording_automatically_after_ms = NULL) {
+
+  stopifnot(
+    is.null.or(stop_recording_automatically_after_ms, is.numeric)
+  )
+
+  if(is.null(stop_recording_automatically_after_ms))  {
+    stop_recording_automatically_after_ms <- "null"
+    show_stop <-  TRUE_to_js_true(TRUE)
+  } else {
+    show_stop <-  TRUE_to_js_true(FALSE)
+  }
 
 
   shiny::tags$div(id = "button_area",
@@ -243,8 +255,8 @@ present_record_button <- function(show_record_button,
     shiny::tags$button(record_button_text, id = "recordButton", class = "btn btn-default action-button", style = if(show_record_button) "visibility: visible;" else "visibility: hidden"),
     shiny::tags$button(stop_button_text, id = "stopButton", class = "btn btn-default action-button", style = "visibility: hidden;"),
     shiny::tags$script(shiny::HTML(paste0('document.getElementById("recordButton").addEventListener("click", function() {
-                            startRecording(type = \"', page_type, '\", stop_button_text = \"', stop_button_text, '\");
-                            recordUpdateUI(type = \"', page_type, '\");',
+                            startRecording(type = \"', page_type, '\", ', stop_recording_automatically_after_ms, ');
+                            recordUpdateUI(type = \"', page_type, '\", ', show_stop, ');',
                           if(show_sheet_music_after_record) paste0("showSheetMusic('", sheet_music_id, "');") else "",
                             '});'))),
   )

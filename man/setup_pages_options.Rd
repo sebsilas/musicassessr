@@ -13,7 +13,7 @@ setup_pages_options(
   get_user_info = TRUE,
   demo = FALSE,
   get_instrument_range = FALSE,
-  absolute_url = "https://www.adaptiveeartraining.com",
+  absolute_url = character(),
   select_instrument = FALSE,
   get_instrument_range_musical_notation = FALSE,
   adjust_range = FALSE,

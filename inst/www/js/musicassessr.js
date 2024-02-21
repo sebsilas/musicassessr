@@ -407,86 +407,6 @@ function bind_notes_and_durations(notes, durations) {
     return(result);
 }
 
-
-/* Deprecated?
-
-function toneJSPlay (midi, start_note, end_note, transpose, id, sound, bpm = 90) {
-
-    // change tempo to whatever defined in R
-    adjusted_tempo = midi;
-    adjusted_tempo.header.tempos.bpm = bpm;
-    adjusted_tempo.header.tempos[0].bpm = bpm;
-
-    var now = Tone.now() + 0.5;
-    var synths = [];
-    adjusted_tempo.tracks.forEach(track => {
-
-        if (end_note === "end") {
-            notes_list = track.notes;
-
-            // console.log(track.notes); // need to test full notes
-            dur = track['duration'] * 1000;
-
-        } else {
-            // reduced note list
-            var dur = 0;
-            if(end_note === "end") {
-              end_note = notes_list = track['notes'].length;
-            }
-            notes_list = track['notes'].slice(start_note, end_note);
-            // get duration of contracted notes list
-            notes_list.forEach(el => {
-                   dur = dur + el['duration'];
-                })
-            dur = dur * 1000;
-
-        }
-
-        setTimeout(() => {
-          recordAndStop(null, true, hidePlay, id); }, dur);
-
-        //create a synth for each track
-        const synth = new Tone.PolySynth(2, Tone.Synth, synthParameters).toMaster();
-        synths.push(synth);
-
-        // pop end note message to end
-
-        //schedule all of the events
-        notes_list.forEach(note => {
-
-          transposed_note = Tone.Frequency(note.name).transpose(transpose);
-
-          triggerNote(sound, transposed_note, note.duration, note.time + now);
-
-        });
-
-        // containers to pass to shiny
-        shiny_notes = [];
-        shiny_ticks = [];
-        shiny_durations = [];
-        shiny_durationTicks = [];
-
-        notes_list.forEach(note => {
-          shiny_notes.push(note.midi);
-          shiny_ticks.push(note.ticks);
-          shiny_durations.push(note.duration);
-          shiny_durationTicks.push(note.durationTicks);
-        });
-
-        // round the durations
-        shiny_durations_round = [];
-        shiny_durations.forEach(el => shiny_durations_round.push(el.toFixed(2)));
-
-        Shiny.setInputValue("stimuli_pitch", JSON.stringify(shiny_notes));
-        Shiny.setInputValue("stimuli_ticks", JSON.stringify(shiny_ticks));
-        Shiny.setInputValue("stimuli_durations", JSON.stringify(shiny_durations_round));
-        Shiny.setInputValue("stimuli_durationTicks", JSON.stringify(shiny_durationTicks));
-
-    });
-
-}
-*/
-
 async function midiToToneJS (url, note_no, hidePlay, transpose, id, sound, bpm) {
   // load a midi file in the browser
   const midi = await Midi.fromUrl(url).then(midi => {
@@ -611,7 +531,7 @@ function hideAudioFilePlayer() {
 
 
 
-function startRecording(type) {
+function startRecording(type, stop_recording_automatically_after_ms = null) {
 
 
    // Initiate startTime
@@ -633,8 +553,15 @@ function startRecording(type) {
   startTime2 = new Date().getTime();
   Shiny.setInputValue('trial_start_time2', startTime2);
 
-  console.log('Start time 2: ');
-  console.log(startTime2);
+  console.log('stop_recording_automatically_after_ms');
+  console.log(stop_recording_automatically_after_ms);
+
+  if(typeof(stop_recording_automatically_after_ms) === 'number') {
+    setTimeout(() => {
+      stopRecording(type, trigger_next_page = true)
+      }, stop_recording_automatically_after_ms);
+  }
+
 
 }
 
@@ -873,9 +800,6 @@ function getUserInfo () {
 }
 
 function testFeatureCapability() {
-
-    // console.log(testMediaRecorder());
-    // console.log(Modernizr.webaudio);
 
     if (Modernizr.webaudio & testMediaRecorder()) {
         console.log("This browser has the necessary features");

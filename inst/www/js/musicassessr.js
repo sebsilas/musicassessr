@@ -284,11 +284,6 @@ function playSeq(id, note_list, dur_list = null, sound = 'piano',
   // Make sure not playing
   Tone.Transport.stop();
 
-  // Dispose of last pattern
-  if(pattern) {
-    pattern.dispose();
-  }
-
   // Connect sound
   connect_sound(sound);
 
@@ -303,6 +298,12 @@ function playSeq(id, note_list, dur_list = null, sound = 'piano',
   if(typeof note_list === 'number') {
     playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun);
   } else {
+
+    // Dispose of last pattern; but this only needs to happen for sequences, not single notes
+    if(pattern) {
+      pattern.dispose();
+    }
+
 
     // Convert to freqs
     var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());

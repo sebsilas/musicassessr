@@ -264,13 +264,19 @@ function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun =
 
 
 
-function playSeq(note_list, dur_list = null, sound = 'piano',
+function playSeq(id, note_list, dur_list = null, sound = 'piano',
                  trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
 
 
   console.log('playSeq');
+  console.log('id');
+  console.log(id);
   console.log(note_list);
-
+  // Hide play buttons to avoid any double stimuli playing
+  if(id !== 'firstMelodyPlay') {
+    hidePlayButton();
+    hidePlayButton('firstMelodyPlay');
+  }
   // Empty previous stimulus trigger times buffer
   stimulus_trigger_times = [];
   Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
@@ -528,7 +534,8 @@ function hide_happy_with_response_message() {
 
 
 function hidePlayButton(play_button_id = "playButton") {
-  // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
+  console.log('hidePlayButton!!');
+  // Make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var playButton = document.getElementById(play_button_id);
   if (playButton !== null) {
     playButton.style.display = "none";

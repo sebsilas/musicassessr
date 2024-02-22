@@ -39,7 +39,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
   trigger_start_of_stimulus_fun <- NA_to_js_null(trigger_start_of_stimulus_fun)
   trigger_end_of_stimulus_fun <- NA_to_js_null(trigger_end_of_stimulus_fun)
 
-  js_script <- paste0("playSeq(",rjson::toJSON(stimuli),", ", rjson::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
+  js_script <- paste0("playSeq(\'", play_button_id, "\', ", rjson::toJSON(stimuli),", ", rjson::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
 
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
 

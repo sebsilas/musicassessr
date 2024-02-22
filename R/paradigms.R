@@ -95,7 +95,7 @@ record_triggers <- function(record = c("start", "stop"),
   trigger_next_page <- TRUE_to_js_true(!(attempts_left > 1L))
 
   funs <- if(record == "start") {
-    paste0("startRecording('", page_type, "'); recordUpdateUI('", page_type, "', ", show_stop, ", true, true, ", trigger_next_page, ", ", TRUE_to_js_true(show_sheet_music), ", '", sheet_music_id, "', ); hidePlayButton();")
+    paste0("startRecording('", page_type, "'); recordUpdateUI('", page_type, "', ", show_stop, ", true, true, ", trigger_next_page, ", ", TRUE_to_js_true(show_sheet_music), ", '", sheet_music_id, "', ); ")
   } else if(record == "stop") {
     paste0("stopRecording('", page_type, "', ", trigger_next_page, "); ")
   } else ""
@@ -114,7 +114,6 @@ record_triggers <- function(record = c("start", "stop"),
   wrap_js_fun_body(funs)
 
 }
-
 
 
 #' Helper to wrap some JS code in a function

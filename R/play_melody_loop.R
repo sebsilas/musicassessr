@@ -952,7 +952,7 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
        melody_row = melody_row,
        abs_melody = abs_melody,
        item_number = item_number,
-       rhythmic = melody_row %>% dplyr::pull(rhythmic),
+       rhythmic = if(is.null(melody_row$rhythmic)) NA else dplyr::pull(melody_row, rhythmic),
        item_id = item_id)
 }
 

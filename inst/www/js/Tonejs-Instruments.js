@@ -10,8 +10,8 @@ console.log("loaded Tonejs-instruments.js");
 var SampleLibrary = {
     minify: false,
     ext: '.[mp3|ogg]', // use setExt to change the extensions on all files // do not change this variable //
-    baseUrl: '/samples/',
-    list: ['bass-electric','bassoon','cello','clarinet','contrabass','flute','french-horn','guitar-acoustic','guitar-electric','guitar-nylon', 'harmonium','harp','organ','piano','saxophone','trombone','trumpet','tuba','violin','xylophone'],
+    baseUrl: 'https://adaptiveeartraining.com/assets/audio/samples/',
+    list: ['bass-electric','bassoon','cello','clarinet','contrabass','flute','french-horn','guitar-acoustic','guitar-electric','guitar-nylon', 'harmonium','harp','organ','piano', 'rhythm', 'saxophone','trombone','trumpet','tuba','violin','xylophone'],
     onload: null,
 
     setExt: function (newExt) {
@@ -526,6 +526,10 @@ var SampleLibrary = {
         'G#4': 'Gs4.[mp3|ogg]',
         'G#5': 'Gs5.[mp3|ogg]',
         'G#6': 'Gs6.[mp3|ogg]'
+    },
+
+    'rhythm': {
+        'C4': 'wood_block.mp3',
     },
 
     'saxophone': {

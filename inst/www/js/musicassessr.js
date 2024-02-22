@@ -31,7 +31,7 @@ var file_url;
 var onsets_noteon_timecode = [];
 var stimulus_trigger_times = [];
 var upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
-
+var pattern; // the melodic pattern being played. We only want one to be played at once.
 
 // // Trial info
 
@@ -221,7 +221,12 @@ function playTones (freq_list) {
     freq_list = freq_list.map(x => Tone.Frequency(x));
     last_freq = freq_list[freq_list.length - 1];
 
-    var pattern = new Tone.Sequence(function(time, freq){
+    // Dispose of last pattern
+    if(pattern) {
+      pattern.dispose();
+    }
+
+    pattern = new Tone.Sequence(function(time, freq){
 
     synth.triggerAttackRelease(freq, 0.5);
 
@@ -272,7 +277,11 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
 
   // Make sure not playing
   Tone.Transport.stop();
-  pattern = null;
+
+  // Dispose of last pattern
+  if(pattern) {
+    pattern.dispose();
+  }
 
   // Connect sound
   connect_sound(sound);
@@ -298,7 +307,7 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
     var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
     notesAndDurations = notesAndDurations.map(timeFromDurations);
 
-    var pattern = new Tone.Part((time, value) => {
+    pattern = new Tone.Part((time, value) => {
                 // the value is an object which contains both the note and the velocity
 
                 triggerNote(sound, value.note, 0.50);
@@ -323,6 +332,8 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
 }
 
 
+/*
+
 function playSeqArrhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
 
   console.log('playSeqArrhythmic');
@@ -331,7 +342,7 @@ function playSeqArrhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fu
   var count = 0;
 
 
-  var pattern = new Tone.Sequence(function(time, note){
+  pattern = new Tone.Sequence(function(time, note){
 
       triggerNote(sound, note, 0.50);
 
@@ -360,7 +371,7 @@ function playSeqRhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun 
   var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
   notesAndDurations = notesAndDurations.map(timeFromDurations);
 
-  var pattern = new Tone.Part((time, value) => {
+  pattern = new Tone.Part((time, value) => {
               // the value is an object which contains both the note and the velocity
 
               triggerNote(sound, value.note, 0.50);
@@ -379,6 +390,7 @@ function playSeqRhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun 
   Tone.Transport.start();
 }
 
+*/
 
 function stopSeq(pattern) {
   pattern.stop();

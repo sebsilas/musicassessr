@@ -27,14 +27,14 @@ set_instrument_range <- function(bottom_range = 48, top_range = 72, clef = "auto
 #' @export
 #'
 #' @examples
-test_recording_app <- function(copy_audio_to = NULL) {
+test_recording_app <- function() {
   psychTestR::make_test(
     psychTestR::new_timeline(
       psychTestR::join(
         musicassessr::musicassessr_init(),
         microphone_calibration_page(),
 
-        musicassessr::record_audio_block(no_pages = 10, copy_audio_to = copy_audio_to),
+        musicassessr::record_audio_block(no_pages = 10),
 
         psychTestR::final_page("Finished!")
       ), dict = musicassessr_dict),

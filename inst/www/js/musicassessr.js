@@ -569,6 +569,10 @@ function startRecording(type, stop_recording_automatically_after_ms = null) {
 function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true,
                         trigger_next_page = true, show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
+  console.log('recordUpdate');
+  console.log('showStop');
+  console.log(showStop);
+
   removeElementIfExists("first_note");
 
   if(showStop) {

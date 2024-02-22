@@ -242,13 +242,12 @@ present_record_button <- function(show_record_button,
     is.null.or(stop_recording_automatically_after_ms, is.numeric)
   )
 
-  if(is.null(stop_recording_automatically_after_ms))  {
+  if(length(stop_recording_automatically_after_ms) == 0)  {
     stop_recording_automatically_after_ms <- "null"
     show_stop <-  TRUE_to_js_true(TRUE)
   } else {
     show_stop <-  TRUE_to_js_true(FALSE)
   }
-
 
   shiny::tags$div(id = "button_area",
     shiny::tags$script(paste0("var stop_button_text = \"", stop_button_text, "\"")),

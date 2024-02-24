@@ -580,6 +580,8 @@ wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "mid
 
   if (clef == "treble") {
     clef <- "<sign>G</sign><line>2</line>"
+  } else if (clef == "alto") {
+    clef <- "<sign>C</sign><line>3</line>"
   } else if (clef == "bass") {
     clef <- "<sign>F</sign><line>4</line>"
   } else {

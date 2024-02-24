@@ -2,12 +2,15 @@
 #'
 #' @param use_musicassessr_db
 #' @param set_range_based_on_selection
+#' @param include_other_in_dropdown
 #'
 #' @return
 #' @export
 #'
 #' @examples
-select_musical_instrument_page <- function(use_musicassessr_db = FALSE, set_range_based_on_selection = FALSE) {
+select_musical_instrument_page <- function(use_musicassessr_db = FALSE,
+                                           set_range_based_on_selection = FALSE,
+                                           include_other_in_dropdown = FALSE) {
 
 
   # do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
@@ -17,9 +20,10 @@ select_musical_instrument_page <- function(use_musicassessr_db = FALSE, set_rang
                 prompt = psychTestR::i18n("instrument_selection_message"),
                 next_button_text = psychTestR::i18n("Next"),
                 choices = as.vector(unlist(insts_dict)),
-                alternative_choice = TRUE,
+                alternative_choice = include_other_in_dropdown,
                 alternative_text = psychTestR::i18n("other_please_state"),
                 on_complete = function(state, answer, ...) {
+
                   language <- psychTestR::get_url_params(state)$language
 
 

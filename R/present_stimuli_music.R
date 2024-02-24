@@ -24,10 +24,6 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
                                                 transposed_message = psychTestR::i18n("transposed"),
                                                 play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
-  print('present_stimuli_midi_notes_auditory')
-  print(stimuli)
-
-
   durations <- sort_durations(durations, note_length, stimuli)
 
   if(sound_only_first_melody_note) {

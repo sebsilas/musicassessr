@@ -6,11 +6,12 @@
 \usage{
 select_musical_instrument_page(
   use_musicassessr_db = FALSE,
-  set_range_based_on_selection = FALSE
+  set_range_based_on_selection = FALSE,
+  include_other_in_dropdown = FALSE
 )
 }
 \arguments{
-\item{set_range_based_on_selection}{}
+\item{include_other_in_dropdown}{}
 }
 \description{
 Page to select what instrument the participant is using

@@ -664,7 +664,13 @@ present_melody <- function(stimuli,
     transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
     transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
     clef <- psychTestR::get_global("clef", state)
+
+    print(clef)
+
     clef <- if(is.null(clef)) "auto" else clef
+
+    print('here clef..')
+    print(clef)
 
     if(length(answer_meta_data) < 1L) {
       answer_meta_data <- psychTestR::get_global("answer_meta_data", state)

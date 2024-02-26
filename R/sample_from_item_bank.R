@@ -300,6 +300,10 @@ sample_from_user_range <- function(no_to_sample) {
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
+
+    print('span...')
+    print(span)
+
     span_warning(span)
 
     if(is.null(span) | span < 10) {

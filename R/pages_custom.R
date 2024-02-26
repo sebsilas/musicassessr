@@ -41,19 +41,30 @@ select_musical_instrument_page <- function(use_musicassessr_db = FALSE,
                     # Note some of the following logic is used in set_instrument, so could find a way of removing redundancy
                     psychTestR::set_global("inst", answer, state)
 
-                    trans_first_note <- insts_table %>%
-                      dplyr::filter(en == answer) %>%
+                    inst <- insts_table %>%
+                      dplyr::filter(en == answer)
+
+                    trans_first_note <- inst %>%
                       dplyr::pull(transpose)
 
                     if(length(trans_first_note) == 0) {
                       trans_first_note <- 0
                     }
-                    clef <- insts_table %>%
-                      dplyr::filter(en == answer) %>%
+                    clef <- inst %>%
                       dplyr::pull(clef)
+
                     if(length(clef) == 0) {
                       clef <- "auto"
                     }
+
+                    span <- inst$high_note - inst$low_note
+
+                    logging::loginfo("Setting span... %s", span)
+
+                    psychTestR::set_global("bottom_range", inst$low_note, state)
+                    psychTestR::set_global("top_range", inst$high_note, state)
+                    psychTestR::set_global("range", c(inst$low_note, inst$high_note), state)
+                    psychTestR::set_global("span", span, state)
                     psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
                     psychTestR::set_global("clef", clef, state)
                   }

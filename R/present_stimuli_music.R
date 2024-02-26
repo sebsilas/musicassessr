@@ -24,6 +24,9 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
                                                 transposed_message = psychTestR::i18n("transposed"),
                                                 play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
+  print('present_stimuli_midi_notes_auditory')
+  print(clef)
+
   durations <- sort_durations(durations, note_length, stimuli)
 
   if(sound_only_first_melody_note) {
@@ -95,6 +98,9 @@ present_stimuli_midi_notes_visual <- function(stimuli,
                                               audio_play_button_id = "playButton",
                                               sheet_music_start_hidden = FALSE,
                                               durations = NULL) {
+
+  print('present_stimuli_midi_notes_visual')
+  print(clef)
 
   if(transpose_visual_notation != 0) {
     stimuli <- stimuli + transpose_visual_notation
@@ -169,7 +175,7 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = 
                                                                  trigger_start_of_stimulus_fun = trigger_start_of_stimulus_fun,
                                                                  trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun,
                                                                  first_note_message = first_note_message,
-                                                                 transposed_message = transposed_message,
+                                                                 transposed_message = transposed_message, clef = clef,
                                                                  play_first_note_button_text = play_first_note_button_text)
 
   return_stimuli_visual <- present_stimuli_midi_notes_visual(stimuli = stimuli, note_length = note_length, asChord = asChord, ascending = ascending,
@@ -197,6 +203,9 @@ present_stimuli_midi_notes <- function(stimuli,
                                        transposed_message = psychTestR::i18n("transposed"),
                                        play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
+  print('present_stimuli_midi_notes')
+  print(clef)
+
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
                                                           play_button_text = play_button_text,
@@ -211,7 +220,7 @@ present_stimuli_midi_notes <- function(stimuli,
                                                           trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun,
                                                           first_note_message = first_note_message,
                                                           transposed_message = transposed_message,
-                                                          play_first_note_button_text = play_first_note_button_text, ...)
+                                                          play_first_note_button_text = play_first_note_button_text, clef = clef, ...)
 
   } else if (display_modality == "visual") {
     return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
@@ -574,6 +583,9 @@ display_previous_answer_music_notation_pitch_class_aws <- function() {
 
 wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4L) {
 
+  print('wrap.xml.template')
+  print(clef)
+
   mean_notes <- get_mean_of_notes(notes, type, octave)
 
   notes <- format.notes(type = type, notes = notes, asChord = asChord, octave = octave)
@@ -842,6 +854,9 @@ show_first_melody_note <- function(give_first_melody_note,
                                    transposed_message = psychTestR::i18n("transposed"),
                                    play_first_note_button_text = psychTestR::i18n("play_first_note")) {
 
+  print('show_first_melody_note')
+  print(clef)
+
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation
   } else {
@@ -854,7 +869,7 @@ show_first_melody_note <- function(give_first_melody_note,
       shiny::tags$p(first_note_message),
       if(transpose_visual_notation != 0L) shiny::tags$p(transposed_message),
       if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(transposed_visual_note, clef = clef, id = "firstMelodyNoteVisual"),
-      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = play_first_note_button_text,
+      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = play_first_note_button_text, clef = clef,
                                           play_button_id = audio_play_button_id, transpose_visual_notation = 0L)
     )
   } else {

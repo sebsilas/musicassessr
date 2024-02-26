@@ -24,9 +24,6 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
                                                 transposed_message = psychTestR::i18n("transposed"),
                                                 play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
-  print('present_stimuli_midi_notes_auditory')
-  print(clef)
-
   durations <- sort_durations(durations, note_length, stimuli)
 
   if(sound_only_first_melody_note) {
@@ -98,9 +95,6 @@ present_stimuli_midi_notes_visual <- function(stimuli,
                                               audio_play_button_id = "playButton",
                                               sheet_music_start_hidden = FALSE,
                                               durations = NULL) {
-
-  print('present_stimuli_midi_notes_visual')
-  print(clef)
 
   if(transpose_visual_notation != 0) {
     stimuli <- stimuli + transpose_visual_notation
@@ -203,8 +197,6 @@ present_stimuli_midi_notes <- function(stimuli,
                                        transposed_message = psychTestR::i18n("transposed"),
                                        play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
 
-  print('present_stimuli_midi_notes')
-  print(clef)
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_midi_notes_auditory(stimuli = stimuli, note_length = note_length, sound = sound,
@@ -583,9 +575,6 @@ display_previous_answer_music_notation_pitch_class_aws <- function() {
 
 wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4L) {
 
-  print('wrap.xml.template')
-  print(clef)
-
   mean_notes <- get_mean_of_notes(notes, type, octave)
 
   notes <- format.notes(type = type, notes = notes, asChord = asChord, octave = octave)
@@ -853,9 +842,6 @@ show_first_melody_note <- function(give_first_melody_note,
                                    first_note_message = psychTestR::i18n("first_note_is"),
                                    transposed_message = psychTestR::i18n("transposed"),
                                    play_first_note_button_text = psychTestR::i18n("play_first_note")) {
-
-  print('show_first_melody_note')
-  print(clef)
 
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation

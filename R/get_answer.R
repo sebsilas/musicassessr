@@ -499,7 +499,8 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   type <- match.arg(type)
 
-  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(rjson::fromJSON(input$stimuli_durations))) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(input$stimuli_durations)) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(stimuli_durations))  NA else stimuli_durations
 
   if(type == "midi") {
 

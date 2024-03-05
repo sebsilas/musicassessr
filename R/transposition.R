@@ -47,8 +47,6 @@ sample_melody_in_key_v2 <- function(item_bank, inst, bottom_range, top_range, di
     dplyr::slice_sample(n = 1) %>%
     dplyr::collect()
 
-  browser()
-
   rel_mel <- tibble::tibble(melody = list(itembankr::str_mel_to_vector(melody_row$melody) ))
 
 

@@ -38,6 +38,7 @@
 #' @param transposed_message
 #' @param play_first_note_button_text
 #' @param learn_test_paradigm
+#' @param sample_item_bank_via_api
 #'
 #' @return
 #' @export
@@ -78,7 +79,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         first_note_message = psychTestR::i18n("first_note_is"),
                                         transposed_message = psychTestR::i18n("transposed"),
                                         play_first_note_button_text = psychTestR::i18n("play_first_note"),
-                                        learn_test_paradigm = FALSE) {
+                                        learn_test_paradigm = FALSE,
+                                        sample_item_bank_via_api = FALSE) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
@@ -119,7 +121,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.character(first_note_message),
             is.scalar.character(transposed_message),
             is.scalar.character(play_first_note_button_text),
-            is.scalar.logical(learn_test_paradigm)
+            is.scalar.logical(learn_test_paradigm),
+            is.scalar.logical(sample_item_bank_via_api)
             )
 
   if(is.null(presampled_items) && is.infinite(num_items)) {
@@ -170,7 +173,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                            transposed_message,
                                            play_first_note_button_text,
                                            reactive_melody_no = TRUE,
-                                           learn_test_paradigm),
+                                           learn_test_paradigm,
+                                           sample_item_bank_via_api),
 
       psychTestR::NAFC_page(label = "finished_user_determined_loop",
                             choices = c("Yes", "No"),
@@ -189,6 +193,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 
 
   } else if(is.null(presampled_items) && ! is.infinite(num_items)) {
+
+    if(sample_item_bank_via_api) {
+      start_from_trial_no <- 1L # We apply this a a lower case
+    }
 
     # This will return a sequence of test items
     items <- purrr::map(start_from_trial_no:num_items, function(melody_no) {
@@ -229,7 +237,9 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  transposed_message,
                                  play_first_note_button_text,
                                  reactive_melody_no = FALSE,
-                                 learn_test_paradigm)
+                                 learn_test_paradigm,
+                                 sample_item_bank_via_api,
+                                 if(sample_item_bank_via_api) start_from_trial_no else NULL)
     })
 
 
@@ -275,7 +285,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  transposed_message,
                                  play_first_note_button_text,
                                  reactive_melody_no = FALSE,
-                                 learn_test_paradigm)
+                                 learn_test_paradigm,
+                                 sample_item_bank_via_api)
 
     })
 
@@ -330,7 +341,9 @@ construct_play_melody_page <- function(melody = NULL,
                                        transposed_message,
                                        play_first_note_button_text,
                                        reactive_melody_no = FALSE,
-                                       learn_test_paradigm = FALSE) {
+                                       learn_test_paradigm = FALSE,
+                                       sample_item_bank_via_api = FALSE,
+                                       start_from_trial_no = NULL) {
 
 
   page <- play_melody_loop(melody_no = melody_no,
@@ -370,7 +383,9 @@ construct_play_melody_page <- function(melody = NULL,
                            play_first_note_button_text = play_first_note_button_text,
                            skip_sampling_and_take_from_last_melody = melody_block_paradigm == "sing_melody_first",
                            reactive_melody_no = reactive_melody_no,
-                           learn_test_paradigm = learn_test_paradigm)
+                           learn_test_paradigm = learn_test_paradigm,
+                           sample_item_bank_via_api = sample_item_bank_via_api,
+                           start_from_trial_no = start_from_trial_no)
                            # In the case of putting a sing melody page first, we do the sampling on the sing page (in code below, but which chronogically comes first); then we skip sampling on the "real" (instrument) version, and just use the sampled melody from the sing page
 
   if (melody_block_paradigm == "sing_melody_first") {
@@ -409,7 +424,9 @@ construct_play_melody_page <- function(melody = NULL,
                                   transposed_message = transposed_message,
                                   play_first_note_button_text = play_first_note_button_text,
                                   reactive_melody_no = reactive_melody_no,
-                                  learn_test_paradigm = learn_test_paradigm)
+                                  learn_test_paradigm = learn_test_paradigm,
+                                  sample_item_bank_via_api = sample_item_bank_via_api,
+                                  start_from_trial_no = start_from_trial_no)
 
     sing_then_play_pages <- psychTestR::join(sing_page, page)
 
@@ -471,6 +488,7 @@ construct_play_melody_page <- function(melody = NULL,
 #' @param skip_sampling_and_take_from_last_melody
 #' @param reactive_melody_no
 #' @param learn_test_paradigm
+#' @param sample_item_bank_via_api
 #'
 #' @return
 #' @export
@@ -521,7 +539,9 @@ play_melody_loop <- function(item_bank = NULL,
                              play_first_note_button_text = psychTestR::i18n("play_first_note"),
                              skip_sampling_and_take_from_last_melody = FALSE,
                              reactive_melody_no = FALSE,
-                             learn_test_paradigm = FALSE) {
+                             learn_test_paradigm = FALSE,
+                             sample_item_bank_via_api = FALSE,
+                             start_from_trial_no = NULL) {
 
 
   save_answer <- ! example
@@ -544,7 +564,7 @@ play_melody_loop <- function(item_bank = NULL,
       psychTestR::set_global("phase", phase, state)
       psychTestR::set_global("rhythmic", ! arrhythmic, state)
       # Grab sampled melody for this trial (if one not specified)
-      if(is.null(melody) && ! skip_sampling_and_take_from_last_melody && phase != "review") grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT, get_similarity_to_previous_melody, phase, display_modality, reactive_melody_no, learn_test_paradigm)
+      if(is.null(melody) && ! skip_sampling_and_take_from_last_melody && phase != "review") grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT, get_similarity_to_previous_melody, phase, display_modality, reactive_melody_no, learn_test_paradigm, sample_item_bank_via_api, start_from_trial_no)
       if(phase == "review") grab_sampled_melody_review(var_name, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length)
     }),
 
@@ -661,16 +681,12 @@ present_melody <- function(stimuli,
     number_attempts <- psychTestR::get_global("number_attempts", state)
     max_goes <- psychTestR::get_global("max_goes", state)
     attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
+
     transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
     transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
+
     clef <- psychTestR::get_global("clef", state)
-
-    print(clef)
-
     clef <- if(is.null(clef)) "auto" else clef
-
-    print('here clef..')
-    print(clef)
 
     if(length(answer_meta_data) < 1L) {
       answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
@@ -787,7 +803,9 @@ grab_sampled_melody <- function(item_bank = NULL,
                                 phase = c('test', 'learn', 'review', 'example'),
                                 display_modality = c('auditory', 'visual', 'both'),
                                 reactive_melody_no = FALSE,
-                                learn_test_paradigm = FALSE, ...) {
+                                learn_test_paradigm = FALSE,
+                                sample_item_bank_via_api = FALSE,
+                                start_from_trial_no = NULL, ...) {
 
   logging::loginfo("Grab sampled melody")
   display_modality <- match.arg(display_modality)
@@ -801,10 +819,10 @@ grab_sampled_melody <- function(item_bank = NULL,
 
   # Has melody been specified directly, or sampled at test time?
   if(is.null(melody_row)) {
+
     logging::loginfo("Sample at test time")
     # Assume melodies sampled at test time and stored in global object
     if(is.null(get_trial_characteristics_function) || learn_test_paradigm && phase == "test") {
-
       melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT, rel_to_abs_mel_function, learn_test_paradigm, phase)
       rel_melody <- melody_from_state$rel_melody
       melody_row <- melody_from_state$melody_row
@@ -814,7 +832,17 @@ grab_sampled_melody <- function(item_bank = NULL,
 
     } else {
 
+      if(sample_item_bank_via_api) {
+        var_name <- "sampled_item_bank_from_api"
+        melody_no <- start_from_trial_no + melody_no
+        print('melody_no...')
+        print(melody_no)
+      }
       trials <- psychTestR::get_global(var_name, state)
+
+      print('boom trials!')
+      print(trials)
+
       melody_no <- if(reactive_melody_no) psychTestR::get_global("reactive_melody_no", state) else melody_no
       trial_char <- get_trial_characteristics_function(trial_df = trials, trial_no = melody_no)
       melody_row <- sample_melody_in_key(item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$key_difficulty, length = trial_char$melody_length)

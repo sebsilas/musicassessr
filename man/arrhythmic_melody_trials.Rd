@@ -42,11 +42,13 @@ arrhythmic_melody_trials(
   first_note_message = "The first note is: ",
   transposed_message = "Please note, this is transposed for your instrument.",
   play_first_note_button_text = "Play First Note",
-  learn_test_paradigm = FALSE
+  learn_test_paradigm = FALSE,
+  sample_item_bank_via_api = FALSE,
+  start_from_sampled_trial_no = 1L
 )
 }
 \arguments{
-\item{learn_test_paradigm}{}
+\item{start_from_sampled_trial_no}{}
 }
 \description{
 Arrhythmic melody trials block

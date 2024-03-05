@@ -52,7 +52,9 @@ make_musicassessr_test <- function(title,
         app_name = opt$app_name,
         experiment_id = opt$experiment_id,
         experiment_condition_id = opt$experiment_condition_id,
-        user_id = opt$user_id
+        user_id = opt$user_id,
+        inst = opt$inst,
+        asynchronous_api_mode = opt$asynchronous_api_mode
         ),
 
       # Timeline before setup pages
@@ -67,7 +69,7 @@ make_musicassessr_test <- function(title,
       elts(),
 
       # Disconnect from database at end of test, if it was being used
-      if (opt$use_musicassessr_db) elt_disconnect_from_db(),
+      if (opt$use_musicassessr_db) musicassessrdb::elt_disconnect_from_db(),
 
       # Save results
       psychTestR::elt_save_results_to_disk(complete = TRUE),
@@ -80,7 +82,7 @@ make_musicassessr_test <- function(title,
       title = title,
       admin_password = admin_password,
       languages = languages,
-      on_session_ended_fun = if (opt$use_musicassessr_db) db_disconnect_shiny else NULL,
+      on_session_ended_fun = if (opt$use_musicassessr_db) musicassessrdb::db_disconnect_shiny else NULL,
       additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
                                                          musicassessr_aws = opt$musicassessr_aws,
                                                          visual_notation = opt$visual_notation,
@@ -176,6 +178,8 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param user_id A user ID.
 #' @param instrument_id An instrument ID.
 #' @param get_p_id Should a participant ID get collected at the beginning of the test?
+#' @param asynchronous_api_mode Turn asynchronous API mode on?
+#' @param inst What instrument?
 #'
 #' @return
 #' @export
@@ -195,7 +199,9 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              experiment_condition_id = NULL,
                              user_id = NULL,
                              instrument_id = NULL,
-                             get_p_id = FALSE) {
+                             get_p_id = FALSE,
+                             asynchronous_api_mode = FALSE,
+                             inst = NULL) {
 
   stopifnot(
     is.scalar(setup_pages),
@@ -212,7 +218,9 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(experiment_condition_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(user_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(instrument_id, function(x) is.scalar.character(x) || is.integer(x) ),
-    is.scalar.logical(get_p_id)
+    is.scalar.logical(get_p_id),
+    is.scalar.logical(asynchronous_api_mode),
+    is.null.or(inst, is.scalar.character)
   )
 
   list(
@@ -230,7 +238,9 @@ musicassessr_opt <- function(setup_pages = TRUE,
     experiment_condition_id = experiment_condition_id,
     user_id = user_id,
     instrument_id = instrument_id,
-    get_p_id = get_p_id
+    get_p_id = get_p_id,
+    asynchronous_api_mode = asynchronous_api_mode,
+    inst = inst
   )
 
 }

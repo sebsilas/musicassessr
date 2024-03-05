@@ -19,7 +19,9 @@ musicassessr_opt(
   experiment_condition_id = NULL,
   user_id = NULL,
   instrument_id = NULL,
-  get_p_id = FALSE
+  get_p_id = FALSE,
+  asynchronous_api_mode = FALSE,
+  inst = NULL
 )
 }
 \arguments{
@@ -52,6 +54,10 @@ musicassessr_opt(
 \item{instrument_id}{An instrument ID.}
 
 \item{get_p_id}{Should a participant ID get collected at the beginning of the test?}
+
+\item{asynchronous_api_mode}{Turn asynchronous API mode on?}
+
+\item{inst}{What instrument?}
 }
 \description{
 Specify options for a musicassessr test.

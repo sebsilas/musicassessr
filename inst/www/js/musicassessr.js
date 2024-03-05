@@ -589,11 +589,14 @@ function startRecording(type, stop_recording_automatically_after_ms = null) {
 function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true,
                         trigger_next_page = true, show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
-  console.log('recordUpdate');
-  console.log('showStop');
-  console.log(showStop);
 
   removeElementIfExists("first_note");
+
+  var volumeMeter = document.getElementById('volumeMeter');
+  if(volumeMeter !== null) {
+  volumeMeter.style.visibility = "visible";
+  }
+
 
   if(showStop) {
     showStopButton(page_type, stop_button_text, show_sheet_music, trigger_next_page, sheet_music_id);
@@ -609,18 +612,8 @@ function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, sh
 }
 
 
-/*
-var volumeMeter = document.getElementById('volumeMeter');
-if(volumeMeter !== null) {
-  volumeMeter.style.visibility = "visible";
-}
-
-
-*/
 
 function showSheetMusic(sheet_music_id) {
-  console.log('showSheetMusic');
-  console.log(sheet_music_id);
   var sheet_music = document.getElementById(sheet_music_id);
   sheet_music.style.visibility = "visible";
 }
@@ -641,6 +634,12 @@ function hideLoading() {
 
 function stopRecording(page_type, trigger_next_page = true) {
 
+  var volumeMeter = document.getElementById('volumeMeter');
+
+  if(volumeMeter !== null) {
+    volumeMeter.style.visibility = "hidden";
+  }
+
   setTimeout(() => {
 
     hideStopButton();
@@ -654,8 +653,6 @@ function stopRecording(page_type, trigger_next_page = true) {
       console.log('Unknown page type: ' + page_type);
     }
 
-    console.log('what da?');
-    console.log(trigger_next_page);
 
     if(trigger_next_page) {
       next_page();

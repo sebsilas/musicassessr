@@ -42,11 +42,12 @@ multi_page_play_melody_loop(
   first_note_message = psychTestR::i18n("first_note_is"),
   transposed_message = psychTestR::i18n("transposed"),
   play_first_note_button_text = psychTestR::i18n("play_first_note"),
-  learn_test_paradigm = FALSE
+  learn_test_paradigm = FALSE,
+  sample_item_bank_via_api = FALSE
 )
 }
 \arguments{
-\item{learn_test_paradigm}{}
+\item{sample_item_bank_via_api}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

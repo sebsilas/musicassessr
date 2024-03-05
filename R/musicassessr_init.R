@@ -8,6 +8,8 @@
 #' @param experiment_condition_id
 #' @param user_id
 #' @param asynchronous_api_mode
+#' @param instrument_id
+#' @param inst
 #'
 #' @return
 #' @export
@@ -18,7 +20,9 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
                               experiment_id = NULL,
                               experiment_condition_id = NULL,
                               user_id = NULL,
-                              asynchronous_api_mode = FALSE) {
+                              asynchronous_api_mode = FALSE,
+                              instrument_id = NULL,
+                              inst = NULL) {
 
   if(asynchronous_api_mode) {
     logging::loginfo("Asynchronous API mode on.")
@@ -29,12 +33,22 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
     psychTestR::set_global("musicassessr_db", use_musicassessr_db, state)
 
+    if(!is.null(instrument_id)) {
+      psychTestR::set_global("instrument_id", instrument_id, state)
+    }
+
+    if(!is.null(inst)) {
+      psychTestR::set_global("inst", inst, state)
+    }
+
 
     if(use_musicassessr_db) {
 
       if(!asynchronous_api_mode) {
         # Init the DB connection (and return it for immediate use)
         db_con <- musicassessrdb::connect_to_db_state(state)
+        # Check the specified IDs exist in the DB
+        musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
       }
       session_info <- psychTestR::get_session_info(state, complete = FALSE)
       psychTestR_session_id <- session_info$p_id
@@ -45,9 +59,6 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
       if(is.null(user_id)) {
         stop("user_id should not be NULL, at this point, if using musicassessr_db. User validate_user_entry_into test or set through the test manually.")
       }
-
-      # Check the specified IDs exist in the DB
-      musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
 
 
       if(is.null(psychTestR::get_global("session_id", state))) { # This makes sure we don't save the same session twice in the DB (e.g., when there are multiple tests nested in one session)

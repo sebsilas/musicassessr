@@ -113,6 +113,10 @@ record_midi_or_audio_ui <- function(body = "",
 
 set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
 
+  if(is.null(db_vars$onset)) {
+    db_vars$onset <- FALSE
+  }
+
     stopifnot(
       length(
         setdiff(
@@ -128,7 +132,8 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
             "rhythmic",
             "item_bank_id",
             "session_id",
-            "test_id"),
+            "test_id",
+            "onset"),
           names(db_vars)
           )
         ) == 0)
@@ -149,6 +154,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_test_id = \"', db_vars$test_id,'\";
   var db_stimuli = \"', db_vars$stimuli,'\";
   var db_stimuli_durations = \"', db_vars$stimuli_durations,'\";
+  var db_onset = \"', db_vars$onset,'\";
   ')
   )
 

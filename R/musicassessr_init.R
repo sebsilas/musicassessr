@@ -25,13 +25,16 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
                               inst = NULL) {
 
   if(asynchronous_api_mode) {
-    logging::loginfo("Asynchronous API mode on.")
+    logging::loginfo("Turn Asynchronous API mode on...")
     future::plan(future::multisession, workers = 2)
+    logging::loginfo("...Asynchronous API mode turned on.")
   }
+
 
   psychTestR::code_block(function(state, ...) {
 
     psychTestR::set_global("musicassessr_db", use_musicassessr_db, state)
+    psychTestR::set_global("asynchronous_api_mode", asynchronous_api_mode, state)
 
     if(!is.null(instrument_id)) {
       psychTestR::set_global("instrument_id", instrument_id, state)
@@ -41,12 +44,13 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
       psychTestR::set_global("inst", inst, state)
     }
 
-
     if(use_musicassessr_db) {
 
+      # Init the DB connection (and return it for immediate use)
+      db_con <- musicassessrdb::connect_to_db_state(state) # NB: Leave this here, even for async api mode, (for now at least)
+      # We need it for validate_user_entry_into_test.. but maybe we can disconnect immediately within that context
+
       if(!asynchronous_api_mode) {
-        # Init the DB connection (and return it for immediate use)
-        db_con <- musicassessrdb::connect_to_db_state(state)
         # Check the specified IDs exist in the DB
         musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
       }
@@ -79,7 +83,6 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
                 return(NA)
               }
           })
-
 
         } else {
           logging::loginfo("Appending session directly to DB")
@@ -117,10 +120,18 @@ set_test <- function(test_name, test_id = NULL) {
 
   psychTestR::code_block(function(state, ...) {
 
-    if(!is.null(test_id)) {
+    if(!is.null(test_id) && ! psychTestR::get_global("asynchronous_api_mode", state)) {
+
       db_con <- psychTestR::get_global("db_con", state)
-      if(is.null(db_con)) stop("If test_id is non-NULL, then use_musicassessr_db must be true.")
-      musicassessrdb::check_id_exists(db_con, table_name = "tests", id_col = "test_id", id = test_id)
+
+      if(is.null(db_con)) {
+        stop("If test_id is non-NULL, then use_musicassessr_db must be true.")
+      }
+
+      if(!is.null(db_con)) {
+        musicassessrdb::check_id_exists(db_con, table_name = "tests", id_col = "test_id", id = test_id)
+      }
+
     }
 
     logging::loginfo("Setting test ID: %s", test_id)
@@ -200,10 +211,3 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
 
 
 }
-
-
-# db_con <- musicassessrdb::musicassessr_con()
-# item_bank <- dplyr::tbl(db_con, "Berkowitz_ngram")
-# sample <- musicassessr::item_sampler(item_bank, 10, version = "2")
-
-

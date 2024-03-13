@@ -5,17 +5,27 @@
 #' @param task_name
 #' @param img
 #' @param present_continue_to_new_test_page
+#' @param redirect_url
 #'
 #' @return
 #' @export
 #'
 #' @examples
-final_page_or_continue_to_new_test <- function(final = TRUE, task_name, img = NULL, present_continue_to_new_test_page = TRUE) {
+final_page_or_continue_to_new_test <- function(final = TRUE, task_name, img = NULL, present_continue_to_new_test_page = TRUE, redirect_url = NULL) {
   if(final) {
     txt <- paste0(psychTestR::i18n("test_complete_1"), " ", task_name, psychTestR::i18n("test_complete_2"))
     img <- if(is.null(img)) shiny::tags$div() else shiny::tags$img(src = img, height = 300, width = 300)
     ui <- shiny::tags$div(img, shiny::tags$br(), txt)
-    return(psychTestR::final_page(ui))
+
+
+    if(is.scalar.character(redirect_url)) {
+      ui <- shiny::tags$div(ui, tags$p("You will now be redirected."))
+      return(redirect_page(text = ui, ms = 3000, url = redirect_url, final = TRUE))
+    } else {
+      return(psychTestR::final_page(ui))
+    }
+
+
   } else {
     if(present_continue_to_new_test_page) {
       return(psychTestR::one_button_page(psychTestR::i18n("proceed_next_test")))

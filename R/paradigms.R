@@ -12,8 +12,6 @@
 #'
 #' @return
 #' @export
-#'s
-#' @examples
 paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall"),
                      page_type = c("record_audio_page", "record_midi_page"),
                      call_and_response_end = c("manual", "auto"),

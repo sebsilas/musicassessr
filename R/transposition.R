@@ -52,12 +52,6 @@ sample_melody_in_key_v2 <- function(item_bank, inst, bottom_range, top_range, di
 
 }
 
-# db_con <- musicassessrdb::musicassessr_con()
-# item_bank <- dplyr::tbl(db_con, "WJD_ngram")
-# t <- sample_melody_in_key_v2(item_bank, inst = "Tenor Saxophone", bottom_range = 48, top_range = 72, difficulty = "easy", length = NULL)
-
-
-
 #' Sample melody in key
 #'
 #' @param item_bank

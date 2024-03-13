@@ -44,11 +44,12 @@ rhythmic_melody_trials(
   play_first_note_button_text = "Play First Note",
   learn_test_paradigm = FALSE,
   sample_item_bank_via_api = FALSE,
-  start_from_sampled_trial_no = 1L
+  start_from_sampled_trial_no = 1L,
+  pass_items_through_url_parameter = FALSE
 )
 }
 \arguments{
-\item{start_from_sampled_trial_no}{}
+\item{pass_items_through_url_parameter}{}
 }
 \description{
 Rhythmic melody trials block

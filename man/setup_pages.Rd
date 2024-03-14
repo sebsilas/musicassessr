@@ -29,7 +29,8 @@ setup_pages(
   requirements_page = TRUE,
   playful_volume_meter_setup = FALSE,
   fake_range = FALSE,
-  use_musicassessr_db = FALSE
+  use_musicassessr_db = FALSE,
+  show_microphone_type_page = TRUE
 )
 }
 \arguments{
@@ -80,6 +81,8 @@ setup_pages(
 \item{fake_range}{Should the instrument/voice range be faked with a default?}
 
 \item{use_musicassessr_db}{Is musicassessr_db being used?}
+
+\item{show_microphone_type_page}{Should you ask the user what kind of microphone they are using?}
 }
 \description{
 Setup pages for musicassessr test

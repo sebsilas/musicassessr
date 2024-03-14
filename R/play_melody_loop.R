@@ -1006,6 +1006,8 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
     } else {
       # Assume melodies sampled at test time and stored in global object
       trials <- psychTestR::get_global(var_name, state)
+      print('trials...')
+      print(trials)
       if(pass_items_through_url_parameter) {
         melody_no <- 1L # Keep always one and pop off the item each time
         psychTestR::set_global(var_name, dplyr::slice(trials, -1), state)

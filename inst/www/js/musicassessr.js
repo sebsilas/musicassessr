@@ -45,7 +45,6 @@ var db_item_id;
 var db_display_modality;
 var db_phase;
 var db_rhythmic;
-var db_item_bank_id;
 var db_session_id;
 var db_test_id;
 
@@ -1090,7 +1089,6 @@ function upload_file_to_s3(blob){
               "display-modality": String(db_display_modality),
               "phase": String(db_phase),
               "rhythmic": String(db_rhythmic),
-              "item-bank-id": String(db_item_bank_id),
               "session-id": String(db_session_id),
               "test-id": String(db_test_id),
               "onset": String(db_onset)

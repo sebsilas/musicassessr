@@ -853,8 +853,6 @@ melody_trials <- function(var_name,
     psychTestR::module(module_name,
                     psychTestR::join(
 
-                        # Set item bank ID in code block
-                        set_item_bank_id(item_bank),
                         # Instructions depending on review
                         if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
                          # Examples
@@ -1137,8 +1135,6 @@ find_this_note_trials <- function(num_items,
     # Sample melodies based on range
     psychTestR::module("find_this_note_trials",
                        psychTestR::join(
-                         # Set item bank ID in code block
-                         set_item_bank_id(NA),
                          # Instructions
                          psychTestR::one_button_page(shiny::div(
                            shiny::tags$h2(page_title),
@@ -1433,31 +1429,4 @@ audio_melodic_production_trials <- function(audio_directory,
 grab_meta_data <- function(meta_data_df, lookup_column, value) {
   lookup_column <- as.name(lookup_column)
   meta_data_df %>% dplyr::filter(!!lookup_column == !!value)
-}
-
-
-set_item_bank_id <- function(item_bank) {
-  psychTestR::code_block(function(state, ...) {
-
-    if(!is.null(attributes(item_bank)$item_bank_name)) {
-
-      if (attributes(item_bank)$item_bank_name == "Berkowitz" && attributes(item_bank)$item_bank_type == "phrase") {
-        psychTestR::set_global('item_bank_id', 1L, state)
-      }
-
-      if (attributes(item_bank)$item_bank_name == "Berkowitz" && attributes(item_bank)$item_bank_type == "ngram") {
-        psychTestR::set_global('item_bank_id', 2L, state)
-      }
-
-      if (attributes(item_bank)$item_bank_name == "WJD" && attributes(item_bank)$item_bank_type == "phrase") {
-        psychTestR::set_global('item_bank_id', 3L, state)
-      }
-
-      if (attributes(item_bank)$item_bank_name == "WJD" && attributes(item_bank)$item_bank_type == "ngram") {
-        psychTestR::set_global('item_bank_id', 4L, state)
-      }
-    }
-
-
-  })
 }

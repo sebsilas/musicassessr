@@ -130,7 +130,6 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
             "display_modality",
             "phase",
             "rhythmic",
-            "item_bank_id",
             "session_id",
             "test_id",
             "onset"),
@@ -149,7 +148,6 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_display_modality = \"', db_vars$display_modality,'\";
   var db_phase = \"', db_vars$phase,'\";
   var db_rhythmic = \"', db_vars$rhythmic,'\";
-  var db_item_bank_id = \"', db_vars$item_bank_id,'\";
   var db_session_id = \"', db_vars$session_id,'\";
   var db_test_id = \"', db_vars$test_id,'\";
   var db_stimuli = \"', db_vars$stimuli,'\";

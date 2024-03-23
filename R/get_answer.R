@@ -760,7 +760,6 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
 
     trial_time_started <- psychTestR::get_global("trial_time_started", state)
     session_id <- psychTestR::get_global("session_id", state)
-    item_bank_id <- psychTestR::get_global("item_bank_id", state)
     item_id <- if(is.null(res$answer_meta_data$item_id)) psychTestR::get_global("item_id", state) else res$answer_meta_data$item_id
     display_modality <- psychTestR::get_global("display_modality", state)
     phase <- if(is.null(psychTestR::get_global("phase", state))) res$answer_meta_data$phase else psychTestR::get_global("phase", state)
@@ -780,7 +779,6 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
                      display_modality = display_modality,
                      phase = phase,
                      rhythmic = rhythmic,
-                     item_bank_id = as.integer(item_bank_id),
                      session_id = as.integer(session_id),
                      test_id = as.integer(test_id)
                      )

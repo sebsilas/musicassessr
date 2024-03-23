@@ -757,7 +757,6 @@ present_melody <- function(stimuli,
         display_modality = display_modality,
         phase = psychTestR::get_global("phase", state),
         rhythmic = !arrhythmic,
-        item_bank_id = psychTestR::get_global("item_bank_id", state),
         session_id = get_promise_value(psychTestR::get_global("session_id", state)),
         test_id = psychTestR::get_global("test_id", state)
       )

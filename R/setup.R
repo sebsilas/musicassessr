@@ -92,6 +92,7 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(show_microphone_type_page)
             )
 
+
   if(demo) {
 
     setup <- psychTestR::join(
@@ -263,9 +264,13 @@ microphone_setup <- function(SNR_test, absolute_url = character(), microphone_te
                              allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
                              concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE) {
 
+  print('mcisdosdd')
+
+  print(show_microphone_type_page)
+
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
-      if(skip_setup == "except_microphone" || !skip_setup && show_microphone_type_page) microphone_type_page(),
+      if(show_microphone_type_page) if(skip_setup == "except_microphone" || ! skip_setup) microphone_type_page(),
       microphone_calibration_page(concise_wording = concise_wording, musical_instrument = musical_instrument)
     )
   } else {

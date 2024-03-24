@@ -243,46 +243,6 @@ empty_page <- function(body = "",
 }
 
 
-# wait_for_api_page <- function(var_name = "session_id") {
-#
-#     js <- "
-#
-#     // Wait for the Shiny application to be ready
-# $(document).ready(function() {
-#   // Function to check if the value of 'session_id' is a string
-#   function checkStringValue() {
-#       console.log('check string...');
-#     // Get the value of 'session_id'
-#     var value = Shiny.inputBindings.all().find(function(input) {
-#       const session_id = input.id === 'session_id';
-#       console.log('session_id?');
-#       console.log(session_id);
-#       return session_id;
-#     }).getValue();
-#
-#     if (typeof value === 'string') {
-#       console.log('The value of session_id is:', session_id);
-#
-#       // Proceed with your JavaScript logic here, using the value
-#
-#     } else {
-#       console.log('Waiting for session_id to become a string...');
-#       // Check again after 1 second
-#       setTimeout(checkStringValue, 1000);
-#     }
-#   }
-#
-#   // Check the value of 'session_id' when the page loads
-#   checkStringValue();
-# });
-#
-#
-#     "
-#     psychTestR::one_button_page(tags$div(tags$script(js), loading()))
-#
-# }
-
-
 wait_for_api_page <- function() {
 
   psychTestR::while_loop(test = function(state, ...) {

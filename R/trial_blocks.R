@@ -915,6 +915,8 @@ melody_trials <- function(var_name,
                          ## Sample items
                         if(!presampled && !pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
+                        wait_for_api_page(),
+
                         ## Trials
                         main_trials,
 

@@ -40,8 +40,6 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
   if(paradigm_type == "simultaneous_recall") {
     trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE, midi_device = midi_device, instantiate_midi = instantiate_midi, mute_midi_playback = mute_midi_playback)
     trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type)
-    print('trigger_start_of_stimulus_fun')
-    print(trigger_start_of_stimulus_fun)
   } else if(paradigm_type == "call_and_response") {
     trigger_start_of_stimulus_fun <- NA
       if(call_and_response_end == "manual") {

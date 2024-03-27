@@ -127,9 +127,6 @@ record_midi_block <- function(no_pages,
                               autoInstantiate = TRUE,
                               mute_midi_playback = FALSE) {
 
-  print('record_midi_block')
-  print(mute_midi_playback)
-
   page <- psychTestR::reactive_page(function(state, ...) {
 
     midi_device <- psychTestR::get_global("midi_device", state)

@@ -21,8 +21,6 @@ recorded_words_plot <- function(words, onsets) {
 feedback_recorded_words_plot_page <- function() {
   psychTestR::reactive_page(function(answer, state, ...) {
 
-    print(answer)
-
     words_plot <- shiny::tags$div(
       shiny::renderPlot({
       recorded_words_plot(strsplit(rjson::fromJSON(answer$user_response_words), split = " ")[[1]], as.numeric(rjson::fromJSON(answer$onsets)))

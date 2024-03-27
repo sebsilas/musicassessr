@@ -329,7 +329,7 @@ set.note.no <- function(stimuli, note_no) {
 
 
 item_bank_type_to_stimuli_type <- function(string_of_item_bank_type) {
-  if(str_detect(string_of_item_bank_type, "RDS_file")) {
+  if(stringr::str_detect(string_of_item_bank_type, "RDS_file")) {
     item_bank_type <- stringr::str_remove(string_of_item_bank_type, "RDS_file_")
   } else {
     item_bank_type <- string_of_item_bank_type

@@ -47,6 +47,8 @@ var db_phase;
 var db_rhythmic;
 var db_session_id;
 var db_test_id;
+var db_new_items_id;
+var db_review_items_id;
 
 // Functions
 
@@ -1091,7 +1093,9 @@ function upload_file_to_s3(blob){
               "rhythmic": String(db_rhythmic),
               "session-id": String(db_session_id),
               "test-id": String(db_test_id),
-              "onset": String(db_onset)
+              "onset": String(db_onset),
+              "new-items-id": String(db_new_items_id),
+              "review-items-id": String(db_review_items_id)
             };
 
     console.log(md);

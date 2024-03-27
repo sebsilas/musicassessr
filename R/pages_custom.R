@@ -260,6 +260,6 @@ wait_for_api_page <- function() {
     }
 
     not_ready
-  }, empty_page(tags$div(tags$script('setTimeout(function() { next_page(); }, 1000);'), tags$p("Please wait a few seconds."), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', id = "volumeMeter", height = 200, width = 200))))
+  }, empty_page(shiny::tags$div(shiny::tags$script('setTimeout(function() { next_page(); }, 1000);'), shiny::tags$p("Please wait a few seconds."), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', id = "volumeMeter", height = 200, width = 200))))
 
 }

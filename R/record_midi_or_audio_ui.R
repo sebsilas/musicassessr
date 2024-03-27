@@ -132,7 +132,9 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
             "rhythmic",
             "session_id",
             "test_id",
-            "onset"),
+            "onset",
+            "new_items_id",
+            "review_items_id"),
           names(db_vars)
           )
         ) == 0)
@@ -153,6 +155,8 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_stimuli = \"', db_vars$stimuli,'\";
   var db_stimuli_durations = \"', db_vars$stimuli_durations,'\";
   var db_onset = \"', db_vars$onset,'\";
+  var db_review_items_id = \"', db_vars$review_items_id,'\";
+  var db_new_items_id = \"', db_vars$new_items_id,'\";
   ')
   )
 

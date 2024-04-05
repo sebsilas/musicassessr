@@ -24,8 +24,7 @@ setup_pages_options(
   concise_wording = TRUE,
   skip_setup = FALSE,
   get_self_chosen_anonymous_id = FALSE,
-  musical_instrument = FALSE,
-  fake_range = FALSE
+  musical_instrument = FALSE
 )
 }
 \arguments{
@@ -66,8 +65,6 @@ setup_pages_options(
 \item{get_self_chosen_anonymous_id}{Whether to ask participant to provide an anonymous ID.}
 
 \item{musical_instrument}{Whether the participant is required to have a musical instrument.}
-
-\item{fake_range}{Should a range be faked?}
 }
 \description{
 Setup page options for a musicassessr test

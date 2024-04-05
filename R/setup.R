@@ -23,7 +23,6 @@
 #' @param allow_SNR_failure If TRUE, allow user to continue even if they fail the SNR test.
 #' @param requirements_page Show a requirements page?
 #' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
-#' @param fake_range Should the instrument/voice range be faked with a default?
 #' @param use_musicassessr_db Is musicassessr_db being used?
 #' @param show_microphone_type_page Should you ask the user what kind of microphone they are using?
 #'
@@ -57,7 +56,6 @@ setup_pages <- function(input_type = c("microphone",
                         allow_SNR_failure = FALSE,
                         requirements_page = TRUE,
                         playful_volume_meter_setup = FALSE,
-                        fake_range = FALSE,
                         use_musicassessr_db = FALSE,
                         show_microphone_type_page = TRUE) {
 
@@ -87,7 +85,6 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(allow_SNR_failure),
             is.scalar.logical(requirements_page),
             is.scalar.logical(playful_volume_meter_setup),
-            is.scalar.logical(fake_range),
             is.scalar.logical(use_musicassessr_db),
             is.scalar.logical(show_microphone_type_page)
             )
@@ -107,8 +104,6 @@ setup_pages <- function(input_type = c("microphone",
 
     setup <- psychTestR::join(
 
-      fake_instrument(),
-
       if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id() else pass_p_id_to_js(),
 
       correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page)
@@ -116,11 +111,7 @@ setup_pages <- function(input_type = c("microphone",
 
   } else if(skip_setup || input_type == "key_presses") {
 
-    setup <- psychTestR::join(
-
-      fake_instrument()
-
-    )
+    setup <- psychTestR::join(empty_code_block())
 
   } else {
 
@@ -149,7 +140,6 @@ setup_pages <- function(input_type = c("microphone",
   # Set the response/input type when it is definitely either microphone or MIDI (i.e., non-user specified):
   psychTestR::join(
     if(input_type %in% c("microphone", "midi_keyboard")) set_response_type(if(input_type == "microphone") "Microphone" else if(input_type == "midi_keyboard") "MIDI" else stop("Input type not recognised.")),
-    if(fake_range) set_instrument_range(),
     setup
   )
 
@@ -264,10 +254,6 @@ microphone_setup <- function(SNR_test, absolute_url = character(), microphone_te
                              allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
                              concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE) {
 
-  print('mcisdosdd')
-
-  print(show_microphone_type_page)
-
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
       if(show_microphone_type_page) if(skip_setup == "except_microphone" || ! skip_setup) microphone_type_page(),
@@ -325,20 +311,5 @@ midi_setup <- function() {
     set_instrument_range_code_block("Piano"),
     test_midi_page()
   )
-}
-
-
-fake_instrument <- function() {
-  # Fake instrument:
-  psychTestR::code_block(function(state, ...) {
-
-    if( is.null(psychTestR::get_global("inst", state)) && is.null(psychTestR::get_global("instrument_id", state)) ) { # Then one hasn't been specified manually via an instrument ID
-      logging::logwarn("Faking instrument...")
-      psychTestR::set_global("inst", "Piano", state)
-      psychTestR::set_global("transpose_visual_notation", 0L, state)
-      psychTestR::set_global("clef", "auto", state)
-    }
-
-  })
 }
 

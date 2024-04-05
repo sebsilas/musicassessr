@@ -28,7 +28,6 @@ setup_pages(
   allow_SNR_failure = FALSE,
   requirements_page = TRUE,
   playful_volume_meter_setup = FALSE,
-  fake_range = FALSE,
   use_musicassessr_db = FALSE,
   show_microphone_type_page = TRUE
 )
@@ -77,8 +76,6 @@ setup_pages(
 \item{requirements_page}{Show a requirements page?}
 
 \item{playful_volume_meter_setup}{Should there be some additional functionality to demo the playful volume meter?}
-
-\item{fake_range}{Should the instrument/voice range be faked with a default?}
 
 \item{use_musicassessr_db}{Is musicassessr_db being used?}
 

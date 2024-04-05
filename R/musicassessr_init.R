@@ -10,6 +10,7 @@
 #' @param asynchronous_api_mode
 #' @param instrument_id
 #' @param inst
+#' @param default_range
 #'
 #' @return
 #' @export
@@ -22,7 +23,8 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
                               user_id = NULL,
                               asynchronous_api_mode = FALSE,
                               instrument_id = NULL,
-                              inst = NULL) {
+                              inst = NULL,
+                              default_range = set_default_range("Piano")) {
 
   if(asynchronous_api_mode) {
     logging::loginfo("Turn Asynchronous API mode on...")
@@ -30,80 +32,86 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
     logging::loginfo("...Asynchronous API mode turned on.")
   }
 
+  psychTestR::join(
 
-  psychTestR::code_block(function(state, ...) {
+    set_instrument_range(default_range$bottom_range,
+                         default_range$top_range,
+                         default_range$clef),
 
-    psychTestR::set_global("musicassessr_db", use_musicassessr_db, state)
-    psychTestR::set_global("asynchronous_api_mode", asynchronous_api_mode, state)
+    psychTestR::code_block(function(state, ...) {
 
-    if(!is.null(instrument_id)) {
-      psychTestR::set_global("instrument_id", instrument_id, state)
-    }
+      psychTestR::set_global("musicassessr_db", use_musicassessr_db, state)
+      psychTestR::set_global("asynchronous_api_mode", asynchronous_api_mode, state)
 
-    if(!is.null(inst)) {
-      psychTestR::set_global("inst", inst, state)
-    }
-
-    if(use_musicassessr_db) {
-
-      # Init the DB connection (and return it for immediate use)
-      db_con <- musicassessrdb::connect_to_db_state(state) # NB: Leave this here, even for async api mode, (for now at least)
-      # We need it for validate_user_entry_into_test.. but maybe we can disconnect immediately within that context
-
-      if(!asynchronous_api_mode) {
-        # Check the specified IDs exist in the DB
-        musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
-      }
-      session_info <- psychTestR::get_session_info(state, complete = FALSE)
-      psychTestR_session_id <- session_info$p_id
-      time_completed <- NULL # The test is beginning
-      # time_started is auto-generated at the SQL level
-      user_id <- if(is.null(user_id)) psychTestR::get_global('user_id', state) else user_id
-
-      if(is.null(user_id)) {
-        stop("user_id should not be NULL, at this point, if using musicassessr_db. User validate_user_entry_into test or set through the test manually.")
+      if(!is.null(instrument_id)) {
+        psychTestR::set_global("instrument_id", instrument_id, state)
       }
 
+      if(!is.null(inst)) {
+        psychTestR::set_global("inst", inst, state)
+      }
 
-      if(is.null(psychTestR::get_global("session_id", state))) { # This makes sure we don't save the same session twice in the DB (e.g., when there are multiple tests nested in one session)
-        # Append session
-        # N.B This session_id is the primary key in the sessions database
+      if(use_musicassessr_db) {
 
-        if(asynchronous_api_mode) {
+        # Init the DB connection (and return it for immediate use)
+        db_con <- musicassessrdb::connect_to_db_state(state) # NB: Leave this here, even for async api mode, (for now at least)
+        # We need it for validate_user_entry_into_test.. but maybe we can disconnect immediately within that context
 
-          logging::loginfo("Appending session via API")
+        if(!asynchronous_api_mode) {
+          # Check the specified IDs exist in the DB
+          musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
+        }
+        session_info <- psychTestR::get_session_info(state, complete = FALSE)
+        psychTestR_session_id <- session_info$p_id
+        time_completed <- NULL # The test is beginning
+        # time_started is auto-generated at the SQL level
+        user_id <- if(is.null(user_id)) psychTestR::get_global('user_id', state) else user_id
 
-          session_id <- future::future({
-              musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
-            }) %...>% (function(result) {
-            logging::loginfo("Returning promise result: %s", result)
-              if(result$status == 200) {
-                return(result$session_id)
-              } else {
-                return(NA)
-              }
-          })
-
-        } else {
-          logging::loginfo("Appending session directly to DB")
-          session_id <- musicassessrdb::db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+        if(is.null(user_id)) {
+          stop("user_id should not be NULL, at this point, if using musicassessr_db. User validate_user_entry_into test or set through the test manually.")
         }
 
-        psychTestR::set_global("session_id", session_id, state)
+
+        if(is.null(psychTestR::get_global("session_id", state))) { # This makes sure we don't save the same session twice in the DB (e.g., when there are multiple tests nested in one session)
+          # Append session
+          # N.B This session_id is the primary key in the sessions database
+
+          if(asynchronous_api_mode) {
+
+            logging::loginfo("Appending session via API")
+
+            session_id <- future::future({
+                musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+              }) %...>% (function(result) {
+              logging::loginfo("Returning promise result: %s", result)
+                if(result$status == 200) {
+                  return(result$session_id)
+                } else {
+                  return(NA)
+                }
+            })
+
+          } else {
+            logging::loginfo("Appending session directly to DB")
+            session_id <- musicassessrdb::db_append_session(db_con, experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+          }
+
+          psychTestR::set_global("session_id", session_id, state)
+
+        }
 
       }
 
-    }
+      # Set vars
+      psychTestR::set_global("app_name", app_name, state)
+      psychTestR::set_global("use_musicassessr_db", use_musicassessr_db, state)
+      psychTestR::set_global("scores", c(), state)
+      psychTestR::set_global("experiment_id", experiment_id, state)
+      psychTestR::set_global("experiment_condition_id", experiment_condition_id, state)
+      psychTestR::set_global("user_id", user_id, state)
 
-    # Set vars
-    psychTestR::set_global("app_name", app_name, state)
-    psychTestR::set_global("use_musicassessr_db", use_musicassessr_db, state)
-    psychTestR::set_global("scores", c(), state)
-    psychTestR::set_global("experiment_id", experiment_id, state)
-    psychTestR::set_global("experiment_condition_id", experiment_condition_id, state)
-    psychTestR::set_global("user_id", user_id, state)
-
-  })
+    })
+  )
 }
 
 

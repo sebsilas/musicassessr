@@ -45,11 +45,12 @@ arrhythmic_melody_trials(
   learn_test_paradigm = FALSE,
   sample_item_bank_via_api = FALSE,
   start_from_sampled_trial_no = 1L,
-  pass_items_through_url_parameter = FALSE
+  pass_items_through_url_parameter = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{pass_items_through_url_parameter}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Arrhythmic melody trials block

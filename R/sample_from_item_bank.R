@@ -376,7 +376,7 @@ sample_random <- function(item_bank, num_items) {
 
 span_warning <- function(span) {
   if(is.null(span)) {
-    warning("There was no user span set. Do you need a user range page or fake_range before sampling?")
+    warning("There was no user span set. Do you need a user range page or a default_range before sampling?")
   }
 }
 

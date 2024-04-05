@@ -234,7 +234,8 @@ sing_arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                            sheet_music_id,
                            give_first_melody_note,
                            presampled,
-                           get_similarity_to_previous_melody)
+                           get_similarity_to_previous_melody,
+                           asynchronous_api_mode)
 
 }
 
@@ -373,6 +374,7 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param sample_item_bank_via_api
 #' @param start_from_sampled_trial_no
 #' @param pass_items_through_url_parameter
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -417,7 +419,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      learn_test_paradigm = FALSE,
                                      sample_item_bank_via_api = FALSE,
                                      start_from_sampled_trial_no = 1L,
-                                     pass_items_through_url_parameter = FALSE) {
+                                     pass_items_through_url_parameter = FALSE,
+                                     asynchronous_api_mode = FALSE) {
 
 
   melody_trials(var_name,
@@ -460,7 +463,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 learn_test_paradigm,
                 sample_item_bank_via_api,
                 start_from_sampled_trial_no,
-                pass_items_through_url_parameter)
+                pass_items_through_url_parameter,
+                asynchronous_api_mode)
 
 }
 
@@ -509,6 +513,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param sample_item_bank_via_api
 #' @param start_from_sampled_trial_no
 #' @param pass_items_through_url_parameter
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -553,7 +558,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    learn_test_paradigm = FALSE,
                                    sample_item_bank_via_api = FALSE,
                                    start_from_sampled_trial_no = 1L,
-                                   pass_items_through_url_parameter = FALSE) {
+                                   pass_items_through_url_parameter = FALSE,
+                                   asynchronous_api_mode = FALSE) {
 
 
   melody_trials(var_name,
@@ -596,7 +602,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                learn_test_paradigm,
                sample_item_bank_via_api,
                start_from_sampled_trial_no,
-               pass_items_through_url_parameter)
+               pass_items_through_url_parameter,
+               asynchronous_api_mode)
 
 }
 
@@ -647,6 +654,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param sample_item_bank_via_api
 #' @param start_from_sampled_trial_no
 #' @param pass_items_through_url_parameter
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -692,11 +700,8 @@ melody_trials <- function(var_name,
                           learn_test_paradigm = FALSE,
                           sample_item_bank_via_api = FALSE,
                           start_from_sampled_trial_no = 1L,
-                          pass_items_through_url_parameter = FALSE) {
-
-  print('melody_trials')
-  print(pass_items_through_url_parameter)
-
+                          pass_items_through_url_parameter = FALSE,
+                          asynchronous_api_mode = FALSE) {
 
   phase <- match.arg(phase)
 
@@ -741,7 +746,8 @@ melody_trials <- function(var_name,
     is.scalar.logical(learn_test_paradigm),
     is.scalar.logical(sample_item_bank_via_api),
     is.scalar.numeric(start_from_sampled_trial_no),
-    is.scalar.logical(pass_items_through_url_parameter)
+    is.scalar.logical(pass_items_through_url_parameter),
+    is.scalar.logical(asynchronous_api_mode)
   )
 
   if(presampled & ! sample_item_bank_via_api) {
@@ -915,7 +921,7 @@ melody_trials <- function(var_name,
                          ## Sample items
                         if(!presampled && !pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
-                        wait_for_api_page(),
+                        if(asynchronous_api_mode) wait_for_api_page(),
 
                         ## Trials
                         main_trials,

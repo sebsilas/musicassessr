@@ -22,7 +22,14 @@ present_stimuli_audio <- function(audio_url,
     on_finish <- '0'
   }
 
+  abs_melody <- itembankr::str_mel_to_vector(answer_meta_data$abs_melody)
+  durations <- itembankr::str_mel_to_vector(answer_meta_data$durations)
+
   shiny::tags$div(
+
+    # If the (audio) melody has a MIDI representation, set it
+    if(length(abs_melody) > 1 && length(durations) > 1) set_melodic_stimuli(abs_melody, durations),
+
     shiny::tags$audio(src = audio_url, type = "audio/mp3",
                       controls = "true", id = "player",
                       oncanplay="hide_spinner();"),

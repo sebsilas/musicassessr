@@ -974,8 +974,6 @@ transposition_check <- function(melody_row) {
 
 grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function = NULL, learn_test_paradigm = FALSE, phase = "test", sample_item_bank_via_api = FALSE, start_from_trial_no = 1L, pass_items_through_url_parameter = FALSE) {
 
-  browser()
-
   if(psychTestRCAT) {
 
     melody_row <- psychTestR::get_local("item", state)

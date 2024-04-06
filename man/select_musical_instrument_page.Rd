@@ -4,7 +4,14 @@
 \alias{select_musical_instrument_page}
 \title{Page to select what instrument the participant is using}
 \usage{
-select_musical_instrument_page()
+select_musical_instrument_page(
+  use_musicassessr_db = FALSE,
+  set_range_based_on_selection = FALSE,
+  include_other_in_dropdown = FALSE
+)
+}
+\arguments{
+\item{include_other_in_dropdown}{}
 }
 \description{
 Page to select what instrument the participant is using

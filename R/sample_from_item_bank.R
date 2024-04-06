@@ -84,9 +84,10 @@ item_sampler_v2 <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE
   # There won't be a perfect number of items per N, but it should work out across many participants
   sampled_data <- item_bank %>%
     dplyr::slice_sample(n = ceiling(proportion), by = "N") %>% # First get roughly the amount per stratified N
-    dplyr::slice_sample(n = no_items) %>% # Then make sure there the correct number of items in the end. We do this randomly.
-    dplyr::mutate(trial_no = dplyr::row_number()) %>%
-    dplyr::collect()
+    dplyr::slice_sample(n = no_items) %>%
+    dplyr::collect() %>%
+    # Then make sure there the correct number of items in the end. We do this randomly.
+    dplyr::mutate(trial_no = dplyr::row_number())
 
   # Shuffle the row order
   if(shuffle) {
@@ -328,6 +329,10 @@ sample_from_user_range <- function(no_to_sample) {
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
     span <- psychTestR::get_global("span", state)
+
+    print('span...')
+    print(span)
+
     span_warning(span)
 
     if(is.null(span) | span < 10) {
@@ -400,7 +405,7 @@ sample_random <- function(item_bank, num_items) {
 
 span_warning <- function(span) {
   if(is.null(span)) {
-    warning("There was no user span set. Do you need a user range page or fake_range before sampling?")
+    warning("There was no user span set. Do you need a user range page or a default_range before sampling?")
   }
 }
 
@@ -411,16 +416,20 @@ span_warning <- function(span) {
 #'
 #' @param num_review_items
 #' @param id
+#' @param rhythmic
 #'
 #' @return
 #' @export
 #'
 #' @examples
-sample_review <- function(num_review_items, id = "arrhythmic_melody") {
+sample_review <- function(num_review_items, id = "arrhythmic_melody", rhythmic = FALSE) {
   psychTestR::code_block(function(state, ...) {
 
     # Sample arrhythmic
-    review_sample <- get_review_trials(num_review_items, state)
+    review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
+
+    print(review_sample)
+    print(nrow(review_sample))
 
     psychTestR::set_global(id, review_sample, state)
   })

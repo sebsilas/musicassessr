@@ -43,11 +43,15 @@ melody_trials(
   first_note_message = psychTestR::i18n("first_note_is"),
   transposed_message = psychTestR::i18n("transposed"),
   play_first_note_button_text = psychTestR::i18n("play_first_note"),
-  learn_test_paradigm = FALSE
+  learn_test_paradigm = FALSE,
+  sample_item_bank_via_api = FALSE,
+  start_from_sampled_trial_no = 1L,
+  pass_items_through_url_parameter = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{learn_test_paradigm}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Melody trials constructor

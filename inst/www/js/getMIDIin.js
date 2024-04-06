@@ -103,9 +103,6 @@ function instantiateMIDI(midi_device, interactive_midi = false, mute_midi_playba
 
               // Play note
 
-              // there is a bug with the piano sound where it plays an octave higher
-              // need to make sure this doesn't apply to tones though FIX
-              piano_midi_note_on = midi_note_on-12;
               freq_tone = Tone.Frequency(piano_midi_note_on, "midi").toNote();
 
 

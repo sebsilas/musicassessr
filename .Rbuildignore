@@ -13,3 +13,4 @@
 backup
 .Renviron
 ^\.github$
+^www$

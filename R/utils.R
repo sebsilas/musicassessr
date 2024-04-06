@@ -479,3 +479,22 @@ get_nrows <- function(df) {
 
 
 
+#' Get value from a promise
+#'
+#' @param promise
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_promise_value <- function(promise) {
+  if(promises::is.promise(promise)) {
+    result <- environment(promise[["then"]])[["private"]][["value"]]
+    return(result)
+  } else {
+    return(promise)
+  }
+}
+
+
+

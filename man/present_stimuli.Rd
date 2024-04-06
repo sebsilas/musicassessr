@@ -70,6 +70,8 @@ present_stimuli(
   play_first_note_button_text = psychTestR::i18n("play_first_note"),
   reactive_melody_no = FALSE,
   mute_midi_playback = FALSE,
+  db_vars = NULL,
+  use_musicassessr_db = FALSE,
   ...
 )
 }
@@ -79,6 +81,10 @@ present_stimuli(
 \item{trigger_end_of_stimulus_fun}{A string of an anonymous Javascript function (with body) to trigger when the stimulus is completed.}
 
 \item{mute_midi_playback}{Should MIDI audio feedback be muted on record_midi_pages?}
+
+\item{db_vars}{Vars for the DB as a named list.}
+
+\item{use_musicassessr_db}{Are we using musicassessrdb?}
 
 \item{...}{}
 }

@@ -306,7 +306,8 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
       onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
       ioi = c(NA, diff(onset)),
       ioi_class = itembankr::classify_duration(ioi)
-    ) %>% itembankr::segment_phrase()
+    ) %>% itembankr::segment_phrase() %>%
+      expand_string_df_row()
 
     opti3 <- opti3_df(melody1 = stimuli_df,
                       melody2 = user_input_as_pyin)

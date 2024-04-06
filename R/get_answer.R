@@ -195,6 +195,15 @@ get_answer_pyin <- function(input,
   # For audio with silence added at beginning:
   new_audio_file <- paste0(tools::file_path_sans_ext(audio_file), "_beginning_silence_added.wav")
 
+  count <- 0
+
+  while(!file.exists(audio_file) && count < 100) {
+    logging::loginfo("File not ready yet %s", count)
+    count <- count + 1
+  }
+
+  logging::loginfo("File exists!")
+
   # Add silence to beginning
   silence_file <- add_silence_to_audio_file(old_file = audio_file,
                             new_file = new_audio_file, # Note, we overwrite the old file
@@ -490,7 +499,8 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   type <- match.arg(type)
 
-  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(rjson::fromJSON(input$stimuli_durations))) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(input$stimuli_durations)) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(stimuli_durations))  NA else stimuli_durations
 
   if(type == "midi") {
 
@@ -750,7 +760,6 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
 
     trial_time_started <- psychTestR::get_global("trial_time_started", state)
     session_id <- psychTestR::get_global("session_id", state)
-    item_bank_id <- psychTestR::get_global("item_bank_id", state)
     item_id <- if(is.null(res$answer_meta_data$item_id)) psychTestR::get_global("item_id", state) else res$answer_meta_data$item_id
     display_modality <- psychTestR::get_global("display_modality", state)
     phase <- if(is.null(psychTestR::get_global("phase", state))) res$answer_meta_data$phase else psychTestR::get_global("phase", state)
@@ -770,7 +779,6 @@ add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores)
                      display_modality = display_modality,
                      phase = phase,
                      rhythmic = rhythmic,
-                     item_bank_id = as.integer(item_bank_id),
                      session_id = as.integer(session_id),
                      test_id = as.integer(test_id)
                      )
@@ -931,6 +939,37 @@ get_answer_meta_data <- function(input, ...) {
   } else{
     return(amd)
   }
+
+}
+
+
+
+#' Get answer
+#'
+#' @param input
+#' @param state
+#' @param midi_vs_audio
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, midi_vs_audio = c("audio", "midi"), ...) {
+
+  logging::loginfo("get_answer_add_trial_and_compute_trial_scores")
+
+  midi_vs_audio <- match.arg(midi_vs_audio)
+
+  csv_file <- paste0(input$key, ".csv")
+
+  list(
+    user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
+    user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
+    attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
+    csv_file = csv_file
+  )
+
 
 }
 

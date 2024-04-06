@@ -35,6 +35,8 @@ record_midi_page(
   show_record_button = TRUE,
   reactive_melody_no = FALSE,
   mute_midi_playback = FALSE,
+  db_vars = NULL,
+  use_musicassessr_db = FALSE,
   ...
 )
 }

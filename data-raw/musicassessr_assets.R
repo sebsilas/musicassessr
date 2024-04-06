@@ -30,7 +30,7 @@ instrument_list[instrument_list=="vib"] <- NULL
 instrument_list[instrument_list=="g"] <- NULL
 
 
-# attach long name format, to allow the grabbing of the abbreviated form
+# Attach long name format, to allow the grabbing of the abbreviated form
 names(instrument_list) <- c("Alto Saxophone", "Bass Clarinet", "Baritone Saxophone", "Clarinet", "Cornet", "Piano",
                             "Soprano Saxophone", "Trombone", "Trumpet", "Tenor Saxophone", "C Tenor Saxophone")
 

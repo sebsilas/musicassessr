@@ -39,8 +39,6 @@ make_musicassessr_test <- function(title,
   psychTestR::make_test(
     psychTestR::join(
 
-      if (opt$fake_range) set_instrument_range(),
-
       welcome_page,
 
       # Get participant ID
@@ -52,7 +50,10 @@ make_musicassessr_test <- function(title,
         app_name = opt$app_name,
         experiment_id = opt$experiment_id,
         experiment_condition_id = opt$experiment_condition_id,
-        user_id = opt$user_id
+        user_id = opt$user_id,
+        inst = opt$inst,
+        asynchronous_api_mode = opt$asynchronous_api_mode,
+        default_range = opt$default_range
         ),
 
       # Timeline before setup pages
@@ -67,7 +68,7 @@ make_musicassessr_test <- function(title,
       elts(),
 
       # Disconnect from database at end of test, if it was being used
-      if (opt$use_musicassessr_db) elt_disconnect_from_db(),
+      if (opt$use_musicassessr_db) musicassessrdb::elt_disconnect_from_db(),
 
       # Save results
       psychTestR::elt_save_results_to_disk(complete = TRUE),
@@ -80,7 +81,7 @@ make_musicassessr_test <- function(title,
       title = title,
       admin_password = admin_password,
       languages = languages,
-      on_session_ended_fun = if (opt$use_musicassessr_db) db_disconnect_shiny else NULL,
+      on_session_ended_fun = if (opt$use_musicassessr_db) musicassessrdb::db_disconnect_shiny else NULL,
       additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
                                                          musicassessr_aws = opt$musicassessr_aws,
                                                          visual_notation = opt$visual_notation,
@@ -117,7 +118,6 @@ make_musicassessr_test <- function(title,
 #' @param skip_setup Whether to skip setup. Can be TRUE (skip whole setup), FALSE or "except_microphone" (only setup the microphone but no other steps).
 #' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
 #' @param musical_instrument Whether the participant is required to have a musical instrument.
-#' @param fake_range Should a range be faked?
 #'
 #' @return
 #' @export
@@ -130,7 +130,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
                                 get_user_info = TRUE,
                                 demo = FALSE,
                                 get_instrument_range = FALSE,
-                                absolute_url = "https://www.adaptiveeartraining.com",
+                                absolute_url = character(), # Note, it's important that this is the default due to the way the SNR test works
                                 select_instrument = FALSE,
                                 get_instrument_range_musical_notation = FALSE,
                                 adjust_range = FALSE,
@@ -141,8 +141,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
                                 concise_wording = TRUE,
                                 skip_setup = FALSE,
                                 get_self_chosen_anonymous_id = FALSE,
-                                musical_instrument = FALSE,
-                                fake_range = FALSE) {
+                                musical_instrument = FALSE) {
 
 
   input_type <- match.arg(input_type)
@@ -152,7 +151,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
     musicassessr::setup_pages(input_type, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,
                               absolute_url, select_instrument, get_instrument_range_musical_notation,
                               adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
-                              skip_setup, get_self_chosen_anonymous_id, musical_instrument, fake_range)
+                              skip_setup, get_self_chosen_anonymous_id, musical_instrument)
   }
 
 
@@ -169,13 +168,15 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param visual_notation Will there be visual notation?
 #' @param record_audio Is audio recording required?
 #' @param midi_input Is MIDI input required?
-#' @param fake_range Should the vocal/instrument range be faked?
 #' @param musicassessr_aws Is this being run on Amazon Web Services (AWS)?
 #' @param experiment_id An experiment ID.
 #' @param experiment_condition_id An experiment condition ID.
 #' @param user_id A user ID.
 #' @param instrument_id An instrument ID.
 #' @param get_p_id Should a participant ID get collected at the beginning of the test?
+#' @param asynchronous_api_mode Turn asynchronous API mode on?
+#' @param inst What instrument?
+#' @param default_range Define a predefined vocal/instrument range.
 #'
 #' @return
 #' @export
@@ -189,16 +190,18 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              visual_notation = FALSE,
                              record_audio = TRUE,
                              midi_input = FALSE,
-                             fake_range = TRUE,
                              musicassessr_aws = FALSE,
                              experiment_id = NULL,
                              experiment_condition_id = NULL,
                              user_id = NULL,
                              instrument_id = NULL,
-                             get_p_id = FALSE) {
+                             get_p_id = FALSE,
+                             asynchronous_api_mode = FALSE,
+                             inst = NULL,
+                             default_range = set_default_range('Piano')) {
 
   stopifnot(
-    is.scalar(setup_pages),
+    is.scalar.logical(setup_pages),
     is.function(setup_options),
     is.scalar.logical(use_musicassessr_db),
     is.scalar.character(app_name),
@@ -206,13 +209,17 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.scalar.logical(visual_notation),
     is.scalar.logical(record_audio),
     is.scalar.logical(midi_input),
-    is.scalar.logical(fake_range),
     is.scalar.logical(musicassessr_aws),
     is.null.or(experiment_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(experiment_condition_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(user_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(instrument_id, function(x) is.scalar.character(x) || is.integer(x) ),
-    is.scalar.logical(get_p_id)
+    is.scalar.logical(get_p_id),
+    is.scalar.logical(asynchronous_api_mode),
+    is.null.or(inst, is.scalar.character),
+    is.null.or(default_range, function(x)   {
+      is.list(x) && length(x) == 3 && setequal(names(x), c('bottom_range', 'top_range', 'clef'))
+    })
   )
 
   list(
@@ -224,13 +231,15 @@ musicassessr_opt <- function(setup_pages = TRUE,
     visual_notation = visual_notation,
     record_audio = record_audio,
     midi_input = midi_input,
-    fake_range = fake_range,
     musicassessr_aws = musicassessr_aws,
     experiment_id = experiment_id,
     experiment_condition_id = experiment_condition_id,
     user_id = user_id,
     instrument_id = instrument_id,
-    get_p_id = get_p_id
+    get_p_id = get_p_id,
+    asynchronous_api_mode = asynchronous_api_mode,
+    inst = inst,
+    default_range = default_range
   )
 
 }

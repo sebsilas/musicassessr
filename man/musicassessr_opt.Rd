@@ -13,13 +13,15 @@ musicassessr_opt(
   visual_notation = FALSE,
   record_audio = TRUE,
   midi_input = FALSE,
-  fake_range = TRUE,
   musicassessr_aws = FALSE,
   experiment_id = NULL,
   experiment_condition_id = NULL,
   user_id = NULL,
   instrument_id = NULL,
-  get_p_id = FALSE
+  get_p_id = FALSE,
+  asynchronous_api_mode = FALSE,
+  inst = NULL,
+  default_range = set_default_range("Piano")
 )
 }
 \arguments{
@@ -39,8 +41,6 @@ musicassessr_opt(
 
 \item{midi_input}{Is MIDI input required?}
 
-\item{fake_range}{Should the vocal/instrument range be faked?}
-
 \item{musicassessr_aws}{Is this being run on Amazon Web Services (AWS)?}
 
 \item{experiment_id}{An experiment ID.}
@@ -52,6 +52,12 @@ musicassessr_opt(
 \item{instrument_id}{An instrument ID.}
 
 \item{get_p_id}{Should a participant ID get collected at the beginning of the test?}
+
+\item{asynchronous_api_mode}{Turn asynchronous API mode on?}
+
+\item{inst}{What instrument?}
+
+\item{default_range}{Define a predefined vocal/instrument range.}
 }
 \description{
 Specify options for a musicassessr test.

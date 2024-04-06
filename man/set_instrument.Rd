@@ -4,10 +4,15 @@
 \alias{set_instrument}
 \title{Set instrument ID}
 \usage{
-set_instrument(instrument_id = NULL)
+set_instrument(
+  instrument_id = NULL,
+  as_code_block = TRUE,
+  state = NULL,
+  set_range = TRUE
+)
 }
 \arguments{
-\item{instrument_id}{}
+\item{set_range}{}
 }
 \description{
 Set instrument ID

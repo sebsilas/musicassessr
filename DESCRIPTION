@@ -1,6 +1,6 @@
 Package: musicassessr
 Title: musicassessr; develop music psychology tests and assess musicological/psychological data
-Version: 1.5.3
+Version: 1.5.4
 Authors@R: 
     person(given = "Sebastian",
            family = "Silas",
@@ -29,7 +29,9 @@ Suggests:
     lavaan,
     car,
     lme4,
-    warbleR
+    warbleR,
+    future,
+    promises
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -39,7 +41,6 @@ Imports:
     htmltools,
     readxl,
     promises,
-    future,
     httr,
     stringi,
     hrep (>= 0.15.0),

@@ -1,10 +1,17 @@
 #' Page to select what instrument the participant is using
 #'
+#' @param use_musicassessr_db
+#' @param set_range_based_on_selection
+#' @param include_other_in_dropdown
+#'
 #' @return
 #' @export
 #'
 #' @examples
-select_musical_instrument_page <- function() {
+select_musical_instrument_page <- function(use_musicassessr_db = FALSE,
+                                           set_range_based_on_selection = FALSE,
+                                           include_other_in_dropdown = FALSE) {
+
 
   # do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
   insts_dict <- lapply(musicassessr::insts, psychTestR::i18n)
@@ -13,33 +20,57 @@ select_musical_instrument_page <- function() {
                 prompt = psychTestR::i18n("instrument_selection_message"),
                 next_button_text = psychTestR::i18n("Next"),
                 choices = as.vector(unlist(insts_dict)),
-                alternative_choice = TRUE,
+                alternative_choice = include_other_in_dropdown,
                 alternative_text = psychTestR::i18n("other_please_state"),
                 on_complete = function(state, answer, ...) {
+
                   language <- psychTestR::get_url_params(state)$language
+
 
                   if(language != "en") {
                     answer <- translate_from_dict(non_english_translation = answer, language = language)
                   }
 
-                  psychTestR::set_global("inst", answer, state)
+                  if(use_musicassessr_db) {
 
-                  trans_first_note <- insts_table %>%
-                    dplyr::filter(en == answer) %>%
-                    dplyr::pull(transpose)
+                    instrument_id <- musicassessrdb::instrument_name_to_id(answer)
 
-                  if(length(trans_first_note) == 0) {
-                    trans_first_note <- 0
+                    set_instrument(instrument_id, as_code_block = FALSE, state, set_range = set_range_based_on_selection)
+
+                  } else {
+                    # Note some of the following logic is used in set_instrument, so could find a way of removing redundancy
+                    psychTestR::set_global("inst", answer, state)
+
+                    inst <- insts_table %>%
+                      dplyr::filter(en == answer)
+
+                    trans_first_note <- inst %>%
+                      dplyr::pull(transpose)
+
+                    if(length(trans_first_note) == 0) {
+                      trans_first_note <- 0
+                    }
+                    clef <- inst %>%
+                      dplyr::pull(clef)
+
+                    if(length(clef) == 0) {
+                      clef <- "auto"
+                    }
+
+                    span <- inst$high_note - inst$low_note
+
+                    logging::loginfo("Setting span... %s", span)
+
+                    psychTestR::set_global("bottom_range", inst$low_note, state)
+                    psychTestR::set_global("top_range", inst$high_note, state)
+                    psychTestR::set_global("range", c(inst$low_note, inst$high_note), state)
+                    psychTestR::set_global("span", span, state)
+                    psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
+                    psychTestR::set_global("clef", clef, state)
                   }
-                  clef <- insts_table %>%
-                    dplyr::filter(en == answer) %>%
-                    dplyr::pull(clef)
-                  if(length(clef) == 0) {
-                    clef <- "auto"
-                  }
-                  psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
-                  psychTestR::set_global("clef", clef, state)
-                })
+
+              })
+
 }
 
 
@@ -207,6 +238,28 @@ empty_page <- function(body = "",
                        label = "") {
   body <- tagify(body)
   stopifnot(is.scalar.character(button_text))
-  ui <- shiny::div(shiny::tags$script(set_answer_meta_data(answer_meta_data)), page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))
+  ui <- shiny::div(shiny::tags$script(set_answer_meta_data(answer_meta_data)), page_title, body, psychTestR::trigger_button("next", button_text, style = "visibility:hidden;"))
   psychTestR::page(ui = ui, admin_ui = admin_ui, on_complete = on_complete, save_answer = save_answer, get_answer = get_answer, label = label)
+}
+
+
+wait_for_api_page <- function() {
+
+  psychTestR::while_loop(test = function(state, ...) {
+
+    Sys.sleep(1)
+
+    session_id <- get_promise_value(psychTestR::get_global("session_id", state))
+
+    logging::loginfo("Checking session_id... %s", session_id)
+
+    not_ready <- is.null(session_id)
+
+    if(not_ready) {
+      logging::loginfo("Session ID not ready, trying again...")
+    }
+
+    not_ready
+  }, empty_page(shiny::tags$div(shiny::tags$script('setTimeout(function() { next_page(); }, 1000);'), shiny::tags$p("Please wait a few seconds."), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', id = "volumeMeter", height = 200, width = 200))))
+
 }

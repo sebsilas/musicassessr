@@ -58,6 +58,8 @@
 #' @param play_first_note_button_text
 #' @param reactive_melody_no
 #' @param mute_midi_playback Should MIDI audio feedback be muted on record_midi_pages?
+#' @param db_vars Vars for the DB as a named list.
+#' @param use_musicassessr_db Are we using musicassessrdb?
 #' @param ...
 #'
 #' @return
@@ -109,7 +111,9 @@ present_stimuli <- function(stimuli,
                             transposed_message = psychTestR::i18n("transposed"),
                             play_first_note_button_text = psychTestR::i18n("play_first_note"),
                             reactive_melody_no = FALSE,
-                            mute_midi_playback = FALSE, ...) {
+                            mute_midi_playback = FALSE,
+                            db_vars = NULL,
+                            use_musicassessr_db = FALSE, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -150,7 +154,9 @@ present_stimuli <- function(stimuli,
             is.scalar.character(transposed_message),
             is.scalar.character(play_first_note_button_text),
             is.scalar.logical(reactive_melody_no),
-            is.scalar.logical(mute_midi_playback)
+            is.scalar.logical(mute_midi_playback),
+            is.null.or(db_vars, is.list),
+            is.scalar.logical(use_musicassessr_db)
             )
 
   # Generic stimuli types
@@ -165,7 +171,7 @@ present_stimuli <- function(stimuli,
   } else if (stimuli_type == "video") {
     return_stimuli <- present_stimuli_video(video_url = stimuli, ...)
   } else if (stimuli_type == "audio") {
-    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button, trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun, ...)
+    return_stimuli <- present_stimuli_audio(audio_url = stimuli, hideOnPlay = hideOnPlay, volume = volume, audio_playback_as_single_play_button = audio_playback_as_single_play_button, trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun, answer_meta_data = answer_meta_data, ...)
   } else if (stimuli_type == "audio_WJD") {
     return_stimuli <- present_stimuli_audio_WJD(pattern = stimuli, answer_meta_data = answer_meta_data, ...)
     # Musical stimuli types
@@ -232,7 +238,8 @@ present_stimuli <- function(stimuli,
                               melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type,
                               show_record_button = show_record_button, show_sheet_music_after_record = show_sheet_music_after_record, reactive_melody_no = reactive_melody_no,
-                              mute_midi_playback = mute_midi_playback, ...)
+                              mute_midi_playback = mute_midi_playback,
+                              db_vars = db_vars, use_musicassessr_db = use_musicassessr_db, ...)
 
   } else if(page_type == "record_audio_page") {
 
@@ -251,7 +258,8 @@ present_stimuli <- function(stimuli,
                               melody_no = melody_no, show_progress = show_progress, total_no_melodies = total_no_melodies,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type, show_sheet_music_after_record = show_sheet_music_after_record,
                               show_record_button = show_record_button,
-                              reactive_melody_no = reactive_melody_no, ...)
+                              reactive_melody_no = reactive_melody_no,
+                              db_vars = db_vars, use_musicassessr_db = use_musicassessr_db, ...)
   } else {
     if(page_text_first) {
       full_page <- shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(page_text), shiny::tags$br(), return_stimuli)
@@ -285,7 +293,9 @@ retrieve_page_type <- function(page_type = character(),
                                show_sheet_music_after_record = FALSE,
                                show_record_button = FALSE,
                                reactive_melody_no = FALSE,
-                               mute_midi_playback = FALSE, ...) {
+                               mute_midi_playback = FALSE,
+                               db_vars = NULL,
+                               use_musicassessr_db = FALSE, ...) {
 
 
   stopifnot(is.scalar.character(page_type),
@@ -311,7 +321,9 @@ retrieve_page_type <- function(page_type = character(),
             is.scalar.logical(show_sheet_music_after_record),
             is.scalar.logical(show_record_button),
             is.scalar.logical(reactive_melody_no),
-            is.scalar.logical(mute_midi_playback)
+            is.scalar.logical(mute_midi_playback),
+            is.null.or(db_vars, is.list),
+            is.scalar.logical(use_musicassessr_db)
             )
 
 
@@ -371,7 +383,9 @@ retrieve_page_type <- function(page_type = character(),
                 "show_sheet_music_after_record" = show_sheet_music_after_record,
                 "show_record_button" = show_record_button,
                 "reactive_melody_no" = reactive_melody_no,
-                "mute_midi_playback" = mute_midi_playback
+                "mute_midi_playback" = mute_midi_playback,
+                "db_vars" = db_vars,
+                "use_musicassessr_db" = use_musicassessr_db
                 ))
 
   } else if(page_type == "record_key_presses_page") {

@@ -8,11 +8,12 @@ final_page_or_continue_to_new_test(
   final = TRUE,
   task_name,
   img = NULL,
-  present_continue_to_new_test_page = TRUE
+  present_continue_to_new_test_page = TRUE,
+  redirect_url = NULL
 )
 }
 \arguments{
-\item{present_continue_to_new_test_page}{}
+\item{redirect_url}{}
 }
 \description{
 Should the end of the test present a final page or not?

@@ -1,3 +1,4 @@
+
 body {
   line-height: 2em;
 }
@@ -6,9 +7,13 @@ p, h1, h2, h3, h4, img {
   margin: 0 0 20px 0;
 }
 
-ul, ol {
-    text-align: center;
-    list-style-position: inside;
+ul {
+  display: inline-block;
+  text-align: left;
+}
+
+.center {
+  text-align: center;
 }
 
 .roman {
@@ -18,6 +23,7 @@ ul, ol {
  list-style-type: square;
  margin-left: -2em;
 }
+
 
 #sheet_music {
   margin: auto;

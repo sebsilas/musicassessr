@@ -424,7 +424,7 @@ compute_accuracy_measures_aligned <- function(stimuli, recall){
   }
 
 }
-
+#
 # get_longer_and_shorter_melodies(1:10, 1:9)
 
 # align_stimuli_and_recall(60:67, 72:73, compute_recall, "recall")

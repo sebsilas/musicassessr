@@ -859,8 +859,12 @@ melody_trials <- function(var_name,
 
     }
 
+    print(asynchronous_api_mode)
+
     psychTestR::module(module_name,
                     psychTestR::join(
+
+                      if(asynchronous_api_mode) wait_for_api_page(),
 
                         # Instructions depending on review
                         if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
@@ -923,8 +927,6 @@ melody_trials <- function(var_name,
                          },
                          ## Sample items
                         if(!presampled && !pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
-
-                        if(asynchronous_api_mode) wait_for_api_page(),
 
                         ## Trials
                         main_trials,

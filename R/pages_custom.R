@@ -247,6 +247,8 @@ wait_for_api_page <- function() {
 
   psychTestR::while_loop(test = function(state, ...) {
 
+    logging::loginfo("Waiting for API response...")
+
     Sys.sleep(1)
 
     session_id <- get_promise_value(psychTestR::get_global("session_id", state))

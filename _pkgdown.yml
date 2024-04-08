@@ -118,11 +118,9 @@ reference:
   - add_feedback
   - calculate_stable_part
   - create_socials
-  - default_range
   - deploy_demographics
   - dict
   - download_files_from_ec2
-  - elt_add_final_session_info_to_db
   - empty_code_block
   - end_of_long_note_trial_screening
   - expand_string_df_row
@@ -158,6 +156,7 @@ reference:
   - sample_random
   - sample_review
   - sample_rhythmic
+  - set_default_range
   - test_acronym_to_name
   - tidy_melodies
   - to_string_df

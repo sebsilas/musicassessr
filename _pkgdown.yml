@@ -130,7 +130,6 @@ reference:
   - get_implicit_harmonies
   - get_long_note_pcas
   - get_melody_dtw
-  - get_range_from_user_id
   - grab_meta_data
   - have_requirements
   - insert_item_into_every_other_n_position_in_list

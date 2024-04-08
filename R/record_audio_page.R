@@ -96,6 +96,7 @@ record_audio_page <- function(body = "",
                           show_sheet_music_after_record,
                           show_record_button,
                           reactive_melody_no,
+                          mute_midi_playback = FALSE,
                           db_vars,
                           use_musicassessr_db)
 

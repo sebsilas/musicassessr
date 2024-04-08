@@ -21,7 +21,8 @@ musicassessr_opt(
   get_p_id = FALSE,
   asynchronous_api_mode = FALSE,
   inst = NULL,
-  default_range = set_default_range("Piano")
+  default_range = set_default_range("Piano"),
+  css = system.file("www/css/musicassessr.css", package = "musicassessr")
 )
 }
 \arguments{
@@ -58,6 +59,8 @@ musicassessr_opt(
 \item{inst}{What instrument?}
 
 \item{default_range}{Define a predefined vocal/instrument range.}
+
+\item{css}{A css stylesheet to use (passes to psychTestR)}
 }
 \description{
 Specify options for a musicassessr test.

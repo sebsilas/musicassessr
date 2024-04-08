@@ -91,7 +91,7 @@ make_musicassessr_test <- function(title,
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,
-        css = system.file('www/css/musicassessr.css', package = "musicassessr")
+        css = opt$css
       ), ...)
   )
 }
@@ -177,6 +177,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param asynchronous_api_mode Turn asynchronous API mode on?
 #' @param inst What instrument?
 #' @param default_range Define a predefined vocal/instrument range.
+#' @param css A css stylesheet to use (passes to psychTestR)
 #'
 #' @return
 #' @export
@@ -198,7 +199,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              get_p_id = FALSE,
                              asynchronous_api_mode = FALSE,
                              inst = NULL,
-                             default_range = set_default_range('Piano')) {
+                             default_range = set_default_range('Piano'),
+                             css = system.file('www/css/musicassessr.css', package = "musicassessr")) {
 
   stopifnot(
     is.scalar.logical(setup_pages),
@@ -219,7 +221,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(inst, is.scalar.character),
     is.null.or(default_range, function(x)   {
       is.list(x) && length(x) == 3 && setequal(names(x), c('bottom_range', 'top_range', 'clef'))
-    })
+    }),
+    is.null.or(css, is.scalar.character)
   )
 
   list(
@@ -239,7 +242,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     get_p_id = get_p_id,
     asynchronous_api_mode = asynchronous_api_mode,
     inst = inst,
-    default_range = default_range
+    default_range = default_range,
+    css = css
   )
 
 }

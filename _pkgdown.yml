@@ -104,18 +104,6 @@ reference:
   contents:
   - test_recording_app
 
-- title: "Database functions"
-  desc: >
-    Functions for working with MySQL Databases
-  contents:
-  - connect_to_db
-  - db_append_to_table
-  - get_table
-  - set_instrument
-  - set_instrument_range
-  - set_response_type
-  - set_test
-
 - title: "Parameter display helper functions"
   desc: >
     Helper functions to display what parameters can be used in musicassessr

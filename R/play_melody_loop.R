@@ -760,7 +760,7 @@ present_melody <- function(stimuli,
         session_id = get_promise_value(psychTestR::get_global("session_id", state)),
         test_id = psychTestR::get_global("test_id", state),
         review_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
-        new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
+        new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id
       )
     } else NULL
 

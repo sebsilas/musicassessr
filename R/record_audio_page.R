@@ -96,7 +96,7 @@ record_audio_page <- function(body = "",
                           show_sheet_music_after_record,
                           show_record_button,
                           reactive_melody_no,
-                          mute_midi_playback = FALSE,
+                          mute_midi_playback = FALSE, # record_audio_pages don't need this, but we need to specify a value
                           db_vars,
                           use_musicassessr_db)
 

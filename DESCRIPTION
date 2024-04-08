@@ -1,6 +1,6 @@
 Package: musicassessr
 Title: musicassessr; develop music psychology tests and assess musicological/psychological data
-Version: 1.5.4
+Version: 2.0.0
 Authors@R: 
     person(given = "Sebastian",
            family = "Silas",
@@ -78,7 +78,7 @@ Depends:
     R (>= 2.10),
     itembankr (>= 0.1.0),
     psych
-Remotes:  
+Remotes: 
     pmcharrison/psychTestR,
     sebsilas/itembankr,
     pmcharrison/hrep,

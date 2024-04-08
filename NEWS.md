@@ -1,3 +1,7 @@
+# musicassessr 2.0.0
+
+- Large series of update to support "api-mode", a way of storing data via APIs.
+
 # musicassessr 1.5.4
 
 # musicassessr 1.5.3

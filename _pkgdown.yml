@@ -84,7 +84,7 @@ reference:
   - item_sampler
   - item_sampler_v1
   - item_sampler_v2
-  - sample_melody_in_key_v2,
+  - sample_melody_in_key_v2
 
 - title: "Feedback functions"
   desc: >

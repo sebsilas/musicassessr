@@ -163,7 +163,7 @@ reference:
   - set_instrument
   - set_instrument_range
   - set_response_type
-  - set_test,
+  - set_test
   - songbird_welcome_page_fun
   - test_acronym_to_name
   - tidy_melodies

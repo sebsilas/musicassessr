@@ -8,8 +8,8 @@
 <meta name="description" content="musicassessr">
 <title>Accuracy vs. melodic similarity • musicassessr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accuracy vs. melodic similarity">
 <meta property="og:description" content="musicassessr">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">musicassessr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,12 +92,7 @@
 </h2>
 <p>First, let us define accuracy in the context of melodic recall research. In this context, broadly speaking, accuracy can be defined as the number of “correct” notes relative to something else, where “correct” usually means “contained in the target stimulus”. The “something else” could be i) the number of unique notes in the target stimulus or ii) the attempt length.</p>
 <p>Let us call a note that is both contained in the target melody and the sung recall a “hit”, a note recalled that is not in the target stimulus, a “false alarm” and a note in the target melody but not the sung recall, a “miss”.</p>
-<table class="table">
-<caption>
-<span id="tab:unnamed-chunk-3">Table 1: </span>Confusion matrix for note-by-note comparison of target melody to sung recall.
-</caption>
-<tbody><tr></tr></tbody>
-</table>
+<p>Table: (#tab:unnamed-chunk-3)Confusion matrix for note-by-note comparison of target melody to sung recall.</p>
 <table class="table gmisc_table" style="border-collapse: collapse; width: 70%">
 <thead>
 <tr>
@@ -184,424 +179,254 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 <h2 id="example-comparisons-of-accuracy-vs--similarity-measures-on-the-same-data">2. Example comparisons of accuracy vs. similarity measures on the same data<a class="anchor" aria-label="anchor" href="#example-comparisons-of-accuracy-vs--similarity-measures-on-the-same-data"></a>
 </h2>
 <p>We now score some simple examples to demonstrate the difference between accuracy and similarity scored on the same data. Let us take the first five notes of the C major scale as our target. If the target and recall are the same, all measures of accuracy and similarity will be 1. However, as Example 1 shows, if the pitch order is reversed, the accuracy measures will be 1, but the overall measure of similarity (<em>opti3</em>), nearly half this. This corresponds to the fact that the notes are the same, but the order highly distorts the melodic identity (note that the harmonic and rhythmic identity is preserved, however).</p>
-<img src="Ex.1%20Target_Ex.1%20Recall.png" width="1296"><table class="table">
+<p><img src="Ex.1%20Target_Ex.1%20Recall.png" width="1296"></p>
+<table style="width:100%;" class="table">
 <caption>
-<span id="tab:unnamed-chunk-7">Table 2: </span>Reversed recall similarity results
-</caption>
-<thead><tr>
-<th style="text-align:right;">
-Example No. 
-</th>
-<th style="text-align:right;">
-Acc.
-</th>
-<th style="text-align:right;">
-Prec.
-</th>
-<th style="text-align:right;">
-Recall
-</th>
-<th style="text-align:right;">
-F1
-</th>
-<th style="text-align:right;">
-AccAdj
-</th>
-<th style="text-align:right;">
-opti3
-</th>
-<th style="text-align:right;">
-ngrukkon
-</th>
-<th style="text-align:right;">
-rhythfuzz
-</th>
-<th style="text-align:right;">
-harmcore
-</th>
+<span id="tab:unnamed-chunk-7">Table 2: </span>Reversed recall similarity results</caption>
+<colgroup>
+<col width="16%">
+<col width="6%">
+<col width="8%">
+<col width="9%">
+<col width="4%">
+<col width="9%">
+<col width="8%">
+<col width="12%">
+<col width="13%">
+<col width="12%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Example No.</th>
+<th align="right">Acc.</th>
+<th align="right">Prec.</th>
+<th align="right">Recall</th>
+<th align="right">F1</th>
+<th align="right">AccAdj</th>
+<th align="right">opti3</th>
+<th align="right">ngrukkon</th>
+<th align="right">rhythfuzz</th>
+<th align="right">harmcore</th>
 </tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.51
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tbody><tr class="odd">
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0.51</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
 </tr></tbody>
 </table>
 <p>Conversely, as Example #2 shows, transposing the recall by a semitone causes a large deterioration in the accuracy scores, since nearly all notes are different, but the similarity measure is 1, corresponding to the fact that the melodic identity is preserved under the principle of transposition invariance.</p>
-<img src="Ex.2%20Target_Ex.2%20Recall.png" width="1296"><table class="table">
+<p><img src="Ex.2%20Target_Ex.2%20Recall.png" width="1296"></p>
+<table class="table">
 <caption>
-<span id="tab:unnamed-chunk-9">Table 3: </span>Transposed recall similarity results
-</caption>
-<thead><tr>
-<th style="text-align:right;">
-Example No. 
-</th>
-<th style="text-align:right;">
-Acc.
-</th>
-<th style="text-align:right;">
-Prec.
-</th>
-<th style="text-align:right;">
-Recall
-</th>
-<th style="text-align:right;">
-F1
-</th>
-<th style="text-align:right;">
-AccAdj
-</th>
-<th style="text-align:right;">
-opti3
-</th>
-<th style="text-align:right;">
-ngrukkon
-</th>
-<th style="text-align:right;">
-rhythfuzz
-</th>
-<th style="text-align:right;">
-harmcore
-</th>
+<span id="tab:unnamed-chunk-9">Table 3: </span>Transposed recall similarity results</caption>
+<colgroup>
+<col width="16%">
+<col width="6%">
+<col width="8%">
+<col width="9%">
+<col width="5%">
+<col width="9%">
+<col width="8%">
+<col width="12%">
+<col width="13%">
+<col width="12%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Example No.</th>
+<th align="right">Acc.</th>
+<th align="right">Prec.</th>
+<th align="right">Recall</th>
+<th align="right">F1</th>
+<th align="right">AccAdj</th>
+<th align="right">opti3</th>
+<th align="right">ngrukkon</th>
+<th align="right">rhythfuzz</th>
+<th align="right">harmcore</th>
 </tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-0.11
-</td>
-<td style="text-align:right;">
-0.2
-</td>
-<td style="text-align:right;">
-0.2
-</td>
-<td style="text-align:right;">
-0.2
-</td>
-<td style="text-align:right;">
-0.2
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tbody><tr class="odd">
+<td align="right">2</td>
+<td align="right">0.11</td>
+<td align="right">0.2</td>
+<td align="right">0.2</td>
+<td align="right">0.2</td>
+<td align="right">0.2</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
 </tr></tbody>
 </table>
 <p>For Examples 3-6, we take the humourous example of the “The Lick” - the archetypal jazz pattern made famous by <a href="https://www.youtube.com/watch?v=krDxhnaKD7Q" class="external-link">YouTube</a> and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity.</p>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>
-<span id="tab:unnamed-chunk-10">Table 4: </span>The Lick vs. its retrograde (rhythms the same) similarity results
-</caption>
-<thead><tr>
-<th style="text-align:right;">
-Example No. 
-</th>
-<th style="text-align:right;">
-Acc.
-</th>
-<th style="text-align:right;">
-Prec.
-</th>
-<th style="text-align:right;">
-Recall
-</th>
-<th style="text-align:right;">
-F1
-</th>
-<th style="text-align:right;">
-AccAdj
-</th>
-<th style="text-align:right;">
-opti3
-</th>
-<th style="text-align:right;">
-ngrukkon
-</th>
-<th style="text-align:right;">
-rhythfuzz
-</th>
-<th style="text-align:right;">
-harmcore
-</th>
+<span id="tab:unnamed-chunk-10">Table 4: </span>The Lick vs. its retrograde (rhythms the same) similarity results</caption>
+<colgroup>
+<col width="16%">
+<col width="6%">
+<col width="8%">
+<col width="9%">
+<col width="4%">
+<col width="9%">
+<col width="8%">
+<col width="12%">
+<col width="13%">
+<col width="12%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Example No.</th>
+<th align="right">Acc.</th>
+<th align="right">Prec.</th>
+<th align="right">Recall</th>
+<th align="right">F1</th>
+<th align="right">AccAdj</th>
+<th align="right">opti3</th>
+<th align="right">ngrukkon</th>
+<th align="right">rhythfuzz</th>
+<th align="right">harmcore</th>
 </tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.51
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tbody><tr class="odd">
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0.51</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
 </tr></tbody>
 </table>
 <p><img src="Ex.3%20Target_Ex.3%20Recall.png" width="1296"></p>
 <p>Examples #4 and #5 show that the inversion and retrograde inversion somewhat preserves accuracy but destroys identity and similarity.</p>
 <table class="table">
 <caption>
-<span id="tab:unnamed-chunk-12">Table 5: </span>The Lick plus its inversion (rhythms the same) similarity results
-</caption>
-<thead><tr>
-<th style="text-align:right;">
-Example No. 
-</th>
-<th style="text-align:right;">
-Acc.
-</th>
-<th style="text-align:right;">
-Prec.
-</th>
-<th style="text-align:right;">
-Recall
-</th>
-<th style="text-align:right;">
-F1
-</th>
-<th style="text-align:right;">
-AccAdj
-</th>
-<th style="text-align:right;">
-opti3
-</th>
-<th style="text-align:right;">
-ngrukkon
-</th>
-<th style="text-align:right;">
-rhythfuzz
-</th>
-<th style="text-align:right;">
-harmcore
-</th>
+<span id="tab:unnamed-chunk-12">Table 5: </span>The Lick plus its inversion (rhythms the same) similarity results</caption>
+<colgroup>
+<col width="15%">
+<col width="6%">
+<col width="7%">
+<col width="9%">
+<col width="6%">
+<col width="9%">
+<col width="7%">
+<col width="11%">
+<col width="13%">
+<col width="11%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Example No.</th>
+<th align="right">Acc.</th>
+<th align="right">Prec.</th>
+<th align="right">Recall</th>
+<th align="right">F1</th>
+<th align="right">AccAdj</th>
+<th align="right">opti3</th>
+<th align="right">ngrukkon</th>
+<th align="right">rhythfuzz</th>
+<th align="right">harmcore</th>
 </tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.56
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.27
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tbody><tr class="odd">
+<td align="right">4</td>
+<td align="right">0.56</td>
+<td align="right">0.71</td>
+<td align="right">0.71</td>
+<td align="right">0.71</td>
+<td align="right">0.71</td>
+<td align="right">0.27</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
 </tr></tbody>
 </table>
 <p><img src="Ex.4%20Target_Ex.4%20Recall.png" width="1296"></p>
-<img src="Ex.5%20Target_Ex.5%20Recall.png" width="1296"><table class="table">
+<p><img src="Ex.5%20Target_Ex.5%20Recall.png" width="1296"></p>
+<table class="table">
 <caption>
-<span id="tab:unnamed-chunk-15">Table 6: </span>The Lick plus its retrograde inversion (rhythms the same) similarity results
-</caption>
-<thead><tr>
-<th style="text-align:right;">
-Example No. 
-</th>
-<th style="text-align:right;">
-Acc.
-</th>
-<th style="text-align:right;">
-Prec.
-</th>
-<th style="text-align:right;">
-Recall
-</th>
-<th style="text-align:right;">
-F1
-</th>
-<th style="text-align:right;">
-AccAdj
-</th>
-<th style="text-align:right;">
-opti3
-</th>
-<th style="text-align:right;">
-ngrukkon
-</th>
-<th style="text-align:right;">
-rhythfuzz
-</th>
-<th style="text-align:right;">
-harmcore
-</th>
+<span id="tab:unnamed-chunk-15">Table 6: </span>The Lick plus its retrograde inversion (rhythms the same) similarity results</caption>
+<colgroup>
+<col width="15%">
+<col width="6%">
+<col width="7%">
+<col width="9%">
+<col width="6%">
+<col width="9%">
+<col width="7%">
+<col width="11%">
+<col width="13%">
+<col width="11%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Example No.</th>
+<th align="right">Acc.</th>
+<th align="right">Prec.</th>
+<th align="right">Recall</th>
+<th align="right">F1</th>
+<th align="right">AccAdj</th>
+<th align="right">opti3</th>
+<th align="right">ngrukkon</th>
+<th align="right">rhythfuzz</th>
+<th align="right">harmcore</th>
 </tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-0.56
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.71
-</td>
-<td style="text-align:right;">
-0.4
-</td>
-<td style="text-align:right;">
-0.25
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
+<tbody><tr class="odd">
+<td align="right">5</td>
+<td align="right">0.56</td>
+<td align="right">0.71</td>
+<td align="right">0.71</td>
+<td align="right">0.71</td>
+<td align="right">0.71</td>
+<td align="right">0.4</td>
+<td align="right">0.25</td>
+<td align="right">1</td>
+<td align="right">0</td>
 </tr></tbody>
 </table>
 <p>Finally, consider no pitch value changes, but only rhythmic changes, which destroys rhythmic identity and lowers overall melodic similarity (<em>opti3</em>), but preserves accuracy.</p>
-<img src="Ex.6%20Target_Ex.6%20Recall.png" width="1296"><table class="table">
+<p><img src="Ex.6%20Target_Ex.6%20Recall.png" width="1296"></p>
+<table style="width:100%;" class="table">
 <caption>
-<span id="tab:unnamed-chunk-17">Table 7: </span>The Lick plus its rhythm values changed similarity results
-</caption>
-<thead><tr>
-<th style="text-align:right;">
-Example No. 
-</th>
-<th style="text-align:right;">
-Acc.
-</th>
-<th style="text-align:right;">
-Prec.
-</th>
-<th style="text-align:right;">
-Recall
-</th>
-<th style="text-align:right;">
-F1
-</th>
-<th style="text-align:right;">
-AccAdj
-</th>
-<th style="text-align:right;">
-opti3
-</th>
-<th style="text-align:right;">
-ngrukkon
-</th>
-<th style="text-align:right;">
-rhythfuzz
-</th>
-<th style="text-align:right;">
-harmcore
-</th>
+<span id="tab:unnamed-chunk-17">Table 7: </span>The Lick plus its rhythm values changed similarity results</caption>
+<colgroup>
+<col width="16%">
+<col width="6%">
+<col width="8%">
+<col width="9%">
+<col width="4%">
+<col width="9%">
+<col width="8%">
+<col width="12%">
+<col width="13%">
+<col width="12%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">Example No.</th>
+<th align="right">Acc.</th>
+<th align="right">Prec.</th>
+<th align="right">Recall</th>
+<th align="right">F1</th>
+<th align="right">AccAdj</th>
+<th align="right">opti3</th>
+<th align="right">ngrukkon</th>
+<th align="right">rhythfuzz</th>
+<th align="right">harmcore</th>
 </tr></thead>
-<tbody><tr>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.66
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.14
-</td>
-<td style="text-align:right;">
-1
-</td>
+<tbody><tr class="odd">
+<td align="right">6</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0.66</td>
+<td align="right">1</td>
+<td align="right">0.14</td>
+<td align="right">1</td>
 </tr></tbody>
 </table>
 <p>The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity (e.g., Dowling, 1972). However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our <a href="https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html">simulation study</a>. In <a href="https://sebsilas.github.io/musicassessr/articles/white_paper_2_silas_and_mullensiefen_2023.html">Silas &amp; Müllensiefen (2023)</a>, we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.</p>

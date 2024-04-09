@@ -1127,7 +1127,9 @@ function upload_file_to_s3(blob){
             console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
         },
         function (err) {
-            return alert("There was an error uploading your record: ", err.message);
+            console.log(err);
+            return alert("There was an error uploading your record: ", err);
+
         }
     );
 }

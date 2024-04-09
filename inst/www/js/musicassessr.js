@@ -269,10 +269,6 @@ function playSeq(id, note_list, dur_list = null, sound = 'piano',
                  trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
 
 
-  console.log('playSeq');
-  console.log('id');
-  console.log(id);
-  console.log(note_list);
   // Hide play buttons to avoid any double stimuli playing
   if(id !== 'firstMelodyPlay') {
     hidePlayButton();
@@ -339,66 +335,6 @@ function playSeq(id, note_list, dur_list = null, sound = 'piano',
 
 }
 
-
-/*
-
-function playSeqArrhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
-
-  console.log('playSeqArrhythmic');
-
-  var last_note = freq_list.length;
-  var count = 0;
-
-
-  pattern = new Tone.Sequence(function(time, note){
-
-      triggerNote(sound, note, 0.50);
-
-      count = count + 1;
-
-      if (count === last_note) {
-        // Stop playing
-        stopSeq(pattern);
-        // Trigger something else on stop
-        if(trigger_end_of_stimuli_fun !== null) {
-          trigger_end_of_stimuli_fun();
-        }
-
-     }
-
-    }, freq_list);
-}
-
-function playSeqRhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
-
-  console.log('playSeqRhythmic');
-
-  var last_note = freq_list.length;
-  var count = 0;
-
-  var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
-  notesAndDurations = notesAndDurations.map(timeFromDurations);
-
-  pattern = new Tone.Part((time, value) => {
-              // the value is an object which contains both the note and the velocity
-
-              triggerNote(sound, value.note, 0.50);
-              count = count + 1;
-
-                if (count === last_note) {
-                  // Stop the sequence
-                  stopSeq(pattern);
-                  // Trigger something else on stop
-                  if(trigger_end_of_stimuli_fun !== null) {
-                    trigger_end_of_stimuli_fun();
-                  }
-            }
-              }, notesAndDurations);
-  pattern.start(0).loop = false;
-  Tone.Transport.start();
-}
-
-*/
 
 function stopSeq(pattern) {
   pattern.stop();
@@ -536,7 +472,6 @@ function hide_happy_with_response_message() {
 
 
 function hidePlayButton(play_button_id = "playButton") {
-  console.log('hidePlayButton!!');
   // Make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var playButton = document.getElementById(play_button_id);
   if (playButton !== null) {
@@ -559,9 +494,6 @@ function startRecording(type, stop_recording_automatically_after_ms = null) {
   startTime = new Date().getTime();
   Shiny.setInputValue('trial_start_time', startTime);
 
-  console.log('Start time 1: ');
-  console.log(startTime);
-
   if (type === "record_audio_page") {
     startAudioRecording();
   } else if(type === "record_midi_page") {
@@ -573,9 +505,6 @@ function startRecording(type, stop_recording_automatically_after_ms = null) {
   // And do the same thing again to estimate potential latency
   startTime2 = new Date().getTime();
   Shiny.setInputValue('trial_start_time2', startTime2);
-
-  console.log('stop_recording_automatically_after_ms');
-  console.log(stop_recording_automatically_after_ms);
 
   if(typeof(stop_recording_automatically_after_ms) === 'number') {
     setTimeout(() => {
@@ -666,10 +595,6 @@ function stopRecording(page_type, trigger_next_page = true) {
 
 function showStopButton(page_type = null, stop_button_text = "Stop", show_sheet_music = false, trigger_next_page = true, sheet_music_id = 'sheet_music') {
 
-  console.log('showStopButton');
-  console.log(page_type);
-
-
   var stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
@@ -679,9 +604,6 @@ function showStopButton(page_type = null, stop_button_text = "Stop", show_sheet_
 }
 
 function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = 'sheet_music', trigger_next_page = true) {
-
-  console.log('createCorrectStopButton');
-  console.log(page_type);
 
   stopButton.style.visibility = 'visible';
 
@@ -866,8 +788,6 @@ var audioContext //audio context to help us record
 
 
 function startAudioRecording() {
-
-  console.log('startAudioRecording');
 
     var constraints = { audio: true, video:false }
 

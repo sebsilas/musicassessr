@@ -908,7 +908,7 @@ function startAudioRecording() {
 
 	}).catch(function(err) {
 
-	    console.log('error...');
+	    console.log('Error: ');
 	    console.log(err);
 	  	//enable the record button if getUserMedia() fails
     	recordButton.disabled = false;

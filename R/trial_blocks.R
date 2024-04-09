@@ -823,6 +823,8 @@ melody_trials <- function(var_name,
 
     if(review) {
 
+      var_name <- paste0(var_name, "_review")
+
       # If a review block, we wrap these conditional to check there are enough review items for a given user.
 
       main_trials <- psychTestR::join(
@@ -858,8 +860,6 @@ melody_trials <- function(var_name,
       )
 
     }
-
-    print(asynchronous_api_mode)
 
     psychTestR::module(module_name,
                     psychTestR::join(

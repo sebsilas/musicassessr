@@ -923,6 +923,10 @@ grab_sampled_melody <- function(item_bank = NULL,
 
 grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length) {
 
+  if(!endsWith(var_name, "_review")) {
+    stop("Review var_names should end with _review")
+  }
+
   melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function)
 
   arrhythmic <- ! melody_from_state$rhythmic

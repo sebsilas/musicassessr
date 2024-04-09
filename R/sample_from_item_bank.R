@@ -328,10 +328,8 @@ sample_from_user_range <- function(no_to_sample) {
 #' @examples
 sample_arrhythmic <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
-    span <- psychTestR::get_global("span", state)
 
-    print('span...')
-    print(span)
+    span <- psychTestR::get_global("span", state)
 
     span_warning(span)
 
@@ -427,9 +425,6 @@ sample_review <- function(num_review_items, id = "arrhythmic_melody", rhythmic =
 
     # Sample arrhythmic
     review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
-
-    print(review_sample)
-    print(nrow(review_sample))
 
     psychTestR::set_global(id, review_sample, state)
   })

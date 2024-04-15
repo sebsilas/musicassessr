@@ -291,7 +291,19 @@ get_durations <- function(result) {
 }
 
 
-get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin) {
+#' Get opti3
+#'
+#' @param stimuli
+#' @param stimuli_durations
+#' @param stimuli_length
+#' @param user_input_as_pyin
+#' @param segment_phrase
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin, segment_phrase = TRUE) {
   # opti3
   if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {
     list(opti3 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA)
@@ -305,9 +317,8 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
       dur = stimuli_durations,
       onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
       ioi = c(NA, diff(onset)),
-      ioi_class = itembankr::classify_duration(ioi)
-    ) %>% itembankr::segment_phrase() %>%
-      expand_string_df_row()
+      ioi_class = itembankr::classify_duration(ioi) ) %>%
+      { if(segment_phrase) expand_string_df_row(itembankr::segment_phrase(.)) else . }
 
     opti3 <- opti3_df(melody1 = stimuli_df,
                       melody2 = user_input_as_pyin)

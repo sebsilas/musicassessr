@@ -53,11 +53,11 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
       if(use_musicassessr_db) {
 
-        # Init the DB connection (and return it for immediate use)
-        db_con <- musicassessrdb::connect_to_db_state(state) # NB: Leave this here, even for async api mode, (for now at least)
-        # We need it for validate_user_entry_into_test.. but maybe we can disconnect immediately within that context
-
         if(!asynchronous_api_mode) {
+
+          # Init the DB connection (and return it for immediate use)
+          db_con <- musicassessrdb::connect_to_db_state(state)
+
           # Check the specified IDs exist in the DB
           musicassessrdb::check_ids_exist(db_con, experiment_id, experiment_condition_id, user_id)
         }

@@ -753,6 +753,10 @@ melody_trials <- function(var_name,
     is.scalar.logical(asynchronous_api_mode)
   )
 
+  if(review && phase != 'review') {
+    stop("If review is TRUE phase should be 'review")
+  }
+
   if(presampled & ! sample_item_bank_via_api) {
     num_items <- nrow(item_bank)
   }
@@ -926,7 +930,7 @@ melody_trials <- function(var_name,
                            )
                          },
                          ## Sample items
-                        if(!presampled && !pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+                        if(!presampled && ! pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
                         ## Trials
                         main_trials,

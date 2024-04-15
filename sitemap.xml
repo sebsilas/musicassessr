@@ -169,6 +169,9 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/get_melody_dtw.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/get_opti3.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/get_promise_value.html</loc>
   </url>
   <url>
@@ -314,6 +317,9 @@
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/present_stimuli_midi_notes_visual.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/print_code_block.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/promises_pipe.html</loc>

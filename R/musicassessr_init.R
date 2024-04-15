@@ -80,8 +80,12 @@ musicassessr_init <- function(use_musicassessr_db = FALSE,
 
             logging::loginfo("Appending session via API")
 
+            if(Sys.getenv("ENDPOINT_URL") == "") {
+              stop("You need to set the ENDPOINT_URL!")
+            }
+
             session_id <- future::future({
-                musicassessrdb::store_db_session_api(experiment_condition_id, user_id, psychTestR_session_id, time_completed, experiment_id)
+                musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id, psychTestR_session_id, time_completed)
               }) %...>% (function(result) {
               logging::loginfo("Returning promise result: %s", result)
                 if(result$status == 200) {
@@ -176,8 +180,12 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
     if(!is.null(instrument_id)) {
 
       db_con <- psychTestR::get_global("db_con", state)
-      if(is.null(db_con)) stop("If instrument_id is non-NULL, then use_musicassessr_db must be true.")
-      musicassessrdb::check_id_exists(db_con, table_name = "instruments", id_col = "instrument_id", id = instrument_id)
+
+      if(!is.null(db_con)) {
+        if(DBI::dbIsValid(db_con)) {
+          musicassessrdb::check_id_exists(db_con, table_name = "instruments", id_col = "instrument_id", id = instrument_id)
+        }
+      }
 
       logging::loginfo("Setting instrument ID, manually specified. ID: %s", instrument_id)
 

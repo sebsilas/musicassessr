@@ -498,3 +498,19 @@ get_promise_value <- function(promise) {
 
 
 
+#' Print code block for testing
+#'
+#' @param msg
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print_code_block <- function(msg = "test") {
+
+  psychTestR::code_block(function(state, ...) {
+    logging::loginfo(msg)
+  })
+
+}
+

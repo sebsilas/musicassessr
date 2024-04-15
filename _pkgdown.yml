@@ -133,6 +133,7 @@ reference:
   - get_implicit_harmonies
   - get_long_note_pcas
   - get_melody_dtw
+  - get_opti3
   - get_promise_value
   - grab_meta_data
   - have_requirements
@@ -149,6 +150,7 @@ reference:
   - plot_longitudinal
   - plot_normal_dist_plus_score
   - prepare_mel_stimuli_for_dtw
+  - print_code_block
   - psych_test_snap
   - read_melody
   - rel_to_abs_mel_mean_centred

@@ -138,7 +138,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
       }),
 
       psychTestR::while_loop(test = function(state, ...) {
-        ! psychTestR::get_global("user_determined_stop", state) || nrow(psychTestR::get_global(var_name, state)) > 1L
+        ! psychTestR::get_global("user_determined_stop", state) && nrow(psychTestR::get_global(var_name, state)) > 0L
       }, logic = psychTestR::join(
                 construct_play_melody_page(melody = NULL,
                                            melody_row = NULL,

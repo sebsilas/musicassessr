@@ -22,8 +22,14 @@ present_stimuli_audio <- function(audio_url,
     on_finish <- '0'
   }
 
-  abs_melody <- itembankr::str_mel_to_vector(answer_meta_data$abs_melody)
-  durations <- itembankr::str_mel_to_vector(answer_meta_data$durations)
+  if(length(answer_meta_data$abs_melody) > 0L && is.scalar.character(answer_meta_data$abs_melody)) {
+    abs_melody <- itembankr::str_mel_to_vector(answer_meta_data$abs_melody)
+  }
+
+  if(length(answer_meta_data$durations) > 0L && is.scalar.character(answer_meta_data$durations)) {
+    durations <- itembankr::str_mel_to_vector(answer_meta_data$durations)
+  }
+
 
   shiny::tags$div(
 

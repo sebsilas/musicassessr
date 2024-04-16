@@ -34,7 +34,7 @@ present_stimuli_audio <- function(audio_url,
   shiny::tags$div(
 
     # If the (audio) melody has a MIDI representation, set it
-    if(length(abs_melody) > 1 && length(durations) > 1) set_melodic_stimuli(abs_melody, durations),
+    if(length(abs_melody) > 0L && length(durations) > 0L) set_melodic_stimuli(abs_melody, durations),
 
     shiny::tags$audio(src = audio_url, type = "audio/mp3",
                       controls = "true", id = "player",

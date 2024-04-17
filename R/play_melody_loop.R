@@ -954,12 +954,17 @@ grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, r
 
   logging::loginfo("grab_sampled_melody_review...")
 
+  print(var_name)
+
   if(!endsWith(var_name, "_review")) {
     stop("Review var_names should end with _review")
   }
 
 
   melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function, pass_items_through_url_parameter = pass_items_through_url_parameter)
+
+  print('melody_from_state')
+  print(melody_from_state)
 
   arrhythmic <- ! melody_from_state$rhythmic
 
@@ -975,6 +980,8 @@ grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, r
   inst <- psychTestR::get_global("inst", state)
 
   transpose <- transposition_check(melody_row)
+
+  #browser()
 
   durations <- if(arrhythmic) NA else itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(durations))
   melody <- sort_arrhythmic(arrhythmic, rel_melody, durations, note_length)$melody
@@ -1003,6 +1010,7 @@ transpose_melody <- function(rel_to_abs_mel_function, rel_melody, abs_melody, me
 }
 
 transposition_check <- function(melody_row) {
+  print('transposition_check')
   if("transpose" %in% names(melody_row)) {
     transpose <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(transpose))
   }
@@ -1053,14 +1061,14 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
     rel_melody <- melody_row %>% dplyr::pull(melody) %>% itembankr::str_mel_to_vector()
     item_id <- melody_row %>% dplyr::pull(item_id)
     item_number <- NA
-    abs_melody <- NA
+    abs_melody <- melody_row %>% dplyr::pull(abs_melody)
   }
 
   list(rel_melody = rel_melody,
        melody_row = melody_row,
        abs_melody = abs_melody,
        item_number = item_number,
-       rhythmic = if(is.null(melody_row$rhythmic)) NA else dplyr::pull(melody_row, rhythmic),
+       rhythmic = if(is.null(melody_row$rhythmic)) TRUE else dplyr::pull(melody_row, rhythmic),
        item_id = item_id)
 }
 

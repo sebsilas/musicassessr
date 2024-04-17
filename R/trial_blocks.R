@@ -768,6 +768,7 @@ melody_trials <- function(var_name,
 
   if(review) {
     num_examples <- 0L
+    var_name <- paste0(var_name, "_review")
   }
 
   # Flatten the number of items for use in some places
@@ -827,41 +828,8 @@ melody_trials <- function(var_name,
 
     if(review) {
 
-      var_name <- paste0(var_name, "_review")
-
-      # If a review block, we wrap these conditional to check there are enough review items for a given user.
-
-      main_trials <- psychTestR::join(
-
-        # Success (IF)
-        psychTestR::conditional(function(state, ...) {
-
-        res <- nrow(psychTestR::get_global(var_name, state)) >= num_examples_flat
-
-        if(res) {
-          logging::loginfo("There are enough review items.")
-        }
-
-        return(res)
-
-      }, main_trials),
-
-      # Failure (ELSE)
-
-      psychTestR::conditional(function(state, ...) {
-
-        res <- nrow(psychTestR::get_global(var_name, state)) < num_examples_flat
-
-        if(res) {
-          logging::loginfo("There are not enough review items.")
-        }
-
-        return(res)
-
-      }, psychTestR::one_button_page("Sorry, there are not enough items for you to review!"))
-
-
-      )
+      main_trials <- main_trials %>%
+        wrap_review_trials(var_name, num_items_flat, pass_items_through_url_parameter)
 
     }
 
@@ -870,17 +838,28 @@ melody_trials <- function(var_name,
 
                       if(asynchronous_api_mode) wait_for_api_page(),
 
+                      print_code_block("ha"),
+
                         # Instructions depending on review
                         if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
+
+                          print_code_block("ha2"),
+
                          # Examples
-                         if(is.numeric(num_examples_flat) && num_examples_flat > 0L && !review) {
+                         if(is.numeric(num_examples_flat) && num_examples_flat > 0L && ! review) {
                            psychTestR::join(
+
+                             print_code_block("h3"),
 
                              # Instructions
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
+
+
+                             print_code_block("h4"),
+
 
                              ## Sample example items
                              if(!presampled && !pass_items_through_url_parameter) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
@@ -924,16 +903,26 @@ melody_trials <- function(var_name,
                                start_from_trial_no = start_from_sampled_trial_no,
                                pass_items_through_url_parameter = pass_items_through_url_parameter),
 
+                             print_code_block("h5"),
+
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
                                shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
                            )
                          },
+
+                      print_code_block("h6"),
+
                          ## Sample items
                         if(!presampled && ! pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
+                      print_code_block("h7"),
+
                         ## Trials
                         main_trials,
+
+                      print_code_block("h8"),
+
 
                         # At end of block, clear this var, otherwise can lead to issues between trial blocks.
                         # Another option would be to revert everything to set_local.
@@ -946,6 +935,58 @@ melody_trials <- function(var_name,
   }
 }
 
+
+wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items_through_url_parameter) {
+
+  # If a review block, we wrap these conditional to check there are enough review items for a given user.
+
+  psychTestR::join(
+
+    # Success: if there are enough review items, load a trial block
+    psychTestR::conditional(function(state, ...) {
+
+      if(pass_items_through_url_parameter) {
+        logging::loginfo("pass_items_through_url_parameter is TRUE. Assuming there are enough review items...")
+        return(TRUE)
+      } else {
+
+        res <- nrow(psychTestR::get_global(var_name, state)) >= num_items_flat
+
+        if(res) {
+          logging::loginfo("There are enough review items.")
+        }
+        return(res)
+      }
+
+    }, main_trials),
+
+
+    # Failure: if there are not enough review items, move on
+
+    psychTestR::conditional(function(state, ...) {
+
+      if(pass_items_through_url_parameter) {
+
+        return(FALSE)
+
+      } else {
+
+        res <- nrow(psychTestR::get_global(var_name, state)) < num_items_flat
+
+        if(res) {
+          logging::loginfo("There are not enough review items.")
+        }
+
+        return(res)
+
+      }
+
+
+    }, psychTestR::one_button_page("Sorry, there are not enough items for you to review!")
+    )
+
+  )
+}
 
 handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function,
                                  item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test",

@@ -12,7 +12,7 @@ present_stimuli(
   page_text = " ",
   page_title = " ",
   slide_length = numeric(),
-  answer_meta_data = character(),
+  answer_meta_data = tibble::tibble(),
   get_answer = function(input, ...) {
     
     stop("Specify a proper get_answer function if you're using present_stimuli with page_type")

@@ -132,14 +132,10 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
     # Then the test stops when defined by the user
     items <- psychTestR::join(
 
-      print_code_block("h10"),
-
       psychTestR::code_block(function(state, ...) {
         psychTestR::set_global("reactive_melody_no", 1L, state)
         psychTestR::set_global("user_determined_stop", FALSE, state)
       }),
-
-      print_code_block("h11"),
 
       psychTestR::while_loop(test = function(state, ...) {
 
@@ -154,7 +150,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
         ! psychTestR::get_global("user_determined_stop", state) && nrow(trials) > 0L
 
       }, logic = psychTestR::join(
-                print_code_block("h12"),
+
                 construct_play_melody_page(melody = NULL,
                                            melody_row = NULL,
                                            melody_no = NA,
@@ -195,11 +191,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                            sample_item_bank_via_api,
                                            pass_items_through_url_parameter = pass_items_through_url_parameter),
 
-                print_code_block("h13"),
-
                 psychTestR::conditional(function(state, ...) {
-
-                  print('da1')
 
                   cond <- nrow(psychTestR::get_global(var_name, state)) > 0L
 
@@ -212,8 +204,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                          choices = c("Yes", "No"),
                                          prompt = "Would you like to continue learning?",
                                          on_complete = function(state, answer, ...) {
-
-                                           print('da2')
 
                                            if(answer == "No") {
                                              psychTestR::set_global("user_determined_stop", TRUE, state)
@@ -335,8 +325,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
   items <- add_feedback(items, feedback, after = 2) # A play_melody_loop is 3 pages long
 
   psychTestR::join(
-    print_code_block("h12"),
-
     psychTestR::code_block(function(state, ...) {
       psychTestR::set_local("presampled_items", presampled_items, state)
     }),
@@ -615,9 +603,7 @@ play_melody_loop <- function(item_bank = NULL,
     }),
 
     # Keep in loop until the participant confirms they are happy with their entry
-    psychTestR::while_loop(test = function(state, ...) {
-
-      print('daodo232')
+    psychTestR::while_loop(test = function(state, ...) {å
       number_attempts <- psychTestR::get_global("number_attempts", state)
       user_answer <- psychTestR::get_global("user_satisfied", state)
       user_wants_to_play_again <- user_answer %in% dict_key_to_translations("Try_Again")
@@ -770,9 +756,6 @@ present_melody <- function(stimuli,
     # Get trial paradigm info
     trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left)
 
-    print('da33..')
-    print(psychTestR::get_global("musicassessr_db", state))
-
     db_vars <- if(psychTestR::get_global("musicassessr_db", state)) {
 
       list(
@@ -792,9 +775,6 @@ present_melody <- function(stimuli,
         new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id
       )
     } else NULL
-
-    print('trial_paradigm')
-    print(trial_paradigm)
 
     # Present the stimulus
     present_stimuli(stimuli = melody_checks$melody,
@@ -955,19 +935,12 @@ grab_sampled_melody <- function(item_bank = NULL,
 
 grab_sampled_melody_review <- function(var_name, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, pass_items_through_url_parameter) {
 
-  logging::loginfo("grab_sampled_melody_review...")
-
-  print(var_name)
-
   if(!endsWith(var_name, "_review")) {
     stop("Review var_names should end with _review")
   }
 
 
   melody_from_state <- grab_melody_from_state(var_name, melody_no, state, psychTestRCAT = FALSE, rel_to_abs_mel_function, pass_items_through_url_parameter = pass_items_through_url_parameter)
-
-  print('melody_from_state')
-  print(melody_from_state)
 
   arrhythmic <- ! melody_from_state$rhythmic
 
@@ -1013,7 +986,6 @@ transpose_melody <- function(rel_to_abs_mel_function, rel_melody, abs_melody, me
 }
 
 transposition_check <- function(melody_row) {
-  print('transposition_check')
   if("transpose" %in% names(melody_row)) {
     transpose <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(transpose))
   }
@@ -1048,7 +1020,6 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
 
         logging::loginfo("Try again.. count: %s", count)
         count <- count + 1
-        print(trials)
 
       }
     } else {

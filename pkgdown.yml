@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.0.8
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   accuracy_vs_similarity_measures: accuracy_vs_similarity_measures.html
@@ -11,7 +11,7 @@ articles:
   technical_details: technical_details.html
   white_paper_1_silas_mullensiefen_and_kopiez_2023: white_paper_1_silas_mullensiefen_and_kopiez_2023.html
   white_paper_2_silas_and_mullensiefen_2023: white_paper_2_silas_and_mullensiefen_2023.html
-last_built: 2024-04-18T12:14Z
+last_built: 2024-04-23T19:45Z
 urls:
   reference: https://sebsilas.github.io/musicassessr/reference
   article: https://sebsilas.github.io/musicassessr/articles

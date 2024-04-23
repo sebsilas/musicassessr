@@ -603,7 +603,7 @@ play_melody_loop <- function(item_bank = NULL,
     }),
 
     # Keep in loop until the participant confirms they are happy with their entry
-    psychTestR::while_loop(test = function(state, ...) {å
+    psychTestR::while_loop(test = function(state, ...) {
       number_attempts <- psychTestR::get_global("number_attempts", state)
       user_answer <- psychTestR::get_global("user_satisfied", state)
       user_wants_to_play_again <- user_answer %in% dict_key_to_translations("Try_Again")

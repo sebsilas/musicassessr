@@ -46,7 +46,6 @@ record_midi_or_audio_ui <- function(body = "",
 
   attempt <- rjson::toJSON(max_goes - attempts_left)
 
-
   section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
   psychTestR::page(ui = shiny::tags$div(

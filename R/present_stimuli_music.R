@@ -40,11 +40,11 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
 
   shiny::tags$div(
-    # Should the first note be shown/played?
-    show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message, transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text),
-    set_melodic_stimuli(stimuli, durations),
-    shiny::tags$div(id = button_area_id, play_button),
-    shiny::tags$br()
+      # Should the first note be shown/played?
+      show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message, transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text),
+      set_melodic_stimuli(stimuli, durations),
+      shiny::tags$div(id = button_area_id, play_button),
+      shiny::tags$br()
     )
 
 }

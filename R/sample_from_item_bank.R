@@ -423,6 +423,8 @@ span_warning <- function(span) {
 sample_review <- function(num_review_items, id = "arrhythmic_melody", rhythmic = FALSE) {
   psychTestR::code_block(function(state, ...) {
 
+    print('sample_review')
+
     # Sample arrhythmic
     review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
 

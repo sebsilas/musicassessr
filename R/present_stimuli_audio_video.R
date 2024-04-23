@@ -1,3 +1,4 @@
+
 present_stimuli_video <- function(video_url, ...) {
   vid <- shiny::tags$div(htmltools::HTML(paste0("<video controls width=\"640px\", height=\"350px\">
   <source muted=\"false\", src=\"", video_url,"\" type = \"video/mp4\">
@@ -56,7 +57,6 @@ present_stimuli_audio <- function(audio_url,
     shiny::tags$script(paste0(
       'var player = document.getElementById("player");
       if(typeof player !== "undefined") {
-        console.log(\'in this if\');
           player.addEventListener("play", function () {
           hideAudioFilePlayer();
           var audio_duration = player.duration * 1000; // to ms
@@ -66,7 +66,7 @@ present_stimuli_audio <- function(audio_url,
 
     if(hideOnPlay) {
       shiny::tags$script(paste0('
-        function hide_spinner(){
+        function hide_spinner() {
                       spinner=document.getElementsByClassName(\"hollow-dots-spinner\");
                       if(typeof spinner[0] !== "undefined") {
                         spinner[0].style.display = "none";
@@ -78,7 +78,6 @@ present_stimuli_audio <- function(audio_url,
         }
         var player = document.getElementById("player");
         if(typeof player !== "undefined") {
-            console.log(\'in this if\');
             player.addEventListener("play", function () {
             hideAudioFilePlayer();
             var audio_duration = player.duration * 1000; // to ms

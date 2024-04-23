@@ -793,6 +793,9 @@ present_melody <- function(stimuli,
       )
     } else NULL
 
+    print('trial_paradigm')
+    print(trial_paradigm)
+
     # Present the stimulus
     present_stimuli(stimuli = melody_checks$melody,
                     stimuli_type = stimuli_type,

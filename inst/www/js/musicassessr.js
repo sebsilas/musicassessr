@@ -584,6 +584,10 @@ function stopRecording(page_type, trigger_next_page = true) {
     }
 
 
+    if(show_happy_with_response) {
+      trigger_next_page = false;
+    }
+
     if(trigger_next_page) {
       next_page();
     }
@@ -851,13 +855,6 @@ function pauseRecording(){
 	}
 }
 
-function hideButtonAreaShowUserRating() {
-  button_area = document.getElementById("button_area");
-	button_area.style.display = "none";
-	stop_button = document.getElementById("stopButton");
-	stop_button.style.display = "none";
-}
-
 function stopAudioRecording() {
 
 	//tell the recorder to stop the recording
@@ -1031,10 +1028,6 @@ function upload_file_to_s3(blob){
             Metadata: md
         }
     });
-
-    console.log(bucketName);
-    console.log(file_url);
-    console.log(destBucket);
 
     Shiny.setInputValue("sourceBucket", bucketName);
     Shiny.setInputValue("key", file_url);

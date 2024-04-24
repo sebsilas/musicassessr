@@ -655,7 +655,7 @@ play_melody_loop <- function(item_bank = NULL,
                      pass_items_through_url_parameter = pass_items_through_url_parameter),
 
       # Update and see how to proceed
-      update_play_melody_loop_and_save(state, max_goes)
+      update_play_melody_loop_and_save(max_goes)
     )
     ) # End psychTestR::while_loop
   ) # End join
@@ -1055,7 +1055,15 @@ sort_arrhythmic <- function(arrhythmic, rel_melody, durations, note_length) {
 }
 
 
-update_play_melody_loop_and_save <- function(state, max_goes) {
+#' Update play melody loop and save
+#'
+#' @param max_goes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+update_play_melody_loop_and_save <- function(max_goes) {
   psychTestR::code_block(function(state, answer, opt, ...) {
     logging::loginfo('Update play melody loop and save')
     psychTestR::set_global("user_satisfied", answer$user_satisfied, state)

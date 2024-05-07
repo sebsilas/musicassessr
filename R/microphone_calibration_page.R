@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-microphone_calibration_page <- function(button_text = psychTestR::i18n("Start_test"), concise_wording = FALSE, musical_instrument = FALSE) {
+microphone_calibration_page <- function(button_text = psychTestR::i18n("Test_Microphone"), concise_wording = FALSE, musical_instrument = FALSE) {
 
   if(concise_wording) {
     wording <- shiny::tags$div(shiny::tags$p(psychTestR::i18n("microphone_calibration_concise_message_1")),

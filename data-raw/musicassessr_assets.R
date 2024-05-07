@@ -1,3 +1,4 @@
+
 library(tidyverse)
 library(readxl)
 library(psych)
@@ -74,6 +75,8 @@ load('data-raw/melody_pca2_data.rda')
 load('data-raw/melody_pca2.rda')
 
 
+# NB! When you redo this, you will need to install the package, reload R, then run this
+# (look at the source code of musicassessr::dict to see why)
 musicassessr_dict <- musicassessr::dict(NULL)
 
 

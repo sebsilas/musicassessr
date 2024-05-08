@@ -5,7 +5,7 @@
 \title{Microphone Calibration Page}
 \usage{
 microphone_calibration_page(
-  button_text = psychTestR::i18n("Start_test"),
+  button_text = psychTestR::i18n("Test_Microphone"),
   concise_wording = FALSE,
   musical_instrument = FALSE
 )

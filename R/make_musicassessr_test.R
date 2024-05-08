@@ -81,7 +81,7 @@ make_musicassessr_test <- function(title,
       title = title,
       admin_password = admin_password,
       languages = languages,
-      on_session_ended_fun = if (opt$use_musicassessr_db) musicassessrdb::db_disconnect_shiny else NULL,
+      on_session_ended_fun = end_session(use_musicassessr_db = opt$use_musicassessr_db, asynchronous_api_mode = opt$asynchronous_api_mode),
       additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
                                                          musicassessr_aws = opt$musicassessr_aws,
                                                          visual_notation = opt$visual_notation,
@@ -96,6 +96,53 @@ make_musicassessr_test <- function(title,
   )
 }
 
+#' End session
+#'
+#' @param use_musicassessr_db
+#' @param asynchronous_api_mode
+#'
+#' @return
+#' @export
+#'
+#' @examples
+end_session <- function(use_musicassessr_db, asynchronous_api_mode) {
+
+  if (use_musicassessr_db && ! asynchronous_api_mode) {
+    return(musicassessrdb::musicassessr_shiny_on_stop)
+  } else if (use_musicassessr_db && asynchronous_api_mode) {
+    return(end_session_api)
+  } else {
+    return(NULL)
+  }
+}
+
+end_session_api <- function(state) {
+
+    # Get session info
+    test_id <- psychTestR::get_global("test_id", state)
+    session_id <- psychTestR::get_global("session_id", state) # Created earlier
+    user_id <- psychTestR::get_global("user_id", state)
+
+    logging::loginfo("call compute_session_scores_and_end_session_api...")
+
+    logging::loginfo("test_id: %s", test_id)
+    logging::loginfo("session_id: %s", musicassessr::get_promise_value(session_id))
+    logging::loginfo("user_id: %s", user_id)
+
+    final_session_result <- future::future({
+      musicassessrdb::compute_session_scores_and_end_session_api(test_id, musicassessr::get_promise_value(session_id), user_id)
+    }) %...>% (function(result) {
+      logging::loginfo("Returning promise result: %s", result)
+      if(result$status == 200) {
+        return(result)
+      } else {
+        return(NA)
+      }
+    })
+
+    psychTestR::set_global('final_session_result', final_session_result, state)
+
+}
 
 #' Setup page options for a musicassessr test
 #'

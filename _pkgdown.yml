@@ -125,6 +125,7 @@ reference:
   - dict
   - download_files_from_ec2
   - empty_code_block
+  - end_session
   - end_of_long_note_trial_screening
   - expand_string_df_row
   - filler_task

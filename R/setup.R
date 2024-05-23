@@ -59,6 +59,7 @@ setup_pages <- function(input_type = c("microphone",
                         asynchronous_api_mode = FALSE,
                         show_microphone_type_page = TRUE) {
 
+
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
 
@@ -86,7 +87,7 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(playful_volume_meter_setup),
             is.scalar.logical(asynchronous_api_mode),
             is.scalar.logical(show_microphone_type_page)
-            )
+  )
 
   if(demo) {
 
@@ -142,10 +143,10 @@ setup_pages <- function(input_type = c("microphone",
 
   }
 
+
   # Set the response/input type when it is definitely either microphone or MIDI (i.e., non-user specified):
   psychTestR::join(
     if(input_type %in% c("microphone", "midi_keyboard")) set_response_type(if(input_type == "microphone") "Microphone" else if(input_type == "midi_keyboard") "MIDI" else stop("Input type not recognised.")),
-    if(fake_range) set_instrument_range(),
     setup
   )
 
@@ -154,7 +155,6 @@ setup_pages <- function(input_type = c("microphone",
 
 correct_setup <- function(input_type, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
                           concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE, asynchronous_api_mode = FALSE) {
-
 
   if(!sjmisc::str_contains(input_type, "midi_keyboard")) {
     microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure, show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)

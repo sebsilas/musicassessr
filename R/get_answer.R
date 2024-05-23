@@ -850,3 +850,32 @@ get_answer_meta_data <- function(input, ...) {
 
 }
 
+#' Get answer
+#'
+#' @param input
+#' @param state
+#' @param midi_vs_audio
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, midi_vs_audio = c("audio", "midi"), ...) {
+
+  logging::loginfo("get_answer_add_trial_and_compute_trial_scores")
+
+  midi_vs_audio <- match.arg(midi_vs_audio)
+
+  csv_file <- paste0(input$key, ".csv")
+
+  list(
+    user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
+    user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
+    attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
+    csv_file = csv_file
+  )
+
+
+}
+

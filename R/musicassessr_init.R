@@ -94,7 +94,10 @@ call_api_on_start <- function(experiment_id = NA, experiment_condition_id = NA, 
     }
 
     musicassessr_session_id <<- future::future({
-      musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id) # NB time_started generated automatically at SQL level.
+      future_res <- musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id)
+      print('future_res...')
+      print(future_res)
+      future_res
     }, seed = NULL) %...>% (function(result) {
       logging::loginfo("Returning promise result: %s", result)
       if(result$status == 200) {

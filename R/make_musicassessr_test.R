@@ -135,12 +135,16 @@ end_session_api <- function(state, session) {
     # We only call this if the API hasn't been called through a "proper" test stoppage
 
     final_session_result <- future::future({
-
-      musicassessrdb::compute_session_scores_and_end_session_api(test_id,
+      # Test failed early
+      future_res <- musicassessrdb::compute_session_scores_and_end_session_api(test_id,
                                                                  musicassessr::get_promise_value(session_id),
                                                                  user_id,
                                                                  psychTestR_session_id,
-                                                                 session_complete = 0L) # Test failed early
+                                                                 session_complete = "0")
+
+      print('future_res_end...')
+      print(future_res)
+      future_res
     }, seed = NULL) %...>% (function(result) {
       logging::loginfo("Returning promise result: %s", result)
       if(result$status == 200) {

@@ -200,7 +200,7 @@ empty_page <- function(body = "",
                        label = "") {
   body <- tagify(body)
   stopifnot(is.scalar.character(button_text))
-  ui <- shiny::div(shiny::tags$script(set_answer_meta_data(answer_meta_data)), page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))
+  ui <- shiny::div(shiny::tags$script(set_answer_meta_data(answer_meta_data)), page_title, body, psychTestR::trigger_button("next", button_text, style = "visibility:hidden;"))
   psychTestR::page(ui = ui, admin_ui = admin_ui, on_complete = on_complete, save_answer = save_answer, get_answer = get_answer, label = label)
 }
 
@@ -314,5 +314,5 @@ get_select_items_job_status <- function(state) {
 wait_for_api_page_ui <- function(poll_frequency_ms) {
   empty_page(shiny::tags$div(shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'),
                              shiny::tags$p("Please wait a few seconds."),
-                             shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200)))
+                             shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter")))
 }

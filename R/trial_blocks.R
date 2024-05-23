@@ -978,10 +978,12 @@ wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items
   )
 }
 
-handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test", learn_test_paradigm = FALSE) {
+handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function,
+                                 item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test",
+                                 learn_test_paradigm = FALSE, rhythmic = FALSE) {
 
   if(review) {
-    sample_review(num_items_flat, id = var_name)
+    sample_review(num_items_flat, id = var_name, rhythmic = rhythmic)
   } else if(learn_test_paradigm && phase == "test") {
 
     psychTestR::code_block(function(state, ...) {

@@ -312,7 +312,8 @@ get_select_items_job_status <- function(state) {
 }
 
 wait_for_api_page_ui <- function(poll_frequency_ms) {
-  empty_page(shiny::tags$div(shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'),
-                             shiny::tags$p("Please wait a few seconds."),
-                             shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter")))
+  empty_page(shiny::tags$div(shiny::tags$p("Please wait a few seconds."),
+                             shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter"),
+                             shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');')
+                             ))
 }

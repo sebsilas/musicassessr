@@ -1,7 +1,7 @@
 console.log("loaded musicassessr.js");
 
 
-// initialise toneJS
+// Initialise toneJS
 toneJSInit();
 
 
@@ -14,7 +14,7 @@ preloadImage("https://adaptiveeartraining.com/assets/robot.png");
 
 
 
-// Vars
+// Instantiate vars
 var confidences = [];
 var user_response_frequencies = [];
 var timecodes = [];
@@ -30,12 +30,30 @@ var recordkey;
 var file_url;
 var onsets_noteon_timecode = [];
 var stimulus_trigger_times = [];
-var upload_to_s3 = false;
+var upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
+var pattern; // the melodic pattern being played. We only want one to be played at once.
 
-// functions
+// // Trial info
+
+var db_midi_vs_audio;
+// Note stimuli and stimuli_durations are instantiated elsewhere (via R)
+var db_trial_time_started;
+var db_trial_time_completed;
+var db_instrument;
+var db_attempt;
+var db_item_id;
+var db_display_modality;
+var db_phase;
+var db_rhythmic;
+var db_session_id;
+var db_test_id;
+var db_new_items_id;
+var db_review_items_id;
+
+// Functions
 
 
-// // setup functions
+// // Setup functions
 
 function initSynth() {
 
@@ -204,7 +222,12 @@ function playTones (freq_list) {
     freq_list = freq_list.map(x => Tone.Frequency(x));
     last_freq = freq_list[freq_list.length - 1];
 
-    var pattern = new Tone.Sequence(function(time, freq){
+    // Dispose of last pattern
+    if(pattern) {
+      pattern.dispose();
+    }
+
+    pattern = new Tone.Sequence(function(time, freq){
 
     synth.triggerAttackRelease(freq, 0.5);
 
@@ -242,16 +265,21 @@ function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun =
 
 
 
-function playSeq(note_list, dur_list = null, sound = 'piano',
+function playSeq(id, note_list, dur_list = null, sound = 'piano',
                  trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
 
+
+  // Hide play buttons to avoid any double stimuli playing
+  if(id !== 'firstMelodyPlay') {
+    hidePlayButton();
+    hidePlayButton('firstMelodyPlay');
+  }
   // Empty previous stimulus trigger times buffer
   stimulus_trigger_times = [];
   Shiny.setInputValue("stimulus_trigger_times", JSON.stringify(stimulus_trigger_times));
 
   // Make sure not playing
   Tone.Transport.stop();
-  pattern = null;
 
   // Connect sound
   connect_sound(sound);
@@ -265,20 +293,17 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
   }
 
   if(typeof note_list === 'number') {
-    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-    note_list = note_list -12;  // There is a bug with the piano sound where it plays an octave higher
-    }
     playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun);
   } else {
 
+    // Dispose of last pattern; but this only needs to happen for sequences, not single notes
+    if(pattern) {
+      pattern.dispose();
+    }
+
+
     // Convert to freqs
     var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
-
-    // There is a bug with the piano sound where it plays an octave higher
-
-    if (sound === "piano" | sound === "voice_doo" | sound === "voice_daa") {
-        note_list = note_list.map(x => x-12);
-    }
 
     var last_note = freq_list.length;
     var count = 0;
@@ -286,7 +311,7 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
     var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
     notesAndDurations = notesAndDurations.map(timeFromDurations);
 
-    var pattern = new Tone.Part((time, value) => {
+    pattern = new Tone.Part((time, value) => {
                 // the value is an object which contains both the note and the velocity
 
                 triggerNote(sound, value.note, 0.50);
@@ -308,63 +333,6 @@ function playSeq(note_list, dur_list = null, sound = 'piano',
     Tone.Transport.start();
   }
 
-}
-
-
-function playSeqArrhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
-
-  console.log('playSeqArrhythmic');
-
-  var last_note = freq_list.length;
-  var count = 0;
-
-
-  var pattern = new Tone.Sequence(function(time, note){
-
-      triggerNote(sound, note, 0.50);
-
-      count = count + 1;
-
-      if (count === last_note) {
-        // Stop playing
-        stopSeq(pattern);
-        // Trigger something else on stop
-        if(trigger_end_of_stimuli_fun !== null) {
-          trigger_end_of_stimuli_fun();
-        }
-
-     }
-
-    }, freq_list);
-}
-
-function playSeqRhythmic(freq_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
-
-  console.log('playSeqRhythmic');
-
-  var last_note = freq_list.length;
-  var count = 0;
-
-  var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
-  notesAndDurations = notesAndDurations.map(timeFromDurations);
-
-  var pattern = new Tone.Part((time, value) => {
-              // the value is an object which contains both the note and the velocity
-
-              triggerNote(sound, value.note, 0.50);
-              count = count + 1;
-
-                if (count === last_note) {
-                  // Stop the sequence
-                  stopSeq(pattern);
-                  // Trigger something else on stop
-                  if(trigger_end_of_stimuli_fun !== null) {
-                    trigger_end_of_stimuli_fun();
-                  }
-            }
-              }, notesAndDurations);
-  pattern.start(0).loop = false;
-  Tone.Transport.start();
 }
 
 
@@ -394,93 +362,6 @@ function bind_notes_and_durations(notes, durations) {
     }
     return(result);
 }
-
-
-/* Deprecated?
-
-function toneJSPlay (midi, start_note, end_note, transpose, id, sound, bpm = 90) {
-
-    // change tempo to whatever defined in R
-    adjusted_tempo = midi;
-    adjusted_tempo.header.tempos.bpm = bpm;
-    adjusted_tempo.header.tempos[0].bpm = bpm;
-
-    var now = Tone.now() + 0.5;
-    var synths = [];
-    adjusted_tempo.tracks.forEach(track => {
-
-        if (end_note === "end") {
-            notes_list = track.notes;
-
-            // console.log(track.notes); // need to test full notes
-            dur = track['duration'] * 1000;
-
-        } else {
-            // reduced note list
-            var dur = 0;
-            if(end_note === "end") {
-              end_note = notes_list = track['notes'].length;
-            }
-            notes_list = track['notes'].slice(start_note, end_note);
-            // get duration of contracted notes list
-            notes_list.forEach(el => {
-                   dur = dur + el['duration'];
-                })
-            dur = dur * 1000;
-
-        }
-
-        setTimeout(() => {
-          recordAndStop(null, true, hidePlay, id); }, dur);
-
-        //create a synth for each track
-        const synth = new Tone.PolySynth(2, Tone.Synth, synthParameters).toMaster();
-        synths.push(synth);
-
-        // pop end note message to end
-
-        //schedule all of the events
-        notes_list.forEach(note => {
-
-          transposed_note = Tone.Frequency(note.name).transpose(transpose);
-
-          // correct bug where piano sound plays an octave too high
-
-          if (sound === "piano") {
-            transposed_note = transposed_note.transpose(-12);
-          }
-
-
-          triggerNote(sound, transposed_note, note.duration, note.time + now);
-
-        });
-
-        // containers to pass to shiny
-        shiny_notes = [];
-        shiny_ticks = [];
-        shiny_durations = [];
-        shiny_durationTicks = [];
-
-        notes_list.forEach(note => {
-          shiny_notes.push(note.midi);
-          shiny_ticks.push(note.ticks);
-          shiny_durations.push(note.duration);
-          shiny_durationTicks.push(note.durationTicks);
-        });
-
-        // round the durations
-        shiny_durations_round = [];
-        shiny_durations.forEach(el => shiny_durations_round.push(el.toFixed(2)));
-
-        Shiny.setInputValue("stimuli_pitch", JSON.stringify(shiny_notes));
-        Shiny.setInputValue("stimuli_ticks", JSON.stringify(shiny_ticks));
-        Shiny.setInputValue("stimuli_durations", JSON.stringify(shiny_durations_round));
-        Shiny.setInputValue("stimuli_durationTicks", JSON.stringify(shiny_durationTicks));
-
-    });
-
-}
-*/
 
 async function midiToToneJS (url, note_no, hidePlay, transpose, id, sound, bpm) {
   // load a midi file in the browser
@@ -591,7 +472,7 @@ function hide_happy_with_response_message() {
 
 
 function hidePlayButton(play_button_id = "playButton") {
-  // make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
+  // Make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
   var playButton = document.getElementById(play_button_id);
   if (playButton !== null) {
     playButton.style.display = "none";
@@ -606,15 +487,12 @@ function hideAudioFilePlayer() {
 
 
 
-function startRecording(type) {
+function startRecording(type, stop_recording_automatically_after_ms = null) {
 
 
    // Initiate startTime
   startTime = new Date().getTime();
   Shiny.setInputValue('trial_start_time', startTime);
-
-  console.log('Start time 1: ');
-  console.log(startTime);
 
   if (type === "record_audio_page") {
     startAudioRecording();
@@ -628,19 +506,30 @@ function startRecording(type) {
   startTime2 = new Date().getTime();
   Shiny.setInputValue('trial_start_time2', startTime2);
 
-  console.log('Start time 2: ');
-  console.log(startTime2);
+  if(typeof(stop_recording_automatically_after_ms) === 'number') {
+    setTimeout(() => {
+      stopRecording(type, trigger_next_page = true)
+      }, stop_recording_automatically_after_ms);
+  }
+
 
 }
 
 
-function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true) {
+function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true,
+                        trigger_next_page = true, show_sheet_music = false, sheet_music_id = 'sheet_music') {
 
-  console.log('recordUpdateUI');
-  console.log(page_type);
+
+  removeElementIfExists("first_note");
+
+  var volumeMeter = document.getElementById('volumeMeter');
+  if(volumeMeter !== null) {
+  volumeMeter.style.visibility = "visible";
+  }
+
 
   if(showStop) {
-    showStopButton(page_type, stop_button_text);
+    showStopButton(page_type, stop_button_text, show_sheet_music, trigger_next_page, sheet_music_id);
   }
 
   if(hideRecord) {
@@ -653,18 +542,8 @@ function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, sh
 }
 
 
-/*
-var volumeMeter = document.getElementById('volumeMeter');
-if(volumeMeter !== null) {
-  volumeMeter.style.visibility = "visible";
-}
-
-
-*/
 
 function showSheetMusic(sheet_music_id) {
-  console.log('showSheetMusic');
-  console.log(sheet_music_id);
   var sheet_music = document.getElementById(sheet_music_id);
   sheet_music.style.visibility = "visible";
 }
@@ -683,57 +562,67 @@ function hideLoading() {
 }
 
 
-function stopRecording(type) {
+function stopRecording(page_type, trigger_next_page = true) {
+
+  var volumeMeter = document.getElementById('volumeMeter');
+
+  if(volumeMeter !== null) {
+    volumeMeter.style.visibility = "hidden";
+  }
 
   setTimeout(() => {
 
     hideStopButton();
     hideRecordingIcon();
 
-    if(type === "record_audio_page") {
+    if(page_type === "record_audio_page") {
       stopAudioRecording();
-    } else if(type === "record_midi_page") {
+    } else if(page_type === "record_midi_page") {
       stopMidiRecording();
     } else {
-      console.log('Unknown page type: ' + type);
+      console.log('Unknown page type: ' + page_type);
     }
-    next_page();
+
+
+    if(show_happy_with_response) {
+      trigger_next_page = false;
+    }
+
+    if(trigger_next_page) {
+      next_page();
+    }
 
   }, 500); /* Record a little bit more */
 
 
 }
 
-function showStopButton(type = null, stop_button_text = "Stop", show_sheet_music = false) {
-
-  console.log('showStopButton');
-  console.log(type);
+function showStopButton(page_type = null, stop_button_text = "Stop", show_sheet_music = false, trigger_next_page = true, sheet_music_id = 'sheet_music') {
 
   var stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
-    createCorrectStopButton(type, show_sheet_music);
+    createCorrectStopButton(page_type, show_sheet_music, sheet_music_id, trigger_next_page);
   }
 
 }
 
-function createCorrectStopButton(type, show_sheet_music, sheet_music_id = 'sheet_music') {
-
-  console.log('createCorrectStopButton');
-  console.log(type);
+function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = 'sheet_music', trigger_next_page = true) {
 
   stopButton.style.visibility = 'visible';
 
   stopButton.onclick = function () {
     if(show_happy_with_response) {
-      show_happy_with_response_message();
+      setTimeout(() => {
+        show_happy_with_response_message();
+      }, 500)
     }
     if(show_sheet_music) {
       // Because we are hiding *after* stopping i.e., after it has already been shown
       hideSheetMusic(sheet_music_id);
     }
 
-    stopRecording(type);
+    stopRecording(page_type, trigger_next_page);
   };
 }
 
@@ -783,6 +672,54 @@ function hideRecordButton() {
 
 // Utils
 
+
+function removeElementIfExists(element) {
+  var el = document.getElementById(element);
+  if(el !== null) {
+    el.parentNode.removeChild(el);
+  }
+}
+
+function removeElement(element) {
+  var el = document.getElementById(element);
+  el.parentNode.removeChild(el);
+}
+
+function getDateTime() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth()+1;
+  var day = now.getDate();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  var second = now.getSeconds();
+  if(month.toString().length == 1) {
+    month = '0'+month;
+  }
+  if(day.toString().length == 1) {
+    day = '0'+day;
+  }
+  if(hour.toString().length == 1) {
+    hour = '0'+hour;
+  }
+  if(minute.toString().length == 1) {
+       minute = '0'+minute;
+  }
+  if(second.toString().length == 1) {
+    second = '0'+second;
+  }
+  var dateTime = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
+  return dateTime;
+}
+
+function vectorToString(vector) {
+  if (!Array.isArray(vector)) {
+    return "Input is not a valid array";
+  }
+
+  return vector.join(', ');
+}
+
 function diff(ary) {
     var newA = [];
     for (var i = 1; i < ary.length; i++)  newA.push(ary[i] - ary[i - 1]);
@@ -811,9 +748,6 @@ function getUserInfo () {
 }
 
 function testFeatureCapability() {
-
-    // console.log(testMediaRecorder());
-    // console.log(Modernizr.webaudio);
 
     if (Modernizr.webaudio & testMediaRecorder()) {
         console.log("This browser has the necessary features");
@@ -859,8 +793,6 @@ var audioContext //audio context to help us record
 
 function startAudioRecording() {
 
-  console.log('startAudioRecording');
-
     var constraints = { audio: true, video:false }
 
 	/*
@@ -900,7 +832,7 @@ function startAudioRecording() {
 
 	}).catch(function(err) {
 
-	    console.log('error...');
+	    console.log('Error: ');
 	    console.log(err);
 	  	//enable the record button if getUserMedia() fails
     	recordButton.disabled = false;
@@ -921,13 +853,6 @@ function pauseRecording(){
 		pauseButton.innerHTML = "Pause";
 
 	}
-}
-
-function hideButtonAreaShowUserRating() {
-  button_area = document.getElementById("button_area");
-	button_area.style.display = "none";
-	stop_button = document.getElementById("stopButton");
-	stop_button.style.display = "none";
 }
 
 function stopAudioRecording() {
@@ -1070,19 +995,39 @@ function upload_file_to_s3(blob){
         params: { Bucket: bucketName }
     });
 
+    var md = {
+              // Note, all metadata must be strings
+              "midi-vs-audio": String(db_midi_vs_audio),
+              "stimuli": vectorToString(stimuli),
+              "stimuli-durations": vectorToString(stimuli_durations),
+              "trial-time-started": String(db_trial_time_started),
+              "trial-time-completed": String(getDateTime()),
+              "instrument": String(db_instrument),
+              "attempt": String(db_attempt),
+              "item-id": String(db_item_id),
+              "display-modality": String(db_display_modality),
+              "phase": String(db_phase),
+              "rhythmic": String(db_rhythmic),
+              "session-id": String(db_session_id),
+              "test-id": String(db_test_id),
+              "onset": String(db_onset),
+              "new-items-id": String(db_new_items_id),
+              "review-items-id": String(db_review_items_id)
+            };
+
+    console.log(md);
+
     var upload = new AWS.S3.ManagedUpload({
+
         params: {
             Bucket: bucketName,
             Key: file_url,
             ContentType: 'audio/wav',
             ACL: 'public-read',
-            Body: blob
+            Body: blob,
+            Metadata: md
         }
     });
-
-    console.log(bucketName);
-    console.log(file_url);
-    console.log(destBucket);
 
     Shiny.setInputValue("sourceBucket", bucketName);
     Shiny.setInputValue("key", file_url);
@@ -1095,7 +1040,10 @@ function upload_file_to_s3(blob){
             console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
         },
         function (err) {
-            return alert("There was an error uploading your record: ", err.message);
+            console.log(err);
+            return alert("There was an error uploading your record: ", err);
+
         }
     );
 }
+

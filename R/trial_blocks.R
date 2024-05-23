@@ -748,15 +748,11 @@ melody_trials <- function(var_name,
     psychTestR::module(module_name,
                     psychTestR::join(
 
-                        # Set item bank ID in code block
-                        set_item_bank_id(item_bank),
-                        # Pre-instructions, if review
+                      if(asynchronous_api_mode) api_check_pages(),
+
+                        # Instructions depending on review
                         if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
-                         # Instructions
-                         psychTestR::one_button_page(shiny::tags$div(
-                           shiny::tags$h2(page_title),
-                           shiny::tags$p(instruction_text)
-                         ), button_text = psychTestR::i18n("Next")),
+
                          # Examples
                          if(is.numeric(num_examples_flat) && num_examples_flat > 0L) {
                            psychTestR::join(
@@ -807,43 +803,12 @@ melody_trials <- function(var_name,
                                shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
                            )
                          },
+
                          ## Sample items
-                        if(!presampled) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm),
-                         ## Trials
-                         multi_page_play_melody_loop(
-                           presampled_items = if(presampled) item_bank else NULL,
-                           stimuli_type = "midi_notes",
-                           var_name = var_name,
-                           num_items = num_items_flat,
-                           page_title = page_title,
-                           page_text = page_text,
-                           page_type = page_type,
-                           get_answer = get_answer,
-                           rel_to_abs_mel_function = rel_to_abs_mel_function,
-                           feedback = feedback,
-                           sound = sound,
-                           get_trial_characteristics_function = get_trial_characteristics_function,
-                           max_goes_forced = max_goes_forced,
-                           max_goes = max_goes,
-                           item_bank = item_bank,
-                           display_modality = display_modality,
-                           show_progress = show_progress,
-                           sheet_music_start_hidden = sheet_music_start_hidden,
-                           sound_only_first_melody_note = sound_only_first_melody_note,
-                           sheet_music_id = sheet_music_id,
-                           give_first_melody_note = give_first_melody_note,
-                           arrhythmic = arrhythmic,
-                           singing_trials = singing_trials,
-                           get_similarity_to_previous_melody = get_similarity_to_previous_melody,
-                           volume_meter = volume_meter,
-                           volume_meter_type = volume_meter_type,
-                           melody_block_paradigm = melody_block_paradigm,
-                           phase = phase,
-                           first_note_message = first_note_message,
-                           transposed_message = transposed_message,
-                           play_first_note_button_text = play_first_note_button_text,
-                           learn_test_paradigm = learn_test_paradigm
-                           ),
+                        if(!presampled && ! pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+
+                        ## Trials
+                        main_trials,
 
                         # At end of block, clear this var, otherwise can lead to issues between trial blocks.
                         # Another option would be to revert everything to set_local.
@@ -857,6 +822,65 @@ melody_trials <- function(var_name,
 }
 
 
+
+api_check_pages <- function() {
+  psychTestR::join(
+    wait_for_api_page(),
+    wait_for_api_page(check_function = get_select_items_job_status)
+  )
+}
+
+wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items_through_url_parameter) {
+
+  # If a review block, we wrap these conditional to check there are enough review items for a given user.
+
+  psychTestR::join(
+
+    # Success: if there are enough review items, load a trial block
+    psychTestR::conditional(function(state, ...) {
+
+      if(pass_items_through_url_parameter) {
+        logging::loginfo("pass_items_through_url_parameter is TRUE. Assuming there are enough review items...")
+        return(TRUE)
+      } else {
+
+        res <- nrow(psychTestR::get_global(var_name, state)) >= num_items_flat
+
+        if(res) {
+          logging::loginfo("There are enough review items.")
+        }
+        return(res)
+      }
+
+    }, main_trials),
+
+
+    # Failure: if there are not enough review items, move on
+
+    psychTestR::conditional(function(state, ...) {
+
+      if(pass_items_through_url_parameter) {
+
+        return(FALSE)
+
+      } else {
+
+        res <- nrow(psychTestR::get_global(var_name, state)) < num_items_flat
+
+        if(res) {
+          logging::loginfo("There are not enough review items.")
+        }
+
+        return(res)
+
+      }
+
+
+    }, psychTestR::one_button_page("Sorry, there are not enough items for you to review!")
+    )
+
+  )
+}
 
 handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test", learn_test_paradigm = FALSE) {
 

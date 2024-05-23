@@ -5,12 +5,14 @@
 \title{Initiate a musicassessr test}
 \usage{
 musicassessr_init(
-  use_musicassessr_db = FALSE,
   app_name = "",
   experiment_id = NULL,
   experiment_condition_id = NULL,
   user_id = NULL,
-  asynchronous_api_mode = FALSE
+  asynchronous_api_mode = FALSE,
+  instrument_id = NULL,
+  inst = NULL,
+  default_range = set_default_range("Piano")
 )
 }
 \arguments{

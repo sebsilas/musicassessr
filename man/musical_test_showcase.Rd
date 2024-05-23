@@ -6,7 +6,6 @@
 \usage{
 musical_test_showcase(
   app_name = "test_showcase",
-  musicassessr_aws = FALSE,
   feedback = TRUE,
   num_items_rtt = list(free_recall = 2L, sync_beat = 2L, call_and_response = 2L),
   num_items_saa = list(long_tones = 2L, arrhythmic = 2L, rhythmic = 2L),

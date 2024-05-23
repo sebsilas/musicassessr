@@ -32,6 +32,8 @@ record_audio_page(
   show_sheet_music_after_record = FALSE,
   show_record_button = TRUE,
   reactive_melody_no = FALSE,
+  db_vars = NULL,
+  asynchronous_api_mode = FALSE,
   ...
 )
 }

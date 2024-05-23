@@ -1,10 +1,15 @@
 #' Page to select what instrument the participant is using
 #'
+#' @param set_range_based_on_selection
+#' @param include_other_in_dropdown
+#'
 #' @return
 #' @export
 #'
 #' @examples
-select_musical_instrument_page <- function() {
+select_musical_instrument_page <- function(set_range_based_on_selection = FALSE,
+                                           include_other_in_dropdown = FALSE) {
+
 
   # do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
   insts_dict <- lapply(musicassessr::insts, psychTestR::i18n)
@@ -22,24 +27,12 @@ select_musical_instrument_page <- function() {
                     answer <- translate_from_dict(non_english_translation = answer, language = language)
                   }
 
-                  psychTestR::set_global("inst", answer, state)
+                  instrument_id <- musicassessrdb::instrument_name_to_id(answer)
 
-                  trans_first_note <- insts_table %>%
-                    dplyr::filter(en == answer) %>%
-                    dplyr::pull(transpose)
+                  set_instrument(instrument_id, as_code_block = FALSE, state, set_range = set_range_based_on_selection)
 
-                  if(length(trans_first_note) == 0) {
-                    trans_first_note <- 0
-                  }
-                  clef <- insts_table %>%
-                    dplyr::filter(en == answer) %>%
-                    dplyr::pull(clef)
-                  if(length(clef) == 0) {
-                    clef <- "auto"
-                  }
-                  psychTestR::set_global("transpose_visual_notation", as.integer(trans_first_note), state)
-                  psychTestR::set_global("clef", clef, state)
-                })
+              })
+
 }
 
 
@@ -209,4 +202,117 @@ empty_page <- function(body = "",
   stopifnot(is.scalar.character(button_text))
   ui <- shiny::div(shiny::tags$script(set_answer_meta_data(answer_meta_data)), page_title, body, trigger_button("next", button_text, style = "visibility:hidden;"))
   psychTestR::page(ui = ui, admin_ui = admin_ui, on_complete = on_complete, save_answer = save_answer, get_answer = get_answer, label = label)
+}
+
+#' Wait for API page
+#'
+#' @param poll_frequency_seconds
+#' @param check_function This should return TRUE if not ready (still need to wait for API) or FALSE if ready (api complete).
+#'
+#' @return
+#' @export
+#'
+#' @examples
+wait_for_api_page <- function(poll_frequency_seconds = 1L, check_function = check_session_id_ready) {
+
+  poll_frequency_ms <- poll_frequency_seconds * 1000
+
+  psychTestR::while_loop(test = function(state, ...) {
+
+    logging::loginfo("Waiting for API response...")
+
+    Sys.sleep(poll_frequency_seconds)
+
+    check_function(state)
+
+  }, wait_for_api_page_ui(poll_frequency_ms) )
+
+}
+
+
+check_session_id_ready <- function(state) {
+
+  session_id <- get_promise_value(psychTestR::get_global("session_id", state))
+
+  logging::loginfo("Checking session_id... %s", session_id)
+
+  not_ready <- is.null(session_id)
+
+  if(not_ready) {
+    logging::loginfo("Session ID not ready, trying again...")
+  }
+
+  not_ready
+}
+
+
+check_session_id_ready <- function(state) {
+
+  session_id <- get_promise_value(musicassessr_session_id)
+  logging::loginfo("Checking session_id... %s", session_id)
+
+  not_ready <- is.null(session_id)
+
+  if(not_ready) {
+    logging::loginfo("Session ID not ready, trying again...")
+  } else {
+    logging::loginfo("Sending musicassessr_session_id to psychTestR... %s", session_id)
+    psychTestR::set_global("session_id", session_id, state)
+  }
+
+  not_ready
+}
+
+
+# t <- get_select_items_job_status("36f93907-ba3a-41d6-90e5-b4da4c558f06")
+
+# t <- musicassessrdb::get_job_status_api("36f93907-ba3a-41d6-90e5-b4da4c558f06")
+
+get_select_items_job_status <- function(state) {
+
+  logging::loginfo("get_select_items_job_status")
+
+  job_id <- psychTestR::get_global('job_id', state)
+
+  logging::loginfo("job_id %s", job_id)
+
+  api_response <- musicassessrdb::get_job_status_api(job_id)
+
+  logging::loginfo("api_response %s", api_response)
+
+  if(api_response$status == "FINISHED") {
+
+    items <- api_response %>%
+      purrr::pluck("message") %>%
+      rjson::fromJSON()
+
+    logging::loginfo("items %s", items)
+
+    new_items <- items$new_items %>%
+      dplyr::bind_rows()
+
+    logging::loginfo("new_items %s", new_items)
+
+    review_items <- items$review_items %>%
+      dplyr::bind_rows()
+
+    logging::loginfo("review_items %s", review_items)
+
+    psychTestR::set_global('rhythmic_melody', new_items, state)
+    psychTestR::set_global('rhythmic_melody_review', review_items, state)
+
+    return(FALSE)
+
+  } else if(api_response$status == "PENDING") {
+    return(TRUE)
+  } else {
+    stop("API response invalid.")
+  }
+
+}
+
+wait_for_api_page_ui <- function(poll_frequency_ms) {
+  empty_page(shiny::tags$div(shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'),
+                             shiny::tags$p("Please wait a few seconds."),
+                             shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200)))
 }

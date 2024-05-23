@@ -2,7 +2,6 @@
 #' Launch the musical test showcase of musicassessr tests
 #'
 #' @param app_name
-#' @param musicassessr_aws
 #' @param feedback
 #' @param num_items_rtt
 #' @param num_items_saa
@@ -14,7 +13,6 @@
 #'
 #' @examples
 musical_test_showcase <- function(app_name = "test_showcase",
-                                  musicassessr_aws = FALSE,
                                   feedback = TRUE,
                                   num_items_rtt = list(free_recall = 2L, sync_beat = 2L, call_and_response = 2L),
                                   num_items_saa = list(long_tones = 2L, arrhythmic = 2L, rhythmic = 2L),
@@ -48,7 +46,6 @@ musical_test_showcase <- function(app_name = "test_showcase",
                skip_setup = 'except_microphone',
                examples = 0L,
                default_range = list(bottom_range = 43, top_range = 69), # Seb default range
-               musicassessr_aws = musicassessr_aws,
                gold_msi = FALSE,
                demographics = FALSE,
                feedback = feedback,
@@ -63,7 +60,6 @@ musical_test_showcase <- function(app_name = "test_showcase",
 
       # Playing By Ear Test
       PBET::PBET(app_name = app_name,
-                 musicassessr_aws = musicassessr_aws,
                  input_type = "midi_keyboard",
                  num_items = num_items_pbet,
                  max_goes = 1L,
@@ -86,7 +82,6 @@ musical_test_showcase <- function(app_name = "test_showcase",
                                          midi_input = TRUE,
                                          record_audio = TRUE,
                                          visual_notation = TRUE,
-                                         musicassessr_aws = musicassessr_aws,
                                          setup_options = setup_pages_options(skip_setup = TRUE))
   )
 

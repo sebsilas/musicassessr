@@ -35,6 +35,8 @@
 #' @param show_record_button
 #' @param reactive_melody_no
 #' @param mute_midi_playback Should audio feedback be muted?
+#' @param db_vars
+#' @param asynchronous_api_mode
 #' @param ...
 #'
 #' @return
@@ -70,7 +72,9 @@ record_midi_page <- function(body = "",
                              show_sheet_music_after_record = FALSE,
                              show_record_button = TRUE,
                              reactive_melody_no = FALSE,
-                             mute_midi_playback = FALSE, ...) {
+                             mute_midi_playback = FALSE,
+                             db_vars = NULL,
+                             asynchronous_api_mode = FALSE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -102,7 +106,9 @@ record_midi_page <- function(body = "",
                           show_sheet_music_after_record,
                           show_record_button,
                           reactive_melody_no,
-                          mute_midi_playback)
+                          mute_midi_playback,
+                          db_vars,
+                          asynchronous_api_mode)
 
 }
 

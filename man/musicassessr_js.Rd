@@ -6,7 +6,7 @@
 \usage{
 musicassessr_js(
   app_name,
-  musicassessr_aws = FALSE,
+  asynchronous_api_mode = FALSE,
   visual_notation = FALSE,
   midi_file_playback = FALSE,
   record_audio = TRUE,

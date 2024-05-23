@@ -695,7 +695,27 @@ present_melody <- function(stimuli,
     display_modality <- if(is.null(melody_checks$display_modality)) display_modality else melody_checks$display_modality
 
     # Get trial paradigm info
-    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
+    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left)
+
+    db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
+
+      list(
+        midi_vs_audio = stringr::str_remove(stringr::str_remove(page_type, "record_"), "_page"),
+        stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
+        stimuli_durations = paste0(melody_checks$durations, collapse = ","),
+        trial_time_started = trial_time_started,
+        instrument = psychTestR::get_global("inst", state),
+        attempt = number_attempts,
+        item_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
+        display_modality = display_modality,
+        phase = psychTestR::get_global("phase", state),
+        rhythmic = !arrhythmic,
+        session_id = get_promise_value(psychTestR::get_global("session_id", state)),
+        test_id = psychTestR::get_global("test_id", state),
+        review_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
+        new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id
+      )
+    } else NULL
 
     # Present the stimulus
     present_stimuli(stimuli = melody_checks$melody,
@@ -738,7 +758,9 @@ present_melody <- function(stimuli,
                     first_note_message = first_note_message,
                     transposed_message = transposed_message,
                     play_first_note_button_text = play_first_note_button_text,
-                    reactive_melody_no = reactive_melody_no)
+                    reactive_melody_no = reactive_melody_no,
+                    db_vars = db_vars,
+                    asynchronous_api_mode = psychTestR::get_global("asynchronous_api_mode", state))
 
   })
 }

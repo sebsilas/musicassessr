@@ -8,11 +8,12 @@ get_SNR_pages(
   min_SNR = 14,
   absolute_url = character(),
   report_SNR = FALSE,
-  allow_SNR_failure = FALSE
+  allow_SNR_failure = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{allow_SNR_failure}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Get SNR pages

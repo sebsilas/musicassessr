@@ -48,7 +48,6 @@ make_musicassessr_test <- function(title,
 
       # Init musicassessr
       musicassessr_init(
-        use_musicassessr_db = opt$use_musicassessr_db,
         app_name = opt$app_name,
         experiment_id = opt$experiment_id,
         experiment_condition_id = opt$experiment_condition_id,
@@ -66,9 +65,6 @@ make_musicassessr_test <- function(title,
 
       elts(),
 
-      # Disconnect from database at end of test, if it was being used
-      if (opt$use_musicassessr_db) elt_disconnect_from_db(),
-
       # Save results
       psychTestR::elt_save_results_to_disk(complete = TRUE),
 
@@ -80,12 +76,12 @@ make_musicassessr_test <- function(title,
       title = title,
       admin_password = admin_password,
       languages = languages,
-      on_session_ended_fun = if (opt$use_musicassessr_db) db_disconnect_shiny else NULL,
+      on_session_ended_fun = end_session(asynchronous_api_mode = opt$asynchronous_api_mode),
       additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
-                                                         musicassessr_aws = opt$musicassessr_aws,
                                                          visual_notation = opt$visual_notation,
                                                          midi_file_playback = opt$midi_file_playback,
                                                          record_audio = opt$record_audio,
+                                                         asynchronous_api_mode = opt$asynchronous_api_mode,
                                                          midi_input = opt$midi_input),
       display = psychTestR::display_options(
         left_margin = 1L,
@@ -93,6 +89,71 @@ make_musicassessr_test <- function(title,
         css = system.file('www/css/musicassessr.css', package = "musicassessr")
       ), ...)
   )
+}
+
+
+#' End session
+#'
+#' @param asynchronous_api_mode
+#'
+#' @return
+#' @export
+#'
+#' @examples
+end_session <- function(asynchronous_api_mode) {
+
+  if (asynchronous_api_mode) {
+    return(end_session_api)
+  } else {
+    return(NULL)
+  }
+}
+
+end_session_api <- function(state, session) {
+
+  logging::loginfo("End session early...")
+
+
+  # Get session info
+  test_id <- psychTestR::get_global("test_id", state)
+  session_id <- psychTestR::get_global("session_id", state) # Created earlier
+  user_id <- psychTestR::get_global("user_id", state)
+  psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
+
+
+  logging::loginfo("call compute_session_scores_and_end_session_api...")
+  logging::loginfo("test_id: %s", test_id)
+  logging::loginfo("session_id: %s", musicassessr::get_promise_value(session_id))
+  logging::loginfo("user_id: %s", user_id)
+
+  end_session_api_called <- psychTestR::get_global("compute_session_scores_and_end_session_api_called", state)
+  if(is.null(end_session_api_called)) {
+    end_session_api_called <- FALSE
+  }
+
+  if(!end_session_api_called) {
+    # We only call this if the API hasn't been called through a "proper" test stoppage
+
+    final_session_result <- future::future({
+
+      musicassessrdb::compute_session_scores_and_end_session_api(test_id,
+                                                                 musicassessr::get_promise_value(session_id),
+                                                                 user_id,
+                                                                 psychTestR_session_id,
+                                                                 session_complete = 0L) # Test failed early
+    }, seed = NULL) %...>% (function(result) {
+      logging::loginfo("Returning promise result: %s", result)
+      if(result$status == 200) {
+        return(result)
+      } else {
+        return(NA)
+      }
+    })
+
+    psychTestR::set_global('final_session_result', final_session_result, state)
+
+  }
+
 }
 
 
@@ -163,14 +224,11 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #'
 #' @param setup_pages Should there be setup pages?
 #' @param setup_options Setup page options.
-#' @param use_musicassessr_db Is a SQL backend being used?
 #' @param app_name App name for audio recording apps.
 #' @param midi_file_playback Will MIDI files need to be played back?
 #' @param visual_notation Will there be visual notation?
 #' @param record_audio Is audio recording required?
 #' @param midi_input Is MIDI input required?
-#' @param fake_range Should the vocal/instrument range be faked?
-#' @param musicassessr_aws Is this being run on Amazon Web Services (AWS)?
 #' @param experiment_id An experiment ID.
 #' @param experiment_condition_id An experiment condition ID.
 #' @param user_id A user ID.
@@ -183,14 +241,11 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @examples
 musicassessr_opt <- function(setup_pages = TRUE,
                              setup_options = setup_pages_options(),
-                             use_musicassessr_db = FALSE,
                              app_name = "",
                              midi_file_playback = FALSE,
                              visual_notation = FALSE,
                              record_audio = TRUE,
                              midi_input = FALSE,
-                             fake_range = TRUE,
-                             musicassessr_aws = FALSE,
                              experiment_id = NULL,
                              experiment_condition_id = NULL,
                              user_id = NULL,
@@ -200,14 +255,11 @@ musicassessr_opt <- function(setup_pages = TRUE,
   stopifnot(
     is.scalar(setup_pages),
     is.function(setup_options),
-    is.scalar.logical(use_musicassessr_db),
     is.scalar.character(app_name),
     is.scalar.logical(midi_file_playback),
     is.scalar.logical(visual_notation),
     is.scalar.logical(record_audio),
     is.scalar.logical(midi_input),
-    is.scalar.logical(fake_range),
-    is.scalar.logical(musicassessr_aws),
     is.null.or(experiment_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(experiment_condition_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(user_id, function(x) is.scalar.character(x) || is.integer(x) ),
@@ -218,14 +270,11 @@ musicassessr_opt <- function(setup_pages = TRUE,
   list(
     setup_pages = setup_pages,
     setup_page_options = setup_options,
-    use_musicassessr_db = use_musicassessr_db,
     app_name = app_name,
     midi_file_playback = midi_file_playback,
     visual_notation = visual_notation,
     record_audio = record_audio,
     midi_input = midi_input,
-    fake_range = fake_range,
-    musicassessr_aws = musicassessr_aws,
     experiment_id = experiment_id,
     experiment_condition_id = experiment_condition_id,
     user_id = user_id,

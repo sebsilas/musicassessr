@@ -722,93 +722,9 @@ concat_mel_prod_results <- function(input,
          scores
       )
 
-  # Add trial level data to DB
-  add_trial_trial_level_data_to_db(state = state, res = results, pyin_style_res = pyin_style_res, scores = scores)
-
   results
 }
 
-
-
-add_trial_trial_level_data_to_db <- function(state, res, pyin_style_res, scores) {
-
-  use_musicassessr_db <- psychTestR::get_global("use_musicassessr_db", state)
-
-  if(is.null(use_musicassessr_db)) {
-    use_musicassessr_db <- FALSE
-  }
-
-  if(use_musicassessr_db) {
-
-    db_con <- psychTestR::get_global("db_con", state)
-
-    logging::loginfo("Store results in SQL database")
-
-    singing_trial <- psychTestR::get_global("singing_trial", state)
-
-    instrument <- if(singing_trial) "Voice" else psychTestR::get_global("inst", state)
-
-    trial_time_started <- psychTestR::get_global("trial_time_started", state)
-    session_id <- psychTestR::get_global("session_id", state)
-    item_bank_id <- psychTestR::get_global("item_bank_id", state)
-    item_id <- if(is.null(res$answer_meta_data$item_id)) psychTestR::get_global("item_id", state) else res$answer_meta_data$item_id
-    display_modality <- psychTestR::get_global("display_modality", state)
-    phase <- if(is.null(psychTestR::get_global("phase", state))) res$answer_meta_data$phase else psychTestR::get_global("phase", state)
-    rhythmic <- if(is.null(psychTestR::get_global("rhythmic", state))) res$answer_meta_data$rhythmic else psychTestR::get_global("rhythmic", state)
-    test_id <- psychTestR::get_global('test_id', state)
-    attempt <- psychTestR::get_global("number_attempts", state)
-
-    # Append trials
-    trial_id <- db_append_trials(
-                     db_con,
-                     audio_file = basename(res$file),
-                     time_started = trial_time_started,
-                     time_completed = Sys.time(),
-                     instrument = instrument,
-                     attempt = as.integer(attempt),
-                     item_id = item_id,
-                     display_modality = display_modality,
-                     phase = phase,
-                     rhythmic = rhythmic,
-                     item_bank_id = as.integer(item_bank_id),
-                     session_id = as.integer(session_id),
-                     test_id = as.integer(test_id)
-                     )
-
-    # Append melodic production
-    db_append_melodic_production(db_con, trial_id, pyin_style_res$pyin_res, scores$correct_boolean_octaves_allowed)
-
-    # Append scores
-    db_append_scores_trial(db_con,
-                           res$trial_length,
-                           res$no_recalled_notes,
-                           res$no_correct_notes,
-                           res$no_error_notes,
-                           res$no_correct_notes_octaves_allowed,
-                           res$no_error_notes_octaves_allowed,
-                           res$proportion_of_correct_note_events,
-                           res$proportion_of_correct_note_events_octaves_allowed,
-                           res$proportion_of_stimuli_notes_found,
-                           res$proportion_of_stimuli_notes_found_octaves_allowed,
-                           res$opti3,
-                           res$ngrukkon,
-                           res$harmcore,
-                           res$rhythfuzz,
-                           res$melody_dtw,
-                           res$mean_cents_deviation_from_nearest_stimuli_pitch,
-                           res$mean_cents_deviation_from_nearest_midi_pitch,
-                           res$melody_note_accuracy,
-                           res$melody_interval_accuracy,
-                           res$accuracy,
-                           res$precision,
-                           res$recall,
-                           res$F1_score,
-                           res$PMI,
-                           trial_id)
-
-
-  }
-}
 
 
 

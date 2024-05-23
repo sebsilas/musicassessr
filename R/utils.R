@@ -477,5 +477,37 @@ get_nrows <- function(df) {
     as.integer()
 }
 
+#' Get value from a promise
+#'
+#' @param promise
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_promise_value <- function(promise) {
+  if(promises::is.promise(promise)) {
+    result <- environment(promise[["then"]])[["private"]][["value"]]
+    return(result)
+  } else {
+    return(promise)
+  }
+}
+
+#' Print code block for testing
+#'
+#' @param msg
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print_code_block <- function(msg = "test") {
+
+  psychTestR::code_block(function(state, ...) {
+    logging::loginfo(msg)
+  })
+
+}
 
 

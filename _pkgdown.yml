@@ -129,6 +129,7 @@ reference:
   contents:
   - add_feedback
   - calculate_stable_part
+  - call_api_on_start
   - create_socials
   - default_range
   - deploy_demographics
@@ -152,6 +153,7 @@ reference:
   - long_note_pitch_metrics
   - melconv
   - melconv_from_pyin_res
+  - musicassessr_dict
   - musicassessr_init
   - musicassessr_js
   - ngrukkon_safe
@@ -174,7 +176,10 @@ reference:
   - tidy_melodies
   - to_string_df
   - translate_from_dict
-  - musicassessr_dict
+  - update_play_melody_loop_and_save
+  - wait_for_api_page
+  - wrap_js_fun_body
+  - wrap_musicassessr_timeline
 
 
 - title: Data

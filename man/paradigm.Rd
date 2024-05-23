@@ -11,11 +11,12 @@ paradigm(
   stop_recording_after_x_seconds = NULL,
   instantiate_midi = FALSE,
   midi_device = NULL,
-  mute_midi_playback = FALSE
+  mute_midi_playback = FALSE,
+  attempts_left = 1L
 )
 }
 \arguments{
-\item{mute_midi_playback}{}
+\item{attempts_left}{}
 }
 \description{
 Choose a melody paradigm

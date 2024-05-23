@@ -28,6 +28,8 @@
 #' @param show_sheet_music_after_record
 #' @param show_record_button
 #' @param reactive_melody_no
+#' @param db_vars
+#' @param asynchronous_api_mode
 #' @param ...
 #'
 #' @return
@@ -60,7 +62,9 @@ record_audio_page <- function(body = "",
                              volume_meter_type = 'default',
                              show_sheet_music_after_record = FALSE,
                              show_record_button = TRUE,
-                             reactive_melody_no = FALSE, ...) {
+                             reactive_melody_no = FALSE,
+                             db_vars = NULL,
+                             asynchronous_api_mode = FALSE, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -91,7 +95,10 @@ record_audio_page <- function(body = "",
                           volume_meter_type,
                           show_sheet_music_after_record,
                           show_record_button,
-                          reactive_melody_no)
+                          reactive_melody_no,
+                          mute_midi_playback = FALSE, # record_audio_pages don't need this, but we need to specify a value
+                          db_vars,
+                          asynchronous_api_mode)
 
 }
 

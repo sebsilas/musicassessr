@@ -132,7 +132,7 @@ produce_stimuli_in_range <- function(rel_melody, bottom_range = 21, top_range = 
 #' @export
 #'
 #' @examples
-default_range <- function(instrument) {
+set_default_range <- function(instrument) {
 
   inst <- insts_table %>%
     dplyr::filter(en == instrument)
@@ -142,7 +142,9 @@ default_range <- function(instrument) {
   } else if(nrow(inst) > 1) {
     stop("Instrument not unique")
   } else {
-    list(bottom_range = inst$low_note, top_range = inst$high_note)
+    list(bottom_range = inst$low_note,
+         top_range = inst$high_note,
+         clef = inst$clef)
   }
 
 }

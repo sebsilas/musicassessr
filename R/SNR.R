@@ -7,16 +7,17 @@
 #' @param absolute_url
 #' @param report_SNR
 #' @param allow_SNR_failure
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR = FALSE, allow_SNR_failure = FALSE) {
+get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR = FALSE, allow_SNR_failure = FALSE, asynchronous_api_mode = FALSE) {
 
   psychTestR::join(
-    record_background_page(),
-    record_signal_page(),
+    record_background_page(asynchronous_api_mode),
+    record_signal_page(asynchronous_api_mode = asynchronous_api_mode),
     SNR_preconclusion_page(),
     psychTestR::reactive_page(function(state, ...) {
 
@@ -65,12 +66,13 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
 #' @param absolute_url
 #' @param report_SNR
 #' @param allow_SNR_failure
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_SNR, allow_SNR_failure = FALSE) {
+get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_SNR, allow_SNR_failure = FALSE, asynchronous_api_mode = FALSE) {
 
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
@@ -79,8 +81,8 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
     psychTestR::while_loop(test = function(state, ...) {
       !psychTestR::get_global("found_SNR", state)
     }, logic = psychTestR::join(
-        record_background_page(),
-        record_signal_page(),
+        record_background_page(asynchronous_api_mode),
+        record_signal_page(asynchronous_api_mode),
         SNR_preconclusion_page(),
         psychTestR::reactive_page(function(state, ...) {
 
@@ -139,35 +141,79 @@ compute_SNR <- function(signal_file, noise_file) {
 }
 
 
-record_background_page <- function() {
-  # a page type for recording background noise to compute signal-to-noise ratio (SNR)
-  record_audio_page(page_text = shiny::tags$div(
-                                shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
-                                shiny::tags$p(psychTestR::i18n("record_bg")),
-                                shiny::tags$p(psychTestR::i18n("record_bg2")),
-                                shiny::tags$p(psychTestR::i18n("record_bg3"))
-                              ),
-                    label = "SNR_test_background",
-                    record_duration = 5,
-                    get_answer = get_answer_save_audio_file,
-                    button_text = psychTestR::i18n("record_bg_button"),
-                    on_complete = function(input, state, ...) {
-                      psychTestR::set_global("SNR_noise", input$file_url, state)
-                    })
+record_background_page <- function(asynchronous_api_mode) {
+  # A page type for recording background noise to compute signal-to-noise ratio (SNR)
+
+  psychTestR::reactive_page(function(state, ...) {
+
+    db_vars <- create_db_vars_obj_snr(asynchronous_api_mode, state)
+
+    record_audio_page(page_text = shiny::tags$div(
+      shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
+      shiny::tags$p(psychTestR::i18n("record_bg")),
+      shiny::tags$p(psychTestR::i18n("record_bg2")),
+      shiny::tags$p(psychTestR::i18n("record_bg3"))
+    ),
+    label = "SNR_test_background",
+    record_duration = 5,
+    get_answer = get_answer_save_audio_file,
+    button_text = psychTestR::i18n("record_bg_button"),
+    on_complete = function(input, state, ...) {
+      psychTestR::set_global("SNR_noise", input$file_url, state)
+    },
+    db_vars = db_vars)
+
+  })
+
 }
 
+# A page type for recording background noise to compute signal-to-noise ratio (SNR)
 record_signal_page <- function(page_text = shiny::tags$div(
                                         shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
-                                        shiny::tags$p(psychTestR::i18n("record_signal_message")))) {
-  # a page type for recording background noise to compute signal-to-noise ratio (SNR)
-  record_audio_page(page_text = page_text,
-                    label = "SNR_test_signal",
-                    record_duration = 5,
-                    on_complete = function(input, state, ...) {
-                      psychTestR::set_global("SNR_signal", input$file_url, state)
-                    })
+                                        shiny::tags$p(psychTestR::i18n("record_signal_message"))),
+                               asynchronous_api_mode = FALSE) {
+
+  psychTestR::reactive_page(function(state, ...) {
+
+    db_vars <- create_db_vars_obj_snr(asynchronous_api_mode, state)
+
+    record_audio_page(page_text = page_text,
+                      label = "SNR_test_signal",
+                      record_duration = 5,
+                      on_complete = function(input, state, ...) {
+                        psychTestR::set_global("SNR_signal", input$file_url, state)
+                      },
+                      db_vars = db_vars)
+
+  })
+
 }
 
+
+create_db_vars_obj_snr <- function(asynchronous_api_mode, state) {
+
+  db_vars <- if(asynchronous_api_mode) {
+
+    list(
+      midi_vs_audio = "audio",
+      stimuli = NA,
+      stimuli_durations = NA,
+      trial_time_started = Sys.time(),
+      instrument = NA,
+      attempt = NA,
+      item_id = NA,
+      display_modality = NA,
+      phase = "setup",
+      rhythmic = NA,
+      session_id = get_promise_value(psychTestR::get_global("session_id", state)),
+      test_id = psychTestR::get_global("test_id", state),
+      review_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
+      new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id
+    )
+  } else NULL
+
+  return(db_vars)
+}
 
 SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE, allow_SNR_failure = FALSE) {
 

@@ -23,7 +23,8 @@
 #' @param allow_SNR_failure If TRUE, allow user to continue even if they fail the SNR test.
 #' @param requirements_page Show a requirements page?
 #' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
-#' @param fake_range Should the instrument/voice range be faked with a default?
+#' @param asynchronous_api_mode Is asynchronous_api_mode being used?
+#' @param show_microphone_type_page Should you ask the user what kind of microphone they are using?
 #'
 #' @return
 #' @export
@@ -55,7 +56,8 @@ setup_pages <- function(input_type = c("microphone",
                         allow_SNR_failure = FALSE,
                         requirements_page = TRUE,
                         playful_volume_meter_setup = FALSE,
-                        fake_range = FALSE) {
+                        asynchronous_api_mode = FALSE,
+                        show_microphone_type_page = TRUE) {
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
@@ -82,16 +84,18 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(allow_SNR_failure),
             is.scalar.logical(requirements_page),
             is.scalar.logical(playful_volume_meter_setup),
-            is.scalar.logical(fake_range)
+            is.scalar.logical(asynchronous_api_mode),
+            is.scalar.logical(show_microphone_type_page)
             )
 
   if(demo) {
 
     setup <- psychTestR::join(
 
-      if(select_instrument) select_musical_instrument_page(),
+      if(select_instrument) select_musical_instrument_page(set_range_based_on_selection = !get_instrument_range),
 
-      correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
+      correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument,
+                    allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)
 
     )
 
@@ -103,7 +107,7 @@ setup_pages <- function(input_type = c("microphone",
 
       if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id() else pass_p_id_to_js(),
 
-      correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure)
+      correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)
     )
 
   } else if(skip_setup || input_type == "key_presses") {
@@ -127,9 +131,9 @@ setup_pages <- function(input_type = c("microphone",
 
       if(headphones) test_headphones_page(concise_wording),
 
-      if(select_instrument) select_musical_instrument_page(),
+      if(select_instrument) select_musical_instrument_page(set_range_based_on_selection = !get_instrument_range),
 
-      correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure),
+      correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode),
 
       record_instructions(playful_volume_meter_setup),
 
@@ -149,16 +153,17 @@ setup_pages <- function(input_type = c("microphone",
 
 
 correct_setup <- function(input_type, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
-                          concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE) {
+                          concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE, asynchronous_api_mode = FALSE) {
 
 
   if(!sjmisc::str_contains(input_type, "midi_keyboard")) {
-    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure)
+    microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure, show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)
+
   } else if(!sjmisc::str_contains(input_type, "microphone")) {
     midi_setup()
   } else if(input_type == "midi_keyboard_and_microphone") {
     psychTestR::join(
-      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure),
+      microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure, show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode),
       midi_setup()
     )
 
@@ -169,7 +174,8 @@ correct_setup <- function(input_type, SNR_test, absolute_url, microphone_test = 
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "Microphone"
-      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure)),
+
+      }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure, show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)),
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "MIDI"
@@ -254,7 +260,7 @@ microphone_type_page <- function() {
 
 microphone_setup <- function(SNR_test, absolute_url = character(), microphone_test = TRUE,
                              allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
-                             concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE) {
+                             concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE, asynchronous_api_mode = FALSE) {
 
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
@@ -262,13 +268,13 @@ microphone_setup <- function(SNR_test, absolute_url = character(), microphone_te
       microphone_calibration_page(concise_wording = concise_wording, musical_instrument = musical_instrument)
     )
   } else {
-    microphone_pages <- psychTestR::code_block(function(state, ...){}) # there needs to be the possibility of something resolving
+    microphone_pages <- empty_code_block() # There needs to be the possibility of something resolving
   }
 
   psychTestR::join(
       microphone_pages,
-    if(SNR_test & !allow_repeat_SNR_tests) get_SNR_pages(absolute_url = absolute_url, report_SNR = report_SNR, allow_SNR_failure = allow_SNR_failure),
-    if(SNR_test & allow_repeat_SNR_tests) get_SNR_pages_loop(absolute_url = absolute_url, report_SNR = report_SNR, allow_SNR_failure = allow_SNR_failure)
+    if(SNR_test & !allow_repeat_SNR_tests) get_SNR_pages(absolute_url = absolute_url, report_SNR = report_SNR, allow_SNR_failure = allow_SNR_failure, asynchronous_api_mode = asynchronous_api_mode),
+    if(SNR_test & allow_repeat_SNR_tests) get_SNR_pages_loop(absolute_url = absolute_url, report_SNR = report_SNR, allow_SNR_failure = allow_SNR_failure, asynchronous_api_mode = asynchronous_api_mode)
   )
 }
 

@@ -30,7 +30,14 @@ record_midi_or_audio_ui <- function(body = "",
                                     show_sheet_music_after_record = FALSE,
                                     show_record_button = TRUE,
                                     reactive_melody_no = FALSE,
-                                    mute_midi_playback = FALSE, ...) {
+                                    mute_midi_playback = FALSE,
+                                    db_vars = NULL,
+                                    asynchronous_api_mode = FALSE, ...) {
+
+
+  if(max_goes > 1L) {
+    happy_with_response <- TRUE
+  }
 
 
   if(is.character(page_text)) {

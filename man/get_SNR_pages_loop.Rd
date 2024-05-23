@@ -8,11 +8,12 @@ get_SNR_pages_loop(
   min_SNR = 14,
   absolute_url = character(),
   report_SNR,
-  allow_SNR_failure = FALSE
+  allow_SNR_failure = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{allow_SNR_failure}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Get SNR pages as a loop (i.e., the participant can take multiple attempts)

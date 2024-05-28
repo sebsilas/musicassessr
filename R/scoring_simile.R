@@ -77,7 +77,7 @@ get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner =
     )
 
   }
-  pitch_freq <- table(factor(pitch_vec  %% 12, levels = 0:11))
+  pitch_freq <- table(factor(pitch_vec %% 12, levels = 0:11))
   correlations <- purrr::map_dfr(0:11, function(t){
       w_major <- cor.test(pitch_freq, ks_weights_major[((0:11 - t) %% 12) + 1]) %>% broom::tidy() %>% dplyr::pull(estimate)
       w_minor <- cor.test(pitch_freq, ks_weights_minor[((0:11 - t) %% 12) + 1]) %>% broom::tidy() %>% dplyr::pull(estimate)

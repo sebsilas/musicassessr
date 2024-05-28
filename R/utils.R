@@ -289,6 +289,8 @@ expand_string_df_row <- function(df, row_id = NULL) {
     df <- df %>% slice(row_id)
   }
 
+  stopifnot(nrow(df) == 1L)
+
   out <- apply(df, MARGIN = 2, function(col) {
     c <- unlist(col)
     if(is.scalar.na(c)) {
@@ -302,6 +304,8 @@ expand_string_df_row <- function(df, row_id = NULL) {
   })
   tibble::as_tibble(out)
 }
+
+# t <- expand_string_df_row(tibble::tibble(a = "60,62", b = NA))
 
 set_answer_meta_data <- function(meta_data) {
 

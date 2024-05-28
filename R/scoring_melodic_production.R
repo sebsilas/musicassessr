@@ -306,7 +306,9 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
       onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
       ioi = c(NA, diff(onset)),
       ioi_class = itembankr::classify_duration(ioi)
-    ) %>% itembankr::segment_phrase()
+    ) %>% itembankr::segment_phrase() %>%
+      expand_string_df_row()
+
 
     opti3 <- opti3_df(melody1 = stimuli_df,
                       melody2 = user_input_as_pyin)
@@ -429,3 +431,10 @@ compute_accuracy_measures_aligned <- function(stimuli, recall){
 # align_stimuli_and_recall(60:67, 72:73, compute_recall, "recall")
 
 
+
+# t <- score_melodic_production(user_melody_freq = c(129.751,150.851,140.176,138.931,152.234,166.037),
+#                               user_melody_input = c(48,50,49,49,51,52),
+#                               c(0.150929705,0.417959184,0.423764172,0.493424036,0.191564626,0.893968253),
+#                               c(1.375782313,1.660226757,2.200090703,2.757369614,3.320453514,3.628117914),
+#                               c(54,55,55,57,57,59,61,62,62,62,62,61,62,64),
+#                               c(0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.25,0.5,0.5,0.5,0.5,1))

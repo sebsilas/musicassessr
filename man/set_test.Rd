@@ -2,20 +2,7 @@
 % Please edit documentation in R/musicassessr_init.R
 \name{set_test}
 \alias{set_test}
-\title{#' Set session ID later
-#'
-#' @return
-#' @export
-#'
-#' @examples
-set_session_id_later <- function() {
-psychTestR::code_block(function(state, ...) {
-session_id <- get_promise_value(musicassessr_session_id)
-logging::loginfo("Sending musicassessr_session_id to psychTestR... \%s", session_id)
-psychTestR::set_global("session_id", session_id, state)
-})
-}
-Set test ID}
+\title{Set test ID}
 \usage{
 set_test(test_name, test_id = NULL)
 }
@@ -23,18 +10,5 @@ set_test(test_name, test_id = NULL)
 \item{test_id}{}
 }
 \description{
-#' Set session ID later
-#'
-#' @return
-#' @export
-#'
-#' @examples
-set_session_id_later <- function() {
-psychTestR::code_block(function(state, ...) {
-session_id <- get_promise_value(musicassessr_session_id)
-logging::loginfo("Sending musicassessr_session_id to psychTestR... \%s", session_id)
-psychTestR::set_global("session_id", session_id, state)
-})
-}
 Set test ID
 }

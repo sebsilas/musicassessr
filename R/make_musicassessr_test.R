@@ -119,40 +119,52 @@ end_session_api <- function(state, session) {
   session_id <- psychTestR::get_global("session_id", state) # Created earlier
   user_id <- psychTestR::get_global("user_id", state)
   psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
-
+  session_id <- musicassessr::get_promise_value(session_id)
 
   logging::loginfo("call compute_session_scores_and_end_session_api...")
   logging::loginfo("test_id: %s", test_id)
-  logging::loginfo("session_id: %s", musicassessr::get_promise_value(session_id))
+  logging::loginfo("session_id: %s", session_id)
   logging::loginfo("user_id: %s", user_id)
 
   end_session_api_called <- psychTestR::get_global("compute_session_scores_and_end_session_api_called", state)
+
   if(is.null(end_session_api_called)) {
     end_session_api_called <- FALSE
   }
 
-  if(!end_session_api_called) {
+  if(!end_session_api_called && !is.null(session_id)) {
     # We only call this if the API hasn't been called through a "proper" test stoppage
 
-    final_session_result <- future::future({
+    final_session_result <- promises::future_promise({
       # Test failed early
-      future_res <- musicassessrdb::compute_session_scores_and_end_session_api(test_id,
-                                                                 musicassessr::get_promise_value(session_id),
+      musicassessrdb::compute_session_scores_and_end_session_api(test_id,
+                                                                 session_id,
                                                                  user_id,
                                                                  psychTestR_session_id,
                                                                  session_complete = "0")
 
-      print('future_res_end...')
-      print(future_res)
-      future_res
-    }, seed = NULL) %...>% (function(result) {
-      logging::loginfo("Returning promise result: %s", result)
-      if(result$status == 200) {
-        return(result)
-      } else {
-        return(NA)
-      }
-    })
+    }, seed = NULL, future.plan = future::multisession) %>%
+      promises::then(
+        onFulfilled = function(result) {
+
+          logging::loginfo("Promise fulfilled.")
+          logging::loginfo("Returning promise result: %s", result)
+
+          if(is.scalar.na.or.null(result)) {
+            return(NA)
+          } else if(result$status == 200) {
+            return(result)
+          } else {
+            return(NA)
+          }
+
+        },
+        onRejected = function(err) {
+
+          logging::logerror("Promise failed: %s", err)
+
+        }
+      )
 
     psychTestR::set_global('final_session_result', final_session_result, state)
 

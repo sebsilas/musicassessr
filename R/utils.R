@@ -494,6 +494,8 @@ get_promise_value <- function(promise) {
   }
 }
 
+
+
 #' Print code block for testing
 #'
 #' @param msg
@@ -509,5 +511,6 @@ print_code_block <- function(msg = "test") {
   })
 
 }
+
 
 

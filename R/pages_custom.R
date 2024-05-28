@@ -230,34 +230,21 @@ wait_for_api_page <- function(poll_frequency_seconds = 1L, check_function = chec
 }
 
 
+
 check_session_id_ready <- function(state) {
 
   session_id <- get_promise_value(psychTestR::get_global("session_id", state))
-
-  logging::loginfo("Checking session_id... %s", session_id)
-
-  not_ready <- is.null(session_id)
-
-  if(not_ready) {
-    logging::loginfo("Session ID not ready, trying again...")
-  }
-
-  not_ready
-}
-
-
-check_session_id_ready <- function(state) {
-
-  session_id <- get_promise_value(musicassessr_session_id)
-  logging::loginfo("Checking session_id... %s", session_id)
 
   not_ready <- is.null(session_id)
 
   if(not_ready) {
     logging::loginfo("Session ID not ready, trying again...")
   } else {
-    logging::loginfo("Sending musicassessr_session_id to psychTestR... %s", session_id)
-    psychTestR::set_global("session_id", session_id, state)
+    if(is.scalar.na(session_id)) {
+      stop("Could not get session_id.")
+    } else {
+      psychTestR::set_global("session_id", session_id$session_id, state)
+    }
   }
 
   not_ready

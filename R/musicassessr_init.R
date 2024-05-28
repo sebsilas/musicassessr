@@ -23,108 +23,139 @@ musicassessr_init <- function(app_name = "",
 
   psychTestR::join(
 
+
+
     set_instrument_range(default_range$bottom_range,
                          default_range$top_range,
                          default_range$clef),
 
-    psychTestR::code_block(function(state, ...) {
+
+
+    psychTestR::reactive_page(function(state, ...) {
+
 
       psychTestR::set_global("asynchronous_api_mode", asynchronous_api_mode, state)
 
-      if(!is.null(instrument_id)) {
-        psychTestR::set_global("instrument_id", instrument_id, state)
+
+      if(asynchronous_api_mode) {
+
+        if(is.null(user_id) && is.null(psychTestR::get_global("user_id", state))) {
+
+          logging::loginfo("Grabbing user_id from URL parameter")
+
+
+          # NB. The URL params MUST be collected in a reactive_page
+
+          url_params <- psychTestR::get_url_params(state)
+
+          user_id <- url_params$user_id
+          username <- url_params$username
+          job_id <- url_params$job_id
+
+          if(!is.null(user_id)) {
+            logging::loginfo("user_id %s", user_id)
+            psychTestR::set_global("user_id", user_id, state)
+          }
+
+          if(!is.null(username)) {
+            logging::loginfo("username %s", username)
+            psychTestR::set_global("username", username, state)
+          }
+
+          if(!is.null(job_id)) {
+            logging::loginfo("job_id %s", job_id)
+            psychTestR::set_global("job_id", job_id, state)
+          }
+
+        }
+
+
+        if(Sys.getenv("ENDPOINT_URL") == "") {
+          stop("You need to set the ENDPOINT_URL!")
+        }
+
+        user_id <- psychTestR::get_global("user_id",state)
+        username <- psychTestR::get_global("username",state)
+
+
+        if(asynchronous_api_mode && is.null(user_id)) {
+          stop("user_id or username should not be NULL, at this point. It should have been set through the test or the URL parameter.")
+        }
       }
+        psychTestR::one_button_page(shiny::tags$p(paste0("Hello ", username, "!")))
 
-      if(!is.null(inst)) {
-        psychTestR::set_global("inst", inst, state)
-      }
+    }),
+
+    psychTestR::code_block(function(state, ...) {
+
+        # NB. the async function MUST happen in a code_block or it will block
+
+        logging::loginfo("Create future")
+
+        if(is.null(psychTestR::get_global("session_api_called", state)) && asynchronous_api_mode && is.null(psychTestR::get_global("session_id", state))) { # Make sure it doesn't fire twice
+
+          if(is.null(user_id)) {
+            user_id <- psychTestR::get_global("user_id", state)
+          }
+
+          session_id <- future::future({
+
+            logging::loginfo("Call store_db_session_api asynchronously")
+              logging::loginfo("experiment_id: %s", experiment_id)
+              logging::loginfo("experiment_condition_id: %s", experiment_condition_id)
+              logging::loginfo("user_id: %s", user_id)
+
+              res <- musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id)
+              res
+
+          }, seed = NULL, future.plan = future::multisession) %...>% (function(result) {
+
+            logging::loginfo("Returning promise result: %s", result)
+            if(is.scalar.na.or.null(result)) {
+              return(NA)
+            } else if(result$status == 200) {
+              return(result)
+            } else {
+              return(NA)
+            }
+
+          })
+          psychTestR::set_global("session_api_called", TRUE, state)
+          logging::loginfo("...future created.")
+
+          if(is.null(psychTestR::get_global("session_id", state))) {
+            psychTestR::set_global("session_id", session_id, state)
+            logging::loginfo("session_id set")
+          }
+
+        }
 
 
-      user_id <- if(is.null(user_id)) psychTestR::get_global('user_id', state) else user_id
 
-      if(asynchronous_api_mode && is.null(user_id)) {
-        stop("user_id should not be NULL, at this point, if using asynchronous_api_mode User validate_user_entry_into test or set through the test manually.")
-      }
+        if(!is.null(instrument_id)) {
+          psychTestR::set_global("instrument_id", instrument_id, state)
+        }
 
-      session_info <- psychTestR::get_session_info(state, complete = FALSE)
-      psychTestR_session_id <- session_info$p_id
-      # Set vars
-      psychTestR::set_global("psychTestR_session_id", psychTestR_session_id, state)
-      psychTestR::set_global("compute_session_scores_and_end_session_api_called", FALSE, state)
-      psychTestR::set_global("app_name", app_name, state)
-      psychTestR::set_global("scores", c(), state)
-      psychTestR::set_global("experiment_id", experiment_id, state)
-      psychTestR::set_global("experiment_condition_id", experiment_condition_id, state)
-      psychTestR::set_global("user_id", user_id, state)
+        if(!is.null(inst)) {
+          psychTestR::set_global("inst", inst, state)
+        }
+
+        session_info <- psychTestR::get_session_info(state, complete = FALSE)
+        psychTestR_session_id <- session_info$p_id
+        # Set vars
+        psychTestR::set_global("psychTestR_session_id", psychTestR_session_id, state)
+        psychTestR::set_global("compute_session_scores_and_end_session_api_called", FALSE, state)
+        psychTestR::set_global("app_name", app_name, state)
+        psychTestR::set_global("scores", c(), state)
+        psychTestR::set_global("experiment_id", experiment_id, state)
+        psychTestR::set_global("experiment_condition_id", experiment_condition_id, state)
 
     })
+
   )
 }
 
 
-#' Call API on start
-#'
-#' @param experiment_id,
-#' @param experiment_condition_id
-#' @param user_id
-#'
-#' @return
-#' @export
-#'
-#' @examples
-call_api_on_start <- function(experiment_id = NA, experiment_condition_id = NA, user_id = NULL) {
-
-  function(state, session) {
-
-    if(is.null(user_id)) {
-      logging::loginfo("Grabbing user_id from URL parameter")
-      url_params <- psychTestR::get_url_params(state)
-      user_id <- url_params$user_id
-      logging::loginfo("user_id %s", user_id)
-    }
-
-
-    logging::loginfo("Turn Asynchronous API mode on...")
-    future::plan(future::multisession, workers = 2)
-
-    logging::loginfo("Appending session via API")
-
-    if(Sys.getenv("ENDPOINT_URL") == "") {
-      stop("You need to set the ENDPOINT_URL!")
-    }
-
-    musicassessr_session_id <<- future::future({
-      future_res <- musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id)
-      print('future_res...')
-      print(future_res)
-      future_res
-    }, seed = NULL) %...>% (function(result) {
-      logging::loginfo("Returning promise result: %s", result)
-      if(result$status == 200) {
-        return(result$session_id)
-      } else {
-        return(NA)
-      }
-    })
-
-  }
-
-}
-
-#'
-#' #' Set session ID later
-#' #'
-#' #' @return
-#' #' @export
-#' #'
-#' #' @examples
-#' set_session_id_later <- function() {
-#'   psychTestR::code_block(function(state, ...) {
-#'     session_id <- get_promise_value(musicassessr_session_id)
-#'     logging::loginfo("Sending musicassessr_session_id to psychTestR... %s", session_id)
-#'     psychTestR::set_global("session_id", session_id, state)
-#'   })
-#' }
 
 #' Set test ID
 #'

@@ -82,7 +82,12 @@ musicassessr_init <- function(app_name = "",
           stop("user_id or username should not be NULL, at this point. It should have been set through the test or the URL parameter.")
         }
       }
-        psychTestR::one_button_page(shiny::tags$p(paste0("Hello ", username, "!")))
+        psychTestR::one_button_page(
+          shiny::tags$div(
+            shiny::tags$script("var upload_to_s3 = true; console.log('Turning S3 mode on');"),
+            shiny::tags$p(paste0("Hello ", username, "!"))
+          )
+        )
 
     }),
 

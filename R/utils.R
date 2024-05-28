@@ -291,7 +291,7 @@ expand_string_df_row <- function(df, row_id = NULL) {
 
   out <- apply(df, MARGIN = 2, function(col) {
     c <- unlist(col)
-    if(is.na(c)) {
+    if(is.scalar.na(c)) {
       NA
     } else if(is.character(c)) {
       itembankr::str_mel_to_vector(c)

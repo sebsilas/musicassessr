@@ -134,7 +134,8 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
           "test_id",
           "onset",
           "new_items_id",
-          "review_items_id"),
+          "review_items_id",
+          "user_id"),
         names(db_vars)
       )
     ) == 0)
@@ -157,6 +158,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_onset = \"', db_vars$onset,'\";
   var db_review_items_id = \"', db_vars$review_items_id,'\";
   var db_new_items_id = \"', db_vars$new_items_id,'\";
+  var db_user_id = \"', db_vars$user_id,'\";
   ')
   )
 

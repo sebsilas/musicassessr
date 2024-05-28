@@ -49,6 +49,7 @@ var db_session_id;
 var db_test_id;
 var db_new_items_id;
 var db_review_items_id;
+var db_user_id;
 
 // Functions
 
@@ -1012,7 +1013,8 @@ function upload_file_to_s3(blob){
               "test-id": String(db_test_id),
               "onset": String(db_onset),
               "new-items-id": String(db_new_items_id),
-              "review-items-id": String(db_review_items_id)
+              "review-items-id": String(db_review_items_id),
+              "user-id": String(db_user_id)
             };
 
     console.log(md);

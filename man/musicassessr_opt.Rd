@@ -19,7 +19,8 @@ musicassessr_opt(
   get_p_id = FALSE,
   asynchronous_api_mode = FALSE,
   default_range = set_default_range("Piano"),
-  css = system.file("www/css/musicassessr.css", package = "musicassessr")
+  css = system.file("www/css/musicassessr.css", package = "musicassessr"),
+  username = NULL
 )
 }
 \arguments{
@@ -51,7 +52,9 @@ musicassessr_opt(
 
 \item{default_range}{Should there be default range set?}
 
-\item{css}{A css stylesheet to use (passes to psychTestR)}
+\item{css}{A css stylesheet to use (passes to psychTestR).}
+
+\item{username}{Hardcode a username.}
 }
 \description{
 Specify options for a musicassessr test.

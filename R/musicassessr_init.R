@@ -80,13 +80,6 @@ musicassessr_init <- function(app_name = "",
             }
 
 
-
-
-
-
-
-
-
             # user_id <- 83
             # username <- "testsingpause13"
             # job_id <- "4b51fe3a-d8cb-4904-808d-fd89fc75e09c"
@@ -110,7 +103,6 @@ musicassessr_init <- function(app_name = "",
 
           }
 
-
           if(Sys.getenv("ENDPOINT_URL") == "") {
             stop("You need to set the ENDPOINT_URL!")
           }
@@ -123,6 +115,11 @@ musicassessr_init <- function(app_name = "",
             stop("user_id or username should not be NULL, at this point. It should have been set through the test or the URL parameter.")
           }
         }
+
+        if(!exists("async_ui")) {
+          async_ui <- "Hello!"
+        }
+
           psychTestR::one_button_page(async_ui)
 
       }),

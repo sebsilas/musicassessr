@@ -12,11 +12,12 @@ musicassessr_init(
   asynchronous_api_mode = FALSE,
   instrument_id = NULL,
   inst = NULL,
-  default_range = set_default_range("Piano")
+  default_range = set_default_range("Piano"),
+  username = NULL
 )
 }
 \arguments{
-\item{asynchronous_api_mode}{}
+\item{username}{}
 }
 \description{
 Initiate a musicassessr test

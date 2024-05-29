@@ -146,7 +146,6 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
           return(FALSE)
         }
 
-        # Failure here. psychTestR::get_global(var_name, state) is NULL for "rhythmic_melody
         ! psychTestR::get_global("user_determined_stop", state) && nrow(trials) > 0L
 
       }, logic = psychTestR::join(
@@ -1024,6 +1023,7 @@ grab_melody_from_state <- function(var_name, melody_no, state, psychTestRCAT = F
     } else {
       # Assume melodies sampled at test time and stored in global object
       trials <- psychTestR::get_global(var_name, state)
+
       if(pass_items_through_url_parameter) {
         melody_no <- 1L # Keep always one and pop off the item each time
         psychTestR::set_global(var_name, dplyr::slice(trials, -1), state)

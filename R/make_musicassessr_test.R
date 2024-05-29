@@ -36,10 +36,11 @@ make_musicassessr_test <- function(title,
     psychTestR::is.test_element(welcome_page)
   )
 
+  print('opt$setup_pages')
+  print(opt$setup_pages)
+
   psychTestR::make_test(
     psychTestR::join(
-
-      if (opt$fake_range) set_instrument_range(),
 
       welcome_page,
 
@@ -51,17 +52,19 @@ make_musicassessr_test <- function(title,
         app_name = opt$app_name,
         experiment_id = opt$experiment_id,
         experiment_condition_id = opt$experiment_condition_id,
-        user_id = opt$user_id
+        user_id = opt$user_id,
+        default_range = opt$default_range,
+        username = opt$username
         ),
 
       # Timeline before setup pages
       elts_before_setup_pages(),
 
-
       # Setup pages
       if (opt$setup_pages) wrap_musicassessr_timeline( opt$setup_page_options() ),
 
       # Timeline after setup pages
+
 
       elts(),
 
@@ -86,7 +89,7 @@ make_musicassessr_test <- function(title,
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,
-        css = system.file('www/css/musicassessr.css', package = "musicassessr")
+        css = opt$css
       ), ...)
   )
 }
@@ -250,6 +253,10 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param user_id A user ID.
 #' @param instrument_id An instrument ID.
 #' @param get_p_id Should a participant ID get collected at the beginning of the test?
+#' @param asynchronous_api_mode Should async API mode be on?
+#' @param default_range Should there be default range set?
+#' @param css A css stylesheet to use (passes to psychTestR).
+#' @param username Hardcode a username.
 #'
 #' @return
 #' @export
@@ -266,10 +273,14 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              experiment_condition_id = NULL,
                              user_id = NULL,
                              instrument_id = NULL,
-                             get_p_id = FALSE) {
+                             get_p_id = FALSE,
+                             asynchronous_api_mode = FALSE,
+                             default_range = set_default_range('Piano'),
+                             css = system.file('www/css/musicassessr.css', package = "musicassessr"),
+                             username = NULL) {
 
   stopifnot(
-    is.scalar(setup_pages),
+    is.scalar.logical(setup_pages),
     is.function(setup_options),
     is.scalar.character(app_name),
     is.scalar.logical(midi_file_playback),
@@ -280,7 +291,13 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(experiment_condition_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(user_id, function(x) is.scalar.character(x) || is.integer(x) ),
     is.null.or(instrument_id, function(x) is.scalar.character(x) || is.integer(x) ),
-    is.scalar.logical(get_p_id)
+    is.scalar.logical(get_p_id),
+    is.scalar.logical(asynchronous_api_mode),
+    is.null.or(default_range, function(x)   {
+      is.list(x) && length(x) == 3 && setequal(names(x), c('bottom_range', 'top_range', 'clef'))
+    }),
+    is.null.or(css, is.scalar.character),
+    is.null.or(username, is.scalar.character)
   )
 
   list(
@@ -295,7 +312,11 @@ musicassessr_opt <- function(setup_pages = TRUE,
     experiment_condition_id = experiment_condition_id,
     user_id = user_id,
     instrument_id = instrument_id,
-    get_p_id = get_p_id
+    get_p_id = get_p_id,
+    asynchronous_api_mode = asynchronous_api_mode,
+    default_range = default_range,
+    css = css,
+    username = username
   )
 
 }

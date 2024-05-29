@@ -16,7 +16,10 @@ musicassessr_opt(
   experiment_condition_id = NULL,
   user_id = NULL,
   instrument_id = NULL,
-  get_p_id = FALSE
+  get_p_id = FALSE,
+  asynchronous_api_mode = FALSE,
+  default_range = set_default_range("Piano"),
+  css = system.file("www/css/musicassessr.css", package = "musicassessr")
 )
 }
 \arguments{
@@ -43,6 +46,12 @@ musicassessr_opt(
 \item{instrument_id}{An instrument ID.}
 
 \item{get_p_id}{Should a participant ID get collected at the beginning of the test?}
+
+\item{asynchronous_api_mode}{Should async API mode be on?}
+
+\item{default_range}{Should there be default range set?}
+
+\item{css}{A css stylesheet to use (passes to psychTestR)}
 }
 \description{
 Specify options for a musicassessr test.

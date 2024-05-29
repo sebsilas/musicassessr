@@ -49,6 +49,7 @@ var db_session_id;
 var db_test_id;
 var db_new_items_id;
 var db_review_items_id;
+var db_onset;
 var db_user_id;
 
 // Functions

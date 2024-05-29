@@ -161,7 +161,6 @@ autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive, mu
   } else {
     scr <- shiny::tags$script(paste0('var midi_device = \"', midi_device, '\";'))
   }
-  print(scr)
   return(scr)
 }
 

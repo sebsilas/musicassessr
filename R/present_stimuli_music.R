@@ -696,7 +696,7 @@ format.notes.scientific_music_notation <- function(notes, asChord = FALSE) {
 }
 
 
-format.notes.pitch.classes <- function(notes, octave = 4L, asChord = FALSE) {
+iformat.notes.pitch.classes <- function(notes, octave = 4L, asChord = FALSE) {
 
   res <- ""
 

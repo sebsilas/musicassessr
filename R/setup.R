@@ -104,8 +104,6 @@ setup_pages <- function(input_type = c("microphone",
 
     setup <- psychTestR::join(
 
-      fake_instrument(),
-
       if(get_self_chosen_anonymous_id) get_self_chosen_anonymous_id() else pass_p_id_to_js(),
 
       correct_setup(input_type, SNR_test = FALSE, absolute_url, microphone_test = TRUE, concise_wording, skip_setup = skip_setup, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)
@@ -113,11 +111,7 @@ setup_pages <- function(input_type = c("microphone",
 
   } else if(skip_setup || input_type == "key_presses") {
 
-    setup <- psychTestR::join(
-
-      fake_instrument()
-
-    )
+    setup <- psychTestR::join(empty_code_block())
 
   } else {
 
@@ -262,9 +256,11 @@ microphone_setup <- function(SNR_test, absolute_url = character(), microphone_te
                              allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
                              concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE, asynchronous_api_mode = FALSE) {
 
+
   if(microphone_test) {
     microphone_pages <- psychTestR::join(
-      if(skip_setup == "except_microphone" | skip_setup == FALSE) microphone_type_page(),
+      # Don't show the microphone type page if we are skipping setup
+      if(!skip_setup %in% c("except_microphone", TRUE) && show_microphone_type_page) microphone_type_page(),
       microphone_calibration_page(concise_wording = concise_wording, musical_instrument = musical_instrument)
     )
   } else {
@@ -292,7 +288,9 @@ record_instructions <- function(playful_volume_meter_setup = FALSE) {
 
 
 get_instrument_range <- function(inst) {
-  insts_table[insts_table$en == inst, c("low_note", "high_note")]
+  insts_table[insts_table$en == inst, c("low_note", "high_note", "clef")] %>%
+    dplyr::rename(bottom_range = low_note,
+                  top_range = high_note)
 }
 
 set_instrument_range_code_block <- function(inst = NULL) {
@@ -301,8 +299,8 @@ set_instrument_range_code_block <- function(inst = NULL) {
     if(is.null(inst)) {
       inst <- psychTestR::get_global("inst", state)
     }
-    psychTestR::set_global("bottom_range", get_instrument_range(inst)$low_note, state)
-    psychTestR::set_global("top_range", get_instrument_range(inst)$high_note, state)
+    psychTestR::set_global("bottom_range", get_instrument_range(inst)$bottom_range, state)
+    psychTestR::set_global("top_range", get_instrument_range(inst)$top_range, state)
   })
 }
 

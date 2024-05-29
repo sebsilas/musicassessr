@@ -69,7 +69,7 @@ musicassessr_init <- function(app_name = "",
 
               session_token_res <- musicassessrdb::check_jwt(session_token)
 
-              if(session_token$success) {
+              if(session_token_res$success) {
                 async_ui <- async_success_ui(username)
               } else {
                 async_ui <- shiny::tags$p('You could not be validated.')

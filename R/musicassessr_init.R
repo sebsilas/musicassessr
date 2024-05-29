@@ -67,7 +67,7 @@ musicassessr_init <- function(app_name = "",
 
             } else {
 
-              session_token_res <- check_jwt(session_token)
+              session_token_res <- musicassessrdb::check_jwt(session_token)
 
               if(session_token$success) {
                 async_ui <- async_success_ui(username)

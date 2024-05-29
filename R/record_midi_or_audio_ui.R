@@ -31,8 +31,7 @@ record_midi_or_audio_ui <- function(body = "",
                                     show_record_button = TRUE,
                                     reactive_melody_no = FALSE,
                                     mute_midi_playback = FALSE,
-                                    db_vars = NULL,
-                                    use_musicassessr_db = FALSE, ...) {
+                                    db_vars = NULL, ...) {
 
 
   if(max_goes > 1L) {

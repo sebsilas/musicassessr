@@ -818,8 +818,7 @@ present_melody <- function(stimuli,
                     transposed_message = transposed_message,
                     play_first_note_button_text = play_first_note_button_text,
                     reactive_melody_no = reactive_melody_no,
-                    db_vars = db_vars,
-                    use_musicassessr_db = psychTestR::get_global("musicassessr_db", state))
+                    db_vars = db_vars)
 
   })
 }

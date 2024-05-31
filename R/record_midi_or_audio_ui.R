@@ -112,9 +112,15 @@ record_midi_or_audio_ui <- function(body = "",
 
 set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
 
+
   if(is.null(db_vars$onset)) {
     db_vars$onset <- FALSE
   }
+
+  # Replace nulls with NAs
+  db_vars <- purrr::map(db_vars, replace_nulls)
+
+  # Leave the is.nulls() above before the stopifnot, so that e.g., onset is created, if it doesn't already exist
 
   stopifnot(
     length(
@@ -139,7 +145,8 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
       )
     ) == 0)
 
-  tags$script(
+
+  shiny::tags$script(htmltools::HTML(
     paste0('
   var db_midi_vs_audio = \"', db_vars$midi_vs_audio,'\";
   var db_trial_time_started = \"', db_vars$trial_time_started,'\";
@@ -158,8 +165,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_review_items_id = \"', db_vars$review_items_id,'\";
   var db_new_items_id = \"', db_vars$new_items_id,'\";
   var db_user_id = \"', db_vars$user_id,'\";
-  ')
-  )
+  ')))
 
 }
 

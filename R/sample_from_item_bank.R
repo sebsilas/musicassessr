@@ -158,7 +158,7 @@ sample_item_characteristics <- function(var_name, item_characteristics_sampler_f
     logging::loginfo("Calling sample_item_characteristics function")
 
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
-    psychTestR::set_global(var_name, item_chars, state)
+    psychTestR::set_global(paste0(var_name, "_trial_characteristics"), item_chars, state)
   })
 }
 

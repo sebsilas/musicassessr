@@ -127,9 +127,6 @@ record_midi_block <- function(no_pages,
                               autoInstantiate = TRUE,
                               mute_midi_playback = FALSE) {
 
-  print('record_midi_block')
-  print(mute_midi_playback)
-
   page <- psychTestR::reactive_page(function(state, ...) {
 
     midi_device <- psychTestR::get_global("midi_device", state)
@@ -779,6 +776,7 @@ melody_trials <- function(var_name,
   # Unclass item bank, so it can work with dplyr
   item_bank <- item_bank %>% tibble::as_tibble()
 
+
   if(num_items_flat == 0) {
     return(empty_code_block())
   } else {
@@ -834,10 +832,11 @@ melody_trials <- function(var_name,
 
     }
 
+
     psychTestR::module(module_name,
                        psychTestR::join(
 
-                         if(asynchronous_api_mode) api_check_pages(),
+                         print_code_block("shoul be"),
 
                          # Instructions depending on review
                          if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
@@ -904,14 +903,15 @@ melody_trials <- function(var_name,
                          if(!presampled && ! pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
                          ## Trials
-                         main_trials,
+                         main_trials#,
 
-                         # At end of block, clear this var, otherwise can lead to issues between trial blocks.
-                         # Another option would be to revert everything to set_local.
-                         # Should probably do this in future release.
-                         psychTestR::code_block(function(state, ...) {
-                           psychTestR::set_global(paste0("previous_melodies_", var_name), NULL, state)
-                         })
+                         # # At end of block, clear this var, otherwise can lead to issues between trial blocks.
+                         # # Another option would be to revert everything to set_local.
+                         # # Should probably do this in future release.
+                         # psychTestR::code_block(function(state, ...) {
+                         #   psychTestR::set_global(paste0("previous_melodies_", var_name), NULL, state)
+                         # })
+
                        )
     )
   }
@@ -982,13 +982,20 @@ handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics
                                  item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test",
                                  learn_test_paradigm = FALSE, rhythmic = FALSE) {
 
+
   if(review) {
+
+    logging::loginfo("Sample review..")
+
     sample_review(num_items_flat, id = var_name, rhythmic = rhythmic)
   } else if(learn_test_paradigm && phase == "test") {
 
+    logging::loginfo("Since it's the test phase of a learn-test paradigm, sample from learn phase")
+
     psychTestR::code_block(function(state, ...) {
       logging::loginfo("Test phase of learn-test paradigm: sampling from learn phase melodies")
-      res <- psychTestR::get_global(paste0("previous_melodies_", var_name), state) %>%
+      previous_melodies_name <- paste0("previous_melodies_", var_name)
+      res <- psychTestR::get_global(previous_melodies_name, state) %>%
         dplyr::slice_sample(n = num_items_flat)
       psychTestR::set_global(var_name, res, state)
     })
@@ -996,9 +1003,11 @@ handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics
   } else {
     if(is.null(item_characteristics_sampler_function)) {
       if(!is.null(sampler_function)) {
+        logging::loginfo("Sample using sampler function")
         sampler_function(item_bank, num_items_flat)
       }
     } else {
+      logging::loginfo("Sample via item characteristics")
       sample_item_characteristics(var_name = var_name, item_characteristics_sampler_function, item_characteristics_pars)
     }
   }

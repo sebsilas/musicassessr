@@ -776,6 +776,9 @@ present_melody <- function(stimuli,
       )
     } else NULL
 
+
+    logging::loginfo("Present stimulus")
+
     # Present the stimulus
     present_stimuli(stimuli = melody_checks$melody,
                     stimuli_type = stimuli_type,
@@ -869,7 +872,8 @@ grab_sampled_melody <- function(item_bank = NULL,
 
     } else {
       melody_no <- if(reactive_melody_no) psychTestR::get_global("reactive_melody_no", state) else melody_no
-      trial_char <- get_trial_characteristics_function(trial_df = trials, trial_no = melody_no)
+      trial_characteristics <- psychTestR::get_global(paste0(var_name, "_trial_characteristics"), state)
+      trial_char <- get_trial_characteristics_function(trial_df = trial_characteristics, trial_no = melody_no)
       melody_row <- sample_melody_in_key(item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$key_difficulty, length = trial_char$melody_length)
       melody_row <- cbind(melody_row, tibble::tibble(key_difficulty = trial_char$key_difficulty, display_modality = trial_char$display_modality) )
       # Not fully abstracted from PBET setup, yet
@@ -909,11 +913,19 @@ grab_sampled_melody <- function(item_bank = NULL,
                   display_modality = display_modality)
 
   previous_melodies_var_name <- paste0("previous_melodies_", var_name)
+  prev <- psychTestR::get_global(previous_melodies_var_name, state)
 
-  if(is.null(psychTestR::get_global(previous_melodies_var_name, state))) {
+
+  if(is.null(prev)) {
     psychTestR::set_global(previous_melodies_var_name, answer_meta_data, state)
   } else {
-    prev <- psychTestR::get_global(previous_melodies_var_name, state)
+
+    # Make sure they have equal names
+    joint_column_names <- intersect(names(prev), names(answer_meta_data))
+    prev <- prev %>% dplyr::select(dplyr::all_of(joint_column_names))
+    answer_meta_data <- answer_meta_data %>% dplyr::select(dplyr::all_of(joint_column_names))
+
+
     logging::logdebug("prev %s", prev)
     logging::logdebug("answer_meta_data %s", answer_meta_data)
     psychTestR::set_global(previous_melodies_var_name, rbind(prev, answer_meta_data), state)

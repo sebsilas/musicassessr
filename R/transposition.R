@@ -18,7 +18,6 @@ sample_melody_in_key_v2 <- function(item_bank, inst, bottom_range, top_range, di
   logging::loginfo('Sample melody in key...')
   logging::loginfo("Range: %s %s", bottom_range, top_range)
 
-
   stopifnot(is(item_bank, "tbl"), # This checks for a tibble, but allows a database backend too (i.e., from tbl(db_con, "tbl_name"))
             is.scalar.character(inst),
             is_midi_note(bottom_range),
@@ -52,6 +51,9 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
 
   logging::loginfo('Sample melody in key...')
   logging::loginfo("Range: %s %s", bottom_range, top_range)
+
+  print('das?')
+  print(difficulty)
 
 
   stopifnot(is(item_bank, "tbl"), # This checks for a tibble, but allows a database backend too (i.e., from tbl(db_con, "tbl_name"))

@@ -25,7 +25,10 @@ setup_pages_options(
   skip_setup = FALSE,
   get_self_chosen_anonymous_id = FALSE,
   musical_instrument = FALSE,
-  fake_range = FALSE
+  allow_SNR_failure = FALSE,
+  requirements_page = TRUE,
+  playful_volume_meter_setup = FALSE,
+  show_microphone_type_page = TRUE
 )
 }
 \arguments{
@@ -67,7 +70,13 @@ setup_pages_options(
 
 \item{musical_instrument}{Whether the participant is required to have a musical instrument.}
 
-\item{fake_range}{Should a range be faked?}
+\item{allow_SNR_failure}{If TRUE, allow user to continue even if they fail the SNR test.}
+
+\item{requirements_page}{Show a requirements page?}
+
+\item{playful_volume_meter_setup}{Should there be some additional functionality to demo the playful volume meter?}
+
+\item{show_microphone_type_page}{Should you ask the user what kind of microphone they are using?}
 }
 \description{
 Setup page options for a musicassessr test

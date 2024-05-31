@@ -489,7 +489,7 @@ function hideAudioFilePlayer() {
 
 
 
-function startRecording(type, stop_recording_automatically_after_ms = null) {
+function startRecording(type = "record_audio_page", stop_recording_automatically_after_ms = null) {
 
 
    // Initiate startTime
@@ -564,7 +564,7 @@ function hideLoading() {
 }
 
 
-function stopRecording(page_type, trigger_next_page = true) {
+function stopRecording(page_type = "record_audio_page", trigger_next_page = true) {
 
   var volumeMeter = document.getElementById('volumeMeter');
 

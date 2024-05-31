@@ -233,6 +233,8 @@ wait_for_api_page <- function(poll_frequency_seconds = 1L, check_function = chec
 
 check_session_id_ready <- function(state) {
 
+  logging::loginfo("Check session_id ready..")
+
   session_id <- get_promise_value(psychTestR::get_global("session_id", state))
 
   not_ready <- is.null(session_id)
@@ -243,6 +245,7 @@ check_session_id_ready <- function(state) {
     if(is.scalar.na(session_id)) {
       stop("Could not get session_id.")
     } else {
+      print(session_id)
       psychTestR::set_global("session_id", session_id$session_id, state)
     }
   }
@@ -261,49 +264,66 @@ get_select_items_job_status <- function(state) {
 
   job_id <- psychTestR::get_global('job_id', state)
 
-  logging::loginfo("job_id %s", job_id)
+  if(is.null(job_id)) {
 
-  api_response <- musicassessrdb::get_job_status_api(job_id)
-
-  logging::loginfo("api_response %s", api_response)
-
-  if(api_response$status == "FINISHED") {
-
-    items <- api_response %>%
-      purrr::pluck("message") %>%
-      rjson::fromJSON()
-
-    logging::loginfo("items %s", items)
-
-    new_items <- items$new_items %>%
-      dplyr::bind_rows()
-
-    logging::loginfo("new_items %s", new_items)
-
-    review_items <- items$review_items %>%
-      dplyr::bind_rows()
-
-    logging::loginfo("review_items %s", review_items)
-
-    logging::loginfo('new_items[1, "abs_melody"]: %s', new_items[1, "abs_melody"])
-    logging::loginfo('review_items[1, "abs_melody"]: %s', review_items[1, "abs_melody"])
-
-    psychTestR::set_global('rhythmic_melody', new_items, state)
-    psychTestR::set_global('rhythmic_melody_review', review_items, state)
-
+    logging::loginfo("No job_id, job not needed, so moving on")
     return(FALSE)
 
-  } else if(api_response$status == "PENDING") {
-    return(TRUE)
   } else {
-    stop("API response invalid.")
+
+    logging::loginfo("job_id %s", job_id)
+
+    api_response <- musicassessrdb::get_job_status_api(job_id)
+
+    logging::loginfo("api_response %s", api_response)
+
+    if(api_response$status == "FINISHED") {
+
+      items <- api_response %>%
+        purrr::pluck("message") %>%
+        rjson::fromJSON()
+
+      logging::loginfo("items %s", items)
+
+      new_items <- items$new_items %>%
+        dplyr::bind_rows()
+
+      logging::loginfo("new_items %s", new_items)
+
+      review_items <- items$review_items %>%
+        dplyr::bind_rows()
+
+      logging::loginfo("review_items %s", review_items)
+
+      logging::loginfo('new_items[1, "abs_melody"]: %s', new_items[1, "abs_melody"])
+      logging::loginfo('review_items[1, "abs_melody"]: %s', review_items[1, "abs_melody"])
+
+      psychTestR::set_global('rhythmic_melody', new_items, state)
+      psychTestR::set_global('rhythmic_melody_review', review_items, state)
+
+      return(FALSE)
+
+    } else if(api_response$status == "PENDING") {
+      return(TRUE)
+    } else {
+      stop("API response invalid.")
+    }
+
   }
+
+
 
 }
 
 wait_for_api_page_ui <- function(poll_frequency_ms) {
-  empty_page(shiny::tags$div(shiny::tags$p("Please wait a few seconds."),
-                             shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter"),
-                             shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');')
-                             ))
+
+  print('wait_for_api_page_ui')
+
+  ui <- shiny::tags$div(shiny::tags$p("Please wait a few seconds."),
+                        shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter"),
+                        shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'))
+
+  print(ui)
+
+  empty_page(ui)
 }

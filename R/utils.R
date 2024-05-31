@@ -192,7 +192,17 @@ to_string_df <- function(df, exclude_cols = character()) {
 #' @examples
 set_response_type <- function(type = c("Microphone", "MIDI")) {
   psychTestR::code_block(function(state, ...) {
+
+    if(type == "microphone") {
+      type <- "Microphone"
+    }
+
+    if(type == "midi_keyboard") {
+      type <- "MIDI"
+    }
+
     psychTestR::set_global("response_type", type, state)
+
   })
 }
 
@@ -516,5 +526,13 @@ print_code_block <- function(msg = "test") {
 
 }
 
+
+replace_nulls <- function(x) {
+  if (is.null(x)) {
+    return(NA)
+  } else {
+    return(x)
+  }
+}
 
 

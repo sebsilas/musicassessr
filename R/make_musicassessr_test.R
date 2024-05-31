@@ -36,12 +36,15 @@ make_musicassessr_test <- function(title,
     psychTestR::is.test_element(welcome_page)
   )
 
-  print('opt$setup_pages')
-  print(opt$setup_pages)
+  print('enc')
+  print(opt$asynchronous_api_mode)
+  setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
+
 
   psychTestR::make_test(
     psychTestR::join(
 
+      # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
       welcome_page,
 
       # Get participant ID
@@ -54,22 +57,25 @@ make_musicassessr_test <- function(title,
         experiment_condition_id = opt$experiment_condition_id,
         user_id = opt$user_id,
         default_range = opt$default_range,
-        username = opt$username
+        username = opt$username,
+        asynchronous_api_mode =  opt$asynchronous_api_mode
         ),
 
       # Timeline before setup pages
       elts_before_setup_pages(),
 
       # Setup pages
-      if (opt$setup_pages) wrap_musicassessr_timeline( opt$setup_page_options() ),
+      if (opt$setup_pages) wrap_musicassessr_timeline( setup_enclosure ),
 
       # Timeline after setup pages
-
 
       elts(),
 
       # Save results
       psychTestR::elt_save_results_to_disk(complete = TRUE),
+
+      # Add final session information to DB (if asynchronous_api_mode)
+      musicassessrdb::elt_add_final_session_info_to_db(asynchronous_api_mode),
 
       # Final page
       final_page
@@ -89,7 +95,8 @@ make_musicassessr_test <- function(title,
       display = psychTestR::display_options(
         left_margin = 1L,
         right_margin = 1L,
-        css = opt$css
+        css = opt$css,
+        content_border = "solid 3px #bfd5d9"
       ), ...)
   )
 }
@@ -197,7 +204,10 @@ end_session_api <- function(state, session) {
 #' @param skip_setup Whether to skip setup. Can be TRUE (skip whole setup), FALSE or "except_microphone" (only setup the microphone but no other steps).
 #' @param get_self_chosen_anonymous_id Whether to ask participant to provide an anonymous ID.
 #' @param musical_instrument Whether the participant is required to have a musical instrument.
-#' @param fake_range Should a range be faked?
+#' @param allow_SNR_failure If TRUE, allow user to continue even if they fail the SNR test.
+#' @param requirements_page Show a requirements page?
+#' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
+#' @param show_microphone_type_page Should you ask the user what kind of microphone they are using?
 #'
 #' @return
 #' @export
@@ -222,17 +232,27 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
                                 skip_setup = FALSE,
                                 get_self_chosen_anonymous_id = FALSE,
                                 musical_instrument = FALSE,
-                                fake_range = FALSE) {
+                                allow_SNR_failure = FALSE,
+                                requirements_page = TRUE,
+                                playful_volume_meter_setup = FALSE,
+                                show_microphone_type_page = TRUE) {
+
+  # Note, we don't use asynchronous_api_mode here. We take this from musicassessr_opt
 
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
 
-  function() {
+  function(asynchronous_api_mode) {
+
+    print('pango')
+    print(asynchronous_api_mode)
+
     musicassessr::setup_pages(input_type, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,
                               absolute_url, select_instrument, get_instrument_range_musical_notation,
                               adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
-                              skip_setup, get_self_chosen_anonymous_id, musical_instrument, fake_range)
+                              skip_setup, get_self_chosen_anonymous_id, musical_instrument, allow_SNR_failure, requirements_page,
+                              playful_volume_meter_setup, asynchronous_api_mode, show_microphone_type_page)
   }
 
 
@@ -276,7 +296,7 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              get_p_id = FALSE,
                              asynchronous_api_mode = FALSE,
                              default_range = set_default_range('Piano'),
-                             css = system.file('www/css/musicassessr.css', package = "musicassessr"),
+                             css = "https://musicassessr.com/assets/css/style_songbird.css",
                              username = NULL) {
 
   stopifnot(

@@ -129,3 +129,7 @@ progress_bar <- function(progress) {
   )
 }
 
+musicassessr_css <- function() {
+  shiny::tags$link(rel="stylesheet", type="text/css", href="https://musicassessr.com/assets/css/style_songbird.css")
+}
+

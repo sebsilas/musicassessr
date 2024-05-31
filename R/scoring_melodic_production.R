@@ -291,6 +291,17 @@ get_durations <- function(result) {
 }
 
 
+#' Get opti3: helpful wrapper for opti3
+#'
+#' @param stimuli
+#' @param stimuli_durations
+#' @param stimuli_length
+#' @param user_input_as_pyin
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin) {
   # opti3
   if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {

@@ -24,7 +24,26 @@ musicassessr_init <- function(app_name = "",
                               default_range = set_default_range("Piano"),
                               username = NULL) {
 
+
   psychTestR::join(
+
+
+    # In multiple test time lines, we want to be able to change between e.g., Voice and Instrument
+    # So this aspect (code_block) of musicassessr_init can be fired twice in a single session...
+
+    psychTestR::code_block(function(state, ...) {
+
+      if(!is.null(instrument_id)) {
+        psychTestR::set_global("instrument_id", instrument_id, state)
+      }
+
+      if(!is.null(inst)) {
+        psychTestR::set_global("inst", inst, state)
+      }
+
+    }),
+
+    # ... conversely, we do not want to fire the async API stuff more than once. Hence, the conditional.
 
     psychTestR::conditional(function(state, ...) {
 
@@ -33,7 +52,7 @@ musicassessr_init <- function(app_name = "",
     }, logic = psychTestR::join(
 
 
-
+      # Set default range (which can be customised or instead replaced later by the user via setup pages)
       set_instrument_range(default_range$bottom_range,
                            default_range$top_range,
                            default_range$clef),
@@ -60,67 +79,60 @@ musicassessr_init <- function(app_name = "",
             job_id <- url_params$job_id
             session_token <- url_params$session_token
 
+            if(!is.null(job_id)) {
+              logging::loginfo("job_id %s", job_id)
+              psychTestR::set_global("job_id", job_id, state)
+            }
 
-            if(is.null(session_token)) {
 
-              async_ui <- async_success_ui(username)
-
-            } else {
+            if(!is.null(session_token)) {
 
               session_token_res <- musicassessrdb::check_jwt(session_token)
 
               if(session_token_res$success) {
                 username <- session_token_res$username
                 user_id <- session_token_res$user_id
-                async_ui <- async_success_ui(username)
-              } else {
-                async_ui <- shiny::tags$p('You could not be validated.')
               }
-
-            }
-
-
-            # user_id <- 83
-            # username <- "testsingpause13"
-            # job_id <- "4b51fe3a-d8cb-4904-808d-fd89fc75e09c"
-
-
-
-            if(!is.null(user_id)) {
-              logging::loginfo("user_id %s", user_id)
-              psychTestR::set_global("user_id", user_id, state)
-            }
-
-            if(!is.null(username)) {
-              logging::loginfo("username %s", username)
-              psychTestR::set_global("username", username, state)
-            }
-
-            if(!is.null(job_id)) {
-              logging::loginfo("job_id %s", job_id)
-              psychTestR::set_global("job_id", job_id, state)
             }
 
           }
+
+
+
+          if(!is.null(username)) {
+            logging::loginfo("username %s", username)
+            psychTestR::set_global("username", username, state)
+          }
+
+
+          if(!is.null(user_id)) {
+            logging::loginfo("user_id %s", user_id)
+            psychTestR::set_global("user_id", user_id, state)
+          }
+
 
           if(Sys.getenv("ENDPOINT_URL") == "") {
             stop("You need to set the ENDPOINT_URL!")
           }
 
+
           user_id <- psychTestR::get_global("user_id",state)
           username <- psychTestR::get_global("username",state)
 
-
-          if(asynchronous_api_mode && is.null(user_id)) {
+          if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
             stop("user_id or username should not be NULL, at this point. It should have been set through the test or the URL parameter.")
           }
+
         }
 
-        if(!exists("async_ui")) {
-          async_ui <- "Hello!"
-        }
 
-          psychTestR::one_button_page(async_ui)
+        if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
+          return(psychTestR::one_button_page(shiny::tags$div(musicassessr_css(), shiny::tags$p('You could not be validated.'))))
+        } else if(asynchronous_api_mode && !is.null(user_id) && !is.null(username)) {
+          return(psychTestR::one_button_page(async_success_ui(username)))
+        } else {
+          return(psychTestR::one_button_page(shiny::tags$div(musicassessr_css(), shiny::tags$p("Let's proceed!"))))
+        }
 
       }),
 
@@ -168,16 +180,6 @@ musicassessr_init <- function(app_name = "",
 
           }
 
-
-
-          if(!is.null(instrument_id)) {
-            psychTestR::set_global("instrument_id", instrument_id, state)
-          }
-
-          if(!is.null(inst)) {
-            psychTestR::set_global("inst", inst, state)
-          }
-
           logging::loginfo("Set vars")
 
           session_info <- psychTestR::get_session_info(state, complete = FALSE)
@@ -201,6 +203,7 @@ musicassessr_init <- function(app_name = "",
 
 async_success_ui <- function(username) {
   shiny::tags$div(
+    musicassessr_css(),
     shiny::tags$script("var upload_to_s3 = true; console.log('Turning S3 mode on');"),
     shiny::tags$p(paste0("Hello ", username, "!"))
   )

@@ -49,6 +49,15 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
 
 }
 
+#' Set melodic stimuli
+#'
+#' @param stimuli
+#' @param durations
+#'
+#' @return
+#' @export
+#'
+#' @examples
 set_melodic_stimuli <- function(stimuli, durations) {
 
   # Send stimuli to JS

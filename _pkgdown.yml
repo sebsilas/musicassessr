@@ -70,6 +70,7 @@ reference:
     Functions for scoring results
   contents:
   - starts_with("score")
+  - get_opti3
   - opti3
   - opti3_df
   - ngrukkon
@@ -82,6 +83,9 @@ reference:
     Functions for sampling from an item bank
   contents:
   - item_sampler
+  - item_sampler_v1
+  - item_sampler_v2
+  - sample_melody_in_key_v2
 
 - title: "Feedback functions"
   desc: >
@@ -108,9 +112,6 @@ reference:
   desc: >
     Functions for working with MySQL Databases
   contents:
-  - connect_to_db
-  - db_append_to_table
-  - get_table
   - set_instrument
   - set_instrument_range
   - set_response_type
@@ -129,15 +130,13 @@ reference:
   contents:
   - add_feedback
   - calculate_stable_part
-  - call_api_on_start
   - create_socials
-  - default_range
   - deploy_demographics
   - dict
   - download_files_from_ec2
-  - elt_add_final_session_info_to_db
   - empty_code_block
   - end_of_long_note_trial_screening
+  - end_session
   - expand_string_df_row
   - filler_task
   - final_page_or_continue_to_new_test
@@ -146,7 +145,7 @@ reference:
   - get_instrument_range
   - get_long_note_pcas
   - get_melody_dtw
-  - get_range_from_user_id
+  - get_promise_value
   - grab_meta_data
   - have_requirements
   - insert_item_into_every_other_n_position_in_list
@@ -173,6 +172,9 @@ reference:
   - sample_random
   - sample_review
   - sample_rhythmic
+  - set_default_range
+  - set_melodic_stimuli
+  - songbird_welcome_page_fun
   - test_acronym_to_name
   - tidy_melodies
   - to_string_df

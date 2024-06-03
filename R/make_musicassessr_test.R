@@ -36,8 +36,7 @@ make_musicassessr_test <- function(title,
     psychTestR::is.test_element(welcome_page)
   )
 
-  print('enc')
-  print(opt$asynchronous_api_mode)
+
   setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
 
 
@@ -65,7 +64,7 @@ make_musicassessr_test <- function(title,
       elts_before_setup_pages(),
 
       # Setup pages
-      if (opt$setup_pages) wrap_musicassessr_timeline( setup_enclosure ),
+      if (opt$setup_pages) setup_enclosure,
 
       # Timeline after setup pages
 
@@ -75,7 +74,7 @@ make_musicassessr_test <- function(title,
       psychTestR::elt_save_results_to_disk(complete = TRUE),
 
       # Add final session information to DB (if asynchronous_api_mode)
-      musicassessrdb::elt_add_final_session_info_to_db(asynchronous_api_mode),
+      musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
 
       # Final page
       final_page
@@ -129,7 +128,13 @@ end_session_api <- function(state, session) {
   session_id <- psychTestR::get_global("session_id", state) # Created earlier
   user_id <- psychTestR::get_global("user_id", state)
   psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
-  session_id <- musicassessr::get_promise_value(session_id)
+
+  if(length(musicassessr::get_promise_value(session_id)) < 1L) {
+    session_id <- musicassessr::get_promise_value(session_id)$session_id
+  } else {
+    session_id <- musicassessr::get_promise_value(session_id)
+  }
+
 
   logging::loginfo("call compute_session_scores_and_end_session_api...")
   logging::loginfo("test_id: %s", test_id)
@@ -137,6 +142,9 @@ end_session_api <- function(state, session) {
   logging::loginfo("user_id: %s", user_id)
 
   end_session_api_called <- psychTestR::get_global("compute_session_scores_and_end_session_api_called", state)
+
+  logging::loginfo("end_session_api_called?: %s", end_session_api_called)
+
 
   if(is.null(end_session_api_called)) {
     end_session_api_called <- FALSE
@@ -245,14 +253,13 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 
   function(asynchronous_api_mode) {
 
-    print('pango')
-    print(asynchronous_api_mode)
-
-    musicassessr::setup_pages(input_type, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,
-                              absolute_url, select_instrument, get_instrument_range_musical_notation,
-                              adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
-                              skip_setup, get_self_chosen_anonymous_id, musical_instrument, allow_SNR_failure, requirements_page,
-                              playful_volume_meter_setup, asynchronous_api_mode, show_microphone_type_page)
+    wrap_musicassessr_timeline(
+      musicassessr::setup_pages(input_type, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,
+                                absolute_url, select_instrument, get_instrument_range_musical_notation,
+                                adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
+                                skip_setup, get_self_chosen_anonymous_id, musical_instrument, allow_SNR_failure, requirements_page,
+                                playful_volume_meter_setup, asynchronous_api_mode, show_microphone_type_page)
+    )
   }
 
 

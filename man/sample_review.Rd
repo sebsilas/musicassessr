@@ -4,7 +4,11 @@
 \alias{sample_review}
 \title{Sample review}
 \usage{
-sample_review(num_review_items, id = "arrhythmic_melody", rhythmic = FALSE)
+sample_review(
+  num_review_items,
+  id = "arrhythmic_melody_review",
+  rhythmic = FALSE
+)
 }
 \arguments{
 \item{rhythmic}{}

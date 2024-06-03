@@ -155,10 +155,13 @@ item_sampler_v1 <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE
 sample_item_characteristics <- function(var_name, item_characteristics_sampler_function, item_characteristics_pars) {
   psychTestR::code_block(function(state, ...) {
 
-    logging::loginfo("Calling sample_item_characteristics function")
+    var_name <- paste0(var_name, "_trial_characteristics")
+
+    logging::loginfo("Calling sample_item_characteristics function with var_name: %s", var_name)
 
     item_chars <- item_characteristics_sampler_function(pars = item_characteristics_pars)
-    psychTestR::set_global(paste0(var_name, "_trial_characteristics"), item_chars, state)
+
+    psychTestR::set_global(var_name, item_chars, state)
   })
 }
 
@@ -417,14 +420,19 @@ span_warning <- function(span) {
 #' @export
 #'
 #' @examples
-sample_review <- function(num_review_items, id = "arrhythmic_melody", rhythmic = FALSE) {
+sample_review <- function(num_review_items, id = "arrhythmic_melody_review", rhythmic = FALSE) {
+
+
   psychTestR::code_block(function(state, ...) {
 
-    logging::loginfo('Sample review...')
+    logging::loginfo('Sample review with id %s', id)
+    logging::loginfo("NB: this connects to the DB and should be deprecated for new select_items API approach ASAP")
+    logging::loginfo("Sampling %s review trials.", num_review_items)
 
     # Sample arrhythmic
     review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
 
     psychTestR::set_global(id, review_sample, state)
   })
+
 }

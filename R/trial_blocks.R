@@ -832,14 +832,18 @@ melody_trials <- function(var_name,
 
     }
 
+    if(arrhythmic) {
+      melody_type_str <- "arrhythmic"
+    } else {
+      melody_type_str <- "rhythmic"
+    }
+
 
     psychTestR::module(module_name,
                        psychTestR::join(
 
-                         print_code_block("shoul be"),
-
                          # Instructions depending on review
-                         if(review) psychTestR::one_button_page("Now you will review some melodies you have encountered previously."),
+                         if(review) psychTestR::one_button_page(paste0("Now you will review some ", melody_type_str, " melodies you have encountered previously.")) else psychTestR::one_button_page(paste0("Now you will hear some ", melody_type_str, " melodies.")),
 
                          # Examples
                          if(is.numeric(num_examples_flat) && num_examples_flat > 0L && ! review) {
@@ -852,10 +856,12 @@ melody_trials <- function(var_name,
 
 
                              ## Sample example items
-                             if(!presampled && !pass_items_through_url_parameter) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+                             #### (review phase should not have example items)
+                             if(!presampled && !pass_items_through_url_parameter && !review) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
                              ## Run examples
-                             multi_page_play_melody_loop(
+                             if(!review) {
+                               multi_page_play_melody_loop(
                                presampled_items = if(presampled & ! sample_item_bank_via_api) item_bank else if(pass_items_through_url_parameter) NULL else NULL,
                                stimuli_type = "midi_notes",
                                var_name = var_name,
@@ -891,7 +897,7 @@ melody_trials <- function(var_name,
                                learn_test_paradigm = learn_test_paradigm,
                                sample_item_bank_via_api = sample_item_bank_via_api,
                                start_from_trial_no = start_from_sampled_trial_no,
-                               pass_items_through_url_parameter = pass_items_through_url_parameter),
+                               pass_items_through_url_parameter = pass_items_through_url_parameter) },
 
                              psychTestR::one_button_page(shiny::tags$div(
                                shiny::tags$h2(page_title),
@@ -978,7 +984,8 @@ wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items
   )
 }
 
-handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics_sampler_function,
+handle_item_sampling <- function(item_bank,
+                                 num_items_flat, item_characteristics_sampler_function,
                                  item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test",
                                  learn_test_paradigm = FALSE, rhythmic = FALSE) {
 
@@ -988,6 +995,7 @@ handle_item_sampling <- function(item_bank, num_items_flat, item_characteristics
     logging::loginfo("Sample review..")
 
     sample_review(num_items_flat, id = var_name, rhythmic = rhythmic)
+
   } else if(learn_test_paradigm && phase == "test") {
 
     logging::loginfo("Since it's the test phase of a learn-test paradigm, sample from learn phase")

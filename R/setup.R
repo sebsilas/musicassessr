@@ -288,6 +288,14 @@ record_instructions <- function(playful_volume_meter_setup = FALSE) {
 }
 
 
+#' Get instrument range
+#'
+#' @param inst
+#'
+#' @return
+#' @export
+#'
+#' @examples
 get_instrument_range <- function(inst) {
   insts_table[insts_table$en == inst, c("low_note", "high_note", "clef")] %>%
     dplyr::rename(bottom_range = low_note,

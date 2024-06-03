@@ -143,6 +143,7 @@ reference:
   - final_page_or_continue_to_new_test
   - find_closest_stimuli_pitch_to_user_production_pitches
   - get_implicit_harmonies
+  - get_instrument_range
   - get_long_note_pcas
   - get_melody_dtw
   - get_range_from_user_id

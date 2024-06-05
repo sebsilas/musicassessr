@@ -270,8 +270,6 @@ get_select_items_job_status <- function(state) {
 
   } else {
 
-    #browser()
-
     logging::loginfo("job_id %s", job_id)
 
     api_response <- musicassessrdb::get_job_status_api(job_id)
@@ -296,13 +294,8 @@ get_select_items_job_status <- function(state) {
 
       logging::loginfo("review_items %s", review_items)
 
-      logging::loginfo('new_items[1, "abs_melody"]: %s', new_items[1, "abs_melody"])
-      logging::loginfo('review_items[1, "abs_melody"]: %s', review_items[1, "abs_melody"])
-
       psychTestR::set_global('rhythmic_melody', new_items, state)
       psychTestR::set_global('rhythmic_melody_review', review_items, state)
-
-      browser()
 
       return(FALSE)
 

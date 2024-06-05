@@ -611,7 +611,11 @@ function showStopButton(page_type = null, stop_button_text = "Stop", show_sheet_
 
 function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = 'sheet_music', trigger_next_page = true) {
 
-  stopButton.style.visibility = 'visible';
+   setTimeout(() => {
+        stopButton.style.visibility = 'visible';
+      }, 500);
+
+
 
   stopButton.onclick = function () {
     if(show_happy_with_response) {

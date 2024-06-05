@@ -637,9 +637,12 @@ function showRecordingIcon() {
   img.src =  "https://adaptiveeartraining.com/assets/img/record.gif";
   img.width = "280";
   img.height = "280";
-
   var button_area = document.getElementById("button_area");
-  button_area.appendChild(img);
+
+  setTimeout(() => {
+        button_area.appendChild(img);
+      }, 500);
+
 
 }
 

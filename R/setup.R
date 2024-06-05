@@ -89,6 +89,7 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(show_microphone_type_page)
   )
 
+
   if(demo) {
 
     setup <- psychTestR::join(

@@ -426,8 +426,9 @@ sample_review <- function(num_review_items, id = "arrhythmic_melody_review", rhy
   psychTestR::code_block(function(state, ...) {
 
     logging::loginfo('Sample review with id %s', id)
-    logging::loginfo("NB: this connects to the DB and should be deprecated for new select_items API approach ASAP")
-    logging::loginfo("Sampling %s review trials.", num_review_items)
+    logging::loginfo("num_review_items: %s", num_review_items)
+    logging::logwarn("NB: this connects to the DB and should be deprecated for new select_items API approach ASAP")
+    logging::logwarn("Sampling %s review trials.", num_review_items)
 
     # Sample arrhythmic
     review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)

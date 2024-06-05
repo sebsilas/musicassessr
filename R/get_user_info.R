@@ -1,3 +1,4 @@
+
 user_info_check <- function(input, state, ...)  {
   # check the info and save it including participant ID
   if (input$browser_capable == FALSE) {
@@ -5,6 +6,10 @@ user_info_check <- function(input, state, ...)  {
   } else {
     list("user_info" = rjson::fromJSON(input$user_info))
   }
+}
+
+user_info_async <- function(input, state, ...)  {
+  psychTestR::set_global("user_info", input$user_info, state)
 }
 
 

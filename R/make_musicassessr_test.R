@@ -47,7 +47,7 @@ make_musicassessr_test <- function(title,
       welcome_page,
 
       # Get participant ID
-      if(opt$get_p_id) psychTestR::get_p_id(),
+      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content() ),
 
       # Init musicassessr
       musicassessr_init(
@@ -101,6 +101,14 @@ make_musicassessr_test <- function(title,
 }
 
 
+
+get_p_id_content <- function() {
+  shiny::tags$div(
+    shiny::tags$h3("Choose an anonymous ID"),
+    shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
+    shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
+  )
+}
 #' End session
 #'
 #' @param asynchronous_api_mode
@@ -128,6 +136,7 @@ end_session_api <- function(state, session) {
   session_id <- psychTestR::get_global("session_id", state) # Created earlier
   user_id <- psychTestR::get_global("user_id", state)
   psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
+  user_info <- psychTestR::get_global("user_info", state)
 
   if(length(musicassessr::get_promise_value(session_id)) < 1L) {
     session_id <- musicassessr::get_promise_value(session_id)$session_id
@@ -140,6 +149,7 @@ end_session_api <- function(state, session) {
   logging::loginfo("test_id: %s", test_id)
   logging::loginfo("session_id: %s", session_id)
   logging::loginfo("user_id: %s", user_id)
+  logging::loginfo("user_info: %s", user_info)
 
   end_session_api_called <- psychTestR::get_global("compute_session_scores_and_end_session_api_called", state)
 
@@ -159,7 +169,40 @@ end_session_api <- function(state, session) {
                                                                  session_id,
                                                                  user_id,
                                                                  psychTestR_session_id,
-                                                                 session_complete = "0")
+                                                                 session_complete = "0",
+                                                                 user_info = user_info)
+
+    }, seed = NULL, future.plan = future::multisession) %>%
+      promises::then(
+        onFulfilled = function(result) {
+
+          logging::loginfo("Promise fulfilled.")
+          logging::loginfo("Returning promise result: %s", result)
+
+          if(is.scalar.na.or.null(result)) {
+            return(NA)
+          } else if(result$status == 200) {
+            return(result)
+          } else {
+            return(NA)
+          }
+
+        },
+        onRejected = function(err) {
+
+          logging::logerror("Promise failed: %s", err)
+
+        }
+      )
+
+    psychTestR::set_global('final_session_result', final_session_result, state)
+
+  } else {
+
+    logging::loginfo("Appending failed session result")
+    final_session_result <- promises::future_promise({
+      # Test failed early
+      musicassessrdb::append_failed_session_api(user_info = user_info)
 
     }, seed = NULL, future.plan = future::multisession) %>%
       promises::then(

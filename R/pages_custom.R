@@ -245,7 +245,6 @@ check_session_id_ready <- function(state) {
     if(is.scalar.na(session_id)) {
       stop("Could not get session_id.")
     } else {
-      print(session_id)
       psychTestR::set_global("session_id", session_id$session_id, state)
     }
   }
@@ -270,6 +269,8 @@ get_select_items_job_status <- function(state) {
     return(FALSE)
 
   } else {
+
+    #browser()
 
     logging::loginfo("job_id %s", job_id)
 
@@ -301,6 +302,8 @@ get_select_items_job_status <- function(state) {
       psychTestR::set_global('rhythmic_melody', new_items, state)
       psychTestR::set_global('rhythmic_melody_review', review_items, state)
 
+      browser()
+
       return(FALSE)
 
     } else if(api_response$status == "PENDING") {
@@ -317,13 +320,9 @@ get_select_items_job_status <- function(state) {
 
 wait_for_api_page_ui <- function(poll_frequency_ms) {
 
-  print('wait_for_api_page_ui')
-
   ui <- shiny::tags$div(shiny::tags$p("Please wait a few seconds."),
                         shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter"),
                         shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'))
-
-  print(ui)
 
   empty_page(ui)
 }

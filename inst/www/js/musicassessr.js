@@ -491,28 +491,33 @@ function hideAudioFilePlayer() {
 
 function startRecording(type = "record_audio_page", stop_recording_automatically_after_ms = null) {
 
+  setTimeout(() => {
 
-   // Initiate startTime
-  startTime = new Date().getTime();
-  Shiny.setInputValue('trial_start_time', startTime);
+        // Initiate startTime
+    startTime = new Date().getTime();
+    Shiny.setInputValue('trial_start_time', startTime);
 
-  if (type === "record_audio_page") {
-    startAudioRecording();
-  } else if(type === "record_midi_page") {
-    instantiateMIDI(midi_device);
-  } else {
-    console.log('type not recognised');
-  }
+    if (type === "record_audio_page") {
+      startAudioRecording();
+    } else if(type === "record_midi_page") {
+      instantiateMIDI(midi_device);
+    } else {
+      console.log('type not recognised');
+    }
 
-  // And do the same thing again to estimate potential latency
-  startTime2 = new Date().getTime();
-  Shiny.setInputValue('trial_start_time2', startTime2);
+    // And do the same thing again to estimate potential latency
+    startTime2 = new Date().getTime();
+    Shiny.setInputValue('trial_start_time2', startTime2);
 
-  if(typeof(stop_recording_automatically_after_ms) === 'number') {
-    setTimeout(() => {
-      stopRecording(type, trigger_next_page = true)
-      }, stop_recording_automatically_after_ms);
-  }
+    if(typeof(stop_recording_automatically_after_ms) === 'number') {
+      setTimeout(() => {
+        stopRecording(type, trigger_next_page = true)
+        }, stop_recording_automatically_after_ms);
+    }
+
+      }, 500);
+
+
 
 
 }

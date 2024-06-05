@@ -242,10 +242,12 @@ check_session_id_ready <- function(state) {
   if(not_ready) {
     logging::loginfo("Session ID not ready, trying again...")
   } else {
-    if(is.scalar.na(session_id)) {
+    if(is.scalar.na.or.null.or.length.zero(session_id)) {
       stop("Could not get session_id.")
     } else {
-      psychTestR::set_global("session_id", session_id$session_id, state)
+      if("session_id" %in% names(session_id)) {
+        psychTestR::set_global("session_id", session_id$session_id, state)
+      }
     }
   }
 

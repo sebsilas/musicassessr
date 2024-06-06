@@ -486,16 +486,24 @@ compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = N
   cat(file=stderr(), "current_test_id", current_test_id, "\n")
   cat(file=stderr(), "session_id", session_id, "\n")
   cat(file=stderr(), "user_id", user_id, "\n")
-  cat(DBI::dbIsValid(db_con))
+  cat(file = stderr(), "DBI::dbIsValid(db_con)", DBI::dbIsValid(db_con))
 
 
 
-  sessions <- get_table(db_con, "sessions", collect = FALSE) %>%
+  sessions <- musicassessrdb::get_table(db_con, "sessions", collect = FALSE) %>%
     dplyr::filter(user_id %in% !!user_id)
 
-  trials <- get_table(db_con, "trials", collect = FALSE) %>%
+  cat(file=stderr(), "nrow(sessions)", nrow(sessions), "\n")
+
+  trials <- musicassessrdb::get_table(db_con, "trials", collect = FALSE) %>%
     dplyr::left_join(sessions, by = "session_id")
+
+  cat(file=stderr(), "nrow(trials)", nrow(trials), "\n")
+
   user_trials <- trials %>% dplyr::filter(user_id %in% !!user_id)
+
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
 
   if (get_nrows(user_trials) < 1L) {
     return(user_trials)
@@ -504,22 +512,31 @@ compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = N
     user_trials <- user_trials %>% dplyr::filter(test_id ==
                                                    !!current_test_id)
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   if (get_nrows(user_trials) < 1L) {
     return(user_trials)
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   if (!is.null(session_id)) {
-    user_trials <- user_trials %>% dplyr::filter(session_id %in%
-                                                   !!session_id)
+    user_trials <- user_trials %>% dplyr::filter(session_id %in% !!session_id)
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   if (get_nrows(user_trials) < 1L) {
     return(user_trials)
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   if (join_item_banks_on) {
     item_banks <- user_trials %>% dplyr::pull(item_id) %>%
       get_item_bank_names(db_con = db_con)
     user_trials <- left_join_on_items(db_con, item_banks,
                                       df_with_item_ids = user_trials)
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   if (!is.null(filter_item_banks)) {
     item_banks_table <- get_table(db_con, "item_banks", collect = TRUE)
     item_bank_ids <- item_bank_name_to_id(item_banks_table,
@@ -527,11 +544,15 @@ compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = N
     user_trials <- user_trials %>% dplyr::filter(item_bank_id %in%
                                                    item_bank_ids)
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   if (add_trial_scores) {
     trial_scores <- dplyr::tbl(db_con, "scores_trial") %>%
       dplyr::filter(measure == !!score_to_use) %>% dplyr::collect()
     user_trials <- user_trials %>% dplyr::left_join(trial_scores,
                                                     by = "trial_id")
   }
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
+
   user_trials
 }

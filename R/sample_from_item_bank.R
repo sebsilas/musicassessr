@@ -430,10 +430,105 @@ sample_review <- function(num_review_items, id = "arrhythmic_melody_review", rhy
     logging::logwarn("NB: this connects to the DB and should be deprecated for new select_items API approach ASAP")
     logging::logwarn("Sampling %s review trials.", num_review_items)
 
+    cat(file=stderr(), "num_review_items", num_review_items, "\n")
+    cat(file=stderr(), "rhythmic", rhythmic, "\n")
+
     # Sample arrhythmic
-    review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
+    #review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
+    review_sample <- get_review_trials2(num_review_items, state, rhythmic)
 
     psychTestR::set_global(id, review_sample, state)
   })
 
+}
+
+get_review_trials2 <- function (no_reviews, state, rhythmic = FALSE) {
+
+  db_con <- musicassessrdb::musicassessr_con()
+  user_id <- psychTestR::get_global("user_id", state)
+  current_test_id <- psychTestR::get_global("test_id", state)
+
+  cat(file=stderr(), "user_id", user_id, "\n")
+  cat(file=stderr(), "current_test_id", current_test_id, "\n")
+  cat(file=stderr(), "num_review_items", num_review_items, "\n")
+
+
+  user_trials <- compile_item_trials2(db_con, current_test_id, user_id = user_id)
+
+  if (rhythmic) {
+    logging::loginfo("Filtering to use only previously rhythmic trials")
+    user_trials <- user_trials %>% dplyr::filter(rhythmic)
+  }
+  else {
+    logging::loginfo("Filtering to use only previously arrhythmic trials")
+    user_trials <- user_trials %>% dplyr::filter(!rhythmic)
+  }
+  user_trials <- user_trials %>% dplyr::select(stimulus_abs_melody,
+                                               stimulus_durations, item_id, rhythmic) %>% dplyr::filter(!is.na(stimulus_abs_melody) |
+                                                                                                          !is.na(stimulus_durations)) %>% dplyr::slice_sample(n = no_reviews) %>%
+    dplyr::collect() %>% dplyr::rowwise() %>% dplyr::mutate(melody = paste0(diff(itembankr::str_mel_to_vector(stimulus_abs_melody)),
+                                                                            collapse = ",")) %>% dplyr::ungroup() %>% dplyr::rename(abs_melody = stimulus_abs_melody,
+                                                                                                                                    durations = stimulus_durations) %>% dplyr::mutate(melody_no = dplyr::row_number())
+  DBI::dbDisconnect(db_con)
+  return(user_trials)
+}
+
+compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = NULL,
+          user_id, join_item_banks_on = FALSE, filter_item_banks = NULL,
+          add_trial_scores = FALSE, score_to_use = "opti3") {
+
+
+  cat(file=stderr(), "compile_item_trials2", "\n")
+
+  cat(file=stderr(), "current_test_id", current_test_id, "\n")
+  cat(file=stderr(), "session_id", session_id, "\n")
+  cat(file=stderr(), "user_id", user_id, "\n")
+  cat(DBI::dbIsValid(db_con))
+
+
+
+  sessions <- get_table(db_con, "sessions", collect = FALSE) %>%
+    dplyr::filter(user_id %in% !!user_id)
+
+  trials <- get_table(db_con, "trials", collect = FALSE) %>%
+    dplyr::left_join(sessions, by = "session_id")
+  user_trials <- trials %>% dplyr::filter(user_id %in% !!user_id)
+
+  if (get_nrows(user_trials) < 1L) {
+    return(user_trials)
+  }
+  if (!is.null(current_test_id)) {
+    user_trials <- user_trials %>% dplyr::filter(test_id ==
+                                                   !!current_test_id)
+  }
+  if (get_nrows(user_trials) < 1L) {
+    return(user_trials)
+  }
+  if (!is.null(session_id)) {
+    user_trials <- user_trials %>% dplyr::filter(session_id %in%
+                                                   !!session_id)
+  }
+  if (get_nrows(user_trials) < 1L) {
+    return(user_trials)
+  }
+  if (join_item_banks_on) {
+    item_banks <- user_trials %>% dplyr::pull(item_id) %>%
+      get_item_bank_names(db_con = db_con)
+    user_trials <- left_join_on_items(db_con, item_banks,
+                                      df_with_item_ids = user_trials)
+  }
+  if (!is.null(filter_item_banks)) {
+    item_banks_table <- get_table(db_con, "item_banks", collect = TRUE)
+    item_bank_ids <- item_bank_name_to_id(item_banks_table,
+                                          ib_name = filter_item_banks)
+    user_trials <- user_trials %>% dplyr::filter(item_bank_id %in%
+                                                   item_bank_ids)
+  }
+  if (add_trial_scores) {
+    trial_scores <- dplyr::tbl(db_con, "scores_trial") %>%
+      dplyr::filter(measure == !!score_to_use) %>% dplyr::collect()
+    user_trials <- user_trials %>% dplyr::left_join(trial_scores,
+                                                    by = "trial_id")
+  }
+  user_trials
 }

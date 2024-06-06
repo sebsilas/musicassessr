@@ -450,10 +450,13 @@ get_review_trials2 <- function (no_reviews, state, rhythmic = FALSE) {
 
   cat(file=stderr(), "user_id", user_id, "\n")
   cat(file=stderr(), "current_test_id", current_test_id, "\n")
-  cat(file=stderr(), "num_review_items", num_review_items, "\n")
+  cat(file=stderr(), "no_reviews", no_reviews, "\n")
 
 
   user_trials <- compile_item_trials2(db_con, current_test_id, user_id = user_id)
+
+  cat(file=stderr(), "after compile_item_trials2", "\n")
+  cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
 
   if (rhythmic) {
     logging::loginfo("Filtering to use only previously rhythmic trials")

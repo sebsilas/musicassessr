@@ -237,7 +237,11 @@ check_session_id_ready <- function(state) {
 
   session_id <- get_promise_value(psychTestR::get_global("session_id", state))
 
+  cat("session_id", session_id, "\n")
+
   not_ready <- is.null(session_id)
+
+  cat("not_ready", not_ready, "\n")
 
   if(not_ready) {
     logging::loginfo("Session ID not ready, trying again...")

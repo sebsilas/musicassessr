@@ -150,7 +150,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
         trials <- psychTestR::get_global(var_name, state)
 
         if(length(trials) == 0) {
-          logging::loginfo("trials is NULL for %s. Exiting while_loop for var_name %s", var_name)
+          logging::loginfo("trials is NULL for var_name %s. Exiting while_loop.", var_name)
           return(FALSE)
         }
 

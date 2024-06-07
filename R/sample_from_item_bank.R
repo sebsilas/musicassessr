@@ -44,7 +44,6 @@ item_sampler_materialized_view <- function(db_con, no_items, table = "Berkowitz_
 
   sampled_data <- DBI::dbGetQuery(db_con, paste0("SELECT * FROM  ", table, " WHERE row_number < ", rnd, " LIMIT ", no_items))
 
-
   # Shuffle the row order
   if(shuffle) {
     sampled_data <- sampled_data[sample(1:nrow(sampled_data)), ]
@@ -434,8 +433,8 @@ sample_review <- function(num_review_items, id = "arrhythmic_melody_review", rhy
     cat(file=stderr(), "rhythmic", rhythmic, "\n")
 
     # Sample arrhythmic
-    #review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
-    review_sample <- get_review_trials2(num_review_items, state, rhythmic)
+    review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
+    #review_sample <- get_review_trials2(num_review_items, state, rhythmic)
 
     psychTestR::set_global(id, review_sample, state)
   })
@@ -520,7 +519,8 @@ compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = N
   cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
 
   if (!is.null(session_id)) {
-    user_trials <- user_trials %>% dplyr::filter(session_id %in% !!session_id)
+    user_trials <- user_trials %>%
+      dplyr::filter(session_id %in% !!session_id)
   }
   cat(file=stderr(), "nrow(user_trials)", nrow(user_trials), "\n")
 

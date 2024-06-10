@@ -237,7 +237,7 @@ check_session_id_ready <- function(state) {
 
   session_id <- get_promise_value(psychTestR::get_global("session_id", state))
 
-  cat(file=stderr(), "session_id", session_id, "\n")
+  cat(file=stderr(), "session_id$session_id", session_id$session_id, "\n")
 
   not_ready <- is.null(session_id)
 

@@ -429,12 +429,13 @@ sample_review <- function(num_review_items, id = "arrhythmic_melody_review", rhy
     logging::logwarn("NB: this connects to the DB and should be deprecated for new select_items API approach ASAP")
     logging::logwarn("Sampling %s review trials.", num_review_items)
 
+    # NB: Leave this debugging in in case this happens again
+
     cat(file=stderr(), "num_review_items", num_review_items, "\n")
     cat(file=stderr(), "rhythmic", rhythmic, "\n")
 
     # Sample arrhythmic
     review_sample <- musicassessrdb::get_review_trials(num_review_items, state, rhythmic)
-    #review_sample <- get_review_trials2(num_review_items, state, rhythmic)
 
     psychTestR::set_global(id, review_sample, state)
   })

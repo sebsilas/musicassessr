@@ -67,6 +67,9 @@ musicassessr_init <- function(app_name = "",
 
         if(asynchronous_api_mode) {
 
+          # Make sure the app matches the server
+          Sys.setenv(TZ="UTC")
+
           if(is.null(user_id) && is.null(psychTestR::get_global("user_id", state))) {
 
             logging::loginfo("Grabbing user_id from URL parameter")

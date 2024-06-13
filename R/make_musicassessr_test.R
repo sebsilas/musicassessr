@@ -39,6 +39,8 @@ make_musicassessr_test <- function(title,
 
   setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
 
+  print('setup_enclosure')
+  print(setup_enclosure)
 
   psychTestR::make_test(
     psychTestR::join(
@@ -346,7 +348,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              get_p_id = FALSE,
                              asynchronous_api_mode = FALSE,
                              default_range = set_default_range('Piano'),
-                             css = "https://musicassessr.com/assets/css/style_songbird.css",
+                             css = c("https://musicassessr.com/assets/css/style_songbird.css",
+                                     system.file('www/css/musicassessr.css', package = 'musicassessr')),
                              username = NULL) {
 
   stopifnot(
@@ -366,7 +369,7 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(default_range, function(x)   {
       is.list(x) && length(x) == 3 && setequal(names(x), c('bottom_range', 'top_range', 'clef'))
     }),
-    is.null.or(css, is.scalar.character),
+    is.null.or(css, is.character),
     is.null.or(username, is.scalar.character)
   )
 

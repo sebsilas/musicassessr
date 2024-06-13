@@ -257,7 +257,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  page_text,
                                  get_answer,
                                  stimuli_type,
-                                 rel_to_abs_mel_function ,
+                                 rel_to_abs_mel_function,
                                  clip_stimuli_length,
                                  arrhythmic,
                                  example,
@@ -394,6 +394,14 @@ construct_play_melody_page <- function(melody = NULL,
                                        start_from_trial_no = NULL,
                                        pass_items_through_url_parameter = FALSE) {
 
+  if(melody_block_paradigm == "sing_melody_first") {
+    page_text <- shiny::tags$div(
+      shiny::tags$img(src = "https://musicassessr.com/assets/img/saxophone.png", height = 100, width = 100),
+      shiny::tags$br(),
+      page_text
+    )
+  }
+
 
   page <- play_melody_loop(melody_no = melody_no,
                            melody_row = melody_row,
@@ -445,7 +453,11 @@ construct_play_melody_page <- function(melody = NULL,
                                   max_goes = max_goes,
                                   page_type = page_type,
                                   page_title = psychTestR::i18n("Sing_the_Melody"),
-                                  page_text = psychTestR::i18n("sing_melody_page_text"),
+                                  page_text = shiny::tags$div(
+                                    shiny::tags$img(src = "https://musicassessr.com/assets/img/singing.png", height = 100, width = 100),
+                                    shiny::tags$br(),
+                                    psychTestR::i18n("sing_melody_page_text")
+                                    ),
                                   get_answer = get_answer,
                                   stimuli_type = stimuli_type,
                                   rel_to_abs_mel_function = rel_to_abs_mel_function,
@@ -784,7 +796,6 @@ present_melody <- function(stimuli,
     db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
 
       list(
-        midi_vs_audio = stringr::str_remove(stringr::str_remove(page_type, "record_"), "_page"),
         stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
         stimuli_durations = paste0(melody_checks$durations, collapse = ","),
         trial_time_started = trial_time_started,
@@ -847,7 +858,9 @@ present_melody <- function(stimuli,
                     transposed_message = transposed_message,
                     play_first_note_button_text = play_first_note_button_text,
                     reactive_melody_no = reactive_melody_no,
-                    db_vars = db_vars)
+                    db_vars = db_vars,
+                    lowest_reading_note = psychTestR::get_global("lowest_reading_note", state)
+                    )
 
   })
 }

@@ -19,7 +19,8 @@ musicassessr_opt(
   get_p_id = FALSE,
   asynchronous_api_mode = FALSE,
   default_range = set_default_range("Piano"),
-  css = "https://musicassessr.com/assets/css/style_songbird.css",
+  css = c("https://musicassessr.com/assets/css/style_songbird.css",
+    system.file("www/css/musicassessr.css", package = "musicassessr")),
   username = NULL
 )
 }

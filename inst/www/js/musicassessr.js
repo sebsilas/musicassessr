@@ -35,7 +35,6 @@ var pattern; // the melodic pattern being played. We only want one to be played 
 
 // // Trial info
 
-var db_midi_vs_audio;
 // Note stimuli and stimuli_durations are instantiated elsewhere (via R)
 var db_trial_time_started;
 var db_trial_time_completed;
@@ -1011,7 +1010,6 @@ function upload_file_to_s3(blob){
 
     var md = {
               // Note, all metadata must be strings
-              "midi-vs-audio": String(db_midi_vs_audio),
               "stimuli": vectorToString(stimuli),
               "stimuli-durations": vectorToString(stimuli_durations),
               "trial-time-started": String(db_trial_time_started),

@@ -1,6 +1,9 @@
+
 library(tidyverse)
 library(readxl)
 library(psych)
+
+setwd('~/musicassessr')
 
 # grab WJD meta info
 wjd_meta <- read.csv2('data-raw/wjd_meta.csv')
@@ -56,7 +59,6 @@ key_rankings$key_centre <- sapply(key_rankings$key, function(x) strsplit(x, "-")
 key_rankings$key_tonality <- sapply(key_rankings$key, function(x) strsplit(x, "-")[[1]][2])
 key_rankings$key_tonality[key_rankings$key_tonality == "maj"] <- "major"
 key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
-
 
 
 musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")

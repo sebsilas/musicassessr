@@ -1,18 +1,24 @@
 #' Page to select what instrument the participant is using
 #'
-#' @param set_range_based_on_selection
-#' @param include_other_in_dropdown
+#' @param set_range_based_on_selection Should the range be set based on the selection?
+#' @param include_other_in_dropdown Include Other as an option?
+#' @param with_voice Include Voice as an option?
 #'
 #' @return
 #' @export
 #'
 #' @examples
-select_musical_instrument_page <- function(set_range_based_on_selection = FALSE,
-                                           include_other_in_dropdown = FALSE) {
+select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
+                                           include_other_in_dropdown = FALSE,
+                                           with_voice = FALSE) {
+  insts <- musicassessr::insts
 
+  if(!with_voice) {
+    insts <- setdiff(insts, "voice")
+  }
 
   # do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
-  insts_dict <- lapply(musicassessr::insts, psychTestR::i18n)
+  insts_dict <- lapply(insts, psychTestR::i18n)
 
   psychTestR::dropdown_page(label = "select_musical_instrument",
                 prompt = psychTestR::i18n("instrument_selection_message"),
@@ -237,7 +243,13 @@ check_session_id_ready <- function(state) {
 
   session_id <- get_promise_value(psychTestR::get_global("session_id", state))
 
-  cat(file=stderr(), "session_id$session_id", session_id$session_id, "\n")
+  if(is.list(session_id)) {
+    if(is.null(session_id$session_id)) {
+      cat(file=stderr(),"session_id$session_id is NULL")
+    } else {
+      cat(file=stderr(), "session_id$session_id", session_id$session_id, "\n")
+    }
+  }
 
   not_ready <- is.null(session_id)
 

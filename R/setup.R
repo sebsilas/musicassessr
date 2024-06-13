@@ -59,6 +59,11 @@ setup_pages <- function(input_type = c("microphone",
                         asynchronous_api_mode = FALSE,
                         show_microphone_type_page = TRUE) {
 
+  print('select_instrument')
+  print(select_instrument)
+  print('musical_instrument')
+  print(musical_instrument)
+
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
@@ -115,6 +120,8 @@ setup_pages <- function(input_type = c("microphone",
     setup <- psychTestR::join(empty_code_block())
 
   } else {
+
+    print('elsie, dear')
 
     setup <- psychTestR::module("musicassessr_setup",
       psychTestR::join(

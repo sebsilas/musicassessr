@@ -22,7 +22,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
                                                 trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
                                                 first_note_message = psychTestR::i18n("first_note_is"),
                                                 transposed_message = psychTestR::i18n("transposed"),
-                                                play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
+                                                play_first_note_button_text = psychTestR::i18n("play_first_note"),
+                                                lowest_reading_note = NA, ...) {
 
   durations <- sort_durations(durations, note_length, stimuli)
 
@@ -41,7 +42,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
 
   shiny::tags$div(
     # Should the first note be shown/played?
-    show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message, transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text),
+    show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message,
+                           transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text, lowest_reading_note = lowest_reading_note),
     set_melodic_stimuli(stimuli, durations),
     shiny::tags$div(id = button_area_id, play_button),
     shiny::tags$br()
@@ -108,6 +110,7 @@ present_stimuli_midi_notes_visual <- function(stimuli,
   if(transpose_visual_notation != 0) {
     stimuli <- stimuli + transpose_visual_notation
   }
+
 
   if(identical(stimuli, "interactive")) {
     res <- shiny::tags$div(
@@ -204,7 +207,8 @@ present_stimuli_midi_notes <- function(stimuli,
                                        trigger_end_of_stimulus_fun = wrap_js_fun_body("console.log('Stimulus finished!');"),
                                        first_note_message = psychTestR::i18n("first_note_is"),
                                        transposed_message = psychTestR::i18n("transposed"),
-                                       play_first_note_button_text = psychTestR::i18n("play_first_note"), ...) {
+                                       play_first_note_button_text = psychTestR::i18n("play_first_note"),
+                                       lowest_reading_note = NA, ...) {
 
 
   if (display_modality == "auditory") {
@@ -221,7 +225,8 @@ present_stimuli_midi_notes <- function(stimuli,
                                                           trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun,
                                                           first_note_message = first_note_message,
                                                           transposed_message = transposed_message,
-                                                          play_first_note_button_text = play_first_note_button_text, clef = clef, ...)
+                                                          play_first_note_button_text = play_first_note_button_text, clef = clef,
+                                                          lowest_reading_note = lowest_reading_note, ...)
 
   } else if (display_modality == "visual") {
     return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
@@ -850,12 +855,19 @@ show_first_melody_note <- function(give_first_melody_note,
                                    audio_play_button_id = "firstMelodyPlay",
                                    first_note_message = psychTestR::i18n("first_note_is"),
                                    transposed_message = psychTestR::i18n("transposed"),
-                                   play_first_note_button_text = psychTestR::i18n("play_first_note")) {
+                                   play_first_note_button_text = psychTestR::i18n("play_first_note"),
+                                   lowest_reading_note = NA) {
 
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation
   } else {
     transposed_visual_note <- stimuli[1]
+  }
+
+  if(!is.na(lowest_reading_note)) {
+    if(transposed_visual_note < lowest_reading_note) {
+      transposed_visual_note <- transposed_visual_note + 12
+    }
   }
 
   if(give_first_melody_note) {

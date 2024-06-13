@@ -4,12 +4,7 @@
 \alias{get_answer_add_trial_and_compute_trial_scores_s3}
 \title{Get answer}
 \usage{
-get_answer_add_trial_and_compute_trial_scores_s3(
-  input,
-  state,
-  midi_vs_audio = c("audio", "midi"),
-  ...
-)
+get_answer_add_trial_and_compute_trial_scores_s3(input, state, ...)
 }
 \arguments{
 \item{...}{}

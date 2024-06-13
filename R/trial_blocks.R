@@ -385,7 +385,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      module_name = "arrhythmic_melodies",
                                      page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
                                      page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
-                                     instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
+                                     instruction_text = if(melody_block_paradigm == "sing_melody_first") psychTestR::i18n("arrhythmic_melody_trial_instruction_text_sing_melody_first") else psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
                                      sampler_function = sample_arrhythmic,
                                      item_bank,
                                      num_items = integer(),
@@ -423,6 +423,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      pass_items_through_url_parameter = FALSE,
                                      asynchronous_api_mode = FALSE) {
 
+  melody_block_paradigm <- match.arg(melody_block_paradigm)
 
   melody_trials(var_name,
                 module_name,
@@ -524,7 +525,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    module_name = "rhythmic_melodies",
                                    page_text = psychTestR::i18n("rhythmic_melody_trial_page_text"),
                                    page_title = psychTestR::i18n("rhythmic_melody_trial_page_title"),
-                                   instruction_text = psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
+                                   instruction_text = if(melody_block_paradigm == "sing_melody_first") psychTestR::i18n("rhythmic_melody_trial_instruction_text_sing_melody_first") else psychTestR::i18n("rhythmic_melody_trial_instruction_text"),
                                    sampler_function = sample_rhythmic,
                                    item_bank,
                                    num_items = integer(),
@@ -561,6 +562,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    start_from_sampled_trial_no = 1L,
                                    pass_items_through_url_parameter = FALSE,
                                    asynchronous_api_mode = FALSE) {
+
+  melody_block_paradigm <- match.arg(melody_block_paradigm)
 
 
   melody_trials(var_name,
@@ -850,7 +853,7 @@ melody_trials <- function(var_name,
                            psychTestR::join(
                              # Instructions
                              psychTestR::one_button_page(shiny::tags$div(
-                               shiny::tags$h2(page_title),
+                               if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
                                shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
                              ), button_text = psychTestR::i18n("Next")),
 
@@ -900,7 +903,7 @@ melody_trials <- function(var_name,
                                pass_items_through_url_parameter = pass_items_through_url_parameter) },
 
                              psychTestR::one_button_page(shiny::tags$div(
-                               shiny::tags$h2(page_title),
+                               if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
                                shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
                            )
                          },
@@ -1365,7 +1368,9 @@ wjd_audio_melody_trials <- function(item_bank,
 interval_perception_trials <- function(num_items = 26L,
                                        sound = "piano",
                                        page_title = "What's that interval?",
-                                       instruction_text = "In the next set of trials, you will hear a musical interval. You must try and say what the interval is. There are no practice rounds, you will begin immediately.") {
+                                       instruction_text = shiny::tags$div(shiny::tags$p("In the next set of trials, you will hear a musical interval."),
+                                                                          shiny::tags$p("You must try and say what the interval is."),
+                                                                          shiny::tags$p("There are no practice rounds, you will begin immediately."))) {
 
   if(is.numeric(num_items) & num_items > 0L) {
     psychTestR::module("interval_perception",
@@ -1373,7 +1378,7 @@ interval_perception_trials <- function(num_items = 26L,
                        psychTestR::join(
                          psychTestR::one_button_page(shiny::tags$div(
                            shiny::tags$h2(page_title),
-                           shiny::tags$p(instruction_text)
+                           instruction_text
                          )),
                          sample_intervals(num_items = num_items),
                          multi_interval_page(num_items)))

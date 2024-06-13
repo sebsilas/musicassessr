@@ -125,8 +125,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   stopifnot(
     length(
       setdiff(
-        c("midi_vs_audio",
-          "stimuli",
+          c("stimuli",
           "stimuli_durations",
           "trial_time_started",
           "instrument",
@@ -142,13 +141,12 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
           "review_items_id",
           "user_id"),
         names(db_vars)
-      )
-    ) == 0)
+        )
+      ) == 0)
 
 
   shiny::tags$script(htmltools::HTML(
     paste0('
-  var db_midi_vs_audio = \"', db_vars$midi_vs_audio,'\";
   var db_trial_time_started = \"', db_vars$trial_time_started,'\";
   var db_trial_time_completed = \"', db_vars$trial_time_completed,'\";
   var db_instrument = \"', db_vars$instrument,'\";

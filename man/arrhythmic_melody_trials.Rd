@@ -9,7 +9,9 @@ arrhythmic_melody_trials(
   module_name = "arrhythmic_melodies",
   page_text = psychTestR::i18n("arrhythmic_melody_trial_page_text"),
   page_title = psychTestR::i18n("arrhythmic_melody_trial_page_title"),
-  instruction_text = psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
+  instruction_text = if (melody_block_paradigm == "sing_melody_first")
+    psychTestR::i18n("arrhythmic_melody_trial_instruction_text_sing_melody_first") else
+    psychTestR::i18n("arrhythmic_melody_trial_instruction_text"),
   sampler_function = sample_arrhythmic,
   item_bank,
   num_items = integer(),

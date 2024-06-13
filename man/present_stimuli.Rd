@@ -72,6 +72,7 @@ present_stimuli(
   mute_midi_playback = FALSE,
   db_vars = NULL,
   asynchronous_api_mode = FALSE,
+  lowest_reading_note = NA,
   ...
 )
 }

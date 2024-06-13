@@ -60,6 +60,7 @@
 #' @param mute_midi_playback Should MIDI audio feedback be muted on record_midi_pages?
 #' @param db_vars Vars for the DB as a named list.
 #' @param asynchronous_api_mode Are we using asynchronous_api_mode?
+#' @param lowest_reading_note
 #' @param ...
 #'
 #' @return
@@ -113,7 +114,8 @@ present_stimuli <- function(stimuli,
                             reactive_melody_no = FALSE,
                             mute_midi_playback = FALSE,
                             db_vars = NULL,
-                            asynchronous_api_mode = FALSE, ...) {
+                            asynchronous_api_mode = FALSE,
+                            lowest_reading_note = NA, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -156,7 +158,8 @@ present_stimuli <- function(stimuli,
             is.scalar.logical(reactive_melody_no),
             is.scalar.logical(mute_midi_playback),
             is.null.or(db_vars, is.list),
-            is.scalar.logical(asynchronous_api_mode)
+            is.scalar.logical(asynchronous_api_mode),
+            is.scalar.na(lowest_reading_note) || is.numeric(lowest_reading_note)
             )
 
   # Generic stimuli types
@@ -192,7 +195,8 @@ present_stimuli <- function(stimuli,
                                                  trigger_end_of_stimulus_fun = trigger_end_of_stimulus_fun,
                                                  first_note_message = first_note_message,
                                                  transposed_message = transposed_message,
-                                                 play_first_note_button_text = play_first_note_button_text)
+                                                 play_first_note_button_text = play_first_note_button_text,
+                                                 lowest_reading_note = lowest_reading_note)
   } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)
   } else if (stimuli_type == "pitch_classes") {

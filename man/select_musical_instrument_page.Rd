@@ -5,12 +5,17 @@
 \title{Page to select what instrument the participant is using}
 \usage{
 select_musical_instrument_page(
-  set_range_based_on_selection = FALSE,
-  include_other_in_dropdown = FALSE
+  set_range_based_on_selection = TRUE,
+  include_other_in_dropdown = FALSE,
+  with_voice = FALSE
 )
 }
 \arguments{
-\item{include_other_in_dropdown}{}
+\item{set_range_based_on_selection}{Should the range be set based on the selection?}
+
+\item{include_other_in_dropdown}{Include Other as an option?}
+
+\item{with_voice}{Include Voice as an option?}
 }
 \description{
 Page to select what instrument the participant is using

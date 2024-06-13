@@ -195,7 +195,6 @@ create_db_vars_obj_snr <- function(asynchronous_api_mode, state) {
   db_vars <- if(asynchronous_api_mode) {
 
     list(
-      midi_vs_audio = "audio",
       stimuli = NA,
       stimuli_durations = NA,
       trial_time_started = Sys.time(),

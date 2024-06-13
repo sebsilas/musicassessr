@@ -9,7 +9,9 @@ interval_perception_trials(
   sound = "piano",
   page_title = "What's that interval?",
   instruction_text =
-    "In the next set of trials, you will hear a musical interval. You must try and say what the interval is. There are no practice rounds, you will begin immediately."
+    shiny::tags$div(shiny::tags$p("In the next set of trials, you will hear a musical interval."),
+    shiny::tags$p("You must try and say what the interval is."),
+    shiny::tags$p("There are no practice rounds, you will begin immediately."))
 )
 }
 \arguments{

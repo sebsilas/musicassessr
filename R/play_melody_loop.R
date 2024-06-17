@@ -799,7 +799,7 @@ present_melody <- function(stimuli,
         stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
         stimuli_durations = paste0(melody_checks$durations, collapse = ","),
         trial_time_started = trial_time_started,
-        instrument = psychTestR::get_global("inst", state),
+        instrument = if(singing_trial) "Voice" else psychTestR::get_global("inst", state),
         attempt = number_attempts,
         item_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
         display_modality = display_modality,

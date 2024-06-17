@@ -159,7 +159,7 @@ present_stimuli <- function(stimuli,
             is.scalar.logical(mute_midi_playback),
             is.null.or(db_vars, is.list),
             is.scalar.logical(asynchronous_api_mode),
-            is.scalar.na(lowest_reading_note) || is.numeric(lowest_reading_note)
+            is.na(lowest_reading_note) || is.numeric(lowest_reading_note)
             )
 
   # Generic stimuli types

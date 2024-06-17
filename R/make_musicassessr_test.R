@@ -49,7 +49,7 @@ make_musicassessr_test <- function(title,
       welcome_page,
 
       # Get participant ID
-      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content() ),
+      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
 
       # Init musicassessr
       musicassessr_init(
@@ -104,12 +104,12 @@ make_musicassessr_test <- function(title,
 
 
 
-get_p_id_content <- function() {
-  shiny::tags$div(
-    shiny::tags$h3("Choose an anonymous ID"),
-    shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
-    shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
-  )
+get_p_id_content <- function(prompt = shiny::tags$div(
+  shiny::tags$h3("Choose an anonymous ID"),
+  shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
+  shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
+)) {
+  return(prompt)
 }
 #' End session
 #'
@@ -329,6 +329,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param default_range Should there be default range set?
 #' @param css A css stylesheet to use (passes to psychTestR).
 #' @param username Hardcode a username.
+#' @param get_pid_prompt What prompt to you want to use for the get_p_id page?
 #'
 #' @return
 #' @export
@@ -350,7 +351,12 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              default_range = set_default_range('Piano'),
                              css = c("https://musicassessr.com/assets/css/style_songbird.css",
                                      system.file('www/css/musicassessr.css', package = 'musicassessr')),
-                             username = NULL) {
+                             username = NULL,
+                             get_pid_prompt = shiny::tags$div(
+                               shiny::tags$h3("Choose an anonymous ID"),
+                               shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
+                               shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
+                             )) {
 
   stopifnot(
     is.scalar.logical(setup_pages),
@@ -370,7 +376,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
       is.list(x) && length(x) == 3 && setequal(names(x), c('bottom_range', 'top_range', 'clef'))
     }),
     is.null.or(css, is.character),
-    is.null.or(username, is.scalar.character)
+    is.null.or(username, is.scalar.character),
+    is(get_pid_prompt, "shiny.tag") || is.scalar.character(get_p_id_prompt)
   )
 
   list(
@@ -389,7 +396,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     asynchronous_api_mode = asynchronous_api_mode,
     default_range = default_range,
     css = css,
-    username = username
+    username = username,
+    get_pid_prompt = get_pid_prompt
   )
 
 }

@@ -21,7 +21,11 @@ musicassessr_opt(
   default_range = set_default_range("Piano"),
   css = c("https://musicassessr.com/assets/css/style_songbird.css",
     system.file("www/css/musicassessr.css", package = "musicassessr")),
-  username = NULL
+  username = NULL,
+  get_pid_prompt = shiny::tags$div(shiny::tags$h3("Choose an anonymous ID"),
+    shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
+    shiny::tags$p("For example, Mike, born in December 1900, would be ",
+    shiny::tags$em("mi121900"), "."))
 )
 }
 \arguments{
@@ -56,6 +60,8 @@ musicassessr_opt(
 \item{css}{A css stylesheet to use (passes to psychTestR).}
 
 \item{username}{Hardcode a username.}
+
+\item{get_pid_prompt}{What prompt to you want to use for the get_p_id page?}
 }
 \description{
 Specify options for a musicassessr test.

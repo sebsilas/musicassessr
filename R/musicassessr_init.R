@@ -294,10 +294,11 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
       psychTestR::set_global("inst", inst$en, state)
       psychTestR::set_global("transpose_visual_notation", as.integer(inst$transpose), state)
       psychTestR::set_global("clef", inst$clef, state)
+
       lowest_reading_note <- inst$lowest_reading_note
-      if(lowest_reading_note == "NA" || lowest_reading_note == "" || lowest_reading_note == " ") {
-        lowest_reading_note <- NA
-      }
+
+      logging::loginfo("lowest_reading_note: %s", lowest_reading_note)
+
       psychTestR::set_global("lowest_reading_note", lowest_reading_note, state)
 
       if(set_range) {

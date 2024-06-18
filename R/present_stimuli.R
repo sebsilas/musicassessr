@@ -117,6 +117,9 @@ present_stimuli <- function(stimuli,
                             asynchronous_api_mode = FALSE,
                             lowest_reading_note = NA, ...) {
 
+  print('lowest_reading_note')
+  print(lowest_reading_note)
+
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
             is.character(answer_meta_data) | is.data.frame(answer_meta_data),

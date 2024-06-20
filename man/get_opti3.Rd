@@ -2,13 +2,19 @@
 % Please edit documentation in R/scoring_melodic_production.R
 \name{get_opti3}
 \alias{get_opti3}
-\title{Get opti3: helpful wrapper for opti3}
+\title{Get opti3}
 \usage{
-get_opti3(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin)
+get_opti3(
+  stimuli,
+  stimuli_durations = NA,
+  stimuli_length,
+  user_input_as_pyin,
+  segment_phrase = TRUE
+)
 }
 \arguments{
-\item{user_input_as_pyin}{}
+\item{segment_phrase}{}
 }
 \description{
-Get opti3: helpful wrapper for opti3
+Get opti3
 }

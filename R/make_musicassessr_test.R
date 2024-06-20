@@ -39,9 +39,6 @@ make_musicassessr_test <- function(title,
 
   setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
 
-  print('setup_enclosure')
-  print(setup_enclosure)
-
   psychTestR::make_test(
     psychTestR::join(
 

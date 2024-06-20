@@ -55,7 +55,8 @@ play_melody_loop(
   learn_test_paradigm = FALSE,
   sample_item_bank_via_api = FALSE,
   start_from_trial_no = NULL,
-  pass_items_through_url_parameter = FALSE
+  pass_items_through_url_parameter = FALSE,
+  feedback = FALSE
 )
 }
 \arguments{
@@ -63,7 +64,7 @@ play_melody_loop(
 
 \item{phase}{Can be one of 'learn', 'test', 'review' or 'example'}
 
-\item{pass_items_through_url_parameter}{}
+\item{feedback}{}
 }
 \description{
 Create a psychTestR test loop for having several attempts at playing back a melody.

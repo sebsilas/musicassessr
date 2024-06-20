@@ -94,6 +94,8 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
   })
 }
 
+
+
 shiny_table <- function(content, rownames = TRUE, colnames = FALSE) {
   shiny::renderTable({
     content
@@ -302,5 +304,133 @@ feedback_image <- function(image, height = NULL, width = NULL, text = "Well done
 
 
 
-# psychTestR::one_button_page(progress_bar(60))
-# feedback_image('https://adaptiveeartraining.com/assets/drum.png', progress = 100)
+feedback_melodic_production_async <- function() {
+
+  psychTestR::reactive_page(function(state, answer, ...) {
+
+    filename <- answer$wav_file
+
+    logging::loginfo("filename: %s", filename)
+
+    ui <- feedback_melodic_production_async_ui(filename)
+
+    psychTestR::one_button_page(ui)
+
+  })
+
+}
+
+feedback_melodic_production_async_ui <- function(filename, poll_ms = 5000) {
+
+  ui <- shiny::tags$div(
+    # CSS
+    tags$style(shiny::HTML("
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #A5C54D;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 2s linear infinite;
+      display: block;
+      margin: auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #data-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+  ")),
+
+    # UI
+    shiny::tags$div(id = "loader",
+        shiny::tags$div(class = "loader"),
+        shiny::tags$p("Good try! Let's see how you did...")),
+        shiny::tags$img(src = 'https://musicassessr.com/assets/img/bird.png', height = 150, width = 160, style = 'margin: 20px 0 20px 0;'),
+    shiny::tags$div(id = "data-container"),
+
+    # Javascript
+    shiny::tags$script(shiny::HTML(paste0("
+    const apiUrl = 'https://api.songbird.training/v2/get-job-status';
+
+  async function fetchData() {
+
+    console.log('Fetching feedback for  ", filename, "');
+
+    const payload = {
+      filename: \'", filename, "\'
+    };
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      const data = await response.json();
+
+      // Check if the status is 'FINISHED'
+      if (data.status === 'FINISHED') {
+        console.log('Job is finished. Stopping polling.');
+        const message = JSON.parse(data.message);
+        const score = message.opti3.opti3;
+        displayScore(score);
+        stopPolling();
+        hideLoader();
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  }
+
+  function displayScore(score) {
+    const container = document.getElementById('data-container');
+    console.log('opti3: ', + score);
+    score = benevolentOpti3(score);
+    container.innerHTML = `<p>Well done! </p> <img src = 'https://musicassessr.com/assets/img/bird.png', height = 150, width = 160 style = 'margin: 20px 0 20px 0;' /> <p>Your score was ${score}!</p>`;
+  }
+
+  function benevolentOpti3(score) {
+    // Apply a quadratic transformation
+    let benevolentScore = Math.sqrt(score);
+
+    // Scale to the range 1 to 10
+    let scaledScore = 1 + benevolentScore * 9;
+
+    // Round up
+    scaledScore = Math.ceil(scaledScore);
+
+    return scaledScore;
+  }
+
+
+  function showLoader() {
+    document.getElementById('loader').style.display = 'block';
+  }
+
+  function hideLoader() {
+    document.getElementById('loader').style.display = 'none';
+  }
+
+  const pollingInterval = ", poll_ms, "; // 5 seconds
+
+  const intervalId = setInterval(fetchData, pollingInterval);
+
+  fetchData();
+
+  function stopPolling() {
+    clearInterval(intervalId);
+  }
+  ")
+   ))
+  )
+}
+

@@ -786,8 +786,14 @@ melody_trials <- function(var_name,
 
 
     if(!is.function(feedback)) {
-      if(feedback) {
+      if(feedback && !asynchronous_api_mode) {
         feedback <- feedback_melodic_production
+      }
+      if(feedback && asynchronous_api_mode) {
+        show_async_feedback <- TRUE
+        feedback <- feedback_melodic_production_async
+      } else {
+        show_async_feedback <- FALSE
       }
     }
 
@@ -844,6 +850,13 @@ melody_trials <- function(var_name,
 
     psychTestR::module(module_name,
                        psychTestR::join(
+
+                         # Setup that we want to receive feedback
+                         if(show_async_feedback) {
+                           psychTestR::code_block(function(state, ...) {
+                             psychTestR::set_global("async_feedback", TRUE, state)
+                           })
+                         },
 
                          # Instructions depending on review
                          if(review) psychTestR::one_button_page(paste0("Now you will review some ", melody_type_str, " melodies you have encountered previously.")) else psychTestR::one_button_page(paste0("Now you will hear some ", melody_type_str, " melodies.")),

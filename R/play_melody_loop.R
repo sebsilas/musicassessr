@@ -104,7 +104,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.logical(clip_stimuli_length),
             is.scalar.logical(arrhythmic),
             is.scalar.logical(example),
-            is.function(feedback) | is.scalar.logical(feedback),
+            is.function(feedback) || is.scalar.logical(feedback), # Technically, it could still be a logical here
             is.scalar.character(sound),
             is.null.or(get_trial_characteristics_function, is.function),
             is.scalar.logical(max_goes_forced),
@@ -202,7 +202,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                    reactive_melody_no = TRUE,
                                    learn_test_paradigm,
                                    sample_item_bank_via_api,
-                                   pass_items_through_url_parameter = pass_items_through_url_parameter),
+                                   pass_items_through_url_parameter = pass_items_through_url_parameter,
+                                   feedback = feedback),
 
         psychTestR::conditional(function(state, ...) {
 
@@ -286,7 +287,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  learn_test_paradigm,
                                  sample_item_bank_via_api,
                                  if(sample_item_bank_via_api) start_from_trial_no else NULL,
-                                 pass_items_through_url_parameter = pass_items_through_url_parameter)
+                                 pass_items_through_url_parameter = pass_items_through_url_parameter,
+                                 feedback = feedback)
     })
 
 
@@ -334,14 +336,12 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  reactive_melody_no = FALSE,
                                  learn_test_paradigm,
                                  sample_item_bank_via_api,
-                                 pass_items_through_url_parameter = pass_items_through_url_parameter)
+                                 pass_items_through_url_parameter = pass_items_through_url_parameter,
+                                 feedback = feedback)
 
     })
 
   }
-
-  # Add feedback
-  items <- add_feedback(items, feedback, after = 2) # A play_melody_loop is 3 pages long
 
   psychTestR::join(
     psychTestR::code_block(function(state, ...) {
@@ -392,7 +392,8 @@ construct_play_melody_page <- function(melody = NULL,
                                        learn_test_paradigm = FALSE,
                                        sample_item_bank_via_api = FALSE,
                                        start_from_trial_no = NULL,
-                                       pass_items_through_url_parameter = FALSE) {
+                                       pass_items_through_url_parameter = FALSE,
+                                       feedback = FALSE) {
 
   if(melody_block_paradigm == "sing_melody_first") {
     page_text <- shiny::tags$div(
@@ -443,7 +444,8 @@ construct_play_melody_page <- function(melody = NULL,
                            learn_test_paradigm = learn_test_paradigm,
                            sample_item_bank_via_api = sample_item_bank_via_api,
                            start_from_trial_no = start_from_trial_no,
-                           pass_items_through_url_parameter = pass_items_through_url_parameter)
+                           pass_items_through_url_parameter = pass_items_through_url_parameter,
+                           feedback = feedback)
   # In the case of putting a sing melody page first, we do the sampling on the sing page (in code below, but which chronogically comes first); then we skip sampling on the "real" (instrument) version, and just use the sampled melody from the sing page
 
   if (melody_block_paradigm == "sing_melody_first") {
@@ -489,7 +491,8 @@ construct_play_melody_page <- function(melody = NULL,
                                   learn_test_paradigm = learn_test_paradigm,
                                   sample_item_bank_via_api = sample_item_bank_via_api,
                                   start_from_trial_no = start_from_trial_no,
-                                  pass_items_through_url_parameter = pass_items_through_url_parameter)
+                                  pass_items_through_url_parameter = pass_items_through_url_parameter,
+                                  feedback = feedback)
 
     sing_then_play_pages <- psychTestR::join(sing_page, page)
 
@@ -553,6 +556,7 @@ construct_play_melody_page <- function(melody = NULL,
 #' @param learn_test_paradigm
 #' @param sample_item_bank_via_api
 #' @param pass_items_through_url_parameter
+#' @param feedback
 #'
 #' @return
 #' @export
@@ -606,7 +610,8 @@ play_melody_loop <- function(item_bank = NULL,
                              learn_test_paradigm = FALSE,
                              sample_item_bank_via_api = FALSE,
                              start_from_trial_no = NULL,
-                             pass_items_through_url_parameter = FALSE) {
+                             pass_items_through_url_parameter = FALSE,
+                             feedback = FALSE) {
 
   save_answer <- ! example
 
@@ -690,6 +695,8 @@ play_melody_loop <- function(item_bank = NULL,
                      play_first_note_button_text = play_first_note_button_text,
                      reactive_melody_no = reactive_melody_no,
                      pass_items_through_url_parameter = pass_items_through_url_parameter),
+
+      if(is.function(feedback)) feedback(),
 
       # Update and see how to proceed
       update_play_melody_loop_and_save(max_goes)
@@ -809,7 +816,9 @@ present_melody <- function(stimuli,
         test_id = psychTestR::get_global("test_id", state),
         user_id = psychTestR::get_global("user_id", state),
         review_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
-        new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id
+        new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
+        feedback = psychTestR::get_global("async_feedback", state),
+        feedback_type = psychTestR::get_global("async_feedback_type", state)
       )
     } else NULL
 

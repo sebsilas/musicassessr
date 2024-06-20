@@ -33,6 +33,7 @@ musicassessr_init <- function(app_name = "",
 
     psychTestR::code_block(function(state, ...) {
 
+
       if(!is.null(instrument_id)) {
         psychTestR::set_global("instrument_id", instrument_id, state)
       }
@@ -182,6 +183,8 @@ musicassessr_init <- function(app_name = "",
           session_info <- psychTestR::get_session_info(state, complete = FALSE)
           psychTestR_session_id <- session_info$p_id
           # Set vars
+          psychTestR::set_global("async_feedback", FALSE, state) # Init as FALSE and (potentially) overwrite at trial_block level
+          psychTestR::set_global("async_feedback_type", "opti3", state)
           psychTestR::set_global("psychTestR_session_id", psychTestR_session_id, state)
           psychTestR::set_global("compute_session_scores_and_end_session_api_called", FALSE, state)
           psychTestR::set_global("app_name", app_name, state)

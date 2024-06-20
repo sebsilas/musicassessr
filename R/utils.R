@@ -296,7 +296,7 @@ TRUE_to_js_true <- function(cond) {
 expand_string_df_row <- function(df, row_id = NULL) {
 
   if(!is.null(row_id)) {
-    df <- df %>% slice(row_id)
+    df <- df %>% dplyr::slice(row_id)
   }
 
   stopifnot(nrow(df) == 1L)

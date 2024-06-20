@@ -947,11 +947,14 @@ get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, ...) 
 
   csv_file <- paste0(input$key, ".csv")
 
+  logging::loginfo("csv_file: %s", csv_file)
+
   list(
     user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
     user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
     attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
-    csv_file = csv_file
+    csv_file = csv_file,
+    wav_file = input$key
   )
 
 

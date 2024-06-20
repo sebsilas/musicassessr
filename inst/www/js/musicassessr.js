@@ -50,6 +50,8 @@ var db_new_items_id;
 var db_review_items_id;
 var db_onset;
 var db_user_id;
+var feedback;
+var feedback_type;
 
 // Functions
 
@@ -1025,7 +1027,9 @@ function upload_file_to_s3(blob){
               "onset": String(db_onset),
               "new-items-id": String(db_new_items_id),
               "review-items-id": String(db_review_items_id),
-              "user-id": String(db_user_id)
+              "user-id": String(db_user_id),
+              "feedback": String(db_feedback),
+              "feedback-type": String(db_feedback_type)
             };
 
     console.log(md);

@@ -707,6 +707,9 @@ melody_trials <- function(var_name,
                           pass_items_through_url_parameter = FALSE,
                           asynchronous_api_mode = FALSE) {
 
+  print(page_title)
+  print(page_text)
+
   phase <- match.arg(phase)
 
 
@@ -717,7 +720,7 @@ melody_trials <- function(var_name,
     is.function(feedback) || is.scalar.logical(feedback),
     is.function(get_answer),
     is.scalar.character(sound),
-    is.scalar.character(page_text),
+    is.scalar.character(page_text) || is(page_text, "shiny.tag"),
     is.scalar.character(page_title),
     is.scalar.character(page_type),
     is.scalar.character(instruction_text),

@@ -327,7 +327,7 @@ feedback_melodic_production_async_ui <- function(filename, poll_ms = 5000) {
     tags$style(shiny::HTML("
     .loader {
       border: 8px solid #f3f3f3;
-      border-top: 8px solid #A5C54D;
+      border-top: 8px solid #229787;
       border-radius: 50%;
       width: 60px;
       height: 60px;
@@ -395,7 +395,7 @@ feedback_melodic_production_async_ui <- function(filename, poll_ms = 5000) {
     const container = document.getElementById('data-container');
     console.log('opti3: ', + score);
     score = benevolentOpti3(score);
-    container.innerHTML = `<p>Well done! </p> <img src = 'https://musicassessr.com/assets/img/bird.png', height = 150, width = 160 style = 'margin: 20px 0 20px 0;' /> <p>Your score was ${score}!</p>`;
+    container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
   }
 
   function benevolentOpti3(score) {

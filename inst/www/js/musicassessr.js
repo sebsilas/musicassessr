@@ -575,7 +575,7 @@ function stopRecording(page_type = "record_audio_page", trigger_next_page = true
   var volumeMeter = document.getElementById('volumeMeter');
 
   if(volumeMeter !== null) {
-    volumeMeter.style.visibility = "hidden";
+    volumeMeter.remove(); /* To remove empty space in UI */
   }
 
   setTimeout(() => {

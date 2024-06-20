@@ -300,6 +300,10 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
 
       lowest_reading_note <- inst$lowest_reading_note
 
+      if(lowest_reading_note == "NA") {
+        lowest_reading_note <- NA
+      }
+
       logging::loginfo("lowest_reading_note: %s", lowest_reading_note)
 
       psychTestR::set_global("lowest_reading_note", lowest_reading_note, state)

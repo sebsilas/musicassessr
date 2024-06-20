@@ -1,31 +1,23 @@
 library(psychTestR)
 library(dplyr)
 
-psychTestR::make_test(
-  psychTestR::new_timeline(
+make_musicassessr_test(
+
+  title = "Test SNR",
+
+  admin_password = "blah",
+
+  elts = function() {
     psychTestR::join(
-      musicassessr::musicassessr_init(),
-      microphone_calibration_page(),
+      psychTestR::one_button_page("Test SNR")
+    )
+    },
 
-      psychTestR::one_button_page("First, test in a loop."),
+  opt = musicassessr_opt(setup_options = setup_pages_options(SNR_test = TRUE))
 
-      get_SNR_pages_loop(),
-
-      psychTestR::one_button_page("Then, test without a loop and error which will prevent the test from running further (if the SNR test fails)."),
-
-      get_SNR_pages(),
-
-      psychTestR::final_page("Finished!")
-    ), dict = musicassessr::dict(NULL)),
-  opt = psychTestR::test_options(
-    title = "Sonscience Test",
-    admin_password = "demo",
-    languages = c("en"),
-    additional_scripts = musicassessr::musicassessr_js('test')
-  )
 )
 
-# shiny::runApp("test_apps/SNR_test/app.R")
+
 
 
 

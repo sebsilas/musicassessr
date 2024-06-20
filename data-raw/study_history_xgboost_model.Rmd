@@ -1,0 +1,435 @@
+
+
+```{r, warning = FALSE, message = FALSE}
+
+library(tidyverse)
+library(xgboost)
+library(tidymodels)
+
+```
+
+
+```{r}
+
+load(file = 'longitudinal_study_backup.rda')
+
+
+sessions <- sessions %>% 
+  select(session_id, time_started)
+
+trials <- trials %>% 
+  left_join(sessions, by = "session_id") %>% 
+  select(session_id, trial_id, test_username, abs_melody, attempt, opti3, time_started) %>% 
+  rename(session_time_started = time_started) %>% 
+  unique()
+  
+```
+
+
+
+```{r}
+
+compute_trial_stats <- function(session_id, 
+                                trial_id,
+                                test_username,
+                                abs_melody,
+                                attempt,
+                                opti3,
+                                session_time_started) {
+  
+
+  current_trial_id <- trial_id
+  
+  logging::loginfo("current_trial_id: %s", current_trial_id)
+  
+  tryCatch({
+    
+    # Get trials up to the current ID
+    trials_current <- trials %>% 
+      dplyr::filter(trial_id %in% 1:(current_trial_id-1)) %>% 
+      dplyr::filter(abs_melody == !! abs_melody)
+  
+    
+    # Change across all sessions
+    first_trial <- trials_current %>% 
+      dplyr::slice_min(session_time_started) %>% 
+      dplyr::slice_min(attempt) %>% 
+      dplyr::pull(opti3)
+                                       
+    current_trial <- opti3
+      
+    change_across_all_sessions <- current_trial - first_trial
+  
+    # Number of times practised
+    no_times_practised <- trials_current %>%
+      dplyr::pull(session_id) %>%
+      unique() %>%
+      length()
+  
+  
+    # Average no. attempts
+    avg_no_attempts <- trials_current %>%
+      dplyr::group_by(session_id) %>%
+      dplyr::slice_max(attempt) %>%
+      dplyr::ungroup() %>%
+      dplyr::pull(attempt) %>%
+      mean(na.rm = TRUE)
+  
+      # Average change across attempts
+      avg_change_across_attempts <- trials_current %>%
+        dplyr::group_by(session_id) %>%
+        dplyr::summarise(change_across_attempts = opti3[max(attempt)] - opti3[min(attempt)] ) %>%
+        dplyr::ungroup() %>%
+        dplyr::pull(change_across_attempts) %>%
+        mean(na.rm = TRUE)
+  
+  
+  
+      if(length(unique(trials_current$session_id)) > 1L) {
+  
+        # We use a date not so far in the past, to put the values on a reasonable scale for model fitting
+        reference_date <- as.numeric(as.POSIXct("2021-01-01 00:00:00", tz="UTC"))
+  
+        trials_current <- trials_current %>%
+          dplyr::mutate(trial_time_completed_days =  as.numeric((session_time_started - reference_date)) / (60 * 60 * 24))
+  
+        lm_opti3 <- lm(opti3 ~ trial_time_completed_days + attempt, data = trials_current)
+  
+        gradient_across_all_scores <- coef(lm_opti3)[['trial_time_completed_days']]
+        item_intercept <- coef(lm_opti3)[['(Intercept)']]
+  
+      } else {
+        gradient_across_all_scores <- NA
+        item_intercept <- NA
+      }
+  
+  
+      # Get last opti3
+      last_opti3 <- trials_current %>%
+        dplyr::slice_max(session_time_started)  %>%
+        dplyr::slice_max(attempt) %>% 
+        dplyr::select(opti3, session_time_started)
+  
+      logging::loginfo("last_opti3: %s", last_opti3)
+  
+      last_opti3_value <- last_opti3 %>%
+        dplyr::pull(opti3)
+  
+      logging::loginfo("last_opti3_value: %s", last_opti3_value)
+  
+      if(is.null(last_opti3_value)) {
+        last_opti3_value <- NA
+      }
+  
+      logging::loginfo("last_opti3_value again: %s", last_opti3_value)
+  
+      last_opti3_time_completed <- last_opti3 %>%
+        dplyr::pull(session_time_started)
+  
+      logging::loginfo("last_opti3_time_completed: %s", last_opti3_time_completed)
+  
+      current_opti3 <- opti3
+  
+  
+      logging::loginfo("current_opti3: %s", current_opti3)
+        
+  
+    if(is.na(last_opti3_value) && is.na(current_opti3)) {
+      
+      learned_in_current_session <- 0L 
+    
+    } else if(!is.na(last_opti3_value) && is.na(current_opti3)) {
+      
+      learned_in_current_session <- 0L 
+    
+    } else if(is.na(last_opti3_value) && dplyr::near(current_opti3, 1)) {
+      
+      learned_in_current_session <- 1L 
+    
+    } else if(last_opti3_value < 1 && dplyr::near(current_opti3, 1)) {
+      
+      learned_in_current_session <- 1L
+      
+    } else  {
+      
+      learned_in_current_session <- 0L
+    }
+  
+    logging::loginfo("learned_in_current_session: %s", learned_in_current_session)
+  
+    change_in_opti3_from_last_session <- current_opti3 - last_opti3_value
+  
+    logging::loginfo("change_in_opti3_from_last_session: %s", change_in_opti3_from_last_session)
+  
+  
+    item_stats <- tibble::tibble(trial_id = current_trial_id,
+                                 change_across_all_sessions = change_across_all_sessions,
+                                 no_times_practised = no_times_practised,
+                                 avg_no_attempts = avg_no_attempts,
+                                 avg_change_across_attempts = avg_change_across_attempts,
+                                 gradient_across_all_scores = gradient_across_all_scores,
+                                 item_intercept = item_intercept,
+                                 learned_in_current_session = learned_in_current_session,
+                                 last_opti3 = last_opti3_value,
+                                 last_opti3_completed = last_opti3_time_completed,
+                                 change_in_opti3_from_last_session = change_in_opti3_from_last_session,
+                                 increase_since_last_session = dplyr::case_when(change_in_opti3_from_last_session > 0 ~ 1L, TRUE ~ 0L),
+                                 time_since_last_item_studied = lubridate::as_datetime(session_time_started) - lubridate::as_datetime(last_opti3_completed)) 
+  }, error = function(err) {
+
+    logging::logerror(err)
+
+    logging::loginfo("Score not found, assuming not learned before and returning NA.")
+
+    return(tibble::tibble(trial_id = trial_id,
+                          change_across_all_sessions = NA,
+                           no_times_practised = NA,
+                           avg_no_attempts = NA,
+                           avg_change_across_attempts = NA,
+                           gradient_across_all_scores = NA,
+                           item_intercept = NA,
+                           learned_in_current_session = NA,
+                           last_opti3 = NA,
+                           last_opti3_completed = NA,
+                           change_in_opti3_from_last_session = NA,
+                           increase_since_last_session = NA))
+
+  })
+
+    
+}
+    
+
+item_stats <- pmap_dfr(trials, compute_trial_stats)
+
+```
+
+
+```{r}
+
+trials_with_item_stats <- left_join(trials, item_stats, by = "trial_id")
+
+```
+
+
+
+
+```{r}
+
+save(trials_with_item_stats, file = 'trials_with_item_stats.rda')
+
+```
+
+
+```{r}
+
+load(file = 'trials_with_item_stats.rda')
+
+```
+
+
+```{r}
+
+xgb_model <- parsnip::boost_tree() %>%
+  parsnip::set_engine("xgboost" ) %>%
+  parsnip::set_mode("classification") %>%
+  parsnip::set_args(
+    trees = 5000,
+    learn_rate = tune::tune() )
+
+
+```
+
+```{r}
+
+trials_with_item_stats <- trials_with_item_stats %>% 
+  mutate(
+    
+    learned_in_current_session = case_when(is.na(learned_in_current_session) ~ 0L, TRUE ~ learned_in_current_session),
+    
+    
+    learned_in_current_session = as.factor(learned_in_current_session),
+        test_username = as.factor(test_username),
+        abs_melody = as.factor(abs_melody),
+        learned_in_current_session = as.factor(learned_in_current_session),
+        increase_since_last_session = as.factor(increase_since_last_session),
+        time_since_last_item_studied = as.numeric(time_since_last_item_studied),
+        avg_change_across_attempts = case_when(is.nan(avg_change_across_attempts) ~ NA, TRUE ~ avg_change_across_attempts))
+
+```
+
+```{r}
+
+xgb_rec <- recipes::recipe(learned_in_current_session ~ no_times_practised + change_across_all_sessions + avg_no_attempts + 
+                             avg_change_across_attempts + gradient_across_all_scores + item_intercept + last_opti3 +  time_since_last_item_studied + 
+                             test_username + abs_melody + learned_in_current_session + change_in_opti3_from_last_session +
+                             increase_since_last_session, data = trials_with_item_stats) %>%
+    recipes::step_scale(recipes::all_numeric_predictors() ) %>%
+    recipes::step_dummy(recipes::all_nominal_predictors() )
+
+```
+
+
+```{r}
+
+xgb_wflow <- workflows::workflow() %>% 
+    workflows::add_model(xgb_model) %>%
+    workflows::add_recipe(xgb_rec)
+
+```
+
+
+```{r}
+
+# Fix the random numbers by setting the seed 
+# This enables the analysis to be reproducible 
+set.seed(123)
+
+# Put 3/4 of the data into the training set 
+data_split <- initial_split(trials_with_item_stats, prop = 3/4, strata = "learned_in_current_session")
+
+# Create dataframes for the two sets:
+train_data <- training(data_split) 
+test_data <- testing(data_split)
+
+```
+
+
+```{r}
+
+
+cv_folds <-
+  vfold_cv(train_data, 
+           v = 5)
+
+# Define search grid for hyperparameter tuning for xgboost
+# In my (JP) experience, the results are only sensitive to 
+# the value (magnitude really) of `learn_rate`, robust to everything else.
+xgb_grid <- dials::grid_regular(levels=5, 
+                                dials::learn_rate(range = c(-5,-1),
+                                                  trans = scales::log10_trans() )
+                                )
+
+metrics <-  metric_set(
+      recall, precision, f_meas, 
+      accuracy, kap, specificity,
+      roc_auc, sens, spec)
+
+```
+
+
+```{r xgb_tuning}
+
+xgb_tuning_results <- tune::tune_grid(
+  object = xgb_wflow, 
+  resamples = cv_folds,
+  grid = xgb_grid,
+  controls  = tune::control_grid(),
+  metrics = metrics )
+
+```
+
+
+```{r}
+
+xgb_tuning_metrics <- tune::collect_metrics(xgb_tuning_results)
+
+```
+
+
+
+```{r best true positive}
+
+best_xgb <- tune::show_best(xgb_tuning_results, metric="precision",n=1)
+
+```
+
+```{r plot the results}
+
+xgb_tuning_metrics %>% 
+  dplyr::filter(.metric %in% c("accuracy", "precision", "recall")) %>%
+  ggplot2::ggplot( ggplot2::aes(x=learn_rate,y=mean)) +
+  ggplot2::geom_point() +
+  ggplot2::facet_wrap(~.metric)
+
+```
+
+```{r do test fit}
+
+test_xgb_wf <- workflow() %>%
+  add_recipe(xgb_rec) %>% 
+  add_model(
+  boost_tree() %>% 
+  set_engine("xgboost") %>% 
+  set_mode("classification") %>%
+    set_args(learn_rate = 0.1)
+    )
+
+
+test_fit <- tune::last_fit(object=test_xgb_wf, 
+                           split=data_split, 
+                           preprocessor=best_xgb, 
+                           metrics = metrics) 
+```
+
+
+
+```{r extract test fit details}
+
+test_fit_metrics <- test_fit$.metrics[[1]]
+test_fit_predictions <- test_fit$.predictions[[1]]
+
+```
+
+```{r check true positive rate}
+
+learned_in_current_session <- test_fit_predictions %>% 
+  dplyr::filter(learned_in_current_session == 1)
+
+true_positives <- test_fit_predictions %>%
+  dplyr::filter(.pred_class == 1 & learned_in_current_session == 1)
+
+all_positives <- test_fit_predictions %>%
+  dplyr::filter(.pred_class == 1)
+
+nrow(true_positives)/nrow(all_positives)
+
+
+```
+
+
+
+```{r}
+
+best_xgb_mod <- select_best(xgb_tuning_results, metric = "precision")
+
+xgb_final_workflow <-
+  xgb_wflow %>%
+  tune::finalize_workflow(best_xgb_mod)
+
+```
+
+
+
+```{r}
+
+fit_final_workflow <- fit(xgb_final_workflow, trials_with_item_stats)
+
+```
+
+```{r}
+
+vip::vip(fit_final_workflow)
+
+```
+
+```{r}
+
+fit_final_workflow_bundle <- bundle::bundle(fit_final_workflow)
+
+saveRDS(fit_final_workflow_bundle, 
+        file =  glue::glue('output/fit_final_workflow_bundle_model_{model_version}_{data_timestamp}.rds'))
+
+```
+
+

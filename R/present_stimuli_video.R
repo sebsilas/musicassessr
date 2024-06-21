@@ -1,6 +1,16 @@
 
 
 
+#' Video melodic production page
+#'
+#' @param video_file
+#' @param melody_no
+#' @param total_no_melodies
+#'
+#' @return
+#' @export
+#'
+#' @examples
 video_melodic_production_page <- function(video_file,
                                           melody_no,
                                           total_no_melodies) {

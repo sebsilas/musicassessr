@@ -650,7 +650,7 @@ play_melody_loop <- function(item_bank = NULL,
       logging::loginfo("user_wants_to_play_again? %s", user_wants_to_play_again)
       user_wants_to_play_again
     },
-    logic = list(
+    logic = psychTestR::join(
 
       # Present the melody
       present_melody(stimuli = melody,

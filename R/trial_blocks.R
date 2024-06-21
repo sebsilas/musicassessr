@@ -707,9 +707,6 @@ melody_trials <- function(var_name,
                           pass_items_through_url_parameter = FALSE,
                           asynchronous_api_mode = FALSE) {
 
-  print(page_title)
-  print(page_text)
-
   phase <- match.arg(phase)
 
 

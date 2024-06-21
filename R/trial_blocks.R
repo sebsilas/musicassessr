@@ -847,95 +847,99 @@ melody_trials <- function(var_name,
       melody_type_str <- "rhythmic"
     }
 
+    tl <- psychTestR::join(
 
-    psychTestR::module(module_name,
-                       psychTestR::join(
+      # Setup that we want to receive feedback
+      if(show_async_feedback) {
+        psychTestR::code_block(function(state, ...) {
+          psychTestR::set_global("async_feedback", TRUE, state)
+        })
+      },
 
-                         # Setup that we want to receive feedback
-                         if(show_async_feedback) {
-                           psychTestR::code_block(function(state, ...) {
-                             psychTestR::set_global("async_feedback", TRUE, state)
-                           })
-                         },
+      # Instructions depending on review
+      if(review) psychTestR::one_button_page(paste0("Now you will review some ", melody_type_str, " melodies you have encountered previously.")) else psychTestR::one_button_page(paste0("Now you will hear some ", melody_type_str, " melodies.")),
 
-                         # Instructions depending on review
-                         if(review) psychTestR::one_button_page(paste0("Now you will review some ", melody_type_str, " melodies you have encountered previously.")) else psychTestR::one_button_page(paste0("Now you will hear some ", melody_type_str, " melodies.")),
-
-                         # Examples
-                         if(is.numeric(num_examples_flat) && num_examples_flat > 0L && ! review) {
-                           psychTestR::join(
-                             # Instructions
-                             psychTestR::one_button_page(shiny::tags$div(
-                               if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
-                               shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
-                             ), button_text = psychTestR::i18n("Next")),
+      # Examples
+      if(is.numeric(num_examples_flat) && num_examples_flat > 0L && ! review) {
+        psychTestR::join(
+          # Instructions
+          psychTestR::one_button_page(shiny::tags$div(
+            if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
+            shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
+          ), button_text = psychTestR::i18n("Next")),
 
 
-                             ## Sample example items
-                             #### (review phase should not have example items)
-                             if(!presampled && !pass_items_through_url_parameter && !review) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+          ## Sample example items
+          #### (review phase should not have example items)
+          if(!presampled && !pass_items_through_url_parameter && !review) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
-                             ## Run examples
-                             if(!review) {
-                               multi_page_play_melody_loop(
-                               presampled_items = if(presampled & ! sample_item_bank_via_api) item_bank else if(pass_items_through_url_parameter) NULL else NULL,
-                               stimuli_type = "midi_notes",
-                               var_name = var_name,
-                               num_items = num_examples_flat,
-                               page_title = page_title,
-                               page_text = page_text,
-                               page_type = page_type,
-                               get_answer = get_answer,
-                               rel_to_abs_mel_function = rel_to_abs_mel_function,
-                               example = TRUE,
-                               feedback = feedback,
-                               sound = sound,
-                               get_trial_characteristics_function = get_trial_characteristics_function,
-                               max_goes_forced = max_goes_forced,
-                               max_goes = max_goes,
-                               item_bank = item_bank,
-                               display_modality = display_modality,
-                               show_progress = show_progress,
-                               sheet_music_start_hidden = sheet_music_start_hidden,
-                               sound_only_first_melody_note = sound_only_first_melody_note,
-                               sheet_music_id = sheet_music_id,
-                               give_first_melody_note = give_first_melody_note,
-                               arrhythmic = arrhythmic,
-                               get_similarity_to_previous_melody = get_similarity_to_previous_melody,
-                               volume_meter = volume_meter,
-                               volume_meter_type = volume_meter_type,
-                               melody_block_paradigm = melody_block_paradigm,
-                               singing_trials = singing_trials,
-                               phase = "example",
-                               first_note_message = first_note_message,
-                               transposed_message = transposed_message,
-                               play_first_note_button_text = play_first_note_button_text,
-                               learn_test_paradigm = learn_test_paradigm,
-                               sample_item_bank_via_api = sample_item_bank_via_api,
-                               start_from_trial_no = start_from_sampled_trial_no,
-                               pass_items_through_url_parameter = pass_items_through_url_parameter) },
+          ## Run examples
+          if(!review) {
+            multi_page_play_melody_loop(
+              presampled_items = if(presampled & ! sample_item_bank_via_api) item_bank else if(pass_items_through_url_parameter) NULL else NULL,
+              stimuli_type = "midi_notes",
+              var_name = var_name,
+              num_items = num_examples_flat,
+              page_title = page_title,
+              page_text = page_text,
+              page_type = page_type,
+              get_answer = get_answer,
+              rel_to_abs_mel_function = rel_to_abs_mel_function,
+              example = TRUE,
+              feedback = feedback,
+              sound = sound,
+              get_trial_characteristics_function = get_trial_characteristics_function,
+              max_goes_forced = max_goes_forced,
+              max_goes = max_goes,
+              item_bank = item_bank,
+              display_modality = display_modality,
+              show_progress = show_progress,
+              sheet_music_start_hidden = sheet_music_start_hidden,
+              sound_only_first_melody_note = sound_only_first_melody_note,
+              sheet_music_id = sheet_music_id,
+              give_first_melody_note = give_first_melody_note,
+              arrhythmic = arrhythmic,
+              get_similarity_to_previous_melody = get_similarity_to_previous_melody,
+              volume_meter = volume_meter,
+              volume_meter_type = volume_meter_type,
+              melody_block_paradigm = melody_block_paradigm,
+              singing_trials = singing_trials,
+              phase = "example",
+              first_note_message = first_note_message,
+              transposed_message = transposed_message,
+              play_first_note_button_text = play_first_note_button_text,
+              learn_test_paradigm = learn_test_paradigm,
+              sample_item_bank_via_api = sample_item_bank_via_api,
+              start_from_trial_no = start_from_sampled_trial_no,
+              pass_items_through_url_parameter = pass_items_through_url_parameter) },
 
-                             psychTestR::one_button_page(shiny::tags$div(
-                               if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
-                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
-                           )
-                         },
+          psychTestR::one_button_page(shiny::tags$div(
+            if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
+            shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
+        )
+      },
 
-                         ## Sample items
-                         if(!presampled && ! pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+      ## Sample items
+      if(!presampled && ! pass_items_through_url_parameter) handle_item_sampling(item_bank, num_items_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
 
-                         ## Trials
-                         main_trials#,
+      ## Trials
+      main_trials#,
 
-                         # # At end of block, clear this var, otherwise can lead to issues between trial blocks.
-                         # # Another option would be to revert everything to set_local.
-                         # # Should probably do this in future release.
-                         # psychTestR::code_block(function(state, ...) {
-                         #   psychTestR::set_global(paste0("previous_melodies_", var_name), NULL, state)
-                         # })
+      # # At end of block, clear this var, otherwise can lead to issues between trial blocks.
+      # # Another option would be to revert everything to set_local.
+      # # Should probably do this in future release.
+      # psychTestR::code_block(function(state, ...) {
+      #   psychTestR::set_global(paste0("previous_melodies_", var_name), NULL, state)
+      # })
 
-                       )
     )
+
+    # Make sure no elements list
+    tl <- unlist(tl)
+
+    # Wrap in module
+    psychTestR::module(module_name, tl)
+
   }
 }
 

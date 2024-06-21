@@ -179,6 +179,7 @@ reference:
   - tidy_melodies
   - to_string_df
   - translate_from_dict
+  - unnest_timeline
   - update_play_melody_loop_and_save
   - wait_for_api_page
   - wrap_js_fun_body

@@ -535,4 +535,17 @@ replace_nulls <- function(x) {
   }
 }
 
+#' Unnest timeline helper
+#'
+#' @param tl
+#'
+#' @return
+#' @export
+#'
+#' @examples
+unnest_timeline <- function(tl){
+  purrr::map(tl, function(item) {
+    if(is.list(item)) unlist(item) else item
+    })
+}
 

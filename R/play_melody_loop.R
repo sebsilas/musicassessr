@@ -235,7 +235,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 
 
       )
-     )
+      )
     )
 
 
@@ -459,7 +459,7 @@ construct_play_melody_page <- function(melody = NULL,
                                     shiny::tags$img(src = "https://musicassessr.com/assets/img/singing.png", height = 100, width = 100),
                                     shiny::tags$br(),
                                     psychTestR::i18n("sing_melody_page_text")
-                                    ),
+                                  ),
                                   get_answer = get_answer,
                                   stimuli_type = stimuli_type,
                                   rel_to_abs_mel_function = rel_to_abs_mel_function,
@@ -700,7 +700,7 @@ play_melody_loop <- function(item_bank = NULL,
 
       # Update and see how to proceed
       update_play_melody_loop_and_save(max_goes)
-      )
+    )
     ) # End psychTestR::while_loop
   ) # End join
 }
@@ -869,7 +869,7 @@ present_melody <- function(stimuli,
                     reactive_melody_no = reactive_melody_no,
                     db_vars = db_vars,
                     lowest_reading_note = psychTestR::get_global("lowest_reading_note", state)
-                    )
+    )
 
   })
 }
@@ -1229,5 +1229,4 @@ get_similarity_to_previous_melody <- function(get_similarity_to_previous_melody,
 
   similarity_to_previous_melody
 }
-
 

@@ -118,6 +118,7 @@ predict(long_note_pca2,
 
 # Internal
 usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
+                  musicassessr_dict,
                   instrument_list, key_rankings, keys_table, long_note_pca2,
                   overwrite = TRUE, internal = TRUE)
 

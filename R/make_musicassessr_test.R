@@ -9,6 +9,7 @@
 #' @param opt Musicassessr options.
 #' @param final_page The UI of the final page.
 #' @param welcome_page Required because you need a page before musicassessr_init to instantiate a p_id.
+#' @param dict
 #' @param ...
 #'
 #' @return
@@ -19,10 +20,11 @@ make_musicassessr_test <- function(title,
                                    admin_password,
                                    elts,
                                    elts_before_setup_pages = function() { empty_code_block() },
-                                   languages = "en",
+                                   languages = c("en", "it", "de", "lv"),
                                    opt = musicassessr_opt(),
-                                   final_page = wrap_musicassessr_timeline(psychTestR::final_page(psychTestR::i18n("thank_you_for_completing"))),
-                                   welcome_page = psychTestR::one_button_page("Welcome."), ...) {
+                                   final_page = psychTestR::final_page(psychTestR::i18n("thank_you_for_completing")),
+                                   welcome_page = psychTestR::one_button_page("Welcome."),
+                                   dict = musicassessr::musicassessr_dict, ...) {
 
 
   stopifnot(
@@ -30,54 +32,58 @@ make_musicassessr_test <- function(title,
     is.scalar.character(admin_password),
     is.function(elts),
     is.function(elts_before_setup_pages),
-    is.scalar.character(languages),
+    is.character(languages),
     is.list(opt),
     is(final_page, "page") || is(final_page, "reactive_page") || psychTestR::is.timeline(final_page),
-    psychTestR::is.test_element(welcome_page)
+    psychTestR::is.test_element(welcome_page),
+    is(dict, "i18n_dict")
   )
 
 
   setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
 
   psychTestR::make_test(
-    psychTestR::join(
+    psychTestR::new_timeline(
+      psychTestR::join(
 
-      # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
-      welcome_page,
+        # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
+        welcome_page,
 
-      # Get participant ID
-      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
+        # Get participant ID
+        if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
 
-      # Init musicassessr
-      musicassessr_init(
-        app_name = opt$app_name,
-        experiment_id = opt$experiment_id,
-        experiment_condition_id = opt$experiment_condition_id,
-        user_id = opt$user_id,
-        default_range = opt$default_range,
-        username = opt$username,
-        asynchronous_api_mode =  opt$asynchronous_api_mode
-        ),
+        # Init musicassessr
+        musicassessr_init(
+          app_name = opt$app_name,
+          experiment_id = opt$experiment_id,
+          experiment_condition_id = opt$experiment_condition_id,
+          user_id = opt$user_id,
+          default_range = opt$default_range,
+          username = opt$username,
+          asynchronous_api_mode =  opt$asynchronous_api_mode
+          ),
 
-      # Timeline before setup pages
-      elts_before_setup_pages(),
+        # Timeline before setup pages
+        elts_before_setup_pages(),
 
-      # Setup pages
-      if (opt$setup_pages) setup_enclosure,
+        # Setup pages
+        if (opt$setup_pages) setup_enclosure,
 
-      # Timeline after setup pages
+        # Timeline after setup pages
 
-      elts(),
+        elts(),
 
-      # Save results
-      psychTestR::elt_save_results_to_disk(complete = TRUE),
+        # Save results
+        psychTestR::elt_save_results_to_disk(complete = TRUE),
 
-      # Add final session information to DB (if asynchronous_api_mode)
-      musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
+        # Add final session information to DB (if asynchronous_api_mode)
+        musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
 
-      # Final page
-      final_page
+        # Final page
+        final_page
 
+      ),
+      dict = dict
     ),
     opt = psychTestR::test_options(
       title = title,
@@ -295,13 +301,12 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 
   function(asynchronous_api_mode) {
 
-    wrap_musicassessr_timeline(
       musicassessr::setup_pages(input_type, headphones, SNR_test, min_SNR, get_user_info, demo, get_instrument_range,
                                 absolute_url, select_instrument, get_instrument_range_musical_notation,
                                 adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
                                 skip_setup, get_self_chosen_anonymous_id, musical_instrument, allow_SNR_failure, requirements_page,
                                 playful_volume_meter_setup, asynchronous_api_mode, show_microphone_type_page)
-    )
+
   }
 
 

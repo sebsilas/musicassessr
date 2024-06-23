@@ -92,16 +92,14 @@ filler_task <- function(type = c("none", "surveys")) {
 #' Wrap a timeline with musicassessr dict
 #'
 #' @param tl
-#' @param language
 #'
 #' @return
 #' @export
 #'
 #' @examples
-wrap_musicassessr_timeline <- function(tl, language = "en") {
+wrap_musicassessr_timeline <- function(tl) {
   psychTestR::new_timeline(tl,
-                           dict = musicassessr::musicassessr_dict, # This is not exported
-                           default_lang = language)
+                           dict = musicassessr::musicassessr_dict)
 }
 
 heading_page <- function(heading = "This is your heading!",

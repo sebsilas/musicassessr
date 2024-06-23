@@ -71,8 +71,8 @@ present_stimuli(
   reactive_melody_no = FALSE,
   mute_midi_playback = FALSE,
   db_vars = NULL,
-  asynchronous_api_mode = FALSE,
   lowest_reading_note = NA,
+  lyrics = NULL,
   ...
 )
 }
@@ -84,8 +84,6 @@ present_stimuli(
 \item{mute_midi_playback}{Should MIDI audio feedback be muted on record_midi_pages?}
 
 \item{db_vars}{Vars for the DB as a named list.}
-
-\item{asynchronous_api_mode}{Are we using asynchronous_api_mode?}
 
 \item{...}{}
 }

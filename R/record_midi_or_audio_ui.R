@@ -31,7 +31,8 @@ record_midi_or_audio_ui <- function(body = "",
                                     show_record_button = TRUE,
                                     reactive_melody_no = FALSE,
                                     mute_midi_playback = FALSE,
-                                    db_vars = NULL, ...) {
+                                    db_vars = NULL,
+                                    lyrics = NULL, ...) {
 
 
   if(max_goes > 1L) {
@@ -78,6 +79,13 @@ record_midi_or_audio_ui <- function(body = "",
       if(page_text_first) page_text,
 
       shiny::tags$div(body),
+
+      if(!is.null(lyrics)) {
+        shiny::tags$div(id = "lyrics",
+          shiny::tags$h3(psychTestR::i18n("the_lyrics_are")),
+          convert_to_html_paragraphs(lyrics)
+        )
+      },
 
       if(!is.null(stimuli)) shiny::tags$div(stimuli),
 
@@ -146,6 +154,9 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
         )
       ) == 0)
 
+
+  print('dadadada')
+  print(db_vars)
 
   shiny::tags$script(htmltools::HTML(
     paste0('

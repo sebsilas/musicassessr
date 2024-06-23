@@ -549,3 +549,14 @@ unnest_timeline <- function(tl){
     })
 }
 
+
+# Function to convert a string with \n to HTML paragraphs
+convert_to_html_paragraphs <- function(text) {
+  # Split the text by newline characters
+  lines <- unlist(strsplit(text, "\n"))
+
+  # Wrap each line in a <p> tag
+  wrapped_lines <- purrr::map(lines, ~ shiny::tags$p(.x))
+
+}
+

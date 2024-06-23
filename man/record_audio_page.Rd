@@ -33,7 +33,7 @@ record_audio_page(
   show_record_button = TRUE,
   reactive_melody_no = FALSE,
   db_vars = NULL,
-  asynchronous_api_mode = FALSE,
+  lyrics = NULL,
   ...
 )
 }

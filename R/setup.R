@@ -59,6 +59,10 @@ setup_pages <- function(input_type = c("microphone",
                         asynchronous_api_mode = FALSE,
                         show_microphone_type_page = TRUE) {
 
+  print('brin')
+  print('playful_volume_meter_setup')
+  print(playful_volume_meter_setup)
+
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)

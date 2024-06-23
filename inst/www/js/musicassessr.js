@@ -466,6 +466,17 @@ function show_happy_with_response_message() {
   	  spinner[0].style.display = "block";
   	}
    }
+  var lyrics = document.getElementById("lyrics");
+  if(lyrics !== "undefined") {
+    lyrics.remove();
+  }
+}
+
+function hide_spinner() {
+  spinner = document.getElementsByClassName("hollow-dots-spinner");
+  if(typeof spinner[0] !== "undefined") {
+    spinner[0].style.display = "none";
+  }
 }
 
 function hide_happy_with_response_message() {
@@ -491,6 +502,8 @@ function hideAudioFilePlayer() {
 
 
 function startRecording(type = "record_audio_page", stop_recording_automatically_after_ms = null) {
+
+  console.log("start recording!");
 
   setTimeout(() => {
 
@@ -751,14 +764,11 @@ function preloadImage(url) {
 // Checks
 
 function getUserInfo () {
-    //console.log(navigator);
     var _navigator = {};
     for (var i in navigator) _navigator[i] = navigator[i];
     delete _navigator.plugins;
     delete _navigator.mimeTypes;
     navigatorJSON = JSON.stringify(_navigator);
-    console.log(navigatorJSON);
-    console.log("Browser:" + navigator.userAgent);
     Shiny.setInputValue("user_info", navigatorJSON);
 }
 

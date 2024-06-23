@@ -304,6 +304,12 @@ feedback_image <- function(image, height = NULL, width = NULL, text = "Well done
 
 
 
+#' Feedback for melodic production pages, async version
+#'
+#' @return
+#' @export
+#'
+#' @examples
 feedback_melodic_production_async <- function() {
 
   psychTestR::reactive_page(function(state, answer, ...) {
@@ -354,7 +360,7 @@ feedback_melodic_production_async_ui <- function(filename, poll_ms = 5000) {
 
     # Javascript
     shiny::tags$script(shiny::HTML(paste0("
-    const apiUrl = 'https://api.songbird.training/v2/get-job-status';
+    const apiUrl = '", Sys.getenv("ENDPOINT_URL"), "v2/get-job-status';
 
   async function fetchData() {
 
@@ -395,6 +401,9 @@ feedback_melodic_production_async_ui <- function(filename, poll_ms = 5000) {
     const container = document.getElementById('data-container');
     console.log('opti3: ', + score);
     score = benevolentOpti3(score);
+    if(isNaN(score)) {
+      score = 1;
+    }
     container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
   }
 

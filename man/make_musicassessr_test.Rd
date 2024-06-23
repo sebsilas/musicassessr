@@ -11,11 +11,12 @@ make_musicassessr_test(
   elts_before_setup_pages = function() {
      empty_code_block()
  },
-  languages = "en",
+  languages = c("en", "it", "de", "lv"),
   opt = musicassessr_opt(),
   final_page =
     wrap_musicassessr_timeline(psychTestR::final_page(psychTestR::i18n("thank_you_for_completing"))),
   welcome_page = psychTestR::one_button_page("Welcome."),
+  dict = musicassessr::musicassessr_dict,
   ...
 )
 }

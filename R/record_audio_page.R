@@ -29,7 +29,7 @@
 #' @param show_record_button
 #' @param reactive_melody_no
 #' @param db_vars
-#' @param asynchronous_api_mode
+#' @param lyrics
 #' @param ...
 #'
 #' @return
@@ -64,7 +64,7 @@ record_audio_page <- function(body = "",
                              show_record_button = TRUE,
                              reactive_melody_no = FALSE,
                              db_vars = NULL,
-                             asynchronous_api_mode = FALSE, ...) {
+                             lyrics = NULL, ...) {
 
   record_midi_or_audio_ui(body,
                           label,
@@ -98,7 +98,7 @@ record_audio_page <- function(body = "",
                           reactive_melody_no,
                           mute_midi_playback = FALSE, # record_audio_pages don't need this, but we need to specify a value
                           db_vars,
-                          asynchronous_api_mode)
+                          lyrics)
 
 }
 

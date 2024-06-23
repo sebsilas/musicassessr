@@ -12,11 +12,12 @@ paradigm(
   instantiate_midi = FALSE,
   midi_device = NULL,
   mute_midi_playback = FALSE,
-  attempts_left = 1L
+  attempts_left = 1L,
+  stimuli_type = c("melody", "audio")
 )
 }
 \arguments{
-\item{attempts_left}{}
+\item{stimuli_type}{}
 }
 \description{
 Choose a melody paradigm

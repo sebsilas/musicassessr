@@ -36,7 +36,6 @@ record_midi_page(
   reactive_melody_no = FALSE,
   mute_midi_playback = FALSE,
   db_vars = NULL,
-  asynchronous_api_mode = FALSE,
   ...
 )
 }

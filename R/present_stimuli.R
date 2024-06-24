@@ -61,7 +61,8 @@
 #' @param db_vars Vars for the DB as a named list.
 #' @param lowest_reading_note
 #' @param lyrics
-#' @param ...
+#' @param feedback
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -115,7 +116,9 @@ present_stimuli <- function(stimuli,
                             mute_midi_playback = FALSE,
                             db_vars = NULL,
                             lowest_reading_note = NA,
-                            lyrics = NULL, ...) {
+                            lyrics = NULL,
+                            feedback = FALSE,
+                            asynchronous_api_mode = FALSE, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -159,7 +162,9 @@ present_stimuli <- function(stimuli,
             is.scalar.logical(mute_midi_playback),
             is.null.or(db_vars, is.list),
             is.na(lowest_reading_note) || is.numeric(lowest_reading_note),
-            is.null.or(lyrics, is.scalar.character)
+            is.null.or(lyrics, is.scalar.character),
+            is.scalar.logical(feedback),
+            is.scalar.logical(asynchronous_api_mode)
             )
 
   # Generic stimuli types
@@ -264,7 +269,7 @@ present_stimuli <- function(stimuli,
                               show_record_button = show_record_button,
                               reactive_melody_no = reactive_melody_no,
                               db_vars = db_vars,
-                              lyrics = lyrics, ...)
+                              lyrics = lyrics, feedback = feedback, asynchronous_api_mode = asynchronous_api_mode, ...)
   } else {
     if(page_text_first) {
       full_page <- shiny::tags$div(shiny::tags$h2(page_title), shiny::tags$p(page_text), shiny::tags$br(), return_stimuli)
@@ -300,7 +305,10 @@ retrieve_page_type <- function(page_type = character(),
                                reactive_melody_no = FALSE,
                                mute_midi_playback = FALSE,
                                db_vars = NULL,
-                               lyrics = NULL, ...) {
+                               lyrics = NULL,
+                               feedback = FALSE,
+                               asynchronous_api_mode = FALSE,
+                               ...) {
 
 
   stopifnot(is.scalar.character(page_type),
@@ -329,7 +337,9 @@ retrieve_page_type <- function(page_type = character(),
             is.scalar.logical(reactive_melody_no),
             is.scalar.logical(mute_midi_playback),
             is.null.or(db_vars, is.list),
-            is.null.or(lyrics, is.scalar.character)
+            is.null.or(lyrics, is.scalar.character),
+            is.scalar.logical(feedback),
+            is.scalar.logical(asynchronous_api_mode)
             )
 
 
@@ -391,7 +401,9 @@ retrieve_page_type <- function(page_type = character(),
                 "reactive_melody_no" = reactive_melody_no,
                 "mute_midi_playback" = mute_midi_playback,
                 "db_vars" = db_vars,
-                "lyrics" = lyrics
+                "lyrics" = lyrics,
+                "feedback" = feedback,
+                "asynchronous_api_mode" = asynchronous_api_mode
                 ))
 
   } else if(page_type == "record_key_presses_page") {

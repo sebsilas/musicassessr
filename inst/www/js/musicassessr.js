@@ -32,6 +32,8 @@ var onsets_noteon_timecode = [];
 var stimulus_trigger_times = [];
 var upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
 var pattern; // the melodic pattern being played. We only want one to be played at once.
+var get_async_feedback = false;
+var intervalId;
 
 // // Trial info
 
@@ -394,6 +396,8 @@ function display_message(mes) {
     console.log(mes);
 }
 
+/*
+There is another function of the same name. Is this one deprecated?
 function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose, sound, bpm) {
 
     console.log("bpm is " + bpm);
@@ -416,7 +420,7 @@ function playMidiFile(url, toneJS, start_note, end_note, hidePlay, id, transpose
     }
 
 }
-
+*/
 
 // Define a function to handle player events
 function display_time_record_after(ev) {
@@ -484,6 +488,21 @@ function hide_happy_with_response_message() {
   happy_with_response.style.display = "none";
 }
 
+function displayAsyncFeedback() {
+  console.log('Display async feedback!');
+  intervalId = setInterval(fetchData, pollingInterval);
+  async_feedback_area = document.getElementById("async-feedback");
+  async_feedback_area.style.display = "block";
+  async_feedback_area.style.visibility = "visible";
+  hideSingImage();
+  hideTrialPageTitle();
+  hideStimuliArea();
+}
+
+function hideAsyncFeedback() {
+  async_feedback_area = document.getElementById("async-feedback");
+  async_feedback_area.style.display = "none";
+}
 
 function hidePlayButton(play_button_id = "playButton") {
   // Make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
@@ -595,6 +614,7 @@ function stopRecording(page_type = "record_audio_page", trigger_next_page = true
 
     hideStopButton();
     hideRecordingIcon();
+    hideLyrics();
 
     if(page_type === "record_audio_page") {
       stopAudioRecording();
@@ -637,7 +657,7 @@ function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = '
 
 
   stopButton.onclick = function () {
-    if(show_happy_with_response) {
+    if(show_happy_with_response && !get_async_feedback) {
       setTimeout(() => {
         show_happy_with_response_message();
       }, 500)
@@ -1056,6 +1076,11 @@ function upload_file_to_s3(blob){
         }
     });
 
+    if(get_async_feedback) {
+      fetchData();
+      displayAsyncFeedback();
+    }
+
     Shiny.setInputValue("sourceBucket", bucketName);
     Shiny.setInputValue("key", file_url);
     Shiny.setInputValue("destBucket", destBucket);
@@ -1072,5 +1097,143 @@ function upload_file_to_s3(blob){
 
         }
     );
+}
+
+
+/* Async feedback funs */
+
+
+
+const pollingInterval = 5000; // 5 seconds
+
+async function fetchData() {
+
+  console.log('Fetching feedback for ' + file_url);
+
+  const payload = {
+    filename: file_url
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+    const data = await response.json();
+
+    // Check if the status is 'FINISHED'
+    if (data.status === 'FINISHED') {
+      console.log('Job is finished. Stopping polling.');
+      const message = JSON.parse(data.message);
+      const score = message.opti3.opti3;
+      displayScore(score);
+      stopPolling();
+      hideLoader();
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+function displayScore(score) {
+  const container = document.getElementById('data-container');
+  console.log('opti3: ', + score);
+  score = benevolentOpti3(score);
+  if(isNaN(score)) {
+    score = 0;
+  }
+  container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
+}
+
+function benevolentOpti3(score) {
+  // Apply a quadratic transformation
+  let benevolentScore = Math.sqrt(score);
+
+  // Scale to the range 1 to 10
+  let scaledScore = 1 + benevolentScore * 9;
+
+  // Round up
+  scaledScore = Math.ceil(scaledScore);
+
+  return scaledScore;
+}
+
+
+function showLoader() {
+  document.getElementById('loader').style.display = 'block';
+}
+
+function hideLoader() {
+  document.getElementById('loader').style.display = 'none';
+}
+
+function hideSingImage() {
+  var sing_image = document.getElementById('singImage');
+  if(sing_image !== 'undefined') {
+    sing_image.style.display = 'none';
+  }
+}
+
+function hideTrialPageTitle() {
+  var trial_page_title = document.getElementById('trial_page_title');
+  if(trial_page_title !== 'undefined') {
+    trial_page_title.style.display = 'none';
+  }
+}
+
+function hideStimuliArea() {
+  var stimuliArea = document.getElementById('stimuliArea');
+  if(stimuliArea !== 'undefined') {
+    stimuliArea.style.display = 'none';
+  }
+}
+
+function hideLyrics() {
+  var lyrics = document.getElementById('lyrics');
+  if(lyrics !== 'undefined') {
+    lyrics.style.display = 'none';
+  }
+}
+
+
+
+
+function stopPolling() {
+  clearInterval(intervalId);
+  appendNextButton(onClick = function() {
+    show_happy_with_response_message();
+    hideAsyncFeedback();
+    });
+}
+
+
+function appendNextButton(onClick = next_page) {
+  // Create a new button element
+  var nextButton = document.createElement('button');
+
+  // Set the button's text content
+  nextButton.textContent = 'Next';
+
+  // Set an ID for the button (optional)
+  nextButton.id = 'nextButton';
+
+  nextButton.className = 'btn btn-default';
+
+  // Set the onclick attribute
+  nextButton.onclick = onClick;
+
+  // Append the button to the element with ID 'button_area'
+  var feedbackArea = document.getElementById('async-feedback');
+  if (feedbackArea) {
+    feedbackArea.appendChild(nextButton);
+  } else {
+    console.error('Element with ID "async-feedback" not found.');
+  }
 }
 

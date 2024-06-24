@@ -34,6 +34,8 @@ record_audio_page(
   reactive_melody_no = FALSE,
   db_vars = NULL,
   lyrics = NULL,
+  feedback = FALSE,
+  asynchronous_api_mode = FALSE,
   ...
 )
 }

@@ -73,6 +73,8 @@ present_stimuli(
   db_vars = NULL,
   lowest_reading_note = NA,
   lyrics = NULL,
+  feedback = FALSE,
+  asynchronous_api_mode = FALSE,
   ...
 )
 }
@@ -85,7 +87,7 @@ present_stimuli(
 
 \item{db_vars}{Vars for the DB as a named list.}
 
-\item{...}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Present stimuli

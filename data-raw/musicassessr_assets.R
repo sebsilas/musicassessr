@@ -49,7 +49,7 @@ instrument_list$Flute <- "pno"
 
 
 
-insts_table2 <- insts_table %>% select(-c(low_note, high_note, transpose, clef))
+insts_table2 <- insts_table %>% select(key, en, it, de, lv)
 insts <- insts_table %>% pull(key)
 
 

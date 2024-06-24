@@ -32,7 +32,9 @@ record_midi_or_audio_ui <- function(body = "",
                                     reactive_melody_no = FALSE,
                                     mute_midi_playback = FALSE,
                                     db_vars = NULL,
-                                    lyrics = NULL, ...) {
+                                    lyrics = NULL,
+                                    feedback = FALSE,
+                                    asynchronous_api_mode = FALSE, ...) {
 
 
   if(max_goes > 1L) {
@@ -72,22 +74,20 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(show_progress) shiny::tags$h4(section_progress),
 
-      shiny::tags$br(),
-
-      shiny::tags$h2(page_title),
+      shiny::tags$h2(id = "trial_page_title", page_title),
 
       if(page_text_first) page_text,
 
-      shiny::tags$div(body),
+      shiny::tags$div(id = "bodyArea", body),
 
       if(!is.null(lyrics)) {
         shiny::tags$div(id = "lyrics",
-          shiny::tags$h3(psychTestR::i18n("the_lyrics_are")),
+          shiny::tags$h3(psychTestR::i18n("Lyrics")),
           convert_to_html_paragraphs(lyrics)
         )
       },
 
-      if(!is.null(stimuli)) shiny::tags$div(stimuli),
+      if(!is.null(stimuli)) shiny::tags$div(id = "stimuliArea", stimuli),
 
       if(volume_meter) shiny::tags$div(volume_meter(volume_meter_type, start_hidden = TRUE), shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr"))),
 
@@ -96,6 +96,8 @@ record_midi_or_audio_ui <- function(body = "",
       #if(page_type == "record_audio_page") loading(),
 
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced, max_goes),
+
+      if(feedback && asynchronous_api_mode) feedback_melodic_production_async_ui(),
 
       if(!page_text_first) page_text,
 

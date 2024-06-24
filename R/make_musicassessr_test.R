@@ -60,7 +60,9 @@ make_musicassessr_test <- function(title,
           user_id = opt$user_id,
           default_range = opt$default_range,
           username = opt$username,
-          asynchronous_api_mode =  opt$asynchronous_api_mode
+          asynchronous_api_mode =  opt$asynchronous_api_mode,
+          instrument_id = opt$instrument_id,
+          inst = opt$instrument
           ),
 
         # Timeline before setup pages
@@ -332,6 +334,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param css A css stylesheet to use (passes to psychTestR).
 #' @param username Hardcode a username.
 #' @param get_pid_prompt What prompt to you want to use for the get_p_id page?
+#' @param instrument What instrument is the test using?
 #'
 #' @return
 #' @export
@@ -358,7 +361,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
                                shiny::tags$h3("Choose an anonymous ID"),
                                shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
                                shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
-                             )) {
+                             ),
+                             instrument = "Voice") {
 
   stopifnot(
     is.scalar.logical(setup_pages),
@@ -379,7 +383,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     }),
     is.null.or(css, is.character),
     is.null.or(username, is.scalar.character),
-    is(get_pid_prompt, "shiny.tag") || is.scalar.character(get_p_id_prompt)
+    is(get_pid_prompt, "shiny.tag") || is.scalar.character(get_p_id_prompt),
+    is.scalar.character(instrument)
   )
 
   list(
@@ -399,7 +404,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     default_range = default_range,
     css = css,
     username = username,
-    get_pid_prompt = get_pid_prompt
+    get_pid_prompt = get_pid_prompt,
+    instrument = instrument
   )
 
 }

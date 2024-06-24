@@ -13,11 +13,13 @@ paradigm(
   midi_device = NULL,
   mute_midi_playback = FALSE,
   attempts_left = 1L,
-  stimuli_type = c("melody", "audio")
+  stimuli_type = c("melody", "audio"),
+  feedback = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{stimuli_type}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Choose a melody paradigm

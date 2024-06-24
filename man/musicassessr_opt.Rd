@@ -25,7 +25,8 @@ musicassessr_opt(
   get_pid_prompt = shiny::tags$div(shiny::tags$h3("Choose an anonymous ID"),
     shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
     shiny::tags$p("For example, Mike, born in December 1900, would be ",
-    shiny::tags$em("mi121900"), "."))
+    shiny::tags$em("mi121900"), ".")),
+  instrument = "Voice"
 )
 }
 \arguments{
@@ -62,6 +63,8 @@ musicassessr_opt(
 \item{username}{Hardcode a username.}
 
 \item{get_pid_prompt}{What prompt to you want to use for the get_p_id page?}
+
+\item{instrument}{What instrument is the test using?}
 }
 \description{
 Specify options for a musicassessr test.

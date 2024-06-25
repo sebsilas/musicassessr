@@ -791,7 +791,6 @@ melody_trials <- function(var_name,
       }
       if(feedback && asynchronous_api_mode) {
         show_async_feedback <- TRUE
-        feedback <- feedback_melodic_production_async
       } else {
         show_async_feedback <- FALSE
       }

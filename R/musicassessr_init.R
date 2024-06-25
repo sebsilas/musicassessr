@@ -294,8 +294,6 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
       logging::loginfo("Transpose: %s", inst$transpose)
       logging::loginfo("Clef: %s", inst$clef)
 
-      browser()
-
       psychTestR::set_global("inst", inst$en, state)
       psychTestR::set_global("transpose_visual_notation", as.integer(inst$transpose), state)
       psychTestR::set_global("clef", inst$clef, state)

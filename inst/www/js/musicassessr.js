@@ -473,7 +473,7 @@ function show_happy_with_response_message() {
   	}
    }
   var lyrics = document.getElementById("lyrics");
-  if(lyrics !== "undefined") {
+  if(lyrics != null) {
     lyrics.remove();
   }
 }
@@ -1205,7 +1205,7 @@ function hideStimuliArea() {
 
 function hideLyrics() {
   var lyrics = document.getElementById('lyrics');
-  if(lyrics !== 'undefined') {
+  if(lyrics != null) {
     lyrics.style.display = 'none';
   }
 }

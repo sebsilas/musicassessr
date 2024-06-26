@@ -311,7 +311,7 @@ feedback_melodic_production_async_ui <- function() {
   shiny::tags$div(id = "async-feedback", class = "_hidden",
     shiny::tags$div(id = "loader",
         shiny::tags$div(class = "loader"),
-        shiny::tags$p("Good try! Let's see how you did...")),
+        shiny::tags$p(psychTestR::i18n("good_try_message"))),
         shiny::tags$img(src = 'https://musicassessr.com/assets/img/bird.png', height = 150, width = 160, style = 'margin: 20px 0 20px 0;'),
     shiny::tags$div(id = "data-container")
     ),

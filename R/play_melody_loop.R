@@ -818,7 +818,8 @@ present_melody <- function(stimuli,
         review_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
         new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
         feedback = psychTestR::get_global("async_feedback", state),
-        feedback_type = psychTestR::get_global("async_feedback_type", state)
+        feedback_type = psychTestR::get_global("async_feedback_type", state),
+        trial_paradigm = melody_trial_paradigm
       )
     } else NULL
 

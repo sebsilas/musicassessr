@@ -331,7 +331,7 @@ get_select_items_job_status <- function(state) {
 
 wait_for_api_page_ui <- function(poll_frequency_ms) {
 
-  ui <- shiny::tags$div(shiny::tags$p("Please wait a few seconds."),
+  ui <- shiny::tags$div(shiny::tags$p(psychTestR::i18n("wait_message")),
                         shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter"),
                         shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'))
 

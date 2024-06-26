@@ -80,12 +80,18 @@ musicassessr_init <- function(app_name = "",
 
             url_params <- psychTestR::get_url_params(state)
 
+            language <- url_params$language
             job_id <- url_params$job_id
             session_token <- url_params$session_token
 
             if(!is.null(job_id)) {
               logging::loginfo("job_id %s", job_id)
               psychTestR::set_global("job_id", job_id, state)
+            }
+
+            if(!is.null(language)) {
+              logging::loginfo("language %s", language)
+              psychTestR::set_global("language", language, state)
             }
 
 
@@ -121,7 +127,8 @@ musicassessr_init <- function(app_name = "",
 
 
           user_id <- psychTestR::get_global("user_id",state)
-          username <- psychTestR::get_global("username",state)
+          username <- psychTestR::get_global("username", state)
+          language <- psychTestR::get_global("language", state)
 
           if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
             stop("user_id or username should not be NULL, at this point. It should have been set through the test or the URL parameter.")
@@ -130,7 +137,7 @@ musicassessr_init <- function(app_name = "",
         }
 
 
-        return_correct_entry_page(asynchronous_api_mode, user_id, username)
+        return_correct_entry_page(asynchronous_api_mode, user_id, username, language)
 
       }),
 
@@ -201,18 +208,19 @@ musicassessr_init <- function(app_name = "",
   )
 }
 
-return_correct_entry_page <- function(asynchronous_api_mode, user_id, username) {
+return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, language = "en") {
 
   if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p('You could not be validated.'))
   } else if(asynchronous_api_mode && !is.null(user_id) && !is.null(username)) {
     ui <- async_success_ui(username)
   } else {
-    ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p("Let's proceed!"))
+    ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p(psychTestR::i18n("lets_proceed")))
   }
 
   ui <- shiny::tags$div(
     ui,
+    shiny::tags$script(shiny::HTML(paste0("lang = \'", language, "\';"))),
     shiny::tags$div(shiny::tags$input(id = "user_info"), class = "_hidden"),
     shiny::tags$button(psychTestR::i18n("Next"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
   )
@@ -229,9 +237,17 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username) 
 async_success_ui <- function(username) {
   shiny::tags$div(
     musicassessr_css(),
-    shiny::tags$script("var upload_to_s3 = true; console.log('Turning S3 mode on');"),
-    shiny::tags$p(paste0("Hello ", username, "!"))
+    turn_on_upload_to_s3_mode(log = TRUE),
+    shiny::tags$p(paste0(psychTestR::i18n("Hello"), " ", username, "!"))
   )
+}
+
+turn_on_upload_to_s3_mode <- function(log = FALSE) {
+  scr <- "var upload_to_s3 = true;"
+  if(log) {
+    scr <- paste0(scr, " console.log('Turning S3 mode on');")
+  }
+  shiny::tags$script(scr)
 }
 
 #' Set test ID

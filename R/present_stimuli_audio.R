@@ -2,7 +2,7 @@
 
 present_stimuli_audio <- function(audio_url,
                                   hideOnPlay = FALSE,
-                                  stop_button_text = "Stop",
+                                  stop_button_text = psychTestR::i18n("Stop"),
                                   page_type = 'null',
                                   answer_meta_data = data.frame(),
                                   volume = 1,
@@ -29,7 +29,7 @@ present_stimuli_audio <- function(audio_url,
     if(audio_playback_as_single_play_button) {
       shiny::tags$div(
         shiny::tags$script(shiny::HTML(paste0('document.getElementById("player").style.display = "none";'))),
-        shiny::tags$button("Play", id = "playButton", class="btn btn-default"),
+        shiny::tags$button(psychTestR::i18n("Play"), id = "playButton", class="btn btn-default"),
         shiny::tags$script('document.getElementById("playButton").addEventListener("click", function() { document.getElementById("player").play(); hidePlayButton(); })'),
         shiny::tags$script(paste0('document.getElementById("playButton").addEventListener("click", ', trigger_start_of_stimulus_fun, ');'))
         )

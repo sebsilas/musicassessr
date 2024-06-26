@@ -34,6 +34,7 @@ var upload_to_s3 = false; // By default, updated at the beginning of the test wh
 var pattern; // the melodic pattern being played. We only want one to be played at once.
 var get_async_feedback = false;
 var intervalId;
+var lang;
 
 // // Trial info
 
@@ -52,8 +53,9 @@ var db_new_items_id;
 var db_review_items_id;
 var db_onset;
 var db_user_id;
-var feedback;
-var feedback_type;
+var db_feedback;
+var db_feedback_type;
+var db_trial_paradigm;
 
 // Functions
 
@@ -1059,7 +1061,8 @@ function upload_file_to_s3(blob){
               "review-items-id": String(db_review_items_id),
               "user-id": String(db_user_id),
               "feedback": String(db_feedback),
-              "feedback-type": String(db_feedback_type)
+              "feedback-type": String(db_feedback_type),
+              "trial-paradigm": String(db_trial_paradigm)
             };
 
     console.log(md);
@@ -1148,7 +1151,13 @@ function displayScore(score) {
   if(isNaN(score)) {
     score = 0;
   }
-  container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
+  if(lang == "en") {
+    container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
+  } else if(lang == "de") {
+    container.innerHTML = `<p>Gut gemacht! </p> <p>Deine Punktzahl war ${score}!</p>`;
+  } else {
+    console.log("Language not supported!");
+  }
 }
 
 function benevolentOpti3(score) {
@@ -1217,10 +1226,16 @@ function appendNextButton(onClick = next_page) {
   // Create a new button element
   var nextButton = document.createElement('button');
 
-  // Set the button's text content
-  nextButton.textContent = 'Next';
+  if(lang == "en"){
+    // Set the button's text content
+    nextButton.textContent = 'Next';
+  } else if(lang == "de") {
+    nextButton.textContent = 'Weiter';
+  } else {
+    console.log("Lang not supported!")
 
-  // Set an ID for the button (optional)
+  }
+  // Set an ID for the button
   nextButton.id = 'nextButton';
 
   nextButton.className = 'btn btn-default';

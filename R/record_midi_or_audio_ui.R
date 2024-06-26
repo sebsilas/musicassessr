@@ -54,6 +54,9 @@ record_midi_or_audio_ui <- function(body = "",
 
     shiny::tags$head(
 
+      # We force this to keep turning on to make sure it doesn't get unset e.g., if there is a reload
+      if(asynchronous_api_mode) turn_on_upload_to_s3_mode(log = FALSE),
+
       # Set attempts
       shiny::tags$script(
         shiny::HTML(paste0('Shiny.setInputValue("attempt", ', attempt, ');
@@ -151,14 +154,11 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
           "review_items_id",
           "user_id",
           "feedback",
-          "feedback_type"),
+          "feedback_type",
+          "trial_paradigm"),
         names(db_vars)
         )
       ) == 0)
-
-
-  print('dadadada')
-  print(db_vars)
 
   shiny::tags$script(htmltools::HTML(
     paste0('
@@ -180,6 +180,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_user_id = \"', db_vars$user_id,'\";
   var db_feedback = \"', db_vars$feedback,'\";
   var db_feedback_type = \"', db_vars$feedback_type,'\";
+  var db_trial_paradigm = \"', db_vars$trial_paradigm,'\";
   ')))
 
 }

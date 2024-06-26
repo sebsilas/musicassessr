@@ -31,7 +31,11 @@ record_midi_or_audio_ui <- function(body = "",
                                     show_record_button = TRUE,
                                     reactive_melody_no = FALSE,
                                     mute_midi_playback = FALSE,
-                                    db_vars = NULL, ...) {
+                                    db_vars = NULL,
+                                    asynchronous_api_mode = FALSE, ...) {
+
+  print('asynchronous_api_mode')
+  print(asynchronous_api_mode)
 
 
   if(max_goes > 1L) {
@@ -56,6 +60,8 @@ record_midi_or_audio_ui <- function(body = "",
         shiny::HTML(paste0('Shiny.setInputValue("attempt", ', attempt, ');
                            console.log(\"This is a ', page_type, '\");'))
       ),
+
+      if(asynchronous_api_mode) turn_on_upload_to_s3_mode(log = TRUE),
 
       if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive, mute_midi_playback),
 

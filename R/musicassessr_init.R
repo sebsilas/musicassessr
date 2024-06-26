@@ -229,9 +229,17 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username) 
 async_success_ui <- function(username) {
   shiny::tags$div(
     musicassessr_css(),
-    shiny::tags$script("var upload_to_s3 = true; console.log('Turning S3 mode on');"),
+    turn_on_upload_to_s3_mode(log = TRUE),
     shiny::tags$p(paste0("Hello ", username, "!"))
   )
+}
+
+turn_on_upload_to_s3_mode <- function(log = FALSE) {
+  scr <- "var upload_to_s3 = true;"
+  if(log) {
+    scr <- paste0(scr, " console.log('Turning S3 mode on');")
+  }
+  shiny::tags$script(scr)
 }
 
 #' Set test ID
@@ -332,6 +340,9 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
 
 
 }
+
+
+
 
 
 

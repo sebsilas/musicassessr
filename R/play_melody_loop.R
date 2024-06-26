@@ -868,7 +868,8 @@ present_melody <- function(stimuli,
                     play_first_note_button_text = play_first_note_button_text,
                     reactive_melody_no = reactive_melody_no,
                     db_vars = db_vars,
-                    lowest_reading_note = psychTestR::get_global("lowest_reading_note", state)
+                    lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
+                    asynchronous_api_mode = psychTestR::get_global("asynchronous_api_mode", state)
     )
 
   })

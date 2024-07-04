@@ -707,6 +707,11 @@ melody_trials <- function(var_name,
                           pass_items_through_url_parameter = FALSE,
                           asynchronous_api_mode = FALSE) {
 
+  print('asynchronous_api_mode')
+  print(asynchronous_api_mode)
+  print('feedback')
+  print(feedback)
+
   phase <- match.arg(phase)
 
 
@@ -856,7 +861,7 @@ melody_trials <- function(var_name,
       },
 
       # Instructions depending on review
-      if(review) psychTestR::one_button_page(paste0(psychTestR::i18n("now_you_will_review_some"), " ", psychTestR::i18n(melody_type_str), " ", psychTestR::i18n("melodies_you_have_encountered_previously"))) else psychTestR::one_button_page(paste0(psychTestR::i18n("Now_you_will_hear_some"), " ", psychTestR::i18n(melody_type_str), " ", psychTestR::i18n("melodies"), ".")),
+      if(review) psychTestR::one_button_page(paste0(psychTestR::i18n("now_you_will_review_some"), " ", psychTestR::i18n(melody_type_str), " ", psychTestR::i18n("melodies_you_have_encountered_previously")), button_text = psychTestR::i18n("Next")) else psychTestR::one_button_page(paste0(psychTestR::i18n("Now_you_will_hear_some"), " ", psychTestR::i18n(melody_type_str), " ", psychTestR::i18n("melodies"), "."), button_text = psychTestR::i18n("Next")),
 
       # Examples
       if(is.numeric(num_examples_flat) && num_examples_flat > 0L && ! review) {
@@ -1203,7 +1208,7 @@ find_this_note_trials <- function(num_items,
   # Get trial paradigm info
   trial_paradigm <- match.arg(trial_paradigm)
   call_and_response_end <- match.arg(call_and_response_end)
-  paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
+  paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, feedback = feedback, asynchronous_api_mode = asynchronous_api_mode)
 
 
   if(num_items == 0) {

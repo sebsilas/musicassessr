@@ -5,7 +5,7 @@
 \title{A page for redirecting a participant after x ms}
 \usage{
 redirect_page(
-  text = "Thank you, you will now be redirected.",
+  text = psychTestR::i18n("redirect_message2"),
   ms = 5000,
   url = "http://www.google.com",
   final = TRUE

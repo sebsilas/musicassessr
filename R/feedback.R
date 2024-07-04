@@ -317,9 +317,7 @@ feedback_melodic_production_async_ui <- function() {
     ),
 
   # Javascript
-  shiny::tags$script(shiny::HTML(paste0("const apiUrl = '", Sys.getenv("ENDPOINT_URL"), "v2/get-job-status';
-                                        get_async_feedback = true;
-                                        ")))
+  shiny::tags$script(shiny::HTML("get_async_feedback = true;"))
   )
 }
 

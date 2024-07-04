@@ -162,7 +162,7 @@ multi_interval_page <- function(num_items = 26L,
 #' @export
 #'
 #' @examples
-redirect_page <- function(text = "Thank you, you will now be redirected.", ms = 5000, url = "http://www.google.com", final = TRUE) {
+redirect_page <- function(text = psychTestR::i18n("redirect_message2"), ms = 5000, url = "http://www.google.com", final = TRUE) {
 
   content <- shiny::tags$div(
     shiny::tags$script(paste0('setTimeout(function() {

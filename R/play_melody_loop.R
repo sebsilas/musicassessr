@@ -221,11 +221,11 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
           cond
 
         }, psychTestR::NAFC_page(label = "finished_user_determined_loop",
-                                 choices = c("Yes", "No"),
-                                 prompt = "Would you like to continue learning?",
+                                 choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No")),
+                                 prompt = psychTestR::i18n("continue_learning_question"),
                                  on_complete = function(state, answer, ...) {
 
-                                   if(answer == "No") {
+                                   if(answer %in% c("No", "Nein")) {
                                      psychTestR::set_global("user_determined_stop", TRUE, state)
                                      reactive_melody_no <- psychTestR::get_global("reactive_melody_no", state)
                                      psychTestR::set_global("reactive_melody_no", reactive_melody_no + 1L, state)
@@ -456,7 +456,7 @@ construct_play_melody_page <- function(melody = NULL,
                                   page_type = page_type,
                                   page_title = psychTestR::i18n("Sing_the_Melody"),
                                   page_text = shiny::tags$div(
-                                    shiny::tags$img(src = "https://musicassessr.com/assets/img/singing.png", height = 100, width = 100),
+                                    shiny::tags$img(id = "singImage", src = "https://musicassessr.com/assets/img/singing.png", height = 100, width = 100),
                                     shiny::tags$br(),
                                     psychTestR::i18n("sing_melody_page_text")
                                   ),
@@ -557,6 +557,7 @@ construct_play_melody_page <- function(melody = NULL,
 #' @param sample_item_bank_via_api
 #' @param pass_items_through_url_parameter
 #' @param feedback
+#'
 #'
 #' @return
 #' @export
@@ -694,7 +695,9 @@ play_melody_loop <- function(item_bank = NULL,
                      transposed_message = transposed_message,
                      play_first_note_button_text = play_first_note_button_text,
                      reactive_melody_no = reactive_melody_no,
-                     pass_items_through_url_parameter = pass_items_through_url_parameter),
+                     pass_items_through_url_parameter = pass_items_through_url_parameter,
+                     feedback = feedback,
+                     asynchronous_api_mode = asynchronous_api_mode),
 
       if(is.function(feedback)) feedback(),
 
@@ -749,7 +752,9 @@ present_melody <- function(stimuli,
                            transposed_message = psychTestR::i18n("transposed"),
                            play_first_note_button_text = psychTestR::i18n("play_first_note"),
                            reactive_melody_no = FALSE,
-                           pass_items_through_url_parameter = FALSE, ...) {
+                           pass_items_through_url_parameter = FALSE,
+                           feedback = FALSE,
+                           asynchronous_api_mode = FALSE, ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
@@ -797,10 +802,12 @@ present_melody <- function(stimuli,
     # Use a display_modality created at test time, if appropriate
     display_modality <- if(is.null(melody_checks$display_modality)) display_modality else melody_checks$display_modality
 
-    # Get trial paradigm info
-    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left)
+    asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
-    db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
+    # Get trial paradigm info
+    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = feedback, asynchronous_api_mode = asynchronous_api_mode)
+
+    db_vars <- if(asynchronous_api_mode) {
 
       list(
         stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
@@ -869,8 +876,9 @@ present_melody <- function(stimuli,
                     play_first_note_button_text = play_first_note_button_text,
                     reactive_melody_no = reactive_melody_no,
                     db_vars = db_vars,
-                    lowest_reading_note = psychTestR::get_global("lowest_reading_note", state)
-    )
+                    lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
+                    feedback = feedback,
+                    asynchronous_api_mode = asynchronous_api_mode)
 
   })
 }

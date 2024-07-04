@@ -498,6 +498,7 @@ function displayAsyncFeedback() {
   async_feedback_area.style.visibility = "visible";
   hideSingImage();
   hideTrialPageTitle();
+  hideTrialPageText();
   hideStimuliArea();
 }
 
@@ -1022,89 +1023,81 @@ function process_file_on_server(blob) {
 	};
 }
 
-function upload_file_to_s3(blob){
 
+async function upload_file_to_s3(blob) {
 
-    var currentDate = new Date();
+  var currentDate = new Date();
+  var recordkey = create_recordkey();
+  var file_url = recordkey;
 
-    var recordkey = create_recordkey();
-    var file_url = recordkey + ".wav";
+  var md = {
+    // Note, all metadata must be strings
+    "stimuli": vectorToString(stimuli),
+    "stimuli-durations": vectorToString(stimuli_durations),
+    "trial-time-started": String(db_trial_time_started),
+    "trial-time-completed": String(getDateTime()),
+    "instrument": String(db_instrument),
+    "attempt": String(db_attempt),
+    "item-id": String(db_item_id),
+    "display-modality": String(db_display_modality),
+    "phase": String(db_phase),
+    "rhythmic": String(db_rhythmic),
+    "session-id": String(db_session_id),
+    "test-id": String(db_test_id),
+    "onset": String(db_onset),
+    "new-items-id": String(db_new_items_id),
+    "review-items-id": String(db_review_items_id),
+    "user-id": String(db_user_id),
+    "feedback": String(db_feedback),
+    "feedback-type": String(db_feedback_type),
+    "trial-paradigm": String(db_trial_paradigm)
+  };
 
-    AWS.config.update({
-        region: bucketRegion,
-        credentials: new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: IdentityPoolId
-        })
+  const requestBody = { filename: file_url, metadata: md };
+
+  try {
+    const response = await fetch(apiUrl + "/v2/get-audio-presigned-url", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
     });
 
-    var s3 = new AWS.S3({
-        apiVersion: "2006-03-01",
-        params: { Bucket: bucketName }
-    });
-
-    var md = {
-              // Note, all metadata must be strings
-              "stimuli": vectorToString(stimuli),
-              "stimuli-durations": vectorToString(stimuli_durations),
-              "trial-time-started": String(db_trial_time_started),
-              "trial-time-completed": String(getDateTime()),
-              "instrument": String(db_instrument),
-              "attempt": String(db_attempt),
-              "item-id": String(db_item_id),
-              "display-modality": String(db_display_modality),
-              "phase": String(db_phase),
-              "rhythmic": String(db_rhythmic),
-              "session-id": String(db_session_id),
-              "test-id": String(db_test_id),
-              "onset": String(db_onset),
-              "new-items-id": String(db_new_items_id),
-              "review-items-id": String(db_review_items_id),
-              "user-id": String(db_user_id),
-              "feedback": String(db_feedback),
-              "feedback-type": String(db_feedback_type),
-              "trial-paradigm": String(db_trial_paradigm)
-            };
-
-    console.log(md);
-
-    var upload = new AWS.S3.ManagedUpload({
-
-        params: {
-            Bucket: bucketName,
-            Key: file_url,
-            ContentType: 'audio/wav',
-            ACL: 'public-read',
-            Body: blob,
-            Metadata: md
-        }
-    });
-
-    if(get_async_feedback) {
-      fetchData();
-      displayAsyncFeedback();
+    if (!response.ok) {
+      throw new Error(`Failed to get response: ${response.status}`);
     }
 
-    Shiny.setInputValue("sourceBucket", bucketName);
-    Shiny.setInputValue("key", file_url);
-    Shiny.setInputValue("destBucket", destBucket);
+    const responseData = await response.json();
 
-    var promise = upload.promise();
+    const url = responseData.url;
 
-    promise.then(
-        function (data) {
-            console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
-        },
-        function (err) {
-            console.log(err);
-            return alert("There was an error uploading your record: ", err);
+    const uploadResponse = await fetch(url, {
+      method: 'PUT',
+      body: blob // assuming 'blob' is the correct variable to use here
+    });
 
-        }
-    );
+    if (!uploadResponse.ok) {
+      throw new Error(`Failed: ${uploadResponse.status}`);
+    }
+    console.log('Successful');
+  } catch (error) {
+    console.error(error);
+  }
+
+  // Feedback
+  if (get_async_feedback) {
+    fetchData();
+    displayAsyncFeedback();
+  }
+
+  Shiny.setInputValue("key", file_url);
 }
 
 
-/* Async feedback funs */
 
+
+/* Async feedback funs */
 
 
 const pollingInterval = 5000; // 5 seconds
@@ -1118,7 +1111,7 @@ async function fetchData() {
   };
 
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch(apiUrl + "v2/get-job-status", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1137,6 +1130,10 @@ async function fetchData() {
       const score = message.opti3.opti3;
       displayScore(score);
       stopPolling();
+      appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */
+        show_happy_with_response_message();
+        hideAsyncFeedback();
+      });
       hideLoader();
     }
   } catch (error) {
@@ -1196,6 +1193,13 @@ function hideTrialPageTitle() {
   }
 }
 
+function hideTrialPageText() {
+  var trial_page_text = document.getElementById('trial_page_text');
+  if(trial_page_text !== 'undefined') {
+    trial_page_text.style.display = 'none';
+  }
+}
+
 function hideStimuliArea() {
   var stimuliArea = document.getElementById('stimuliArea');
   if(stimuliArea !== 'undefined') {
@@ -1215,10 +1219,6 @@ function hideLyrics() {
 
 function stopPolling() {
   clearInterval(intervalId);
-  appendNextButton(onClick = function() {
-    show_happy_with_response_message();
-    hideAsyncFeedback();
-    });
 }
 
 

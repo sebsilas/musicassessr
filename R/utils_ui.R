@@ -19,7 +19,7 @@ final_page_or_continue_to_new_test <- function(final = TRUE, task_name, img = NU
 
 
     if(is.scalar.character(redirect_url)) {
-      ui <- shiny::tags$div(ui, shiny::tags$p("You will now be redirected."))
+      ui <- shiny::tags$div(ui, shiny::tags$p(psychTestR::i18n("redirect_message")))
       return(redirect_page(text = ui, ms = 3000, url = redirect_url, final = TRUE))
     } else {
       return(psychTestR::final_page(ui))

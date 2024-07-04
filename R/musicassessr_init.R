@@ -128,7 +128,6 @@ musicassessr_init <- function(app_name = "",
 
           user_id <- psychTestR::get_global("user_id",state)
           username <- psychTestR::get_global("username", state)
-          language <- psychTestR::get_global("language", state)
 
           if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
             stop("user_id or username should not be NULL, at this point. It should have been set through the test or the URL parameter.")
@@ -136,6 +135,7 @@ musicassessr_init <- function(app_name = "",
 
         }
 
+        language <- psychTestR::get_global("language", state)
 
         return_correct_entry_page(asynchronous_api_mode, user_id, username, language)
 

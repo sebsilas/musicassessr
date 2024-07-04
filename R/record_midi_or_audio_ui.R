@@ -36,6 +36,9 @@ record_midi_or_audio_ui <- function(body = "",
                                     feedback = FALSE,
                                     asynchronous_api_mode = FALSE, ...) {
 
+  print('rec')
+  print(asynchronous_api_mode)
+
 
   if(max_goes > 1L) {
     happy_with_response <- TRUE
@@ -55,7 +58,7 @@ record_midi_or_audio_ui <- function(body = "",
     shiny::tags$head(
 
       # We force this to keep turning on to make sure it doesn't get unset e.g., if there is a reload
-      if(asynchronous_api_mode) turn_on_upload_to_s3_mode(log = FALSE),
+      if(asynchronous_api_mode) turn_on_upload_to_s3_mode(log = TRUE),
 
       # Set attempts
       shiny::tags$script(
@@ -79,7 +82,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       shiny::tags$h2(id = "trial_page_title", page_title),
 
-      if(page_text_first) page_text,
+      if(page_text_first) shiny::tags$div(id = "trial_page_text", page_text),
 
       shiny::tags$div(id = "bodyArea", body),
 
@@ -104,14 +107,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(!page_text_first) page_text,
 
-      shiny::tags$script(htmltools::HTML(
-        paste0('var destBucket = "', Sys.getenv("DESTINATION_BUCKET"), '";
-                var api_url = "', Sys.getenv("API_URL"),'";
-                var bucketName = "', Sys.getenv("BUCKET_NAME"),'";
-                var bucketRegion = "', Sys.getenv("BUCKET_REGION"),'";
-                var IdentityPoolId = "', Sys.getenv("IDENTITY_POOL_ID"),'";')
-      )
-      )
+      shiny::tags$script(htmltools::HTML(paste0('var apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"')))
     )
   ),
   label = label,
@@ -219,14 +215,14 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
     )
   } else if (attempts_left == 1L) {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p('If you were happy with your response, please click to \"Continue\", otherwise please click to \"Try Again\".'),
-                    shiny::tags$p(attempts_remaining_1),
+                    shiny::tags$p(shiny::HTML(psychTestR::i18n("happy_with_response_message"))),
+                    shiny::tags$p(psychTestR::i18n("attempts_remaining_1")),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = "Try Again", label = "Try Again", onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )
   } else if (is.infinite(attempts_left)) {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p('If you were happy with your response, please click to \"Continue\", otherwise please click to \"Try Again\".'),
+                    shiny::tags$p(psychTestR::i18n("happy_with_response_message")),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = "Try Again", label = "Try Again", onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )

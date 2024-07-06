@@ -163,6 +163,9 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/get_implicit_harmonies.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/get_instrument_range.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/get_instrument_range_pages.html</loc>
   </url>
   <url>
@@ -397,9 +400,6 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/score_melody_note_precision.html</loc>
   </url>
   <url>
-    <loc>https://sebsilas.github.io/musicassessr/reference/score_rhythm_production.html</loc>
-  </url>
-  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/select_midi_device_page.html</loc>
   </url>
   <url>
@@ -419,6 +419,9 @@
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/set_instrument_range.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/set_melodic_stimuli.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/set_response_type.html</loc>
@@ -466,7 +469,16 @@
     <loc>https://sebsilas.github.io/musicassessr/reference/translate_from_dict.html</loc>
   </url>
   <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/unnest_timeline.html</loc>
+  </url>
+  <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/update_play_melody_loop_and_save.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/video_melodic_production_page.html</loc>
+  </url>
+  <url>
+    <loc>https://sebsilas.github.io/musicassessr/reference/wait_for_api_page.html</loc>
   </url>
   <url>
     <loc>https://sebsilas.github.io/musicassessr/reference/wjd_audio_melody_trials.html</loc>

@@ -75,7 +75,7 @@
 <span>  get_user_info <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  demo <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  get_instrument_range <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  absolute_url <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  absolute_url <span class="op">=</span> <span class="st">"https://www.adaptiveeartraining.com"</span>,</span>
 <span>  select_instrument <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  get_instrument_range_musical_notation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  adjust_range <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -86,7 +86,11 @@
 <span>  concise_wording <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  skip_setup <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  get_self_chosen_anonymous_id <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  musical_instrument <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  musical_instrument <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  allow_SNR_failure <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  requirements_page <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  playful_volume_meter_setup <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_microphone_type_page <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -166,6 +170,22 @@
 
 <dt>musical_instrument</dt>
 <dd><p>Whether the participant is required to have a musical instrument.</p></dd>
+
+
+<dt>allow_SNR_failure</dt>
+<dd><p>If TRUE, allow user to continue even if they fail the SNR test.</p></dd>
+
+
+<dt>requirements_page</dt>
+<dd><p>Show a requirements page?</p></dd>
+
+
+<dt>playful_volume_meter_setup</dt>
+<dd><p>Should there be some additional functionality to demo the playful volume meter?</p></dd>
+
+
+<dt>show_microphone_type_page</dt>
+<dd><p>Should you ask the user what kind of microphone they are using?</p></dd>
 
 </dl></div>
 

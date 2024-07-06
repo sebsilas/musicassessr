@@ -69,22 +69,26 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">musicassessr_opt</span><span class="op">(</span></span>
 <span>  setup_pages <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  setup_options <span class="op">=</span> <span class="fu"><a href="setup_pages_options.html">setup_pages_options</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  use_musicassessr_db <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  app_name <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  midi_file_playback <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  visual_notation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  record_audio <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  midi_input <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  musicassessr_aws <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  experiment_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  experiment_condition_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  user_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  instrument_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  get_p_id <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  asynchronous_api_mode <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  inst <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  default_range <span class="op">=</span> <span class="fu"><a href="set_default_range.html">set_default_range</a></span><span class="op">(</span><span class="st">"Piano"</span><span class="op">)</span>,</span>
-<span>  css <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"www/css/musicassessr.css"</span>, package <span class="op">=</span> <span class="st">"musicassessr"</span><span class="op">)</span></span>
+<span>  css <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://musicassessr.com/assets/css/style_songbird.css"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"www/css/musicassessr.css"</span>, package <span class="op">=</span> <span class="st">"musicassessr"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  username <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  get_pid_prompt <span class="op">=</span> <span class="fu">shiny</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">tags</a></span><span class="op">$</span><span class="fu">div</span><span class="op">(</span><span class="fu">shiny</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">tags</a></span><span class="op">$</span><span class="fu">h3</span><span class="op">(</span><span class="st">"Choose an anonymous ID"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">shiny</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">tags</a></span><span class="op">$</span><span class="fu">p</span><span class="op">(</span><span class="st">"Use the first two letters of your first name, plus, in numbers, your month and year of birth."</span><span class="op">)</span>,</span>
+<span>    <span class="fu">shiny</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">tags</a></span><span class="op">$</span><span class="fu">p</span><span class="op">(</span><span class="st">"For example, Mike, born in December 1900, would be "</span>,</span>
+<span>    <span class="fu">shiny</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">tags</a></span><span class="op">$</span><span class="fu">em</span><span class="op">(</span><span class="st">"mi121900"</span><span class="op">)</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  instrument <span class="op">=</span> <span class="st">"Voice"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,10 +100,6 @@
 
 <dt>setup_options</dt>
 <dd><p>Setup page options.</p></dd>
-
-
-<dt>use_musicassessr_db</dt>
-<dd><p>Is a SQL backend being used?</p></dd>
 
 
 <dt>app_name</dt>
@@ -120,10 +120,6 @@
 
 <dt>midi_input</dt>
 <dd><p>Is MIDI input required?</p></dd>
-
-
-<dt>musicassessr_aws</dt>
-<dd><p>Is this being run on Amazon Web Services (AWS)?</p></dd>
 
 
 <dt>experiment_id</dt>
@@ -147,19 +143,27 @@
 
 
 <dt>asynchronous_api_mode</dt>
-<dd><p>Turn asynchronous API mode on?</p></dd>
-
-
-<dt>inst</dt>
-<dd><p>What instrument?</p></dd>
+<dd><p>Should async API mode be on?</p></dd>
 
 
 <dt>default_range</dt>
-<dd><p>Define a predefined vocal/instrument range.</p></dd>
+<dd><p>Should there be default range set?</p></dd>
 
 
 <dt>css</dt>
-<dd><p>A css stylesheet to use (passes to psychTestR)</p></dd>
+<dd><p>A css stylesheet to use (passes to psychTestR).</p></dd>
+
+
+<dt>username</dt>
+<dd><p>Hardcode a username.</p></dd>
+
+
+<dt>get_pid_prompt</dt>
+<dd><p>What prompt to you want to use for the get_p_id page?</p></dd>
+
+
+<dt>instrument</dt>
+<dd><p>What instrument is the test using?</p></dd>
 
 </dl></div>
 

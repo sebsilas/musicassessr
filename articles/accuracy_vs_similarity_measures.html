@@ -214,10 +214,10 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">0.51</td>
+<td align="right">0.27</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">1</td>
+<td align="right">0</td>
 </tr></tbody>
 </table>
 <p>Conversely, as Example #2 shows, transposing the recall by a semitone causes a large deterioration in the accuracy scores, since nearly all notes are different, but the similarity measure is 1, corresponding to the fact that the melodic identity is preserved under the principle of transposition invariance.</p>
@@ -256,10 +256,10 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 <td align="right">0.2</td>
 <td align="right">0.2</td>
 <td align="right">0.2</td>
+<td align="right">0.78</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">1</td>
-<td align="right">1</td>
+<td align="right">0</td>
 </tr></tbody>
 </table>
 <p>For Examples 3-6, we take the humourous example of the “The Lick” - the archetypal jazz pattern made famous by <a href="https://www.youtube.com/watch?v=krDxhnaKD7Q" class="external-link">YouTube</a> and transform it by the familiar melodic transformations of retrograde, inversion and retrograde inversion. Example #3 shows that the retrograde preserves accuracy but destroys identity and similarity.</p>
@@ -297,10 +297,10 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">0.51</td>
+<td align="right">0.39</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">1</td>
+<td align="right">0.5</td>
 </tr></tbody>
 </table>
 <p><img src="Ex.3%20Target_Ex.3%20Recall.png" width="1296"></p>
@@ -423,10 +423,10 @@ AccuracyAdjusted = Accuracy * LogNormal(\frac{NoNotesInSungRecall}{NoNotesInStim
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">0.66</td>
+<td align="right">0.54</td>
 <td align="right">1</td>
 <td align="right">0.14</td>
-<td align="right">1</td>
+<td align="right">0.5</td>
 </tr></tbody>
 </table>
 <p>The examples should intuitively demonstrate how accuracy and similarity measures diverge and specifically, that similarity metrics embody notions of perceptual similarity across relevant musical dimensions, as opposed to note-by-note accuracy measures, which do not necessarily embody anything musical into their consideration. In other words: accuracy measures may score a target and its recall very highly, despite the musical differences being very large, and the opposite, a very musically similar target and recall very badly! These observations are not new. Perceptual experiments have demonstrated that the familiar transformations of retrograde, inversion and retrograde inversion destroy melodic identity (e.g., Dowling, 1972). However, we are not aware of such a distinction being made clearly within melodic recall research. To profile the difference more quantitatively, look at our <a href="https://sebsilas.github.io/musicassessr/articles/profile_basic_accuracy_measures.html">simulation study</a>. In <a href="https://sebsilas.github.io/musicassessr/articles/white_paper_2_silas_and_mullensiefen_2023.html">Silas &amp; Müllensiefen (2023)</a>, we profiled some more sophisticated variations of accuracy measurements and compared them to melodic similarity measures, which we favour in our test environment; though we note, all the accuracy measures described above are available in our framework.</p>

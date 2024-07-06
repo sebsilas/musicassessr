@@ -1,5 +1,7 @@
 # musicassessr 2.0.0
 
+- Lots of updates to support the SongBird framework
+
 # musicassessr 1.6.0
 
 # musicassessr 1.5.4

@@ -225,7 +225,7 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, 
   ui <- shiny::tags$div(
     ui,
     shiny::tags$script(
-      shiny::HTML(paste0("lang = \'", language, "\';,
+      shiny::HTML(paste0("lang = \'", language, "\';
                          localStorage.setItem('jwkToken', \'", session_token, "\');
                          "))
       ),

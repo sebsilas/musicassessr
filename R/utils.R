@@ -560,3 +560,13 @@ convert_to_html_paragraphs <- function(text) {
 
 }
 
+is_function_or_true <- function(x){
+  if(is.function(x) || x == TRUE) { # Note the x == TRUE syntax is required to parse characters
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+
+

@@ -1,6 +1,6 @@
 Package: musicassessr
 Title: musicassessr; develop music psychology tests and assess musicological/psychological data
-Version: 2.0.0
+Version: 2.0.1
 Authors@R: 
     person(given = "Sebastian",
            family = "Silas",

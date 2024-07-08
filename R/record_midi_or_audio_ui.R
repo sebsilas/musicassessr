@@ -103,7 +103,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced, max_goes),
 
-      if(feedback && asynchronous_api_mode) feedback_melodic_production_async_ui(),
+      if(is_function_or_true(feedback) && asynchronous_api_mode) feedback_melodic_production_async_ui(),
 
       if(!page_text_first) page_text,
 

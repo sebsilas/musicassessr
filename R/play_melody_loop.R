@@ -805,7 +805,7 @@ present_melody <- function(stimuli,
     asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
     # Get trial paradigm info
-    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = feedback, asynchronous_api_mode = asynchronous_api_mode)
+    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = is_function_or_true(feedback), asynchronous_api_mode = asynchronous_api_mode)
 
     db_vars <- if(asynchronous_api_mode) {
 

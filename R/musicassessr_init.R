@@ -103,8 +103,6 @@ musicassessr_init <- function(app_name = "",
                 username <- session_token_res$username
                 user_id <- session_token_res$user_id
               }
-            } else {
-              session_token <- NULL # We need to make sure it is defined, even as NULL
             }
 
           }
@@ -138,6 +136,11 @@ musicassessr_init <- function(app_name = "",
         }
 
         language <- psychTestR::get_global("language", state)
+
+        # Make sure it can resolve to something
+        if(!exists("session_token")) {
+          session_token <- NULL
+        }
 
         return_correct_entry_page(asynchronous_api_mode, user_id, username, language, session_token)
 

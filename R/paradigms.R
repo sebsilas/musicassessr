@@ -28,9 +28,6 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
                      feedback = FALSE,
                      asynchronous_api_mode = FALSE) {
 
-  print('da24')
-  print(feedback)
-  print(asynchronous_api_mode)
 
   # call_and_response_end if "manual", user clicks stop, if "auto" - automatically triggered
 

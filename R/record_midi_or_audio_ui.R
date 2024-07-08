@@ -36,9 +36,6 @@ record_midi_or_audio_ui <- function(body = "",
                                     feedback = FALSE,
                                     asynchronous_api_mode = FALSE, ...) {
 
-  print('rec')
-  print(asynchronous_api_mode)
-
 
   if(max_goes > 1L) {
     happy_with_response <- TRUE

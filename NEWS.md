@@ -1,5 +1,7 @@
 # musicassessr 2.0.1
 
+- Fix type handling for functions.
+
 # musicassessr 2.0.0
 
 - Lots of updates to support the SongBird framework

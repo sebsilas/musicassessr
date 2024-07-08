@@ -103,6 +103,8 @@ musicassessr_init <- function(app_name = "",
                 username <- session_token_res$username
                 user_id <- session_token_res$user_id
               }
+            } else {
+              session_token <- NULL # We need to make sure it is defined, even as NULL
             }
 
           }

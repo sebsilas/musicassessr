@@ -137,7 +137,7 @@ musicassessr_init <- function(app_name = "",
 
         language <- psychTestR::get_global("language", state)
 
-        return_correct_entry_page(asynchronous_api_mode, user_id, username, language)
+        return_correct_entry_page(asynchronous_api_mode, user_id, username, language, session_token)
 
       }),
 
@@ -208,7 +208,11 @@ musicassessr_init <- function(app_name = "",
   )
 }
 
-return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, language = "en") {
+return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, language = "en", session_token = NULL) {
+
+  stopifnot(
+    is.null.or(session_token, is.character)
+  )
 
   if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p('You could not be validated.'))
@@ -220,7 +224,11 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, 
 
   ui <- shiny::tags$div(
     ui,
-    shiny::tags$script(shiny::HTML(paste0("lang = \'", language, "\';"))),
+    shiny::tags$script(
+      shiny::HTML(paste0("lang = \'", language, "\';,
+                         localStorage.setItem('jwkToken', \'", session_token, "\');
+                         "))
+      ),
     shiny::tags$div(shiny::tags$input(id = "user_info"), class = "_hidden"),
     shiny::tags$button(psychTestR::i18n("Next"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
   )

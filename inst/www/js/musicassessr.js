@@ -1056,10 +1056,12 @@ async function upload_file_to_s3(blob) {
   const requestBody = { filename: file_url, metadata: md };
 
   try {
+    const retrievedTokenString = localStorage.getItem('jwkToken');
     const response = await fetch(apiUrl + "/v2/get-audio-presigned-url", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': retrievedTokenString
       },
       body: JSON.stringify(requestBody)
     });

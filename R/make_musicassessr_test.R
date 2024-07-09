@@ -145,15 +145,8 @@ end_session_api <- function(state, session) {
   user_id <- psychTestR::get_global("user_id", state)
   psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
 
-
-  #browser()
-
   user_info <- psychTestR::get_global("user_info", state) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), function(x) {
-      if(grepl("\\{", x) || grepl("\\[", x)) list(jsonlite::fromJSON(x)) else x
-    })) %>%
-    as.list() %>%
-    jsonlite::toJSON(pretty = TRUE, auto_unbox = TRUE)
+    tidy_get_user_info()
 
   if(length(musicassessr::get_promise_value(session_id)) < 1L) {
     session_id <- musicassessr::get_promise_value(session_id)$session_id

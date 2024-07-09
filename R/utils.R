@@ -570,3 +570,12 @@ is_function_or_true <- function(x){
 
 
 
+tidy_get_user_info <- function(info) {
+
+  info %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), function(x) {
+      if(grepl("\\{", x) || grepl("\\[", x)) list(jsonlite::fromJSON(x)) else x
+    })) %>%
+      as.list() %>%
+      jsonlite::toJSON(pretty = TRUE, auto_unbox = TRUE)
+}

@@ -68,8 +68,11 @@ setup_pages <- function(input_type = c("microphone",
                               "midi_keyboard_and_microphone",
                               "midi_keyboard_or_microphone",
                               "key_presses"),
-            is.scalar.logical(headphones), is.scalar.logical(SNR_test),
-            is.numeric(min_SNR), is.scalar.logical(get_user_info), is.scalar.logical(demo),
+            is.scalar.logical(headphones),
+            is.scalar.logical(SNR_test),
+            is.numeric(min_SNR),
+            is.scalar.logical(get_user_info),
+            is.scalar.logical(demo),
             is.scalar.logical(get_instrument_range) | is.character(get_instrument_range) & length(get_instrument_range) == 1,
             is.character(absolute_url),
             is.scalar.logical(select_instrument),
@@ -88,6 +91,10 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(asynchronous_api_mode),
             is.scalar.logical(show_microphone_type_page)
   )
+
+  if(get_user_info) {
+    log_warn("get_user_info is now deprecated from setup_pages in musicassessr. Use get_user_info in psychTestR::test_options instead.")
+  }
 
 
   if(demo) {
@@ -123,7 +130,7 @@ setup_pages <- function(input_type = c("microphone",
 
       if(requirements_page) requirements_page(headphones = headphones, input_type = input_type, musical_instrument = musical_instrument),
 
-      if(get_user_info) get_user_info_page(),
+      # if(get_user_info) get_user_info_page(),
 
       if(headphones) test_headphones_page(concise_wording),
 

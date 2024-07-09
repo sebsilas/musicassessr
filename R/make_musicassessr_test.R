@@ -62,8 +62,8 @@ make_musicassessr_test <- function(title,
           username = opt$username,
           asynchronous_api_mode =  opt$asynchronous_api_mode,
           instrument_id = opt$instrument_id,
-          inst = opt$instrument
-          ),
+          inst = opt$instrument,
+          get_user_info = opt$get_user_info),
 
         # Timeline before setup pages
         elts_before_setup_pages(),
@@ -92,6 +92,7 @@ make_musicassessr_test <- function(title,
       admin_password = admin_password,
       languages = languages,
       on_session_ended_fun = end_session(asynchronous_api_mode = opt$asynchronous_api_mode),
+      get_user_info = opt$get_user_info,
       additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
                                                          visual_notation = opt$visual_notation,
                                                          midi_file_playback = opt$midi_file_playback,
@@ -143,7 +144,16 @@ end_session_api <- function(state, session) {
   session_id <- psychTestR::get_global("session_id", state) # Created earlier
   user_id <- psychTestR::get_global("user_id", state)
   psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
-  user_info <- psychTestR::get_global("user_info", state)
+
+
+  #browser()
+
+  user_info <- psychTestR::get_global("user_info", state) %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), function(x) {
+      if(grepl("\\{", x) || grepl("\\[", x)) list(jsonlite::fromJSON(x)) else x
+    })) %>%
+    as.list() %>%
+    jsonlite::toJSON(pretty = TRUE, auto_unbox = TRUE)
 
   if(length(musicassessr::get_promise_value(session_id)) < 1L) {
     session_id <- musicassessr::get_promise_value(session_id)$session_id
@@ -166,6 +176,7 @@ end_session_api <- function(state, session) {
   if(is.null(end_session_api_called)) {
     end_session_api_called <- FALSE
   }
+
 
   if(!end_session_api_called && !is.null(session_id)) {
     # We only call this if the API hasn't been called through a "proper" test stoppage
@@ -335,6 +346,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param username Hardcode a username.
 #' @param get_pid_prompt What prompt to you want to use for the get_p_id page?
 #' @param instrument What instrument is the test using?
+#' @param get_user_info Get user geolocation and device information?
 #'
 #' @return
 #' @export
@@ -362,7 +374,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
                                shiny::tags$p("Use the first two letters of your first name, plus, in numbers, your month and year of birth."),
                                shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
                              ),
-                             instrument = "Voice") {
+                             instrument = "Voice",
+                             get_user_info = TRUE) {
 
   stopifnot(
     is.scalar.logical(setup_pages),
@@ -384,8 +397,13 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(css, is.character),
     is.null.or(username, is.scalar.character),
     is(get_pid_prompt, "shiny.tag") || is.scalar.character(get_p_id_prompt),
-    is.scalar.character(instrument)
+    is.scalar.character(instrument),
+    is.scalar.logical(get_user_info)
   )
+
+  if(get_user_info) {
+    log_warn("get_user_info is TRUE by default in musicassessr and will collect geolocation and browser information from users. Please disable if need be.")
+  }
 
   list(
     setup_pages = setup_pages,
@@ -405,7 +423,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     css = css,
     username = username,
     get_pid_prompt = get_pid_prompt,
-    instrument = instrument
+    instrument = instrument,
+    get_user_info = get_user_info
   )
 
 }

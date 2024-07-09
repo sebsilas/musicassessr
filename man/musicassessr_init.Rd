@@ -13,11 +13,12 @@ musicassessr_init(
   instrument_id = NULL,
   inst = NULL,
   default_range = set_default_range("Piano"),
-  username = NULL
+  username = NULL,
+  get_user_info = TRUE
 )
 }
 \arguments{
-\item{username}{}
+\item{get_user_info}{}
 }
 \description{
 Initiate a musicassessr test

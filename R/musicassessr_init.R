@@ -9,6 +9,7 @@
 #' @param asynchronous_api_mode
 #' @param default_range
 #' @param username
+#' @param get_user_info
 #'
 #' @return
 #' @export
@@ -22,7 +23,8 @@ musicassessr_init <- function(app_name = "",
                               instrument_id = NULL,
                               inst = NULL,
                               default_range = set_default_range("Piano"),
-                              username = NULL) {
+                              username = NULL,
+                              get_user_info = TRUE) {
 
 
   psychTestR::join(
@@ -83,6 +85,7 @@ musicassessr_init <- function(app_name = "",
             language <- url_params$language
             job_id <- url_params$job_id
             session_token <- url_params$session_token
+
 
             if(!is.null(job_id)) {
               logging::loginfo("job_id %s", job_id)
@@ -194,6 +197,11 @@ musicassessr_init <- function(app_name = "",
 
           session_info <- psychTestR::get_session_info(state, complete = FALSE)
           psychTestR_session_id <- session_info$p_id
+          user_info <- session_info$user_info
+
+          print('user_info')
+          print(user_info)
+
           # Set vars
           psychTestR::set_global("async_feedback", FALSE, state) # Init as FALSE and (potentially) overwrite at trial_block level
           psychTestR::set_global("async_feedback_type", "opti3", state)
@@ -205,6 +213,7 @@ musicassessr_init <- function(app_name = "",
           psychTestR::set_global("experiment_condition_id", experiment_condition_id, state)
           # So that we don't do this again
           psychTestR::set_global("musicassessr_inited", TRUE, state)
+          psychTestR::set_global("user_info", user_info, state)
 
       })
     )
@@ -231,18 +240,11 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, 
     ui,
     shiny::tags$script(
       shiny::HTML(paste0("lang = \'", language, "\';
-                         localStorage.setItem('jwkToken', \'", session_token, "\');
+                          localStorage.setItem('jwkToken', \'", session_token, "\');
                          "))
-      ),
-    shiny::tags$div(shiny::tags$input(id = "user_info"), class = "_hidden"),
-    shiny::tags$button(psychTestR::i18n("Next"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
-  )
+      ))
 
-  psychTestR::page(ui = ui,
-                   label = "user_info",
-                   save_answer = TRUE,
-                   get_answer = user_info_check,
-                   on_complete = if(asynchronous_api_mode) user_info_async else NULL)
+  psychTestR::one_button_page(ui)
 
 }
 

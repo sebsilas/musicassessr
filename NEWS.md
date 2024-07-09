@@ -1,5 +1,8 @@
 # musicassessr 2.1.0
 
+- Add new get_user_info functionality based on psychTestR release
+- Add signed URL functionality for audio upload
+
 # musicassessr 2.0.1
 
 - Fix type handling for functions.

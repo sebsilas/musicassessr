@@ -1,3 +1,5 @@
+# musicassessr 2.1.0
+
 # musicassessr 2.0.1
 
 - Fix type handling for functions.

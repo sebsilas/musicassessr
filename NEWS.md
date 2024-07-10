@@ -1,3 +1,7 @@
+# musicassessr 2.1.1
+
+- Fully deprecate get_user_info_page
+
 # musicassessr 2.1.0
 
 - Add new get_user_info functionality based on psychTestR release

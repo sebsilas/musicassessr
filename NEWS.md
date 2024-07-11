@@ -1,5 +1,7 @@
 # musicassessr 2.2.0
 
+- Add redirect_on_failure_url feature
+
 # musicassessr 2.1.1
 
 - Fully deprecate get_user_info_page

@@ -219,22 +219,67 @@ empty_page <- function(body = "",
 #' @export
 #'
 #' @examples
-wait_for_api_page <- function(poll_frequency_seconds = 1L, check_function = check_session_id_ready) {
+wait_for_api_page <- function(poll_frequency_seconds = 5L,
+                              check_function = check_session_id_ready) {
 
   poll_frequency_ms <- poll_frequency_seconds * 1000
 
-  psychTestR::while_loop(test = function(state, ...) {
+  psychTestR::join(
 
-    logging::loginfo("Waiting for API response...")
 
-    Sys.sleep(poll_frequency_seconds)
+    psychTestR::code_block(function(state, ...) {
+      psychTestR::set_global("no_times_api_polled", 0L, state)
+    }),
 
-    check_function(state)
+    # Wait page
 
-  }, wait_for_api_page_ui(poll_frequency_ms) )
+    psychTestR::while_loop(test = function(state, ...) {
+
+      logging::loginfo("Waiting for API response...")
+
+      no_times_api_polled <- psychTestR::get_global("no_times_api_polled", state) + 1L
+
+      logging::loginfo("Check no. %s/3", no_times_api_polled)
+
+      psychTestR::set_global("no_times_api_polled", no_times_api_polled, state)
+
+      not_ready <- check_function(state)
+
+      psychTestR::set_global("api_not_ready", not_ready, state)
+
+      not_ready && psychTestR::get_global("no_times_api_polled", state) < 4L
+
+    }, # Wait for API
+      wait_for_api_page_ui(poll_frequency_ms) ),
+
+
+    # If the API has been polled three times, cancel on the next go
+    psychTestR::conditional(function(state, ...) {
+      psychTestR::get_global("api_not_ready", state) && psychTestR::get_global("no_times_api_polled", state) == 4L
+    }, redirect_on_failure_page() )
+
+
+  )
+
 
 }
 
+
+redirect_on_failure_page <- function(redirect_url = "https://google.com") {
+  psychTestR::reactive_page(function(state, ...) {
+
+    if(is.scalar.character(psychTestR::get_global("redirect_on_failure_url", state))) {
+      redirect_url <-  psychTestR::get_global("redirect_on_failure_url", state)
+    }
+
+    logging::loginfo("Redirecting to %s", redirect_url)
+
+    redirect_page(text = "Etwas ist schiefgelaufen. Du wirst weitergeleitet.",
+                  url = redirect_url,
+                  ms = 3000)
+
+  })
+}
 
 
 check_session_id_ready <- function(state) {
@@ -332,7 +377,10 @@ get_select_items_job_status <- function(state) {
 wait_for_api_page_ui <- function(poll_frequency_ms) {
 
   ui <- shiny::tags$div(shiny::tags$p(psychTestR::i18n("wait_message")),
-                        shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png', height = 200, width = 200, id = "volumeMeter"),
+                        shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/bird.png',
+                                        height = 200,
+                                        width = 200,
+                                        id = "volumeMeter"),
                         shiny::tags$script('setTimeout(function() { next_page(); }, ', poll_frequency_ms, ');'))
 
   empty_page(ui)

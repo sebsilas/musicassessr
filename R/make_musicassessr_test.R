@@ -63,7 +63,9 @@ make_musicassessr_test <- function(title,
           asynchronous_api_mode =  opt$asynchronous_api_mode,
           instrument_id = opt$instrument_id,
           inst = opt$instrument,
-          get_user_info = opt$get_user_info),
+          get_user_info = opt$get_user_info,
+          redirect_on_failure_url = opt$redirect_on_failure_url
+          ),
 
         # Timeline before setup pages
         elts_before_setup_pages(),
@@ -340,6 +342,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param get_pid_prompt What prompt to you want to use for the get_p_id page?
 #' @param instrument What instrument is the test using?
 #' @param get_user_info Get user geolocation and device information?
+#' @param redirect_on_failure_url If the test fails, where should the participant be redirected?
 #'
 #' @return
 #' @export
@@ -368,7 +371,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
                                shiny::tags$p("For example, Mike, born in December 1900, would be ", shiny::tags$em("mi121900"),".")
                              ),
                              instrument = "Voice",
-                             get_user_info = TRUE) {
+                             get_user_info = TRUE,
+                             redirect_on_failure_url = "https://www.google.com/") {
 
   stopifnot(
     is.scalar.logical(setup_pages),
@@ -391,7 +395,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is.null.or(username, is.scalar.character),
     is(get_pid_prompt, "shiny.tag") || is.scalar.character(get_p_id_prompt),
     is.scalar.character(instrument),
-    is.scalar.logical(get_user_info)
+    is.scalar.logical(get_user_info),
+    is.scalar.character(redirect_on_failure_url)
   )
 
   if(get_user_info) {
@@ -417,7 +422,8 @@ musicassessr_opt <- function(setup_pages = TRUE,
     username = username,
     get_pid_prompt = get_pid_prompt,
     instrument = instrument,
-    get_user_info = get_user_info
+    get_user_info = get_user_info,
+    redirect_on_failure_url = redirect_on_failure_url
   )
 
 }

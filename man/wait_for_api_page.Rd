@@ -5,7 +5,7 @@
 \title{Wait for API page}
 \usage{
 wait_for_api_page(
-  poll_frequency_seconds = 1L,
+  poll_frequency_seconds = 5L,
   check_function = check_session_id_ready
 )
 }

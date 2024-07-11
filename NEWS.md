@@ -1,3 +1,5 @@
+# musicassessr 2.2.0
+
 # musicassessr 2.1.1
 
 - Fully deprecate get_user_info_page

@@ -14,11 +14,12 @@ musicassessr_init(
   inst = NULL,
   default_range = set_default_range("Piano"),
   username = NULL,
-  get_user_info = TRUE
+  get_user_info = TRUE,
+  redirect_on_failure_url = "https://www.google.com/"
 )
 }
 \arguments{
-\item{get_user_info}{}
+\item{redirect_on_failure_url}{}
 }
 \description{
 Initiate a musicassessr test

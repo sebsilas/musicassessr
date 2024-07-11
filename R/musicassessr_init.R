@@ -10,6 +10,7 @@
 #' @param default_range
 #' @param username
 #' @param get_user_info
+#' @param redirect_on_failure_url
 #'
 #' @return
 #' @export
@@ -24,7 +25,8 @@ musicassessr_init <- function(app_name = "",
                               inst = NULL,
                               default_range = set_default_range("Piano"),
                               username = NULL,
-                              get_user_info = TRUE) {
+                              get_user_info = TRUE,
+                              redirect_on_failure_url = "https://www.google.com/") {
 
 
   psychTestR::join(
@@ -199,9 +201,6 @@ musicassessr_init <- function(app_name = "",
           psychTestR_session_id <- session_info$p_id
           user_info <- session_info$user_info
 
-          print('user_info')
-          print(user_info)
-
           # Set vars
           psychTestR::set_global("async_feedback", FALSE, state) # Init as FALSE and (potentially) overwrite at trial_block level
           psychTestR::set_global("async_feedback_type", "opti3", state)
@@ -214,6 +213,7 @@ musicassessr_init <- function(app_name = "",
           # So that we don't do this again
           psychTestR::set_global("musicassessr_inited", TRUE, state)
           psychTestR::set_global("user_info", user_info, state)
+          psychTestR::set_global("redirect_on_failure_url", redirect_on_failure_url, state)
 
       })
     )

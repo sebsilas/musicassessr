@@ -27,7 +27,8 @@ musicassessr_opt(
     shiny::tags$p("For example, Mike, born in December 1900, would be ",
     shiny::tags$em("mi121900"), ".")),
   instrument = "Voice",
-  get_user_info = TRUE
+  get_user_info = TRUE,
+  redirect_on_failure_url = "https://www.google.com/"
 )
 }
 \arguments{
@@ -68,6 +69,8 @@ musicassessr_opt(
 \item{instrument}{What instrument is the test using?}
 
 \item{get_user_info}{Get user geolocation and device information?}
+
+\item{redirect_on_failure_url}{If the test fails, where should the participant be redirected?}
 }
 \description{
 Specify options for a musicassessr test.

@@ -1053,6 +1053,8 @@ async function upload_file_to_s3(blob) {
     "trial-paradigm": String(db_trial_paradigm)
   };
 
+  console.log(md);
+
   const requestBody = { filename: file_url, metadata: md };
 
   try {

@@ -27,3 +27,5 @@ data-raw/mod2.3.2.brms.rda
 data-raw/mod2.3.2.brms_beta.rda
 data-raw/plot_long.Rmd
 data-raw/plot_long.html
+data-raw/study_history_xgboost_model.Rmd
+data-raw/xgb_tuning_results.rda

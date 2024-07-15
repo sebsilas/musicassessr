@@ -52,6 +52,7 @@ var db_onset;
 var db_user_id;
 var feedback;
 var feedback_type;
+var db_trial_paradigm = 'call_and_response'
 
 // Functions
 

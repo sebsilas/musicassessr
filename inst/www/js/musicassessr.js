@@ -1025,8 +1025,8 @@ async function upload_file_to_s3(blob) {
   const requestBody = { filename: file_url, metadata: md };
 
   try {
-    const retrievedTokenString = localStorage.getItem('jwkToken');
-    const response = await fetch(apiUrl + "/v2/get-audio-presigned-url", {
+    const retrievedTokenString = localStorage.getItem('jwkToken') ?? "";
+    const response = await fetch(apiUrl + "/v2/get-audio-presigned-url-legacy", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1054,12 +1054,6 @@ async function upload_file_to_s3(blob) {
     console.log('Successful');
   } catch (error) {
     console.error(error);
-  }
-
-  // Feedback
-  if (get_async_feedback) {
-    fetchData();
-    displayAsyncFeedback();
   }
 
   Shiny.setInputValue("key", file_url);

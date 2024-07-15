@@ -856,7 +856,7 @@ show_first_melody_note <- function(give_first_melody_note,
                                    first_note_message = psychTestR::i18n("first_note_is"),
                                    transposed_message = psychTestR::i18n("transposed"),
                                    play_first_note_button_text = psychTestR::i18n("play_first_note"),
-                                   lowest_reading_note = NA) {
+                                   lowest_reading_note = NA, ...) {
 
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation

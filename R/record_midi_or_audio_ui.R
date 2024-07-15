@@ -149,7 +149,8 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
           "review_items_id",
           "user_id",
           "feedback",
-          "feedback_type"),
+          "feedback_type",
+          "trial_paradigm"),
         names(db_vars)
         )
       ) == 0)

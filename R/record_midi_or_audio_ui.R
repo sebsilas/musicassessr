@@ -97,6 +97,8 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(!page_text_first) page_text,
 
+      shiny::tags$script(htmltools::HTML(paste0('var apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"'))),
+
       shiny::tags$script(htmltools::HTML(
         paste0('var destBucket = "', Sys.getenv("DESTINATION_BUCKET"), '";
                 var api_url = "', Sys.getenv("API_URL"),'";

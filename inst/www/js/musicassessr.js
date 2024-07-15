@@ -990,77 +990,77 @@ function process_file_on_server(blob) {
 	};
 }
 
-function upload_file_to_s3(blob){
+async function upload_file_to_s3(blob) {
 
+  var currentDate = new Date();
+  var recordkey = create_recordkey();
+  var file_url = recordkey;
 
-    var currentDate = new Date();
+  var md = {
+    // Note, all metadata must be strings
+    "stimuli": vectorToString(stimuli),
+    "stimuli-durations": vectorToString(stimuli_durations),
+    "trial-time-started": String(db_trial_time_started),
+    "trial-time-completed": String(getDateTime()),
+    "instrument": String(db_instrument),
+    "attempt": String(db_attempt),
+    "item-id": String(db_item_id),
+    "display-modality": String(db_display_modality),
+    "phase": String(db_phase),
+    "rhythmic": String(db_rhythmic),
+    "session-id": String(db_session_id),
+    "test-id": String(db_test_id),
+    "onset": String(db_onset),
+    "new-items-id": String(db_new_items_id),
+    "review-items-id": String(db_review_items_id),
+    "user-id": String(db_user_id),
+    "feedback": String(db_feedback),
+    "feedback-type": String(db_feedback_type),
+    "trial-paradigm": String(db_trial_paradigm)
+  };
 
-    var recordkey = create_recordkey();
-    var file_url = recordkey + ".wav";
+  console.log(md);
 
-    AWS.config.update({
-        region: bucketRegion,
-        credentials: new AWS.CognitoIdentityCredentials({
-            IdentityPoolId: IdentityPoolId
-        })
+  const requestBody = { filename: file_url, metadata: md };
+
+  try {
+    const retrievedTokenString = localStorage.getItem('jwkToken');
+    const response = await fetch(apiUrl + "/v2/get-audio-presigned-url", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': retrievedTokenString
+      },
+      body: JSON.stringify(requestBody)
     });
 
-    var s3 = new AWS.S3({
-        apiVersion: "2006-03-01",
-        params: { Bucket: bucketName }
+    if (!response.ok) {
+      throw new Error(`Failed to get response: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    const url = responseData.url;
+
+    const uploadResponse = await fetch(url, {
+      method: 'PUT',
+      body: blob // assuming 'blob' is the correct variable to use here
     });
 
-    var md = {
-              // Note, all metadata must be strings
-              "stimuli": vectorToString(stimuli),
-              "stimuli-durations": vectorToString(stimuli_durations),
-              "trial-time-started": String(db_trial_time_started),
-              "trial-time-completed": String(getDateTime()),
-              "instrument": String(db_instrument),
-              "attempt": String(db_attempt),
-              "item-id": String(db_item_id),
-              "display-modality": String(db_display_modality),
-              "phase": String(db_phase),
-              "rhythmic": String(db_rhythmic),
-              "session-id": String(db_session_id),
-              "test-id": String(db_test_id),
-              "onset": String(db_onset),
-              "new-items-id": String(db_new_items_id),
-              "review-items-id": String(db_review_items_id),
-              "user-id": String(db_user_id),
-              "feedback": String(db_feedback),
-              "feedback-type": String(db_feedback_type)
-            };
+    if (!uploadResponse.ok) {
+      throw new Error(`Failed: ${uploadResponse.status}`);
+    }
+    console.log('Successful');
+  } catch (error) {
+    console.error(error);
+  }
 
-    console.log(md);
+  // Feedback
+  if (get_async_feedback) {
+    fetchData();
+    displayAsyncFeedback();
+  }
 
-    var upload = new AWS.S3.ManagedUpload({
-
-        params: {
-            Bucket: bucketName,
-            Key: file_url,
-            ContentType: 'audio/wav',
-            ACL: 'public-read',
-            Body: blob,
-            Metadata: md
-        }
-    });
-
-    Shiny.setInputValue("sourceBucket", bucketName);
-    Shiny.setInputValue("key", file_url);
-    Shiny.setInputValue("destBucket", destBucket);
-
-    var promise = upload.promise();
-
-    promise.then(
-        function (data) {
-            console.log("Successfully uploaded new record to AWS bucket " + bucketName + "!");
-        },
-        function (err) {
-            console.log(err);
-            return alert("There was an error uploading your record: ", err);
-
-        }
-    );
+  Shiny.setInputValue("key", file_url);
 }
 

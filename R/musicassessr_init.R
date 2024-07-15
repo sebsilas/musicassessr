@@ -80,12 +80,18 @@ musicassessr_init <- function(app_name = "",
 
             url_params <- psychTestR::get_url_params(state)
 
+            language <- url_params$language
             job_id <- url_params$job_id
             session_token <- url_params$session_token
 
             if(!is.null(job_id)) {
               logging::loginfo("job_id %s", job_id)
               psychTestR::set_global("job_id", job_id, state)
+            }
+
+            if(!is.null(language)) {
+              logging::loginfo("language %s", language)
+              psychTestR::set_global("language", language, state)
             }
 
 
@@ -129,8 +135,14 @@ musicassessr_init <- function(app_name = "",
 
         }
 
+        language <- psychTestR::get_global("language", state)
 
-        return_correct_entry_page(asynchronous_api_mode, user_id, username)
+        # Make sure it can resolve to something
+        if(!exists("session_token")) {
+          session_token <- NULL
+        }
+
+        return_correct_entry_page(asynchronous_api_mode, user_id, username, language, session_token)
 
       }),
 
@@ -201,27 +213,29 @@ musicassessr_init <- function(app_name = "",
   )
 }
 
-return_correct_entry_page <- function(asynchronous_api_mode, user_id, username) {
+return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, language = "en", session_token = NULL) {
+
+  stopifnot(
+    is.null.or(session_token, is.character)
+  )
 
   if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p('You could not be validated.'))
   } else if(asynchronous_api_mode && !is.null(user_id) && !is.null(username)) {
     ui <- async_success_ui(username)
   } else {
-    ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p("Let's proceed!"))
+    ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p(psychTestR::i18n("lets_proceed")))
   }
 
   ui <- shiny::tags$div(
     ui,
-    shiny::tags$div(shiny::tags$input(id = "user_info"), class = "_hidden"),
-    shiny::tags$button(psychTestR::i18n("Next"), id="getUserInfoButton", onclick="getUserInfo();testFeatureCapability();next_page();", class="btn btn-default action-button")
-  )
+    shiny::tags$script(
+      shiny::HTML(paste0("lang = \'", language, "\';
+                          localStorage.setItem('jwkToken', \'", session_token, "\');
+                         "))
+    ))
 
-  psychTestR::page(ui = ui,
-                   label = "user_info",
-                   save_answer = TRUE,
-                   get_answer = user_info_check,
-                   on_complete = if(asynchronous_api_mode) user_info_async else NULL)
+  psychTestR::one_button_page(ui)
 
 }
 

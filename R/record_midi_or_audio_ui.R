@@ -175,6 +175,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   var db_user_id = \"', db_vars$user_id,'\";
   var db_feedback = \"', db_vars$feedback,'\";
   var db_feedback_type = \"', db_vars$feedback_type,'\";
+  var db_trial_paradigm = \"', db_vars$trial_paradigm,'\";
   ')))
 
 }

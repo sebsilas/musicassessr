@@ -15,11 +15,12 @@ paradigm(
   attempts_left = 1L,
   stimuli_type = c("melody", "audio"),
   feedback = FALSE,
-  asynchronous_api_mode = FALSE
+  asynchronous_api_mode = FALSE,
+  simultaneous_recall_show_stop = FALSE
 )
 }
 \arguments{
-\item{asynchronous_api_mode}{}
+\item{simultaneous_recall_show_stop}{}
 }
 \description{
 Choose a melody paradigm

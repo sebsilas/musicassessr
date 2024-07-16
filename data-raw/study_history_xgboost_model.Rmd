@@ -27,7 +27,7 @@ trials <- trials %>%
 
 
 
-```{r}
+```{r, eval = FALSE}
 
 compute_trial_stats <- function(session_id, 
                                 trial_id,
@@ -214,7 +214,7 @@ trials_with_item_stats <- left_join(trials, item_stats, by = "trial_id")
 
 
 
-```{r}
+```{r, eval = FALSE}
 
 save(trials_with_item_stats, file = 'trials_with_item_stats.rda')
 
@@ -318,7 +318,7 @@ metrics <-  metric_set(
 ```
 
 
-```{r xgb_tuning}
+```{r xgb_tuning, eval = FALSE}
 
 xgb_tuning_results <- tune::tune_grid(
   object = xgb_wflow, 
@@ -326,6 +326,18 @@ xgb_tuning_results <- tune::tune_grid(
   grid = xgb_grid,
   controls  = tune::control_grid(),
   metrics = metrics )
+
+```
+
+```{r}
+
+save(xgb_tuning_results, file = 'xgb_tuning_results.rda')
+
+```
+
+```{r}
+
+load(file = 'xgb_tuning_results.rda')
 
 ```
 
@@ -381,6 +393,7 @@ test_fit_predictions <- test_fit$.predictions[[1]]
 
 ```
 
+
 ```{r check true positive rate}
 
 learned_in_current_session <- test_fit_predictions %>% 
@@ -419,9 +432,38 @@ fit_final_workflow <- fit(xgb_final_workflow, trials_with_item_stats)
 
 ```{r}
 
-vip::vip(fit_final_workflow)
+vip_df <- vip::vip(fit_final_workflow)$data %>% 
+  mutate(Variable = case_when(
+    
+    Variable == "change_in_opti3_from_last_session" ~ "Change in Score From Previous Session",
+    Variable == "last_opti3"  ~ "Score in Last Session",
+    Variable == "change_across_all_sessions"  ~ "Change in Score Across All Sessions",
+    Variable == "avg_no_attempts" ~ "Avg. Number of Attempts Used",
+    Variable == "avg_change_across_attempts" ~ "Avg. Score Change Across Attempts",
+    Variable == "gradient_across_all_scores" ~ "Gradient Across All Scores",
+    Variable == "test_username_Sylvia" ~ "Person",
+    Variable == "time_since_last_item_studied" ~ "Time Since Item Last Studied",
+    Variable == "item_intercept" ~ "Item Intercept",
+    Variable == "abs_melody_X54.50.55.53.52.51.50" ~ "Item", 
+    TRUE ~ NA
+    ))
 
 ```
+
+
+```{r}
+
+ggplot(vip_df, aes(x = Importance, y = reorder(Variable, Importance), fill = Variable)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Variable Importances", 
+       x = "Importance", 
+       y = "Variable") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+
 
 ```{r}
 

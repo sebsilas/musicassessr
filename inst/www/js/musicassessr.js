@@ -559,8 +559,13 @@ function startRecording(type = "record_audio_page", stop_recording_automatically
 }
 
 
-function recordUpdateUI(page_type = null, showStop = true, hideRecord = true, showRecording = true,
-                        trigger_next_page = true, show_sheet_music = false, sheet_music_id = 'sheet_music') {
+function recordUpdateUI(page_type = null,
+                        showStop = true,
+                        hideRecord = true,
+                        showRecording = true,
+                        trigger_next_page = true,
+                        show_sheet_music = false,
+                        sheet_music_id = 'sheet_music') {
 
 
   removeElementIfExists("first_note");
@@ -605,39 +610,52 @@ function hideLoading() {
 }
 
 
-function stopRecording(page_type = "record_audio_page", trigger_next_page = true) {
+function stopRecording(page_type = "record_audio_page",
+                       trigger_next_page = true) {
 
-  var volumeMeter = document.getElementById('volumeMeter');
+  // Check if audio player
+  var player = document.getElementById("player");
 
-  if(volumeMeter !== null) {
-    volumeMeter.remove(); /* To remove empty space in UI */
+  console.log('stop');
+
+  console.log(player);
+
+  console.log(player.paused);
+
+  // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
+  if (!player.paused) {
+
+    var volumeMeter = document.getElementById('volumeMeter');
+
+    if(volumeMeter !== null) {
+      volumeMeter.remove(); /* To remove empty space in UI */
+    }
+
+    setTimeout(() => {
+
+      hideStopButton();
+      hideRecordingIcon();
+      hideLyrics();
+
+      if(page_type === "record_audio_page") {
+        stopAudioRecording();
+      } else if(page_type === "record_midi_page") {
+        stopMidiRecording();
+      } else {
+        console.log('Unknown page type: ' + page_type);
+      }
+
+
+      if(show_happy_with_response) {
+        trigger_next_page = false;
+      }
+
+      if(trigger_next_page) {
+        next_page();
+      }
+
+    }, 500); /* Record a little bit more */
   }
-
-  setTimeout(() => {
-
-    hideStopButton();
-    hideRecordingIcon();
-    hideLyrics();
-
-    if(page_type === "record_audio_page") {
-      stopAudioRecording();
-    } else if(page_type === "record_midi_page") {
-      stopMidiRecording();
-    } else {
-      console.log('Unknown page type: ' + page_type);
-    }
-
-
-    if(show_happy_with_response) {
-      trigger_next_page = false;
-    }
-
-    if(trigger_next_page) {
-      next_page();
-    }
-
-  }, 500); /* Record a little bit more */
-
 
 }
 
@@ -670,7 +688,10 @@ function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = '
       hideSheetMusic(sheet_music_id);
     }
 
-    stopRecording(page_type, trigger_next_page);
+    // If there is some audio playing, stop it
+    stopRecording(page_type, trigger_next_page); // but make sure to stop the recording FIRST
+    var player = document.getElementById("player");
+    player.pause();
   };
 }
 
@@ -1155,11 +1176,32 @@ function displayScore(score) {
   if(lang == "en") {
     container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
   } else if(lang == "de") {
-    container.innerHTML = `<p>Gut gemacht! </p> <p>Deine Punktzahl war ${score}!</p>`;
+    container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
   } else {
     console.log("Language not supported!");
   }
 }
+
+function getFeedback(score) {
+  let feedback;
+
+  if (score >= 0 && score <= 2) {
+    feedback = "Das kannst Du besser!";
+  } else if (score >= 3 && score <= 4) {
+    feedback = "Schon ziemlich gut!";
+  } else if (score >= 5 && score <= 7) {
+    feedback = "Gut gemacht!";
+  } else if (score >= 8 && score <= 9) {
+    feedback = "Super, Du bist klasse!";
+  } else if (score === 10) {
+    feedback = "Gratulation, das war hervorragend!";
+  } else {
+    feedback = "Ungültige Punktzahl";
+  }
+
+  return feedback;
+}
+
 
 function benevolentOpti3(score) {
   // Apply a quadratic transformation
@@ -1173,6 +1215,22 @@ function benevolentOpti3(score) {
 
   return scaledScore;
 }
+
+function benevolentOpti3_v2(x) {
+  let y;
+
+  if (x <= 0.5) {
+    // Non-linear relationship up to 0.5 (quadratic)
+    y = 40 * Math.pow(x, 1/2);
+    y = Math.ceil(y);
+  } else {
+    // Linear relationship from 0.5 to 1
+    y = 10;
+  }
+
+  return y;
+}
+
 
 
 function showLoader() {
@@ -1226,7 +1284,7 @@ function stopPolling() {
 }
 
 
-function appendNextButton(onClick = next_page) {
+function appendNextButton(onClick = next_page, id = 'async-feedback') {
   // Create a new button element
   var nextButton = document.createElement('button');
 
@@ -1247,12 +1305,12 @@ function appendNextButton(onClick = next_page) {
   // Set the onclick attribute
   nextButton.onclick = onClick;
 
-  // Append the button to the element with ID 'button_area'
-  var feedbackArea = document.getElementById('async-feedback');
-  if (feedbackArea) {
-    feedbackArea.appendChild(nextButton);
+  // Append the button to the element with ID
+  var areaToAppendTo = document.getElementById(id);
+  if (areaToAppendTo) {
+    areaToAppendTo.appendChild(nextButton);
   } else {
-    console.error('Element with ID "async-feedback" not found.');
+    console.error('Element with ID ', + id, ' not found.');
   }
 }
 

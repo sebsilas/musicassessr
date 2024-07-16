@@ -304,6 +304,13 @@ get_durations <- function(result) {
 #'
 #' @examples
 get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin, segment_phrase = TRUE) {
+
+  if(segment_phrase && is.null(user_input_as_pyin$phrasbeg)) {
+    user_input_as_pyin <- user_input_as_pyin %>%
+      itembankr::segment_phrase(as_string_df = FALSE)
+  }
+
+
   # opti3
   if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {
     list(opti3 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA)

@@ -296,7 +296,7 @@ check_session_id_ready <- function(state) {
     }
   }
 
-  not_ready <- is.null(session_id)
+  not_ready <- is.null(session_id) || is.scalar.na(session_id)
 
   cat(file=stderr(), "not_ready", not_ready, "\n")
 
@@ -307,9 +307,11 @@ check_session_id_ready <- function(state) {
       stop("Could not get session_id.")
     } else {
       if("session_id" %in% names(session_id)) {
-        psychTestR::set_global("session_id", session_id$session_id, state)
+        session_id <- session_id$session_id
       }
-    }
+        cat(file=stderr(), "set session_id...", session_id, "\n")
+        psychTestR::set_global("session_id", session_id, state)
+      }
   }
 
   not_ready

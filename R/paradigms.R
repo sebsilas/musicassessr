@@ -13,6 +13,7 @@
 #' @param stimuli_type
 #' @param feedback
 #' @param asynchronous_api_mode
+#' @param simultaneous_recall_show_stop
 #'
 #' @return
 #' @export
@@ -26,7 +27,8 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
                      attempts_left = 1L,
                      stimuli_type = c("melody", "audio"),
                      feedback = FALSE,
-                     asynchronous_api_mode = FALSE) {
+                     asynchronous_api_mode = FALSE,
+                     simultaneous_recall_show_stop = FALSE) {
 
 
   # call_and_response_end if "manual", user clicks stop, if "auto" - automatically triggered
@@ -49,9 +51,19 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
   )
 
   if(paradigm_type == "simultaneous_recall") {
-    trigger_start_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, show_stop = FALSE, midi_device = midi_device, instantiate_midi = instantiate_midi,
-                                                     mute_midi_playback = mute_midi_playback, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
+
+    trigger_start_of_stimulus_fun <- record_triggers(record = "start",
+                                                     page_type = page_type,
+                                                     show_stop = simultaneous_recall_show_stop,
+                                                     midi_device = midi_device,
+                                                     instantiate_midi = instantiate_midi,
+                                                     mute_midi_playback = mute_midi_playback,
+                                                     stimuli_type = stimuli_type,
+                                                     asynchronous_api_mode = asynchronous_api_mode,
+                                                     feedback = feedback)
+
     trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
+
   } else if(paradigm_type == "call_and_response") {
     trigger_start_of_stimulus_fun <- NA
     if(call_and_response_end == "manual") {
@@ -84,7 +96,8 @@ record_triggers <- function(record = c("start", "stop"),
                             sheet_music_id = 'sheet_music',
                             stimuli_type = c("melody", "audio"),
                             feedback = FALSE,
-                            asynchronous_api_mode = FALSE) {
+                            asynchronous_api_mode = FALSE,
+                            trigger_next_page = NULL) {
 
   record <- match.arg(record)
   page_type <- match.arg(page_type)

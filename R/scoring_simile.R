@@ -145,9 +145,7 @@ rhythfuzz <- function(dur_vec1, dur_vec2){
 harmcore <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation2 = NULL, segmentation_type = c("phrase_boundary_marker",
                                                                                                                "segment_id")){
 
-  if(length(segmentation_type) > 1) {
-    segmentation_type <- segmentation_type[1]
-  }
+  segmentation_type <- match.arg(segmentation_type)
 
   # phrase_boundary_marker e.g., c(0, 0, 0, 1, 0 0, 1)
   # segment_id e.g., c(1, 1, 1, 2, 2, 2, 3)
@@ -177,6 +175,8 @@ harmcore2 <- function(pitch_vec1, pitch_vec2, segmentation1 = NULL, segmentation
 
   # phrase_boundary_marker e.g., c(0, 0, 0, 1, 0 0, 1)
   # segment_id e.g., c(1, 1, 1, 2, 2, 2, 3)
+
+  segmentation_type <- match.arg(segmentation_type)
 
   if(segmentation_type == "phrase_boundary_marker") {
     segmentation1 <- cumsum(segmentation1)
@@ -252,7 +252,8 @@ opti3 <- function(pitch_vec1, onset_vec1,
                   N = 3,
                   use_bootstrap = TRUE,
                   return_components = FALSE,
-                  segmentation1 = NULL, segmentation2 = NULL) {
+                  segmentation1 = NULL,
+                  segmentation2 = NULL) {
 
   warning('It is recommended to use the more comprehensive opti3_df version of opti3')
 
@@ -346,11 +347,10 @@ opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winn
   sims <- purrr::map_dfr(trans_hints, function(th){
 
     if(use_bootstrap) {
-      v_harmcore <- harmcore2(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
+      v_harmcore <- harmcore2(melody1$note, melody2$note + th, segmentation1 = NULL, segmentation2 = NULL)
     }
     else{
-      v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = melody1$phrasbeg, segmentation2 = melody2$phrasbeg)
-
+      v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = NULL, segmentation2 = NULL)
     }
 
     opti3 <-  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146

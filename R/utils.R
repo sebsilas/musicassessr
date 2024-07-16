@@ -572,7 +572,7 @@ is_function_or_true <- function(x){
 
 tidy_get_user_info <- function(user_info) {
 
-  if(is.null(user_info)) {
+  if(is.logical(user_info) || is.null(user_info)) {
 
     return(NA)
 

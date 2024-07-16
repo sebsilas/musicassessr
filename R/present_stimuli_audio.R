@@ -50,18 +50,3 @@ present_stimuli_audio <- function(audio_url,
 
 
 
-#
-# if(hideOnPlay) {
-#   shiny::tags$script(shiny::HTML(paste0('
-#         spinner = document.getElementsByClassName("hollow-dots-spinner");
-#         if(typeof spinner[0] !== "undefined") {
-#           spinner[0].style.display = "block";
-#         }
-#         var player = document.getElementById("player");
-#         if(typeof player !== "undefined") {
-#             player.addEventListener("play", function () {
-#             hideAudioFilePlayer();
-#             var audio_duration = player.duration * 1000; // to ms
-#             setTimeout(', trigger_end_of_stimulus_fun, '); audio_duration })
-#         }')))
-# }

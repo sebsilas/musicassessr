@@ -620,41 +620,44 @@ function stopRecording(page_type = "record_audio_page",
 
   console.log(player);
 
-  console.log(player.paused);
+  if(player !== null) {
 
-  // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
-  if (!player.paused) {
+    console.log(player.paused);
 
-    var volumeMeter = document.getElementById('volumeMeter');
+    // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
+    if (!player.paused) {
 
-    if(volumeMeter !== null) {
-      volumeMeter.remove(); /* To remove empty space in UI */
+      var volumeMeter = document.getElementById('volumeMeter');
+
+      if(volumeMeter !== null) {
+        volumeMeter.remove(); /* To remove empty space in UI */
+      }
+
+      setTimeout(() => {
+
+        hideStopButton();
+        hideRecordingIcon();
+        hideLyrics();
+
+        if(page_type === "record_audio_page") {
+          stopAudioRecording();
+        } else if(page_type === "record_midi_page") {
+          stopMidiRecording();
+        } else {
+          console.log('Unknown page type: ' + page_type);
+        }
+
+
+        if(show_happy_with_response) {
+          trigger_next_page = false;
+        }
+
+        if(trigger_next_page) {
+          next_page();
+        }
+
+      }, 500); /* Record a little bit more */
     }
-
-    setTimeout(() => {
-
-      hideStopButton();
-      hideRecordingIcon();
-      hideLyrics();
-
-      if(page_type === "record_audio_page") {
-        stopAudioRecording();
-      } else if(page_type === "record_midi_page") {
-        stopMidiRecording();
-      } else {
-        console.log('Unknown page type: ' + page_type);
-      }
-
-
-      if(show_happy_with_response) {
-        trigger_next_page = false;
-      }
-
-      if(trigger_next_page) {
-        next_page();
-      }
-
-    }, 500); /* Record a little bit more */
   }
 
 }

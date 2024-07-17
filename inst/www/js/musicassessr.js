@@ -35,6 +35,7 @@ var pattern; // the melodic pattern being played. We only want one to be played 
 var get_async_feedback = false;
 var intervalId;
 var lang;
+var audioPlayerUserPaused = false;
 
 // // Trial info
 

@@ -694,7 +694,11 @@ function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = '
     // If there is some audio playing, stop it
     stopRecording(page_type, trigger_next_page); // but make sure to stop the recording FIRST
     var player = document.getElementById("player");
-    player.pause();
+
+    if(player !== null) {
+      player.pause();
+    }
+
   };
 }
 

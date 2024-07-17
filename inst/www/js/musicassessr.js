@@ -618,46 +618,55 @@ function stopRecording(page_type = "record_audio_page",
 
   console.log('stop');
 
-  console.log(player);
+  var isAudioPlayer = player !== null;
 
-  if(player !== null) {
+  console.log('isAudioPlayer');
+  console.log(isAudioPlayer);
 
-    console.log(player.paused);
+  if(isAudioPlayer) {
+    console.log('there is an audio player!');
+    var audioPlayerPaused = player.paused;
+  } else {
+    console.log('there is NO audio player!');
+    var audioPlayerPaused = false;
+  }
 
-    // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
-    if (!player.paused) {
+  console.log('audioPlayerPaused');
+  console.log(audioPlayerPaused);
 
-      var volumeMeter = document.getElementById('volumeMeter');
+  // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
+  if (!audioPlayerPaused) {
 
-      if(volumeMeter !== null) {
-        volumeMeter.remove(); /* To remove empty space in UI */
+    var volumeMeter = document.getElementById('volumeMeter');
+
+    if(volumeMeter !== null) {
+      volumeMeter.remove(); /* To remove empty space in UI */
+    }
+
+    setTimeout(() => {
+
+      hideStopButton();
+      hideRecordingIcon();
+      hideLyrics();
+
+      if(page_type === "record_audio_page") {
+        stopAudioRecording();
+      } else if(page_type === "record_midi_page") {
+        stopMidiRecording();
+      } else {
+        console.log('Unknown page type: ' + page_type);
       }
 
-      setTimeout(() => {
 
-        hideStopButton();
-        hideRecordingIcon();
-        hideLyrics();
+      if(show_happy_with_response) {
+        trigger_next_page = false;
+      }
 
-        if(page_type === "record_audio_page") {
-          stopAudioRecording();
-        } else if(page_type === "record_midi_page") {
-          stopMidiRecording();
-        } else {
-          console.log('Unknown page type: ' + page_type);
-        }
+      if(trigger_next_page) {
+        next_page();
+      }
 
-
-        if(show_happy_with_response) {
-          trigger_next_page = false;
-        }
-
-        if(trigger_next_page) {
-          next_page();
-        }
-
-      }, 500); /* Record a little bit more */
-    }
+    }, 500); /* Record a little bit more */
   }
 
 }

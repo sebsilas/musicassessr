@@ -1,5 +1,7 @@
 # musicassessr 2.3.0
 
+- Add support for simultaneous recall manual stop
+
 # musicassessr 2.2.0
 
 - Add redirect_on_failure_url feature

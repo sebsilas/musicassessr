@@ -26,6 +26,7 @@ present_stimuli_audio <- function(audio_url,
     },
     shiny::tags$br(),
     shiny::tags$br(),
+    shiny::tags$script("var audioPlayerUserPaused = false;"),
     if(audio_playback_as_single_play_button) {
       shiny::tags$div(
         shiny::tags$script(shiny::HTML(paste0('document.getElementById("player").style.display = "none";'))),

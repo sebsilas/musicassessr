@@ -618,24 +618,11 @@ function stopRecording(page_type = "record_audio_page",
 
   console.log('stop');
 
-  var isAudioPlayer = player !== null;
-
-  console.log('isAudioPlayer');
-  console.log(isAudioPlayer);
-
-  if(isAudioPlayer) {
-    console.log('there is an audio player!');
-    var audioPlayerPaused = player.paused;
-  } else {
-    console.log('there is NO audio player!');
-    var audioPlayerPaused = false;
-  }
-
-  console.log('audioPlayerPaused');
-  console.log(audioPlayerPaused);
+  console.log('audioPlayerUserPaused');
+  console.log(audioPlayerUserPaused);
 
   // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
-  if (!audioPlayerPaused) {
+  if (!audioPlayerUserPaused) {
 
     var volumeMeter = document.getElementById('volumeMeter');
 
@@ -706,6 +693,7 @@ function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = '
 
     if(player !== null) {
       player.pause();
+      audioPlayerUserPaused = true;
     }
 
   };

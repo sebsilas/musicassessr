@@ -322,6 +322,12 @@ feedback_melodic_production_async_ui <- function() {
 }
 
 
+#' Feedback for syllable classification
+#'
+#' @return
+#' @export
+#'
+#' @examples
 feedback_syllable_classification <- function() {
 
   psychTestR::reactive_page(function(state, answer, ...) {

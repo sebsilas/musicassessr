@@ -1,3 +1,5 @@
+# musicassessr 2.4.1
+
 # musicassessr 2.4.0
 
 - Add audio feature computation and syllable classification experimental features

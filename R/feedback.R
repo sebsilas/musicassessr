@@ -321,3 +321,72 @@ feedback_melodic_production_async_ui <- function() {
   )
 }
 
+
+feedback_syllable_classification <- function() {
+
+  psychTestR::reactive_page(function(state, answer, ...) {
+
+    audio_features <- answer$audio_features
+
+    preds <- answer$syllable_probabilities
+
+    shap_values <- answer$shap_values
+
+    names(shap_values) <- unique(lyricassessr::vowel_metadata_with_audio_features_range_restricted_without_AEIOU$syllable)
+
+    shp_plot <- shiny::renderPlot({
+      shapviz::sv_importance(shap_values, show_numbers = TRUE)
+    })
+
+    syllable_pred <- preds %>%
+      dplyr::slice_max(Probability) %>%
+      dplyr::pull(Syllable)
+
+    tb <- shiny_table(preds, rownames = FALSE, colnames = TRUE)
+
+
+    audio_features_summarised <- shiny_table(lyricassessr::audio_features_summarised, rownames = FALSE, colnames = TRUE)
+
+    audio_features_summarised_by_syllable <- shiny_table(lyricassessr::audio_features_summarised_by_syllable, rownames = FALSE, colnames = TRUE)
+
+    shap_values_baseline <- shiny::renderPlot({
+      shap_values_baseline <- lyricassessr::shap_values_baseline
+      names(shap_values_baseline) <- unique(lyricassessr::vowel_metadata_with_audio_features_range_restricted_without_AEIOU$syllable)
+      shapviz::sv_importance(shap_values_baseline, show_numbers = TRUE)
+    })
+
+
+    ui <- shiny::tags$div(
+
+      shiny::tags$h1("Syllable prediction: ", syllable_pred),
+
+
+      tb,
+
+      shiny_table(audio_features,  rownames = FALSE, colnames = TRUE),
+
+      shiny::tags$h1("Baseline scores"),
+
+      audio_features_summarised,
+
+      shiny::tags$h2("By syllable"),
+
+      audio_features_summarised_by_syllable,
+
+
+      shiny::tags$br(),
+      shiny::tags$h2("SHAP values"),
+      shp_plot,
+      shiny::tags$h2("Baseline Shapley values"),
+      shap_values_baseline
+
+
+    )
+
+    psychTestR::one_button_page(ui)
+
+  })
+
+}
+
+

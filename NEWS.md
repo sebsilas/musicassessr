@@ -1,3 +1,7 @@
+# musicassessr 2.4.0
+
+- Add audio feature computation and syllable classification experimental features
+
 # musicassessr 2.3.0
 
 - Add support for simultaneous recall manual stop

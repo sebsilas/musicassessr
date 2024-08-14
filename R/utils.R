@@ -589,3 +589,10 @@ tidy_get_user_info <- function(user_info) {
 
 
 }
+
+
+log_err_but_return_na <- function(err) {
+  logging::logerror(err)
+  NA
+}
+

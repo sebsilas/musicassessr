@@ -960,3 +960,67 @@ get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, ...) 
 
 }
 
+
+
+
+#' Estimate syllable from an audio file
+#'
+#' @param input
+#' @param state
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_answer_syllable_classification <- function(input,
+                                               state, ...) {
+
+  logging::loginfo("Get syllable classification")
+
+
+  audio_file <- get_audio_file(input, state)
+
+  valid_file <- FALSE
+
+  while(!valid_file) {
+    valid_file <- file.exists(audio_file)
+    logging::loginfo("valid_file? %s", valid_file)
+  }
+
+  new_audio_file <-  paste0("www/audio/new_", basename(audio_file))
+
+  # system(paste0("ffmpeg -i ", audio_file, " -acodec pcm_s16le ", new_audio_file))
+  system(paste0("ffmpeg -i ", audio_file, " -ar 16000 ", new_audio_file))
+
+  # Get audio features
+  audio_features <- extract_audio_features(new_audio_file)
+
+  syllable_mod <- bundle::unbundle(lyricassessr::syllable_classifier_bundle)
+
+  loadNamespace("workflows")
+
+  preds <- predict(syllable_mod, new_data = audio_features, type = "prob") %>%
+    dplyr::rename_with(~stringr::str_remove_all(.x, ".pred_")) %>%
+    tidyr::pivot_longer(dplyr::everything(),
+                        names_to = "Syllable", values_to = "Probability") %>%
+    dplyr::arrange(dplyr::desc(Probability))
+
+  xgb_model <- parsnip::extract_fit_engine(syllable_mod)
+
+
+  audio_features_prepped <- recipes::bake(
+    lyricassessr::prepped_recipe,
+    recipes::has_role("predictor"),
+    new_data = audio_features)
+
+  audio_features <- audio_features %>%
+    dplyr::select(dplyr::all_of(names(audio_features_prepped)))
+
+  shap_values <-
+    shapviz::shapviz(xgb_model, X_pred = as.matrix(audio_features_prepped) )
+
+  list(syllable_probabilities = preds,
+       shap_values = shap_values,
+       audio_features = audio_features)
+
+}

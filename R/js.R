@@ -136,9 +136,16 @@ on_musicassessr_aws <- function() {
 
 
 create_dir_if_doesnt_exist <- function(dir) {
-  if(!dir.exists(dir)) {
-    R.utils::mkdirs(dir)
-  }
+
+  tryCatch({
+    if (!dir.exists(dir)) {
+      dir.create(dir_path, recursive = TRUE, mode = "0755")
+    }
+    Sys.chmod(dir_path, mode = "0755")
+  }, error = function(e) {
+    message("Failed to create directory: ", e)
+  })
+
 }
 
 check_port <- function(port = 3000) {

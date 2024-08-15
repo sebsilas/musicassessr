@@ -142,6 +142,8 @@ create_dir_if_doesnt_exist <- function(dir) {
       dir.create(dir, recursive = TRUE, mode = "0755")
     }
     Sys.chmod(dir, mode = "0755")
+    # Set ownership to the shiny user
+    system(paste0("chown shiny:shiny ", dir))
   }, error = function(e) {
     message("Failed to create directory: ", e)
   })

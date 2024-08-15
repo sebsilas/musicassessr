@@ -59,7 +59,7 @@ musicassessr_js <- function(app_name,
 
   if(record_audio) {
     logging::loginfo(paste0('The current app directory is ', getwd(), '. Is that correct?'))
-    shiny_app_id <- record_audio_setup(asynchronous_api_mode)
+    shiny_app_id <- record_audio_setup(asynchronous_api_mode, app_name)
   } else {
     shiny_app_id <- NULL
   }
@@ -100,7 +100,7 @@ get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
 }
 
-record_audio_setup <- function(asynchronous_api_mode) {
+record_audio_setup <- function(asynchronous_api_mode, app_name) {
 
   if(!asynchronous_api_mode && ! on_musicassessr_aws() ) {
     if(!dir.exists('node')) {

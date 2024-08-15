@@ -79,7 +79,7 @@ musicassessr_js <- function(app_name,
     if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
     "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js",
-    paste0('tmp/', shiny_app_js_id)
+    paste0('www/', shiny_app_js_id)
   )
 }
 
@@ -119,7 +119,7 @@ record_audio_setup <- function(asynchronous_api_mode, app_name) {
     shiny_app_js_id <- paste0("shiny_app_", stringr::str_replace_all(app_name, "/", "_"), ".js")
 
     if(!file.exists(shiny_app_js_id)) {
-      write(js_to_write, file = paste0('tmp/', shiny_app_js_id))
+      write(js_to_write, file = paste0('www/', shiny_app_js_id))
     }
 
   } else {

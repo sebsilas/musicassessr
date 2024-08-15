@@ -139,9 +139,9 @@ create_dir_if_doesnt_exist <- function(dir) {
 
   tryCatch({
     if (!dir.exists(dir)) {
-      dir.create(dir_path, recursive = TRUE, mode = "0755")
+      dir.create(dir, recursive = TRUE, mode = "0755")
     }
-    Sys.chmod(dir_path, mode = "0755")
+    Sys.chmod(dir, mode = "0755")
   }, error = function(e) {
     message("Failed to create directory: ", e)
   })

@@ -65,7 +65,7 @@ musicassessr_js <- function(app_name,
   }
 
   c(
-    if(record_audio) get_musicassessr_state_js_script(asynchronous_api_mode),
+    if(record_audio) get_musicassessr_state_js_script(),
     "https://cdn.jsdelivr.net/gh/mattdiamond/Recorderjs@08e7abd9/dist/recorder.js",
     "https://www.midijs.net/lib/midi.js",
     if(midi_file_playback) "https://unpkg.com/@tonejs/midi", # only required for midi file playback
@@ -96,6 +96,9 @@ get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
     system2(command = "node", args = 'node/app.js', wait = FALSE)
 
     system.file("www/js/musicassessr_test.js", package = "musicassessr")
+
+  } else {
+    system.file("www/js/musicassessr_production.js", package = "musicassessr")
   }
 
 }

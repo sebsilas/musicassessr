@@ -59,7 +59,9 @@ musicassessr_js <- function(app_name,
 
   if(record_audio) {
     logging::loginfo(paste0('The current app directory is ', getwd(), '. Is that correct?'))
-    record_audio_setup(asynchronous_api_mode)
+    shiny_app_id <- record_audio_setup(asynchronous_api_mode)
+  } else {
+    shiny_app_id <- NULL
   }
 
   c(
@@ -76,7 +78,8 @@ musicassessr_js <- function(app_name,
     system.file("www/js/musicassessr.js", package = "musicassessr"),
     if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
-    "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js"
+    "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js",
+    paste0('tmp/', shiny_app_js_id)
   )
 }
 
@@ -99,14 +102,37 @@ get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
 record_audio_setup <- function(asynchronous_api_mode) {
 
-  if(!asynchronous_api_mode) {
+  if(!asynchronous_api_mode && ! on_musicassessr_aws() ) {
     if(!dir.exists('node')) {
       R.utils::copyDirectory(system.file('node', package = 'musicassessr'), 'node')
     }
   }
 
+  if( on_musicassessr_aws() ) {
+
+    DIRS_TO_CREATE <- c('www', 'www/audio')
+
+    purrr::map(DIRS_TO_CREATE, create_dir_if_doesnt_exist)
+
+    js_to_write <- paste0('const shiny_app_name = \"', app_name, '\";')
+
+    shiny_app_js_id <- paste0("shiny_app_", stringr::str_replace_all(app_name, "/", "_"), ".js")
+
+    if(!file.exists(shiny_app_js_id)) {
+      write(js_to_write, file = paste0('tmp/', shiny_app_js_id))
+    }
+
+  } else {
+    shiny_app_js_id <- NULL
+  }
+
+  return(shiny_app_js_id)
 }
 
+
+on_musicassessr_aws <- function() {
+  file.exists('/srv/shiny-server/musicassessr-aws-check.txt')
+}
 
 
 create_dir_if_doesnt_exist <- function(dir) {

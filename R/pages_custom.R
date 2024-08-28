@@ -318,9 +318,9 @@ check_session_id_ready <- function(state) {
 }
 
 
-# t <- get_select_items_job_status("36f93907-ba3a-41d6-90e5-b4da4c558f06")
+# t <- get_select_items_job_status("9614d04d-4d16-48ff-a571-ff7ae65a2da5")
 
-# t <- musicassessrdb::get_job_status_api("36f93907-ba3a-41d6-90e5-b4da4c558f06")
+# t <- musicassessrdb::get_job_status_api("9614d04d-4d16-48ff-a571-ff7ae65a2da5")
 
 get_select_items_job_status <- function(state) {
 
@@ -331,6 +331,7 @@ get_select_items_job_status <- function(state) {
   if(is.null(job_id)) {
 
     logging::loginfo("No job_id, job not needed, so moving on")
+
     return(FALSE)
 
   } else {
@@ -339,9 +340,15 @@ get_select_items_job_status <- function(state) {
 
     api_response <- musicassessrdb::get_job_status_api(job_id)
 
+    cat(file=stderr(),"api_response", api_response, "\n")
+
     logging::loginfo("api_response %s", api_response)
 
-    if(api_response$status == "FINISHED") {
+    if(is.scalar.na(api_response)) {
+
+      stop("get_job_status_api FAILED")
+
+    } else if(api_response$status == "FINISHED") {
 
       items <- api_response %>%
         purrr::pluck("message") %>%

@@ -1182,6 +1182,7 @@ function displayScore(scores) {
   console.log('rhythmic_weighted_edit_sim: ', + scores.rhythmic_weighted_edit_sim);
   console.log('F1_score: ', + scores.F1_score);
   console.log('weighted_opti3_num_notes: ', + scores.weighted_opti3_num_notes);
+  console.log('transcribed_notes: ', + scores.transcribed_notes);
 
   score = benevolentOpti3(score);
 
@@ -1193,6 +1194,7 @@ function displayScore(scores) {
     /* container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`; */
 
     container.innerHTML = `<h3>Scores</h3>
+                           <p>Transcribed notes: ${transcribed_notes}</p>
                            <p>Benovelent Score: ${score}</p>
                            <p>opti3: ${scores.opti3}</p>
                            <p>ngrukkon: ${scores.ngrukkon}</p>

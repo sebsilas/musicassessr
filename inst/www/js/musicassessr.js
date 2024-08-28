@@ -1201,7 +1201,7 @@ function displayScore(scores) {
                            <p>rhythmic_weighted_edit_sim: ${scores.rhythmic_weighted_edit_sim} </p>
                            <p>F1_score: ${scores.F1_score}</p>
                            <p>weighted_opti3_num_notes: ${scores.weighted_opti3_num_notes} </p>
-                           `; */
+                           `;
 
   } else if(lang == "de") {
     container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;

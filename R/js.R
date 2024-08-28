@@ -41,7 +41,7 @@ include_musicassessr_js <- function(app_name = "", visual_notation = FALSE, reco
 #' @export
 #'
 #' @examples
-musicassessr_js <- function(app_name,
+musicassessr_js <- function(app_name = "",
                             asynchronous_api_mode = FALSE,
                             visual_notation = FALSE,
                             midi_file_playback = FALSE,
@@ -87,9 +87,10 @@ musicassessr_js <- function(app_name,
 
 get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
-  if(!asynchronous_api_mode && ! on_musicassessr_aws() ) {
+  if(!asynchronous_api_mode && !on_musicassessr_aws() ) {
 
-    if(check_port()) {
+    if( check_port() ) {
+      cat(file=stderr(), "Kill port 3000...", "\n")
       system2(command = "npx", args = "kill-port 3000", wait = TRUE)
     }
 

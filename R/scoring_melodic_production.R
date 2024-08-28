@@ -363,7 +363,16 @@ get_longer_and_shorter_melodies <- function(stimuli, recall) {
 }
 
 
-compute_accuracy_measures_aligned <- function(stimuli, recall){
+#' Compute aligned accuracy measures
+#'
+#' @param stimuli
+#' @param recall
+#'
+#' @return
+#' @export
+#'
+#' @examples
+compute_accuracy_measures_aligned <- function(stimuli, recall) {
 
   long_short_res <- get_longer_and_shorter_melodies(stimuli, recall)
   longer_mel <- long_short_res$longer

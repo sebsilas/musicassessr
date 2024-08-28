@@ -5,7 +5,7 @@
 \title{musicassessr scripts}
 \usage{
 musicassessr_js(
-  app_name,
+  app_name = "",
   asynchronous_api_mode = FALSE,
   visual_notation = FALSE,
   midi_file_playback = FALSE,

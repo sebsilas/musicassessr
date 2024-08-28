@@ -1157,8 +1157,8 @@ async function fetchData() {
     if (data.status === 'FINISHED') {
       console.log('Job is finished. Stopping polling.');
       const message = JSON.parse(data.message);
-      const score = message.opti3.opti3;
-      displayScore(score);
+      const scores = message.feedback;
+      displayScore(scores);
       stopPolling();
       appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */
         show_happy_with_response_message();
@@ -1171,15 +1171,38 @@ async function fetchData() {
   }
 }
 
-function displayScore(score) {
+function displayScore(scores) {
+
   const container = document.getElementById('data-container');
-  console.log('opti3: ', + score);
+
+  console.log('opti3: ', + scores.opti3);
+  console.log('ngrukkon: ', + scores.ngrukkon);
+  console.log('rhythfuzz: ', + scores.rhythfuzz);
+  console.log('harmcore: ', + scores.harmcore);
+  console.log('rhythmic_weighted_edit_sim: ', + scores.rhythmic_weighted_edit_sim);
+  console.log('F1_score: ', + scores.F1_score);
+  console.log('weighted_opti3_num_notes: ', + scores.weighted_opti3_num_notes);
+
   score = benevolentOpti3(score);
+
   if(isNaN(score)) {
     score = 0;
   }
   if(lang == "en") {
-    container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
+
+    /* container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`; */
+
+    container.innerHTML = `<h3>Scores</h3>
+                           <p>Benovelent Score: ${score}</p>
+                           <p>opti3: ${scores.opti3}</p>
+                           <p>ngrukkon: ${scores.ngrukkon}</p>
+                           <p>rhythfuzz: ${scores.rhythfuzz}</p>
+                           <p>harmcore: ${scores.harmcore}</p>
+                           <p>rhythmic_weighted_edit_sim: ${scores.rhythmic_weighted_edit_sim} </p>
+                           <p>F1_score: ${scores.F1_score}</p>
+                           <p>weighted_opti3_num_notes: ${scores.weighted_opti3_num_notes} </p>
+                           `; */
+
   } else if(lang == "de") {
     container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
   } else {

@@ -207,7 +207,8 @@ item_stats <- pmap_dfr(trials, compute_trial_stats)
 
 ```{r}
 
-trials_with_item_stats <- left_join(trials, item_stats, by = "trial_id")
+trials_with_item_stats <- left_join(trials, 
+                                    item_stats, by = "trial_id")
 
 ```
 

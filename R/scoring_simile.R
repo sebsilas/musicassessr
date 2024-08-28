@@ -339,7 +339,8 @@ read_melody <- function(fname, style = c("sonic_annotator", "tony")) {
 #' @export
 #'
 #' @examples
-opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE){
+opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winner = TRUE) {
+
   trans_hints <- get_transposition_hints(melody1$note, melody2$note)
   v_rhythfuzz <- rhythfuzz(melody1$ioi_class, melody2$ioi_class)
   v_ngrukkon <- ngrukkon_safe(diff(melody1$note), diff(melody2$note), N = N)
@@ -357,10 +358,10 @@ opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winn
     opti3 <- max(min(opti3, 1), 0)
 
     tibble::tibble(transposition = th,
-           ngrukkon = v_ngrukkon,
-           rhythfuzz = v_rhythfuzz,
-           harmcore = v_harmcore,
-           opti3 = opti3)
+                   ngrukkon = v_ngrukkon,
+                   rhythfuzz = v_rhythfuzz,
+                   harmcore = v_harmcore,
+                   opti3 = opti3)
   })
   res <- sims %>% dplyr::arrange(dplyr::desc(opti3))
   if(return_winner) {

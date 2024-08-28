@@ -345,7 +345,7 @@ get_select_items_job_status <- function(state) {
 
       items <- api_response %>%
         purrr::pluck("message") %>%
-        rjson::fromJSON()
+        jsonlite::fromJSON()
 
       logging::loginfo("items %s", items)
 

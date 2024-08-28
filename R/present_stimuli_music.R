@@ -36,7 +36,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
   trigger_start_of_stimulus_fun <- NA_to_js_null(trigger_start_of_stimulus_fun)
   trigger_end_of_stimulus_fun <- NA_to_js_null(trigger_end_of_stimulus_fun)
 
-  js_script <- paste0("playSeq(\'", play_button_id, "\', ", rjson::toJSON(stimuli),", ", rjson::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
+  js_script <- paste0("playSeq(\'", play_button_id, "\', ", jsonlite::toJSON(stimuli),", ", jsonlite::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
 
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
 
@@ -64,9 +64,9 @@ set_melodic_stimuli <- function(stimuli, durations) {
 
   # Send stimuli to JS
   shiny::tags$script(
-    htmltools::HTML(paste0('var stimuli = ', rjson::toJSON(stimuli), ';
+    htmltools::HTML(paste0('var stimuli = ', jsonlite::toJSON(stimuli), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
-                       var stimuli_durations = ', rjson::toJSON(durations), ';
+                       var stimuli_durations = ', jsonlite::toJSON(durations), ';
                        Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
                        ')
     )
@@ -376,7 +376,7 @@ present_stimuli_midi_file <- function(stimuli, display_modality, button_text = "
 
     shiny::tags$div(
 
-      #shiny::tags$script(paste0('var stimuli = ', rjson::toJSON(stimuli_for_js))),
+      #shiny::tags$script(paste0('var stimuli = ', jsonlite::toJSON(stimuli_for_js))),
 
       shiny::tags$div(id="button_area",
                       shiny::tags$button(button_text, id="playButton", class="btn btn-default",
@@ -799,9 +799,9 @@ play.notes.html.wrapper <- function(stimuli_pitches, stimuli_rhythms) {
       getTransportTimes,
       mergeMusicDataPart
       } = toneRhythm.toneRhythm(Tone.Time); ',
-                                                            'var rhythms = ', rjson::toJSON(stimuli_rhythms), '; ',
+                                                            'var rhythms = ', jsonlite::toJSON(stimuli_rhythms), '; ',
                                                             'var transportTimes = getTransportTimes(rhythms);
-                  var pitches = ', rjson::toJSON(stimuli_pitches), '; ',
+                  var pitches = ', jsonlite::toJSON(stimuli_pitches), '; ',
                                                             'var mergedData = mergeMusicDataPart({
                 rhythms: rhythms,
                 notes: pitches,

@@ -61,7 +61,7 @@ get_answer_pyin_melodic_production <- function(input,
       attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
       opti3 = NA,
       answer_meta_data = tibble::as_tibble(input$answer_meta_data),
-      stimuli = as.numeric(rjson::fromJSON(input$stimuli))
+      stimuli = as.numeric(jsonlite::fromJSON(input$stimuli))
       )
 
     logging::loginfo("There was nothing in the pitch track")
@@ -381,8 +381,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                 attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt),
                 opti3 = NA,
                 answer_meta_data = tibble::as_tibble(input$answer_meta_data),
-                stimuli = as.numeric(rjson::fromJSON(input$stimuli)),
-                stimuli_durations = as.numeric(rjson::fromJSON(input$stimuli_durations)))
+                stimuli = as.numeric(jsonlite::fromJSON(input$stimuli)),
+                stimuli_durations = as.numeric(jsonlite::fromJSON(input$stimuli_durations)))
 
      } else {
 
@@ -395,8 +395,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
          review_items_id <- if(is.null(review_items_id)) NA else review_items_id
          new_items_id <- if(is.null(new_items_id)) NA else new_items_id
 
-         stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
-         stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
+         stimuli <- as.numeric(jsonlite::fromJSON(input$stimuli))
+         stimuli_durations <- as.numeric(jsonlite::fromJSON(input$stimuli_durations))
          test_id <- psychTestR::get_global('test_id', state)
          item_id = psychTestR::get_global('item_id', state)
          user_id = psychTestR::get_global('user_id', state)
@@ -493,7 +493,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 #' @examples
 get_answer_midi <- function(input, state, ...) {
 
-  if(length(rjson::fromJSON(input$user_response_midi_note_on)) == 0) {
+  if(length(jsonlite::fromJSON(input$user_response_midi_note_on)) == 0) {
 
     list(
       stimulus_trigger_times = NA,
@@ -503,7 +503,7 @@ get_answer_midi <- function(input, state, ...) {
       onsets_noteon =  NA,
       onsets_off = NA,
       pyin_style_res = NA,
-      stimuli = if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli)),
+      stimuli = if(is.null(input$stimuli)) NA else as.numeric(jsonlite::fromJSON(input$stimuli)),
       velocities = NA
       )
 
@@ -512,13 +512,13 @@ get_answer_midi <- function(input, state, ...) {
     trial_start_time_timecode <- input$trial_start_time
     trial_start_time_timecode2 <- input$trial_start_time2
     latency_estimate <- trial_start_time_timecode2 - trial_start_time_timecode
-    onsets_noteon_timecode <- if(is.null(input$onsets_noteon_timecode)) NA else as.numeric(rjson::fromJSON(input$onsets_noteon_timecode))
-    notes <- if(is.null(input$user_response_midi_note_on)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_on))
-    notes_off <- if(is.null(input$user_response_midi_note_off)) NA else as.integer(rjson::fromJSON(input$user_response_midi_note_off))
+    onsets_noteon_timecode <- if(is.null(input$onsets_noteon_timecode)) NA else as.numeric(jsonlite::fromJSON(input$onsets_noteon_timecode))
+    notes <- if(is.null(input$user_response_midi_note_on)) NA else as.integer(jsonlite::fromJSON(input$user_response_midi_note_on))
+    notes_off <- if(is.null(input$user_response_midi_note_off)) NA else as.integer(jsonlite::fromJSON(input$user_response_midi_note_off))
     onsets <- (onsets_noteon_timecode - trial_start_time_timecode) / 1000
-    stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
-    velocities <- if(is.scalar.na.or.null(input$velocities)) NA else as.numeric(rjson::fromJSON(input$velocities))
-    stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+    stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(jsonlite::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
+    velocities <- if(is.scalar.na.or.null(input$velocities)) NA else as.numeric(jsonlite::fromJSON(input$velocities))
+    stimulus <- if(is.null(input$stimuli)) NA else as.numeric(jsonlite::fromJSON(input$stimuli))
 
     # We just assume the last duration is 0.5 always (or the last duration of the stimulus, if there is one).
     # There is no way of telling when the participant really designates that a "hit" is over
@@ -571,7 +571,7 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   type <- match.arg(type)
 
-  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(rjson::fromJSON(input$stimuli_durations))) NA else round(rjson::fromJSON(input$stimuli_durations), 2)
+  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(jsonlite::fromJSON(input$stimuli_durations))) NA else round(jsonlite::fromJSON(input$stimuli_durations), 2)
 
   if(type == "midi") {
 
@@ -645,11 +645,11 @@ get_answer_rhythm_production_key_presses <- function(input, state, ...) {
 
 get_answer_key_presses_page <- function(input, ...) {
 
-  onsets_keydown <- rjson::fromJSON(input$onsets_keydown)
-  onsets_keyup <- rjson::fromJSON(input$onsets_keyup)
+  onsets_keydown <- jsonlite::fromJSON(input$onsets_keydown)
+  onsets_keyup <- jsonlite::fromJSON(input$onsets_keyup)
   durations <- diff(onsets_keydown)
 
-  stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+  stimulus <- if(is.null(input$stimuli)) NA else as.numeric(jsonlite::fromJSON(input$stimuli))
 
   if(is.scalar.na.or.null(stimulus)) {
     last_dur <- 0.5
@@ -663,8 +663,8 @@ get_answer_key_presses_page <- function(input, ...) {
   durations <- c(durations, last_dur)
 
   list(
-    keypress_keydown = rjson::fromJSON(input$keypress_keydown),
-    keypress_keyup = rjson::fromJSON(input$keypress_keyup),
+    keypress_keydown = jsonlite::fromJSON(input$keypress_keydown),
+    keypress_keyup = jsonlite::fromJSON(input$keypress_keyup),
     onsets_keyup = onsets_keyup,
     onsets_keydown = onsets_keydown,
     user_durations = durations
@@ -701,7 +701,7 @@ get_answer_midi_note_mode <- function(input, state, ...) {
      is.scalar.null(input$user_response_midi_note_on)) {
     list(note = NA)
   } else {
-    list(note = getmode(rjson::fromJSON(input$user_response_midi_note_on)))
+    list(note = getmode(jsonlite::fromJSON(input$user_response_midi_note_on)))
   }
 }
 
@@ -758,17 +758,17 @@ concat_mel_prod_results <- function(input,
     user_response_midi_note_off <- NA
     onsets_noteoff <- NA
   } else {
-    user_response_midi_note_off <- as.numeric(rjson::fromJSON(input$user_response_midi_note_off))
-    onsets_noteoff <- as.numeric(rjson::fromJSON(input$onsets_noteoff))
+    user_response_midi_note_off <- as.numeric(jsonlite::fromJSON(input$user_response_midi_note_off))
+    onsets_noteoff <- as.numeric(jsonlite::fromJSON(input$onsets_noteoff))
   }
 
   # Grab stimuli information
   if(is.scalar.null(input$stimuli)) {
-    stimuli <- rjson::fromJSON(psychTestR::get_global("stimuli", state))
-    stimuli_durations <- rjson::fromJSON(psychTestR::get_global("stimuli_durations", state))
+    stimuli <- jsonlite::fromJSON(psychTestR::get_global("stimuli", state))
+    stimuli_durations <- jsonlite::fromJSON(psychTestR::get_global("stimuli_durations", state))
   } else {
-    stimuli <- as.numeric(rjson::fromJSON(input$stimuli))
-    stimuli_durations <- as.numeric(rjson::fromJSON(input$stimuli_durations))
+    stimuli <- as.numeric(jsonlite::fromJSON(input$stimuli))
+    stimuli_durations <- as.numeric(jsonlite::fromJSON(input$stimuli_durations))
   }
 
   # Produce trial-level scores
@@ -858,10 +858,10 @@ get_answer_onset_detection <- function(input,
   trial_start_time_timecode <- input$trial_start_time
   trial_start_time_timecode2 <- input$trial_start_time2
   latency_estimate <- trial_start_time_timecode2 - trial_start_time_timecode
-  stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(rjson::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
+  stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(jsonlite::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
   # We just assume the last duration is 0.5 always. There is no way of telling when the participant really designates that a "hit" is over
   # Technically you can do this with a keyboard noteoff, but this is complicated for various reasons.
-  stimulus <- if(is.null(input$stimuli)) NA else as.numeric(rjson::fromJSON(input$stimuli))
+  stimulus <- if(is.null(input$stimuli)) NA else as.numeric(jsonlite::fromJSON(input$stimuli))
 
   if(is.scalar.na.or.null(stimulus)) {
     last_dur <- 0.5
@@ -895,10 +895,10 @@ check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
                                                   onsets_noteon,
                                                   onsets_noteoff) {
 
-  lengths <- c(length(rjson::fromJSON(user_response_midi_note_on)),
-               length(rjson::fromJSON(user_response_midi_note_off)),
-               length(rjson::fromJSON(onsets_noteon)),
-               length(rjson::fromJSON(onsets_noteoff)))
+  lengths <- c(length(jsonlite::fromJSON(user_response_midi_note_on)),
+               length(jsonlite::fromJSON(user_response_midi_note_off)),
+               length(jsonlite::fromJSON(onsets_noteon)),
+               length(jsonlite::fromJSON(onsets_noteoff)))
 
   are_lengths_equal <- length(unique(lengths)) == 1
 
@@ -923,7 +923,7 @@ get_answer_meta_data <- function(input, ...) {
     amd <- list(answer_meta_data = NA)
     return(amd)
   } else if(is.scalar.character(amd)) {
-    amd <- rjson::fromJSON(amd)
+    amd <- jsonlite::fromJSON(amd)
     return(amd)
   } else{
     return(amd)

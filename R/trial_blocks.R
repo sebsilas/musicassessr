@@ -1480,9 +1480,9 @@ audio_melodic_production_trials <- function(audio_directory,
     page_lab <- paste0(module_prefix, "_", tools::file_path_sans_ext(file))
 
     psychTestR::reactive_page(function(state, ...) {
-      psychTestR::set_global("answer_meta_data", rjson::toJSON(md), state)
-      psychTestR::set_global("stimuli", rjson::toJSON(md_note), state)
-      psychTestR::set_global("stimuli_durations", rjson::toJSON(md_durations), state)
+      psychTestR::set_global("answer_meta_data", jsonlite::toJSON(md), state)
+      psychTestR::set_global("stimuli", jsonlite::toJSON(md_note), state)
+      psychTestR::set_global("stimuli_durations", jsonlite::toJSON(md_durations), state)
 
       present_stimuli(
         stimuli = shiny_file,
@@ -1494,7 +1494,7 @@ audio_melodic_production_trials <- function(audio_directory,
         page_text = shiny::tags$div(set_melodic_stimuli(md_note, md_durations), page_text),
         hideOnPlay = TRUE,
         page_label = page_lab,
-        answer_meta_data = rjson::toJSON(md),
+        answer_meta_data = jsonlite::toJSON(md),
         audio_playback_as_single_play_button = TRUE)
     })
 

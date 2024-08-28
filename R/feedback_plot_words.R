@@ -25,7 +25,7 @@ feedback_recorded_words_plot_page <- function() {
 
     words_plot <- shiny::tags$div(
       shiny::renderPlot({
-      recorded_words_plot(strsplit(rjson::fromJSON(answer$user_response_words), split = " ")[[1]], as.numeric(rjson::fromJSON(answer$onsets)))
+      recorded_words_plot(strsplit(jsonlite::fromJSON(answer$user_response_words), split = " ")[[1]], as.numeric(jsonlite::fromJSON(answer$onsets)))
     }, width = 500)
     )
 

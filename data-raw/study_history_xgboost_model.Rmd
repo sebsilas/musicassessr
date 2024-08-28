@@ -130,7 +130,6 @@ compute_trial_stats <- function(session_id,
   
       current_opti3 <- opti3
   
-  
       logging::loginfo("current_opti3: %s", current_opti3)
         
   

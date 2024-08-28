@@ -320,7 +320,7 @@ expand_string_df_row <- function(df, row_id = NULL) {
 set_answer_meta_data <- function(meta_data) {
 
   if(is.data.frame(meta_data)) {
-    meta_data <- rjson::toJSON(meta_data)
+    meta_data <- jsonlite::toJSON(meta_data)
   }
   paste0('Shiny.setInputValue(\"answer_meta_data\", ', meta_data, ');')
 }
@@ -334,9 +334,9 @@ set.note.no <- function(stimuli, note_no) {
   }
 
   if (is.null(note_no)) {
-    js_script <- paste0('var stimuli = ', rjson::toJSON(stimuli),';')
+    js_script <- paste0('var stimuli = ', jsonlite::toJSON(stimuli),';')
   } else {
-    js_script <- paste0('var stimuli = ', rjson::toJSON(stimuli),'; Shiny.setInputValue("note_no", ', note_no, ');')
+    js_script <- paste0('var stimuli = ', jsonlite::toJSON(stimuli),'; Shiny.setInputValue("note_no", ', note_no, ');')
   }
   js_script
 }

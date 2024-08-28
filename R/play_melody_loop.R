@@ -815,15 +815,15 @@ present_melody <- function(stimuli,
         trial_time_started = trial_time_started,
         instrument = if(singing_trial) "Voice" else psychTestR::get_global("inst", state),
         attempt = number_attempts,
-        item_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
+        item_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
         display_modality = display_modality,
         phase = psychTestR::get_global("phase", state),
         rhythmic = !arrhythmic,
         session_id = get_promise_value(psychTestR::get_global("session_id", state)),
         test_id = psychTestR::get_global("test_id", state),
         user_id = psychTestR::get_global("user_id", state),
-        review_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
-        new_items_id = if(is.scalar.character(answer_meta_data)) rjson::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
+        review_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
+        new_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
         feedback = psychTestR::get_global("async_feedback", state),
         feedback_type = psychTestR::get_global("async_feedback_type", state),
         trial_paradigm = melody_trial_paradigm
@@ -993,7 +993,7 @@ grab_sampled_melody <- function(item_bank = NULL,
   # Set the melody to be used
   psychTestR::set_global("item_id", melody_row$item_id, state)
   psychTestR::set_global("melody", list("melody" = abs_melody, "durations" = durations), state)
-  psychTestR::set_global("answer_meta_data", rjson::toJSON(answer_meta_data), state)
+  psychTestR::set_global("answer_meta_data", jsonlite::toJSON(answer_meta_data), state)
   # And other variables
   psychTestR::set_global('display_modality', display_modality, state)
   psychTestR::set_global("previous_melody", abs_melody, state)

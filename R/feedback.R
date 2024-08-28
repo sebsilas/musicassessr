@@ -50,7 +50,7 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
       amd <- answer$answer_meta_data
 
       if(is.character(amd)) {
-        amd <- rjson::fromJSON(amd)
+        amd <- jsonlite::fromJSON(amd)
       }
 
       answer$answer_meta_data <- NULL

@@ -1195,7 +1195,7 @@ function displayScore(scores) {
     /* container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`; */
 
     container.innerHTML = `<h3>Scores</h3>
-                           <p>Transcribed notes: ${transcribed_notes}</p>
+                           <p>Transcribed notes: ${scores.transcribed_notes}</p>
                            <p>Benovelent Score: ${score}</p>
                            <p>opti3: ${scores.opti3}</p>
                            <p>ngrukkon: ${scores.ngrukkon}</p>
@@ -1209,7 +1209,7 @@ function displayScore(scores) {
   } else if(lang == "de") {
 
     container.innerHTML = `<h3>Scores</h3>
-                           <p>Transcribed notes: ${transcribed_notes}</p>
+                           <p>Transcribed notes: ${scores.transcribed_notes}</p>
                            <p>Benovelent Score: ${score}</p>
                            <p>opti3: ${scores.opti3}</p>
                            <p>ngrukkon: ${scores.ngrukkon}</p>

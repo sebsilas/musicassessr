@@ -1177,10 +1177,10 @@ function displayScore(scores) {
 
   const container = document.getElementById('data-container');
 
-  console.log('opti3: ', + scores.opti3.opti3);
-  console.log('ngrukkon: ', + scores.opti3.ngrukkon);
-  console.log('rhythfuzz: ', + scores.opti3.rhythfuzz);
-  console.log('harmcore: ', + scores.opti3.harmcore);
+  console.log('opti3: ', + scores.opti3);
+  console.log('ngrukkon: ', + scores.ngrukkon);
+  console.log('rhythfuzz: ', + scores.rhythfuzz);
+  console.log('harmcore: ', + scores.harmcore);
   console.log('rhythmic_weighted_edit_sim: ', + scores.rhythmic_weighted_edit_sim);
   console.log('F1_score: ', + scores.F1_score);
   console.log('weighted_opti3_num_notes: ', + scores.weighted_opti3_num_notes);

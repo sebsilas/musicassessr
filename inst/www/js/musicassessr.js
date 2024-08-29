@@ -1158,6 +1158,8 @@ async function fetchData() {
       console.log('Job is finished. Stopping polling.');
       const message = JSON.parse(data.message);
       const scores = message.feedback;
+      console.log('scores');
+      console.log(scores);
       displayScore(scores);
       stopPolling();
       appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */

@@ -1184,11 +1184,12 @@ function displayScore(scores) {
   console.log('weighted_opti3_num_notes: ', + scores.weighted_opti3_num_notes);
   console.log('transcribed_notes: ', + scores.transcribed_notes);
 
-  score = benevolentOpti3(score);
+  score = benevolentOpti3(scores.opti3);
 
   if(isNaN(score)) {
     score = 0;
   }
+
   if(lang == "en") {
 
     /* container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`; */
@@ -1206,7 +1207,21 @@ function displayScore(scores) {
                            `;
 
   } else if(lang == "de") {
-    container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
+
+    container.innerHTML = `<h3>Scores</h3>
+                           <p>Transcribed notes: ${transcribed_notes}</p>
+                           <p>Benovelent Score: ${score}</p>
+                           <p>opti3: ${scores.opti3}</p>
+                           <p>ngrukkon: ${scores.ngrukkon}</p>
+                           <p>rhythfuzz: ${scores.rhythfuzz}</p>
+                           <p>harmcore: ${scores.harmcore}</p>
+                           <p>rhythmic_weighted_edit_sim: ${scores.rhythmic_weighted_edit_sim} </p>
+                           <p>F1_score: ${scores.F1_score}</p>
+                           <p>weighted_opti3_num_notes: ${scores.weighted_opti3_num_notes} </p>
+                           `;
+
+    /* container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`; */
+
   } else {
     console.log("Language not supported!");
   }

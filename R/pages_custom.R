@@ -340,8 +340,6 @@ get_select_items_job_status <- function(state) {
 
     api_response <- musicassessrdb::get_job_status_api(job_id)
 
-    cat(file=stderr(),"api_response", api_response, "\n")
-
     logging::loginfo("api_response %s", api_response)
 
     if(is.scalar.na(api_response)) {

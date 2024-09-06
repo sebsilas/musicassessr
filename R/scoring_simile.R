@@ -118,15 +118,15 @@ bootstrap_implicit_harmonies <- function(pitch_vec, segmentation = NULL, sample_
 
 #' Compute the rhythfuzz measure
 #'
-#' @param dur_vec1
-#' @param dur_vec2
+#' @param ioi_class1
+#' @param ioi_class2
 #'
 #' @return
 #' @export
 #'
 #' @examples
-rhythfuzz <- function(dur_vec1, dur_vec2) {
-  edit_sim(intToUtf8(dur_vec1 + 128), intToUtf8(dur_vec2 + 128))
+rhythfuzz <- function(ioi_class1, ioi_class2) {
+  edit_sim(intToUtf8(ioi_class1 + 128), intToUtf8(ioi_class2 + 128))
 }
 
 
@@ -418,7 +418,7 @@ edit_dist <- function(s, t){
   adist(s,t)[1,1]
 }
 
-edit_sim <- function(s, t){
+edit_sim <- function(s, t) {
   1 - edit_dist(s, t)/max(nchar(s), nchar(t))
 }
 
@@ -436,6 +436,8 @@ edit_sim <- function(s, t){
 # # v_rhythfuzz
 #
 #
+
+
 # res <- tibble::tibble(onset = c(0.667573696, 0.963628118, 1.265487528, 1.613786848),
 #                       dur = c(0.243809524, 0.284444444, 0.325079365, 0.487619047),
 #                       freq = c(203.277, 180.519, 171.475, 183.124),
@@ -449,3 +451,16 @@ edit_sim <- function(s, t){
 #
 # tt <- musicassessr::get_opti3(stimuli, stimuli_durations, stim_length, res)
 # tt
+
+
+# Test empty df
+
+# res2 <- tibble::tibble(onset = integer(0),
+#                        dur = integer(0),
+#                        freq = integer(0),
+#                        note = integer(0))
+#
+
+# tt <- musicassessr::get_opti3(stimuli, stimuli_durations, stim_length, res2)
+# tt
+

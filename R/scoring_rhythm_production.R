@@ -38,6 +38,9 @@ score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NUL
       tam_dist <- tryCatch(TSdist::TAMDistance(stimuli_durations, user_durations), error = log_err, warning = log_warn)
     }
 
+    ioi_class1 <- classify_duration(stimuli_durations)
+    ioi_class2 <- classify_duration(user_durations)
+
 
     res <- list(
       stimuli_durations = stimuli_durations,
@@ -48,7 +51,7 @@ score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NUL
       tam_distance = tam_dist,
       user_bpm = bpm,
       user_durations = user_durations,
-      rhythfuzz = rhythfuzz(stimuli_durations, user_durations)
+      rhythfuzz = rhythfuzz(ioi_class1, ioi_class2)
     )
 
   }

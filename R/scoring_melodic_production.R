@@ -305,31 +305,34 @@ get_durations <- function(result) {
 #' @examples
 get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_input_as_pyin, segment_phrase = TRUE) {
 
+  if(nrow(user_input_as_pyin) < 1) {
+
+    logging::loginfo("nrow(user_input_as_pyin) is < 1 !")
+
+    return(tibble::tibble(transposition = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA, opti3 = NA))
+
+  }
+
+  if(is.scalar.na(stimuli_durations)) {
+    stimuli_durations <- rep(0.5, stimuli_length)
+  }
+
+  # Need way of handling nrow(user_input_as_pyin) == 0
   if(segment_phrase && is.null(user_input_as_pyin$phrasbeg)) {
     user_input_as_pyin <- user_input_as_pyin %>%
       itembankr::segment_phrase(as_string_df = FALSE)
   }
 
+  stimuli_df <- tibble::tibble(
+    note = stimuli,
+    dur = stimuli_durations,
+    onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
+    ioi = c(NA, diff(onset)),
+    ioi_class = itembankr::classify_duration(ioi) ) %>%
+    { if(segment_phrase) itembankr::segment_phrase(., as_string_df = FALSE) else . }
 
-  # opti3
-  if(length(user_input_as_pyin$note) < 3 | stimuli_length < 3) {
-    list(opti3 = NA, ngrukkon = NA, rhythfuzz = NA, harmcore = NA)
-  } else {
-    if(is.scalar.na(stimuli_durations)) {
-      stimuli_durations <- rep(0.5, stimuli_length)
-    }
-
-    stimuli_df <- tibble::tibble(
-      note = stimuli,
-      dur = stimuli_durations,
-      onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
-      ioi = c(NA, diff(onset)),
-      ioi_class = itembankr::classify_duration(ioi) ) %>%
-      { if(segment_phrase) itembankr::segment_phrase(., as_string_df = FALSE) else . }
-
-    opti3 <- opti3_df(melody1 = stimuli_df,
-                      melody2 = user_input_as_pyin)
-  }
+  opti3 <- opti3_df(melody1 = stimuli_df,
+                    melody2 = user_input_as_pyin)
 }
 
 

@@ -4,10 +4,10 @@
 \alias{rhythfuzz}
 \title{Compute the rhythfuzz measure}
 \usage{
-rhythfuzz(dur_vec1, dur_vec2)
+rhythfuzz(ioi_class1, ioi_class2)
 }
 \arguments{
-\item{dur_vec2}{}
+\item{ioi_class2}{}
 }
 \description{
 Compute the rhythfuzz measure

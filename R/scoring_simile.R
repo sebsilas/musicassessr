@@ -125,7 +125,7 @@ bootstrap_implicit_harmonies <- function(pitch_vec, segmentation = NULL, sample_
 #' @export
 #'
 #' @examples
-rhythfuzz <- function(dur_vec1, dur_vec2){
+rhythfuzz <- function(dur_vec1, dur_vec2) {
   edit_sim(intToUtf8(dur_vec1 + 128), intToUtf8(dur_vec2 + 128))
 }
 
@@ -424,4 +424,28 @@ edit_sim <- function(s, t){
 
 
 
-
+# # ioi1 <- c(0.3, 0.3, 0.3, 0.3)
+# # ioi2 <- c(0.243809524,0.284444444,0.325079365,0.487619047)
+# #
+# #
+# # ioi_class1 <- classify_duration(ioi1)
+# # ioi_class2 <- classify_duration(ioi2)
+# #
+# # v_rhythfuzz <- rhythfuzz(ioi_class1, ioi_class2)
+# #
+# # v_rhythfuzz
+#
+#
+# res <- tibble::tibble(onset = c(0.667573696, 0.963628118, 1.265487528, 1.613786848),
+#                       dur = c(0.243809524, 0.284444444, 0.325079365, 0.487619047),
+#                       freq = c(203.277, 180.519, 171.475, 183.124),
+#                       note = c(56, 54, 53, 54)) %>%
+#   itembankr::produce_extra_melodic_features()
+#
+# stim_length <- 4L
+#
+# stimuli <- c(68, 66, 65, 66)
+# stimuli_durations <- rep(0.3, 4)
+#
+# tt <- musicassessr::get_opti3(stimuli, stimuli_durations, stim_length, res)
+# tt

@@ -1158,9 +1158,14 @@ async function fetchData() {
       console.log('Job is finished. Stopping polling.');
       const message = JSON.parse(data.message);
       const scores = message.feedback;
-      console.log('scores');
+      console.log('scores:');
       console.log(scores);
-      displayScore(scores);
+      console.log("transcribed notes: " + scores.transcribed_notes);
+      console.log("opti3: " + scores.opti3);
+      console.log("ngrukkon: " + scores.ngrukkon);
+      console.log("rhythfuzz: " + scores.rhythfuzz);
+      console.log("harmcore: " + scores.harmcore);
+      displayScore(scores.benovelent_opti3);
       stopPolling();
       appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */
         show_happy_with_response_message();
@@ -1173,20 +1178,9 @@ async function fetchData() {
   }
 }
 
-function displayScore(scores) {
+function displayScore(score) {
 
   const container = document.getElementById('data-container');
-
-  console.log('opti3: ', + scores.opti3);
-  console.log('ngrukkon: ', + scores.ngrukkon);
-  console.log('rhythfuzz: ', + scores.rhythfuzz);
-  console.log('harmcore: ', + scores.harmcore);
-  console.log('rhythmic_weighted_edit_sim: ', + scores.rhythmic_weighted_edit_sim);
-  console.log('F1_score: ', + scores.F1_score);
-  console.log('weighted_opti3_num_notes: ', + scores.weighted_opti3_num_notes);
-  console.log('transcribed_notes: ', + scores.transcribed_notes);
-
-  score = benevolentOpti3(scores.opti3);
 
   if(isNaN(score)) {
     score = 0;
@@ -1194,35 +1188,12 @@ function displayScore(scores) {
 
   if(lang == "en") {
 
-    /* container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`; */
+    container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
 
-    container.innerHTML = `<h3>Scores</h3>
-                           <p>Transcribed notes: ${scores.transcribed_notes}</p>
-                           <p>Benovelent Score: ${score}</p>
-                           <p>opti3: ${scores.opti3}</p>
-                           <p>ngrukkon: ${scores.ngrukkon}</p>
-                           <p>rhythfuzz: ${scores.rhythfuzz}</p>
-                           <p>harmcore: ${scores.harmcore}</p>
-                           <p>rhythmic_weighted_edit_sim: ${scores.rhythmic_weighted_edit_sim} </p>
-                           <p>F1_score: ${scores.F1_score}</p>
-                           <p>weighted_opti3_num_notes: ${scores.weighted_opti3_num_notes} </p>
-                           `;
 
   } else if(lang == "de") {
 
-    container.innerHTML = `<h3>Scores</h3>
-                           <p>Transcribed notes: ${scores.transcribed_notes}</p>
-                           <p>Benovelent Score: ${score}</p>
-                           <p>opti3: ${scores.opti3}</p>
-                           <p>ngrukkon: ${scores.ngrukkon}</p>
-                           <p>rhythfuzz: ${scores.rhythfuzz}</p>
-                           <p>harmcore: ${scores.harmcore}</p>
-                           <p>rhythmic_weighted_edit_sim: ${scores.rhythmic_weighted_edit_sim} </p>
-                           <p>F1_score: ${scores.F1_score}</p>
-                           <p>weighted_opti3_num_notes: ${scores.weighted_opti3_num_notes} </p>
-                           `;
-
-    /* container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`; */
+    container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
 
   } else {
     console.log("Language not supported!");
@@ -1249,34 +1220,6 @@ function getFeedback(score) {
   return feedback;
 }
 
-
-function benevolentOpti3(score) {
-  // Apply a quadratic transformation
-  let benevolentScore = Math.sqrt(score);
-
-  // Scale to the range 1 to 10
-  let scaledScore = 1 + benevolentScore * 9;
-
-  // Round up
-  scaledScore = Math.ceil(scaledScore);
-
-  return scaledScore;
-}
-
-function benevolentOpti3_v2(x) {
-  let y;
-
-  if (x <= 0.5) {
-    // Non-linear relationship up to 0.5 (quadratic)
-    y = 40 * Math.pow(x, 1/2);
-    y = Math.ceil(y);
-  } else {
-    // Linear relationship from 0.5 to 1
-    y = 10;
-  }
-
-  return y;
-}
 
 
 

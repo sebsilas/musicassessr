@@ -1195,7 +1195,7 @@ function displayScore(score) {
 
   } else if(lang == "de") {
 
-    console.log(typeof, score);
+    console.log(typeof score);
 
     container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
 

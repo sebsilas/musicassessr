@@ -35,7 +35,15 @@ var pattern; // the melodic pattern being played. We only want one to be played 
 var get_async_feedback = false;
 var intervalId;
 var audioPlayerUserPaused = false;
-var lang = "en"; // We update this dynamically later though
+
+// Grab the language from psychTestR via the URL parameter
+const queryString = window.location.search;
+console.log('queryString: ' + queryString);
+const urlParams = new URLSearchParams(queryString);
+console.log('urlParams: ' + urlParams);
+const lang = urlParams.get('language');
+console.log('lang: ' + lang);
+
 
 // // Trial info
 
@@ -1181,11 +1189,6 @@ async function fetchData() {
 }
 
 function displayScore(score) {
-
-  // Get the query string from the current URL
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const lang = urlParams.get('lang');
 
   const container = document.getElementById('data-container');
 

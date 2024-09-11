@@ -34,8 +34,14 @@ var upload_to_s3 = false; // By default, updated at the beginning of the test wh
 var pattern; // the melodic pattern being played. We only want one to be played at once.
 var get_async_feedback = false;
 var intervalId;
-var lang;
 var audioPlayerUserPaused = false;
+
+// Set language based on psychTestR URL parameter
+
+// Get the query string from the current URL
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const lang = urlParams.get('lang');
 
 // // Trial info
 

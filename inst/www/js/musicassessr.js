@@ -1160,14 +1160,14 @@ async function fetchData() {
       const scores = message.feedback;
       console.log('scores:');
       console.log(scores);
-      console.log("transcribed notes: " + scores.transcribed_notes);
-      console.log("opti3: " + scores.opti3);
-      console.log("ngrukkon: " + scores.ngrukkon);
-      console.log("rhythfuzz: " + scores.rhythfuzz);
-      console.log("harmcore: " + scores.harmcore);
-      console.log("benovelent_opti3: " + scores.benovelent_opti3);
-      console.log("rhythmic_weighted_edit_sim: " + scores.rhythmic_weighted_edit_sim);
-      displayScore(scores.benovelent_opti3);
+      console.log("transcribed notes: " + scores.transcribed_notes[0]);
+      console.log("opti3: " + scores.opti3[0]);
+      console.log("ngrukkon: " + scores.ngrukkon[0]);
+      console.log("rhythfuzz: " + scores.rhythfuzz[0]);
+      console.log("harmcore: " + scores.harmcore[0]);
+      console.log("benovelent_opti3: " + scores.benovelent_opti3[0]);
+      console.log("rhythmic_weighted_edit_sim: " + scores.rhythmic_weighted_edit_sim[0]);
+      displayScore(scores.benovelent_opti3[0]);
       stopPolling();
       appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */
         show_happy_with_response_message();

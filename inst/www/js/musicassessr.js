@@ -1166,6 +1166,7 @@ async function fetchData() {
       console.log("rhythfuzz: " + scores.rhythfuzz);
       console.log("harmcore: " + scores.harmcore);
       console.log("benovelent_opti3: " + scores.benovelent_opti3);
+      console.log("rhythmic_weighted_edit_sim: " + scores.rhythmic_weighted_edit_sim);
       displayScore(scores.benovelent_opti3);
       stopPolling();
       appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */

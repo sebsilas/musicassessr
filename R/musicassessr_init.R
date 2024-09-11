@@ -239,9 +239,7 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, 
   ui <- shiny::tags$div(
     ui,
     shiny::tags$script(
-      shiny::HTML(paste0("lang = \'", language, "\';
-                          localStorage.setItem('jwkToken', \'", session_token, "\');
-                         "))
+      shiny::HTML(paste0("localStorage.setItem('jwkToken', \'", session_token, "\');"))
       ))
 
   psychTestR::one_button_page(ui)

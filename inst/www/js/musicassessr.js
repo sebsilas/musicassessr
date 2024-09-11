@@ -1165,6 +1165,7 @@ async function fetchData() {
       console.log("ngrukkon: " + scores.ngrukkon);
       console.log("rhythfuzz: " + scores.rhythfuzz);
       console.log("harmcore: " + scores.harmcore);
+      console.log("benovelent_opti3: " + scores.benovelent_opti3);
       displayScore(scores.benovelent_opti3);
       stopPolling();
       appendNextButton(onClick = function() { /* Note, leave this here rather than allowing the participant to skip. Otherwise they might see feedback from an old trial */
@@ -1193,6 +1194,8 @@ function displayScore(score) {
 
   } else if(lang == "de") {
 
+    console.log(typeof, score);
+
     container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
 
   } else {
@@ -1201,7 +1204,11 @@ function displayScore(score) {
 }
 
 function getFeedback(score) {
+
   let feedback;
+
+  console.log('getFeedback');
+  console.log(score);
 
   if (score >= 0 && score <= 2) {
     feedback = "Das kannst Du besser!";

@@ -35,13 +35,7 @@ var pattern; // the melodic pattern being played. We only want one to be played 
 var get_async_feedback = false;
 var intervalId;
 var audioPlayerUserPaused = false;
-
-// Set language based on psychTestR URL parameter
-
-// Get the query string from the current URL
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const lang = urlParams.get('lang');
+var lang = "en"; // We update this dynamically later though
 
 // // Trial info
 
@@ -1188,6 +1182,11 @@ async function fetchData() {
 
 function displayScore(score) {
 
+  // Get the query string from the current URL
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const lang = urlParams.get('lang');
+
   const container = document.getElementById('data-container');
 
   if(isNaN(score)) {
@@ -1291,6 +1290,7 @@ function stopPolling() {
 function appendNextButton(onClick = next_page, id = 'async-feedback') {
   // Create a new button element
   var nextButton = document.createElement('button');
+
 
   if(lang == "en"){
     // Set the button's text content

@@ -354,7 +354,9 @@ opti3_df <- function(melody1, melody2, N = 3, use_bootstrap = FALSE, return_winn
       v_harmcore <- harmcore(melody1$note, melody2$note + th, segmentation1 = NULL, segmentation2 = NULL)
     }
 
-    opti3 <-  0.505 *  v_ngrukkon + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146
+    v_ngrukkon_na_handled <- if(is.na(v_ngrukkon)) 0 else v_ngrukkon
+
+    opti3 <-  0.505 *  v_ngrukkon_na_handled + 0.417  * v_rhythfuzz + 0.24  * v_harmcore - 0.146
     opti3 <- max(min(opti3, 1), 0)
 
     tibble::tibble(transposition = th,

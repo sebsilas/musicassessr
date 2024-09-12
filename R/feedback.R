@@ -96,6 +96,16 @@ feedback_melodic_production <- function(melody_dtw = TRUE, answer_meta_data = TR
 
 
 
+#' Shiny table
+#'
+#' @param content
+#' @param rownames
+#' @param colnames
+#'
+#' @return
+#' @export
+#'
+#' @examples
 shiny_table <- function(content, rownames = TRUE, colnames = FALSE) {
   shiny::renderTable({
     content

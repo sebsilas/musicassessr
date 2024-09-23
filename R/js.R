@@ -79,7 +79,7 @@ musicassessr_js <- function(app_name = "",
     if(midi_input) "https://cdn.jsdelivr.net/npm/webmidi@2.5.1",
     if(midi_input) system.file("www/js/getMIDIin.js", package = "musicassessr"),
     "https://sdk.amazonaws.com/js/aws-sdk-2.585.0.min.js",
-    if(record_audio) paste0('www/', shiny_app_js_id)
+    if(record_audio && on_musicassessr_aws() ) paste0('www/', shiny_app_js_id)
   )
 }
 
@@ -87,7 +87,7 @@ musicassessr_js <- function(app_name = "",
 
 get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
-  if(!asynchronous_api_mode && !on_musicassessr_aws() ) {
+  if(!asynchronous_api_mode && ! on_musicassessr_aws() ) {
 
     if( check_port() ) {
       cat(file=stderr(), "Kill port 3000...", "\n")

@@ -1222,13 +1222,13 @@ function getFeedback(score) {
   console.log(score);
 
   if (score >= 0 && score <= 2) {
-    feedback = "Das kannst Du besser!";
+    feedback = "Das kannst du besser!";
   } else if (score >= 3 && score <= 4) {
     feedback = "Schon ziemlich gut!";
   } else if (score >= 5 && score <= 7) {
     feedback = "Gut gemacht!";
   } else if (score >= 8 && score <= 9) {
-    feedback = "Super, Du bist klasse!";
+    feedback = "Super, du bist klasse!";
   } else if (score === 10) {
     feedback = "Gratulation, das war hervorragend!";
   } else {

@@ -13,7 +13,7 @@
 #' @examples
 final_page_or_continue_to_new_test <- function(final = TRUE, task_name, img = NULL, present_continue_to_new_test_page = TRUE, redirect_url = NULL) {
   if(final) {
-    txt <- paste0(psychTestR::i18n("test_complete_1"), " ", task_name, psychTestR::i18n("test_complete_2"))
+    txt <- paste0(psychTestR::i18n("test_complete_1"), " ", task_name, " ", psychTestR::i18n("test_complete_2"))
     img <- if(is.null(img)) shiny::tags$div() else shiny::tags$img(src = img, height = 300, width = 300)
     ui <- shiny::tags$div(img, shiny::tags$br(), txt)
 

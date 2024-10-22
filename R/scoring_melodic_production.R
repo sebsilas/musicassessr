@@ -142,17 +142,19 @@ score_melodic_production <- function(user_melody_freq = numeric(),
       dplyr::ungroup()
   }
 
-  nearest_pitches_pyin_track <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = pyin_pitch_track$note, allOctaves = TRUE)
   mean_cents_deviation_from_nearest_stimuli_pitch <- score_cents_deviation_from_nearest_stimuli_pitch(user_prod_pitches = features_df$note, stimuli = stimuli, freq = features_df$freq)
   mean_cents_deviation_from_nearest_midi_pitch <- mean(abs(features_df$cents_deviation_from_nearest_midi_pitch), na.rm = TRUE)
-  melody_dtw <- get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, features_df)
   features_df$nearest_stimuli_note <- nearest_pitches
 
   if(length(pyin_pitch_track) > 0) {
+    melody_dtw <- get_melody_dtw(stimuli, stimuli_durations, pyin_pitch_track, features_df)
+    nearest_pitches_pyin_track <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = pyin_pitch_track$note, allOctaves = TRUE)
     pyin_pitch_track <- pyin_pitch_track %>%
       dplyr::mutate(interval = c(NA, diff(note)),
                     interval_cents = itembankr::cents(dplyr::lag(freq), freq),
                     nearest_stimuli_note = nearest_pitches_pyin_track)
+  } else {
+    melody_dtw <- NA
   }
 
   # Additional (user-defined)

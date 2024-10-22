@@ -70,7 +70,8 @@ Imports:
     xml2,
     logging,
     changepoint,
-    vampr (>= 0.1.0)
+    vampr (>= 0.1.0),
+    shinyalert
 Depends: 
     R (>= 2.10),
     itembankr (>= 0.1.0),

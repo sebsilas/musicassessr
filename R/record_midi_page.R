@@ -106,7 +106,7 @@ record_midi_page <- function(body = "",
                           reactive_melody_no,
                           mute_midi_playback,
                           db_vars,
-                          lyrics)
+                          lyrics = NULL)
 
 }
 

@@ -36,6 +36,8 @@ make_musicassessr_test(
 
 \item{welcome_page}{Required because you need a page before musicassessr_init to instantiate a p_id.}
 
+\item{dict}{A psychTestR dictionary for translations.}
+
 \item{...}{}
 }
 \description{

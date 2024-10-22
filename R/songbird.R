@@ -15,7 +15,7 @@ songbird_welcome_page_fun <- function(success, username) {
     page <- psychTestR::one_button_page(
       shiny::tags$div(
         tags$link(rel="stylesheet", type="text/css", href="https://musicassessr.com/assets/css/style_songbird.css"),
-        shiny::tags$script("var upload_to_s3 = true; console.log('Turning S3 mode on');"),
+        shiny::tags$script("upload_to_s3 = true; console.log('Turning S3 mode on');"),
         tags$p(paste0("Welcome ", username, "!"))
       )
     )

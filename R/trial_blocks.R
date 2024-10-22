@@ -414,9 +414,9 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      singing_trials = TRUE,
                                      review = FALSE,
                                      phase = c('test', 'learn', 'review'),
-                                     first_note_message = "The first note is: ",
+                                     first_note_message = psychTestR::i18n("first_note_is"),
                                      transposed_message = "Please note, this is transposed for your instrument.",
-                                     play_first_note_button_text = "Play First Note",
+                                     play_first_note_button_text = psychTestR::i18n("play_first_note"),
                                      learn_test_paradigm = FALSE,
                                      sample_item_bank_via_api = FALSE,
                                      start_from_sampled_trial_no = 1L,
@@ -554,9 +554,9 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    singing_trials = TRUE,
                                    review = FALSE,
                                    phase = c('test', 'learn', 'review'),
-                                   first_note_message = "The first note is: ",
+                                   first_note_message = psychTestR::i18n("first_note_is"),
                                    transposed_message = "Please note, this is transposed for your instrument.",
-                                   play_first_note_button_text = "Play First Note",
+                                   play_first_note_button_text = psychTestR::i18n("play_first_note"),
                                    learn_test_paradigm = FALSE,
                                    sample_item_bank_via_api = FALSE,
                                    start_from_sampled_trial_no = 1L,
@@ -1190,6 +1190,7 @@ long_tone_trials <- function(num_items,
 #' @param get_answer
 #' @param page_type
 #' @param page_text
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -1198,22 +1199,21 @@ long_tone_trials <- function(num_items,
 find_this_note_trials <- function(num_items,
                                   num_examples = 0L,
                                   feedback = FALSE,
-                                  page_title = "Find This Note",
+                                  page_title = psychTestR::i18n("find_this_note_page_title"),
                                   get_answer = get_answer_pyin_melodic_production,
                                   page_type = "record_audio_page",
-                                  page_text = "Press play to hear the note. Try and play it on your instrument when you can.",
+                                  page_text = psychTestR::i18n("find_this_note_page_text"),
                                   trial_paradigm = c("simultaneous_recall", "call_and_response"),
                                   call_and_response_end = c("manual", "auto"),
-                                  singing_trials = FALSE) {
+                                  singing_trials = FALSE,
+                                  asynchronous_api_mode = FALSE) {
 
   # Get trial paradigm info
   trial_paradigm <- match.arg(trial_paradigm)
   call_and_response_end <- match.arg(call_and_response_end)
-  paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, feedback = feedback, asynchronous_api_mode = asynchronous_api_mode)
-
 
   if(num_items == 0) {
-    return(psychTestR::code_block(function(state, ...) { }))
+    return(empty_code_block())
   } else {
 
     if(!is.function(feedback)) {
@@ -1230,23 +1230,31 @@ find_this_note_trials <- function(num_items,
                          # Instructions
                          psychTestR::one_button_page(shiny::div(
                            shiny::tags$h2(page_title),
-                           shiny::tags$p("In the next section, you will hear a long note. Try and find it as quickly as you can.")
-                         )),
+                           shiny::tags$p(psychTestR::i18n("find_this_note_instructions"))
+                         ), button_text = psychTestR::i18n("Next")),
                          # Examples
                          if(is.numeric(num_examples) & num_examples > 0L) {
-                           psychTestR::join(psychTestR::one_button_page(shiny::div(
+                           psychTestR::join(psychTestR::one_button_page(
+                             shiny::div(
                              shiny::tags$h2(page_title),
-                             shiny::tags$p(paste0("First try ", num_examples, " example trials.")))),
+                             shiny::tags$p(paste0( psychTestR::i18n("First_try"), " ", num_examples, " ", psychTestR::i18n("example_trials"), "."))
+                             ), button_text = psychTestR::i18n("Next")
+                             ),
                              sample_from_user_range(num_examples),
-                             multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
-                                                                     page_text = page_text, page_title = page_title,
-                                                                     example = TRUE, feedback = feedback, get_answer = get_answer,
+                             multi_play_long_tone_record_audio_pages(no_items = num_examples,
+                                                                     page_type = page_type,
+                                                                     page_text = page_text,
+                                                                     page_title = page_title,
+                                                                     example = TRUE,
+                                                                     feedback = feedback,
+                                                                     get_answer = get_answer,
                                                                      trial_paradigm = trial_paradigm,
                                                                      call_and_response_end = call_and_response_end,
                                                                      singing_trial = FALSE),
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))))
+                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))),
+                             button_text = psychTestR::i18n("Next"))
                            )},
                          # Sample
                          sample_from_user_range(num_items),
@@ -1389,10 +1397,12 @@ wjd_audio_melody_trials <- function(item_bank,
 #' @examples
 interval_perception_trials <- function(num_items = 26L,
                                        sound = "piano",
-                                       page_title = "What's that interval?",
-                                       instruction_text = shiny::tags$div(shiny::tags$p("In the next set of trials, you will hear a musical interval."),
-                                                                          shiny::tags$p("You must try and say what the interval is."),
-                                                                          shiny::tags$p("There are no practice rounds, you will begin immediately."))) {
+                                       page_title = psychTestR::i18n("interval_perception_page_title"),
+                                       instruction_text = shiny::tags$div(shiny::tags$p(psychTestR::i18n("interval_perception_instruction_1")),
+                                                                          shiny::tags$p(psychTestR::i18n("interval_perception_instruction_2")),
+                                                                          shiny::tags$p(psychTestR::i18n("interval_perception_instruction_3")),
+                                                                          shiny::tags$p(shiny::tags$em(psychTestR::i18n("interval_perception_instruction_4"))))
+                                       ) {
 
   if(is.numeric(num_items) & num_items > 0L) {
     psychTestR::module("interval_perception",
@@ -1401,7 +1411,7 @@ interval_perception_trials <- function(num_items = 26L,
                          psychTestR::one_button_page(shiny::tags$div(
                            shiny::tags$h2(page_title),
                            instruction_text
-                         )),
+                         ), button_text = psychTestR::i18n("Next")),
                          sample_intervals(num_items = num_items),
                          multi_interval_page(num_items)))
   } else {

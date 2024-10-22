@@ -98,7 +98,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
   # A page type for playing a 5-second tone and recording a user singing with it
 
   trial_paradigm <- match.arg(trial_paradigm)
-  call_and_response_end <- call_and_response_end
+  call_and_response_end <- match.arg(call_and_response_end)
   paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end)
 
   if(trial_paradigm == "simultaneous_recall") {
@@ -109,7 +109,6 @@ play_long_tone_record_audio_page <- function(note = NULL,
     stop(paste0("Unknown long tone paradigm. Must be 'simultaneous_recall' or 'call_and_response'"))
   }
 
-
   save_answer <- !example
 
   psychTestR::reactive_page(function(state, ...) {
@@ -119,12 +118,37 @@ play_long_tone_record_audio_page <- function(note = NULL,
       note <- user_range[long_note_no]
     }
 
-    psychTestR::set_global("trial_time_started", Sys.time(), state)
+    trial_time_started <- Sys.time()
+    psychTestR::set_global("trial_time_started", trial_time_started, state)
     psychTestR::set_global("singing_trial", singing_trial, state)
     psychTestR::set_global('display_modality', "auditory", state)
     psychTestR::set_global('phase', NA, state)
     psychTestR::set_global('rhythmic', NA, state)
 
+
+    db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
+
+      list(
+        stimuli = note,
+        stimuli_durations = long_tone_length,
+        trial_time_started = trial_time_started,
+        instrument = if(singing_trial) "Voice" else psychTestR::get_global("inst", state),
+        attempt = 1L,
+        item_id = NA,
+        display_modality = "auditory",
+        phase = "test",
+        rhythmic = NA,
+        session_id = get_promise_value(psychTestR::get_global("session_id", state)),
+        test_id = 1L,
+        user_id = psychTestR::get_global("user_id", state),
+        review_items_id = NA,
+        new_items_id = NA,
+        feedback = FALSE,
+        feedback_type = NA,
+        trial_paradigm = paste0("long_note_", trial_paradigm),
+        additional = NA
+      )
+    } else NULL
 
     present_stimuli(stimuli = note,
                     stimuli_type = "midi_notes",
@@ -136,6 +160,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     play_button_text = play_button_text,
                     note_length = long_tone_length,
                     sound = "tone",
+                    db_vars = db_vars,
                     save_answer = save_answer,
                     get_answer = get_answer,
                     melody_no = long_note_no,

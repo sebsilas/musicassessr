@@ -9,7 +9,7 @@
 #' @param opt Musicassessr options.
 #' @param final_page The UI of the final page.
 #' @param welcome_page Required because you need a page before musicassessr_init to instantiate a p_id.
-#' @param dict
+#' @param dict A psychTestR dictionary for translations.
 #' @param ...
 #'
 #' @return
@@ -42,59 +42,68 @@ make_musicassessr_test <- function(title,
 
   setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
 
-  psychTestR::make_test(
-    psychTestR::new_timeline(
-      psychTestR::join(
+  tl <- psychTestR::join(
 
-        # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
-        welcome_page,
+      psychTestR::new_timeline(
+        psychTestR::join(
 
-        # Get participant ID
-        if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
+          # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
+          welcome_page,
 
-        # Init musicassessr
-        musicassessr_init(
-          app_name = opt$app_name,
-          experiment_id = opt$experiment_id,
-          experiment_condition_id = opt$experiment_condition_id,
-          user_id = opt$user_id,
-          default_range = opt$default_range,
-          username = opt$username,
-          asynchronous_api_mode =  opt$asynchronous_api_mode,
-          instrument_id = opt$instrument_id,
-          inst = opt$instrument,
-          get_user_info = opt$get_user_info,
-          redirect_on_failure_url = opt$redirect_on_failure_url
+          # Get participant ID
+          if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
+
+          # Init musicassessr
+          musicassessr_init(
+            app_name = opt$app_name,
+            experiment_id = opt$experiment_id,
+            experiment_condition_id = opt$experiment_condition_id,
+            user_id = opt$user_id,
+            default_range = opt$default_range,
+            username = opt$username,
+            asynchronous_api_mode =  opt$asynchronous_api_mode,
+            instrument_id = opt$instrument_id,
+            inst = opt$instrument,
+            get_user_info = opt$get_user_info,
+            redirect_on_failure_url = opt$redirect_on_failure_url,
+            async_success_msg = opt$async_success_msg,
+            use_presigned_url = opt$use_presigned_url
           ),
 
-        # Timeline before setup pages
-        elts_before_setup_pages(),
+          # Timeline before setup pages
+          elts_before_setup_pages(),
 
-        # Setup pages
-        if (opt$setup_pages) setup_enclosure,
+          # Setup pages
+          if (opt$setup_pages) setup_enclosure
 
-        # Timeline after setup pages
+          # Timeline after setup pages
+        ), dict = dict),
 
         elts(),
 
-        # Save results
-        psychTestR::elt_save_results_to_disk(complete = TRUE),
+        psychTestR::new_timeline(
+          psychTestR::join(
+          # Save results
+          psychTestR::elt_save_results_to_disk(complete = TRUE),
 
-        # Add final session information to DB (if asynchronous_api_mode)
-        musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
+          # Add final session information to DB (if asynchronous_api_mode)
+          musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
 
-        # Final page
-        final_page
+          # Final page
+          final_page
 
-      ),
-      dict = dict
-    ),
+          ), dict = dict)
+
+      )
+
+  psychTestR::make_test(tl,
     opt = psychTestR::test_options(
       title = title,
       admin_password = admin_password,
       languages = languages,
       on_session_ended_fun = end_session(asynchronous_api_mode = opt$asynchronous_api_mode),
       get_user_info = opt$get_user_info,
+      enable_admin_panel = FALSE,
       additional_scripts = musicassessr::musicassessr_js(app_name = opt$app_name,
                                                          visual_notation = opt$visual_notation,
                                                          midi_file_playback = opt$midi_file_playback,
@@ -343,6 +352,8 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
 #' @param instrument What instrument is the test using?
 #' @param get_user_info Get user geolocation and device information?
 #' @param redirect_on_failure_url If the test fails, where should the participant be redirected?
+#' @param async_success_msg What message should be shown after the user logs in via the async system?
+#' @param use_presigned_url For audio uploading, should a presigned URL be used?
 #'
 #' @return
 #' @export
@@ -372,7 +383,9 @@ musicassessr_opt <- function(setup_pages = TRUE,
                              ),
                              instrument = "Voice",
                              get_user_info = TRUE,
-                             redirect_on_failure_url = "https://www.google.com/") {
+                             redirect_on_failure_url = "https://www.google.com/",
+                             async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+                             use_presigned_url = TRUE) {
 
   stopifnot(
     is.scalar.logical(setup_pages),
@@ -396,7 +409,9 @@ musicassessr_opt <- function(setup_pages = TRUE,
     is(get_pid_prompt, "shiny.tag") || is.scalar.character(get_p_id_prompt),
     is.scalar.character(instrument),
     is.scalar.logical(get_user_info),
-    is.scalar.character(redirect_on_failure_url)
+    is.scalar.character(redirect_on_failure_url),
+    is.scalar.character(async_success_msg),
+    is.scalar.logical(use_presigned_url)
   )
 
   if(get_user_info) {
@@ -423,7 +438,9 @@ musicassessr_opt <- function(setup_pages = TRUE,
     get_pid_prompt = get_pid_prompt,
     instrument = instrument,
     get_user_info = get_user_info,
-    redirect_on_failure_url = redirect_on_failure_url
+    redirect_on_failure_url = redirect_on_failure_url,
+    async_success_msg = async_success_msg,
+    use_presigned_url = use_presigned_url
   )
 
 }

@@ -7,11 +7,12 @@
 interval_perception_trials(
   num_items = 26L,
   sound = "piano",
-  page_title = "What's that interval?",
+  page_title = psychTestR::i18n("interval_perception_page_title"),
   instruction_text =
-    shiny::tags$div(shiny::tags$p("In the next set of trials, you will hear a musical interval."),
-    shiny::tags$p("You must try and say what the interval is."),
-    shiny::tags$p("There are no practice rounds, you will begin immediately."))
+    shiny::tags$div(shiny::tags$p(psychTestR::i18n("interval_perception_instruction_1")),
+    shiny::tags$p(psychTestR::i18n("interval_perception_instruction_2")),
+    shiny::tags$p(psychTestR::i18n("interval_perception_instruction_3")),
+    shiny::tags$p(shiny::tags$em(psychTestR::i18n("interval_perception_instruction_4"))))
 )
 }
 \arguments{

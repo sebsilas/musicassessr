@@ -28,7 +28,9 @@ musicassessr_opt(
     shiny::tags$em("mi121900"), ".")),
   instrument = "Voice",
   get_user_info = TRUE,
-  redirect_on_failure_url = "https://www.google.com/"
+  redirect_on_failure_url = "https://www.google.com/",
+  async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+  use_presigned_url = TRUE
 )
 }
 \arguments{
@@ -71,6 +73,10 @@ musicassessr_opt(
 \item{get_user_info}{Get user geolocation and device information?}
 
 \item{redirect_on_failure_url}{If the test fails, where should the participant be redirected?}
+
+\item{async_success_msg}{What message should be shown after the user logs in via the async system?}
+
+\item{use_presigned_url}{For audio uploading, should a presigned URL be used?}
 }
 \description{
 Specify options for a musicassessr test.

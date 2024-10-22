@@ -4,7 +4,10 @@
 \alias{multi_interval_page}
 \title{Deploy a block of n trials which play back intervals}
 \usage{
-multi_interval_page(num_items = 26L, page_title = "What is the interval?")
+multi_interval_page(
+  num_items = 26L,
+  page_title = psychTestR::i18n("interval_perception_page_title")
+)
 }
 \arguments{
 \item{page_title}{}

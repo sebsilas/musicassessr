@@ -17,7 +17,7 @@ select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
     insts <- setdiff(insts, "voice")
   }
 
-  # do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
+  # Do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
   insts_dict <- lapply(insts, psychTestR::i18n)
 
   psychTestR::dropdown_page(label = "select_musical_instrument",
@@ -27,6 +27,7 @@ select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
                 alternative_choice = TRUE,
                 alternative_text = psychTestR::i18n("other_please_state"),
                 on_complete = function(state, answer, ...) {
+
                   language <- psychTestR::get_url_params(state)$language
 
                   if(language != "en") {
@@ -42,7 +43,7 @@ select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
 }
 
 
-midi_vs_audio_select_page <- function(prompt = "How will you input into the test?") {
+midi_vs_audio_select_page <- function(prompt = psychTestR::i18n("input_selector_message")) {
   psychTestR::dropdown_page(label = "select_input",
                 next_button_text = psychTestR::i18n("Next"),
                 prompt = prompt,
@@ -54,8 +55,8 @@ midi_vs_audio_select_page <- function(prompt = "How will you input into the test
 
 
 intervals_df <- tibble::tibble(
-  interval = c(names(itembankr::intervals), names(itembankr::intervals)),
-  interval_numeric = c(as.vector(unlist(itembankr::intervals)), as.vector(unlist(itembankr::intervals))),
+  interval = c(names(intervals), names(intervals)),
+  interval_numeric = c(as.vector(unlist(intervals)), as.vector(unlist(intervals))),
   direction = c(NA, rep("ascending", 12), NA, rep("descending", 12))
 )
 
@@ -90,7 +91,7 @@ sample_intervals <- function(ascending = TRUE, bottom_range = 48, top_range = 72
 
 
 play_interval_page <- function(interval = NULL,
-                               page_title = "What is the interval?",
+                               page_title = psychTestR::i18n("interval_perception_page_title"),
                                play_button_text = psychTestR::i18n("Play"),
                                example = FALSE,
                                label = "interval_",
@@ -113,8 +114,12 @@ play_interval_page <- function(interval = NULL,
       psychTestR::set_global("answer_meta_data", abs_interval,  state)
     }
 
-    psychTestR::page(ui = shiny::tags$div(
-        shiny::tags$h2(page_title),
+    # Do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
+    # intervals_dict <- lapply(intervals, psychTestR::i18n)
+    intervals_dict <- lapply(paste0("interval_", 0:12), psychTestR::i18n)
+
+    ui <- shiny::tags$div(
+      shiny::tags$h2(page_title),
       present_stimuli(stimuli = itembankr::str_mel_to_vector(abs_interval$abs_interval),
                       stimuli_type = "midi_notes",
                       display_modality = "auditory",
@@ -123,11 +128,25 @@ play_interval_page <- function(interval = NULL,
                       sound = "piano"),
       shiny::selectInput(inputId = "dropdown",
                          label = NULL,
-                         choices = names(itembankr::intervals),
+                         choices = unlist(as.vector(intervals_dict)), #names(intervals),
                          width = "30%"),
-      psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
-    label = label, get_answer = get_answer, save_answer = save_answer)
+      shiny::tags$button(
+        id = "next",
+        type = "button",
+        class = "btn btn-default action-button",
+        psychTestR::i18n("Next"),
+        onclick = paste0("if(confirm('", psychTestR::i18n("sure_continue"), "')) {
+        trigger_button(this.id);
+        } else {
+          return false;
+        }")
+      )
+  )
 
+    psychTestR::page(ui = ui,
+                     label = label,
+                     get_answer = get_answer,
+                     save_answer = save_answer)
   })
 
 }
@@ -143,7 +162,7 @@ play_interval_page <- function(interval = NULL,
 #'
 #' @examples
 multi_interval_page <- function(num_items = 26L,
-                                page_title = "What is the interval?") {
+                                page_title = psychTestR::i18n("interval_perception_page_title")) {
   psychTestR::module(label = "interval_perception",
     lapply(1:num_items, function(trial_no) {
       play_interval_page(trial_no = trial_no, page_title = page_title)

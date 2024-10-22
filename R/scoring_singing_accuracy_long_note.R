@@ -158,6 +158,10 @@ calculate_stable_part <- function(df, plot = FALSE, return_df = FALSE) {
 
 score_cents_deviation_from_nearest_stimuli_pitch <- function(user_prod_pitches, stimuli, freq) {
 
+  logging::loginfo("score_cents_deviation_from_nearest_stimuli_pitch")
+
+  logging::loginfo("user_prod_pitches %s", user_prod_pitches)
+  logging::loginfo("stimuli %s", stimuli)
 
   nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli,
                                                                            user_production_pitches = user_prod_pitches,
@@ -207,10 +211,18 @@ get_all_octaves_in_gamut <- Vectorize(function(note, gamut_min = midi.gamut.min,
 #' @export
 #'
 #' @examples
-find_closest_stimuli_pitch_to_user_production_pitches <-
-  function(stimuli_pitches, user_production_pitches, allOctaves = TRUE) {
+find_closest_stimuli_pitch_to_user_production_pitches <- function(stimuli_pitches,
+                                                                  user_production_pitches,
+                                                                  allOctaves = TRUE) {
 
-    stopifnot(all(!is.na(stimuli_pitches)), all(!is.na(user_production_pitches)), is.scalar.logical(allOctaves) )
+    logging::loginfo("find_closest_stimuli_pitch_to_user_production_pitches")
+
+    logging::loginfo("stimuli_pitches %s", stimuli_pitches)
+    logging::loginfo("user_production_pitches %s", user_production_pitches)
+
+    stopifnot(all(!is.na(stimuli_pitches)),
+              all(!is.na(user_production_pitches)),
+              is.scalar.logical(allOctaves) )
 
     stimuli_pitches <- as.integer(stimuli_pitches)
 

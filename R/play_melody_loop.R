@@ -807,6 +807,31 @@ present_melody <- function(stimuli,
     # Get trial paradigm info
     trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = is_function_or_true(feedback), asynchronous_api_mode = asynchronous_api_mode)
 
+    if(display_modality == "visual") {
+      key <- compute_key_on_the_fly(stimuli)
+      key_sharps_or_flats <- get_no_sharps_or_flats_from_key(key)
+      if(key_sharps_or_flats == 0) {
+        no_sharps <- 0
+        no_flats <- 0
+      } else if(key_sharps_or_flats < 0) {
+        no_sharps <- 0
+        no_flats <- abs(key_sharps_or_flats)
+      } else if(key_sharps_or_flats > 0) {
+        no_sharps <- key_sharps_or_flats
+        no_flats <- 0
+      }
+
+      additional <- list(
+        clef = clef,
+        key_signature = key,
+        no_flats_key_signature = no_sharps,
+        no_sharps_key_signature = no_flats
+      )
+    } else {
+      key <- NULL
+      additional <- list()
+    }
+
     db_vars <- if(asynchronous_api_mode) {
 
       list(
@@ -826,7 +851,8 @@ present_melody <- function(stimuli,
         new_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
         feedback = psychTestR::get_global("async_feedback", state),
         feedback_type = psychTestR::get_global("async_feedback_type", state),
-        trial_paradigm = melody_trial_paradigm
+        trial_paradigm = melody_trial_paradigm,
+        additional = additional
       )
     } else NULL
 
@@ -878,7 +904,8 @@ present_melody <- function(stimuli,
                     db_vars = db_vars,
                     lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
                     feedback = feedback,
-                    asynchronous_api_mode = asynchronous_api_mode)
+                    asynchronous_api_mode = asynchronous_api_mode,
+                    key = key)
 
   })
 }

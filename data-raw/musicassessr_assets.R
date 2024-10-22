@@ -3,6 +3,8 @@ library(tidyverse)
 library(readxl)
 library(psych)
 
+load_all()
+
 setwd('~/musicassessr')
 
 # grab WJD meta info
@@ -64,6 +66,8 @@ key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")
 musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
 
+nrow(musicassessr_dict_df)
+
 anyNA(musicassessr_dict_df)
 
 # make sure to get all objects
@@ -76,7 +80,9 @@ load('data-raw/melody_pca2_data.rda')
 load('data-raw/melody_pca2.rda')
 
 
-musicassessr_dict <- musicassessr::dict(NULL)
+musicassessr_dict <- musicassessr::dict(additional_dict = NULL,
+                          main_dict = musicassessr_dict_df)
+
 
 
 # test the long note predict method
@@ -116,9 +122,14 @@ predict(long_note_pca2,
 
 # NB, run the other file for the musicassessr dict
 
+intervals <- list(Unison = 0L, `Minor 2nd` = 1L, `Major 2nd` = 2L, `Minor 3rd` = 3L,
+                  `Major 3rd` = 4L, `Perfect Fourth` = 5L, Tritone = 6L, `Perfect 5th` = 7L,
+                  `Minor 6th` = 8L, `Major 6th` = 9L, `Minor 7th` = 10L, `Major 7th` = 11L,
+                  Octave = 12L)
+
 # Internal
 usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
-                  musicassessr_dict,
+                  musicassessr_dict, intervals,
                   instrument_list, key_rankings, keys_table, long_note_pca2,
                   overwrite = TRUE, internal = TRUE)
 
@@ -131,5 +142,9 @@ use_data(musicassessr_dict,
          melody_pca2_data, long_note_agg,
          overwrite = TRUE)
 
+document()
 
+credentials::set_github_pat()
+
+install()
 

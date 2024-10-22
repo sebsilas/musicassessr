@@ -15,7 +15,8 @@ present_stimuli_midi_notes_visual(
   transpose_visual_notation = 0L,
   audio_play_button_id = "playButton",
   sheet_music_start_hidden = FALSE,
-  durations = NULL
+  durations = NULL,
+  key = NULL
 )
 }
 \arguments{

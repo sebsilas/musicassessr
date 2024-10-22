@@ -126,12 +126,14 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   proportion_of_correct_note_events_octaves_allowed_controlled_by_stimuli_length_log_normal <- proportion_of_correct_note_events_octaves_allowed * log_normal(no_recalled_notes/stimuli_length)
 
 
-  # proportion of stimuli (target) notes found
+  # Proportion of stimuli (target) notes found
   proportion_of_stimuli_notes_found <- length(base::intersect(user_melody_input, unique(stimuli) )) / length(unique(stimuli))
   proportion_of_stimuli_notes_found_octaves_allowed <- length(base::intersect(user_pitch_classes, unique(stimuli_pitch_classes) )) / length(unique(stimuli_pitch_classes))
 
-  # fine-grained pitch measures (i.e singing style):
-  nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli, user_production_pitches = features_df$note, allOctaves = TRUE)
+  # Fine-grained pitch measures (i.e singing style):
+  nearest_pitches <- find_closest_stimuli_pitch_to_user_production_pitches(stimuli_pitches = stimuli,
+                                                                           user_production_pitches = features_df$note,
+                                                                           allOctaves = TRUE)
 
   if(length(pyin_pitch_track) > 0 & !"note" %in% names(pyin_pitch_track)) {
     pyin_pitch_track <- pyin_pitch_track %>%
@@ -153,7 +155,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
                     nearest_stimuli_note = nearest_pitches_pyin_track)
   }
 
-  # additional (user-defined)
+  # Additional (user-defined)
   additional_scoring_measures <- apply_additional_scoring_measures(additional_scoring_measures, features_df$onset, features_df$dur, features_df$freq, features_df$note, stimuli, stimuli_durations)
 
   res <- list(

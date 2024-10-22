@@ -24,11 +24,12 @@ present_stimuli_midi_notes_both(
   clef = "auto",
   first_note_message = psychTestR::i18n("first_note_is"),
   transposed_message = psychTestR::i18n("transposed"),
-  play_first_note_button_text = psychTestR::i18n("play_first_note")
+  play_first_note_button_text = psychTestR::i18n("play_first_note"),
+  key = NULL
 )
 }
 \arguments{
-\item{play_first_note_button_text}{}
+\item{key}{}
 }
 \description{
 Present midi notes in both visual and auditory modalities

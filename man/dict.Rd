@@ -4,10 +4,10 @@
 \alias{dict}
 \title{Use musicassessr standard dictionary plus concatenate with your own}
 \usage{
-dict(additional_dict = NULL)
+dict(additional_dict = NULL, main_dict = musicassessr::musicassessr_dict_df)
 }
 \arguments{
-\item{additional_dict}{}
+\item{main_dict}{}
 }
 \description{
 Use musicassessr standard dictionary plus concatenate with your own

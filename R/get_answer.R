@@ -963,6 +963,8 @@ get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, ...) 
 
 
 
+
+
 #' Estimate syllable from an audio file
 #'
 #' @param input
@@ -1022,5 +1024,24 @@ get_answer_syllable_classification <- function(input,
   list(syllable_probabilities = preds,
        shap_values = shap_values,
        audio_features = audio_features)
+
+}
+
+
+get_answer_async_midi_vs_audio <- function(input, state, ...) {
+
+  res_type <- psychTestR::get_global("response_type", state)
+
+  if(res_type == "Microphone") {
+
+    res <- get_answer_add_trial_and_compute_trial_scores_s3(input, state, ...)
+
+  } else if(res_type == "MIDI") {
+
+    res <- get_answer_midi_melodic_production(input, state, ...)
+
+  } else {
+    stop("response_type invalid")
+  }
 
 }

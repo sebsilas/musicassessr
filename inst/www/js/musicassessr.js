@@ -15,26 +15,27 @@ preloadImage("https://adaptiveeartraining.com/assets/robot.png");
 
 
 // Instantiate vars
-var confidences = [];
-var user_response_frequencies = [];
-var timecodes = [];
-var rmses = [];
-var user_response_midi_note_on = [];
-var user_response_midi_note_off = [];
-var onsets_noteon = [];
-var onsets_noteoff = [];
-var stop_button_text;
-var startTime;
-var midi_device;
-var recordkey;
-var file_url;
-var onsets_noteon_timecode = [];
-var stimulus_trigger_times = [];
-var upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
-var pattern; // the melodic pattern being played. We only want one to be played at once.
-var get_async_feedback = false;
-var intervalId;
-var audioPlayerUserPaused = false;
+let confidences = [];
+let user_response_frequencies = [];
+let timecodes = [];
+let rmses = [];
+let user_response_midi_note_on = [];
+let user_response_midi_note_off = [];
+let onsets_noteon = [];
+let onsets_noteoff = [];
+let stop_button_text;
+let startTime;
+let midi_device;
+let recordkey;
+let file_url;
+let onsets_noteon_timecode = [];
+let stimulus_trigger_times = [];
+let upload_to_s3 = false; // By default, updated at the beginning of the test where otherwise
+let pattern; // the melodic pattern being played. We only want one to be played at once.
+let get_async_feedback = false;
+let intervalId;
+let audioPlayerUserPaused = false;
+let use_presigned_url = true;
 
 // Grab the language from psychTestR via the URL parameter
 const queryString = window.location.search;
@@ -48,23 +49,23 @@ console.log('lang: ' + lang);
 // // Trial info
 
 // Note stimuli and stimuli_durations are instantiated elsewhere (via R)
-var db_trial_time_started;
-var db_trial_time_completed;
-var db_instrument;
-var db_attempt;
-var db_item_id;
-var db_display_modality;
-var db_phase;
-var db_rhythmic;
-var db_session_id;
-var db_test_id;
-var db_new_items_id;
-var db_review_items_id;
-var db_onset;
-var db_user_id;
-var db_feedback;
-var db_feedback_type;
-var db_trial_paradigm;
+let db_trial_time_started;
+let db_trial_time_completed;
+let db_instrument;
+let db_attempt;
+let db_item_id;
+let db_display_modality;
+let db_phase;
+let db_rhythmic;
+let db_session_id;
+let db_test_id;
+let db_new_items_id;
+let db_review_items_id;
+let db_onset;
+let db_user_id;
+let db_feedback;
+let db_feedback_type;
+let db_trial_paradigm;
 
 // Functions
 
@@ -198,7 +199,7 @@ function connect_sound(sound) {
 
 function triggerNote(sound, freq_tone, seconds, time) {
 
-  var triggerTime = new Date().getTime();
+  let triggerTime = new Date().getTime();
   stimulus_trigger_times.push(triggerTime);
 
   if (sound === "piano") {
@@ -223,7 +224,7 @@ function playTone(tone, seconds) {
 
   tone = Number(tone);
 
-  var freq_tone = Tone.Frequency(tone, "midi").toNote();
+  let freq_tone = Tone.Frequency(tone, "midi").toNote();
 
   triggerNote('tone', freq_tone, seconds);
 
@@ -264,8 +265,13 @@ function playTones (freq_list) {
 
 function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun = null) {
 
+  console.log('playSingleNote');
+  console.log(note_list);
+  console.log(dur_list);
+  console.log(trigger_end_of_stimuli_fun);
 
-  var freq_list = Tone.Frequency(note_list, "midi").toNote();
+
+  let freq_list = Tone.Frequency(note_list, "midi").toNote();
 
 
   triggerNote(sound, freq_list, dur_list);
@@ -283,6 +289,20 @@ function playSingleNote(note_list, dur_list, sound, trigger_end_of_stimuli_fun =
 
 function playSeq(id, note_list, dur_list = null, sound = 'piano',
                  trigger_start_of_stimuli_fun = null, trigger_end_of_stimuli_fun = null) {
+
+  console.log('playSeq');
+  console.log(note_list);
+  console.log(dur_list);
+  console.log(trigger_start_of_stimuli_fun);
+  console.log(trigger_end_of_stimuli_fun);
+
+  if(note_list.length === 1) {
+    note_list = note_list[0];
+    dur_list = dur_list[0];
+  }
+
+  console.log(note_list);
+  console.log(dur_list);
 
 
   // Hide play buttons to avoid any double stimuli playing
@@ -319,12 +339,12 @@ function playSeq(id, note_list, dur_list = null, sound = 'piano',
 
 
     // Convert to freqs
-    var freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
+    let freq_list = note_list.map(x => Tone.Frequency(x, "midi").toNote());
 
-    var last_note = freq_list.length;
-    var count = 0;
+    let last_note = freq_list.length;
+    let count = 0;
 
-    var notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
+    let notesAndDurations = bind_notes_and_durations(freq_list, dur_list);
     notesAndDurations = notesAndDurations.map(timeFromDurations);
 
     pattern = new Tone.Part((time, value) => {
@@ -366,10 +386,10 @@ function timeFromDurations(value, i, arr) {
 }
 
 function bind_notes_and_durations(notes, durations) {
-    var i;
-    var currentNote;
-    var currentDur;
-    var result = [];
+    let i;
+    let currentNote;
+    let currentDur;
+    let result = [];
 
     for (i = 0; i < notes.length; i++) {
         currentNote = notes[i];
@@ -481,7 +501,7 @@ function show_happy_with_response_message() {
   	  spinner[0].style.display = "block";
   	}
    }
-  var lyrics = document.getElementById("lyrics");
+  let lyrics = document.getElementById("lyrics");
   if(lyrics != null) {
     lyrics.remove();
   }
@@ -518,7 +538,7 @@ function hideAsyncFeedback() {
 
 function hidePlayButton(play_button_id = "playButton") {
   // Make sure play is hidden immediately after being clicked once! multiple clicks can cause problems.
-  var playButton = document.getElementById(play_button_id);
+  let playButton = document.getElementById(play_button_id);
   if (playButton !== null) {
     playButton.style.display = "none";
   }
@@ -526,7 +546,7 @@ function hidePlayButton(play_button_id = "playButton") {
 }
 
 function hideAudioFilePlayer() {
-  var player = document.getElementById("player");
+  let player = document.getElementById("player");
   player.style.display = "none";
 }
 
@@ -579,7 +599,7 @@ function recordUpdateUI(page_type = null,
 
   removeElementIfExists("first_note");
 
-  var volumeMeter = document.getElementById('volumeMeter');
+  let volumeMeter = document.getElementById('volumeMeter');
   if(volumeMeter !== null) {
   volumeMeter.style.visibility = "visible";
   }
@@ -601,18 +621,18 @@ function recordUpdateUI(page_type = null,
 
 
 function showSheetMusic(sheet_music_id) {
-  var sheet_music = document.getElementById(sheet_music_id);
+  let sheet_music = document.getElementById(sheet_music_id);
   sheet_music.style.visibility = "visible";
 }
 
 function hideSheetMusic(sheet_music_id) {
-  var sheet_music = document.getElementById(sheet_music_id);
+  let sheet_music = document.getElementById(sheet_music_id);
   sheet_music.style.visibility = "hidden";
 }
 
 
 function hideLoading() {
-  var loading = document.getElementById("loading");
+  let loading = document.getElementById("loading");
   if (loading !== undefined) {
     loading.style.visibility = 'hidden';
   }
@@ -623,7 +643,7 @@ function stopRecording(page_type = "record_audio_page",
                        trigger_next_page = true) {
 
   // Check if audio player
-  var player = document.getElementById("player");
+  let player = document.getElementById("player");
 
   console.log('stop');
 
@@ -633,7 +653,7 @@ function stopRecording(page_type = "record_audio_page",
   // If the player is paused, the recording has been manually stopped, so only execute the below logic under that condition
   if (!audioPlayerUserPaused) {
 
-    var volumeMeter = document.getElementById('volumeMeter');
+    let volumeMeter = document.getElementById('volumeMeter');
 
     if(volumeMeter !== null) {
       volumeMeter.remove(); /* To remove empty space in UI */
@@ -669,7 +689,7 @@ function stopRecording(page_type = "record_audio_page",
 
 function showStopButton(page_type = null, stop_button_text = "Stop", show_sheet_music = false, trigger_next_page = true, sheet_music_id = 'sheet_music') {
 
-  var stopButton = document.getElementById("stopButton");
+  let stopButton = document.getElementById("stopButton");
 
   if(stopButton !== undefined) {
     createCorrectStopButton(page_type, show_sheet_music, sheet_music_id, trigger_next_page);
@@ -698,7 +718,7 @@ function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = '
 
     // If there is some audio playing, stop it
     stopRecording(page_type, trigger_next_page); // but make sure to stop the recording FIRST
-    var player = document.getElementById("player");
+    let player = document.getElementById("player");
 
     if(player !== null) {
       player.pause();
@@ -711,13 +731,13 @@ function createCorrectStopButton(page_type, show_sheet_music, sheet_music_id = '
 
 function showRecordingIcon() {
 
-  var img = document.createElement("img");
+  let img = document.createElement("img");
   img.id = "recordingIcon";
   img.style.display = "block";
   img.src =  "https://adaptiveeartraining.com/assets/img/record.gif";
   img.width = "280";
   img.height = "280";
-  var button_area = document.getElementById("button_area");
+  let button_area = document.getElementById("button_area");
 
   setTimeout(() => {
         button_area.appendChild(img);
@@ -727,7 +747,7 @@ function showRecordingIcon() {
 }
 
 function hideRecordingIcon() {
-  var rec_icon = document.getElementById("recordingIcon");
+  let rec_icon = document.getElementById("recordingIcon");
   if (rec_icon.style.display === "none") {
     rec_icon.style.display = "block";
    } else {
@@ -737,7 +757,7 @@ function hideRecordingIcon() {
 
 
 function hideStopButton() {
-  var stopButton = document.getElementById("stopButton");
+  let stopButton = document.getElementById("stopButton");
   if (stopButton.style.display === "none") {
     stopButton.style.display = "block";
    } else {
@@ -746,7 +766,7 @@ function hideStopButton() {
 }
 
 function hideRecordButton() {
-  var recButton = document.getElementById("recordButton");
+  let recButton = document.getElementById("recordButton");
   if (recButton.style.display === "none") {
     recButton.style.display = "block";
   } else {
@@ -759,25 +779,25 @@ function hideRecordButton() {
 
 
 function removeElementIfExists(element) {
-  var el = document.getElementById(element);
+  let el = document.getElementById(element);
   if(el !== null) {
     el.parentNode.removeChild(el);
   }
 }
 
 function removeElement(element) {
-  var el = document.getElementById(element);
+  let el = document.getElementById(element);
   el.parentNode.removeChild(el);
 }
 
 function getDateTime() {
-  var now = new Date();
-  var year = now.getFullYear();
-  var month = now.getMonth()+1;
-  var day = now.getDate();
-  var hour = now.getHours();
-  var minute = now.getMinutes();
-  var second = now.getSeconds();
+  let now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth()+1;
+  let day = now.getDate();
+  let hour = now.getHours();
+  let minute = now.getMinutes();
+  let second = now.getSeconds();
   if(month.toString().length == 1) {
     month = '0'+month;
   }
@@ -793,7 +813,7 @@ function getDateTime() {
   if(second.toString().length == 1) {
     second = '0'+second;
   }
-  var dateTime = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
+  let dateTime = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
   return dateTime;
 }
 
@@ -806,14 +826,14 @@ function vectorToString(vector) {
 }
 
 function diff(ary) {
-    var newA = [];
-    for (var i = 1; i < ary.length; i++)  newA.push(ary[i] - ary[i - 1]);
+    let newA = [];
+    for (let i = 1; i < ary.length; i++)  newA.push(ary[i] - ary[i - 1]);
     newA.unshift(0); // pop a 0 on the front
     return newA;
 }
 
 function preloadImage(url) {
-    var img = new Image();
+    let img = new Image();
     img.src = url;
 }
 
@@ -821,8 +841,8 @@ function preloadImage(url) {
 // Checks
 
 function getUserInfo () {
-    var _navigator = {};
-    for (var i in navigator) _navigator[i] = navigator[i];
+    let _navigator = {};
+    for (let i in navigator) _navigator[i] = navigator[i];
     delete _navigator.plugins;
     delete _navigator.mimeTypes;
     navigatorJSON = JSON.stringify(_navigator);
@@ -844,7 +864,7 @@ function testFeatureCapability() {
 
 function testMediaRecorder () {
 
-  var isMediaRecorderSupported = false;
+  let isMediaRecorderSupported = false;
 
   try {
       MediaRecorder;
@@ -862,20 +882,20 @@ function testMediaRecorder () {
 URL = window.URL || window.webkitURL;
 //
 
-var file_is_ready = false;
-var gumStream; 						//stream from getUserMedia()
-var rec; 							//Recorder.js object
-var input;
+let file_is_ready = false;
+let gumStream; 						//stream from getUserMedia()
+let rec; 							//Recorder.js object
+let input;
 //MediaStreamAudioSourceNode we'll be recording
 ////////
 // shim for AudioContext when it's not avb.
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioContext //audio context to help us record
+let AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioContext //audio context to help us record
 
 
 function startAudioRecording() {
 
-    var constraints = { audio: true, video:false }
+    let constraints = { audio: true, video:false }
 
 	/*
     	We're using the standard promise based getUserMedia()
@@ -969,9 +989,9 @@ function stopMidiRecording() {
 
 function create_recordkey() {
 
-  var currentDate = new Date();
+  let currentDate = new Date();
 
-  var recordkey = currentDate.getDate().toString() + '-' + (currentDate.getMonth() + 1 ).toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
+  let recordkey = currentDate.getDate().toString() + '-' + (currentDate.getMonth() + 1 ).toString() + '-' + currentDate.getFullYear().toString() + '--' + currentDate.getHours().toString() + '-' + currentDate.getMinutes()  + '--' + currentDate.getSeconds().toString();
 
   if (typeof page_label === 'string') {
     recordkey = page_label + '.' + recordkey;
@@ -989,9 +1009,9 @@ function create_recordkey() {
 
 function store_file_locally(blob) {
 
-	var xhr = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 
-	var fd = new FormData();
+	let fd = new FormData();
 
 	fd.append("audio_data", blob, recordkey);
 
@@ -1025,9 +1045,9 @@ function store_file_locally(blob) {
 
 function process_file_on_server(blob) {
 
-	var xhr = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 
-	var fd = new FormData();
+	let fd = new FormData();
 
 	fd.append("audio_data", blob, recordkey);
 
@@ -1060,11 +1080,11 @@ function process_file_on_server(blob) {
 
 async function upload_file_to_s3(blob) {
 
-  var currentDate = new Date();
-  var recordkey = create_recordkey();
-  var file_url = recordkey;
+  let currentDate = new Date();
+  let recordkey = create_recordkey();
+  let file_url = recordkey;
 
-  var md = {
+  let md = {
     // Note, all metadata must be strings
     "stimuli": vectorToString(stimuli),
     "stimuli-durations": vectorToString(stimuli_durations),
@@ -1091,9 +1111,18 @@ async function upload_file_to_s3(blob) {
 
   const requestBody = { filename: file_url, metadata: md };
 
+  let endpoint;
+
+  if (use_presigned_url) {
+    endpoint = "v2/get-audio-presigned-url";
+  } else {
+    endpoint = "v2/get-audio-presigned-url-legacy";
+  }
+
   try {
     const retrievedTokenString = localStorage.getItem('jwkToken');
-    const response = await fetch(apiUrl + "/v2/get-audio-presigned-url", {
+
+    const response = await fetch(apiUrl + endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1250,35 +1279,35 @@ function hideLoader() {
 }
 
 function hideSingImage() {
-  var sing_image = document.getElementById('singImage');
+  let sing_image = document.getElementById('singImage');
   if(sing_image !== 'undefined') {
     sing_image.style.display = 'none';
   }
 }
 
 function hideTrialPageTitle() {
-  var trial_page_title = document.getElementById('trial_page_title');
+  let trial_page_title = document.getElementById('trial_page_title');
   if(trial_page_title !== 'undefined') {
     trial_page_title.style.display = 'none';
   }
 }
 
 function hideTrialPageText() {
-  var trial_page_text = document.getElementById('trial_page_text');
+  let trial_page_text = document.getElementById('trial_page_text');
   if(trial_page_text !== 'undefined') {
     trial_page_text.style.display = 'none';
   }
 }
 
 function hideStimuliArea() {
-  var stimuliArea = document.getElementById('stimuliArea');
+  let stimuliArea = document.getElementById('stimuliArea');
   if(stimuliArea !== 'undefined') {
     stimuliArea.style.display = 'none';
   }
 }
 
 function hideLyrics() {
-  var lyrics = document.getElementById('lyrics');
+  let lyrics = document.getElementById('lyrics');
   if(lyrics != null) {
     lyrics.style.display = 'none';
   }
@@ -1294,7 +1323,7 @@ function stopPolling() {
 
 function appendNextButton(onClick = next_page, id = 'async-feedback') {
   // Create a new button element
-  var nextButton = document.createElement('button');
+  let nextButton = document.createElement('button');
 
 
   if(lang == "en"){
@@ -1315,7 +1344,7 @@ function appendNextButton(onClick = next_page, id = 'async-feedback') {
   nextButton.onclick = onClick;
 
   // Append the button to the element with ID
-  var areaToAppendTo = document.getElementById(id);
+  let areaToAppendTo = document.getElementById(id);
   if (areaToAppendTo) {
     areaToAppendTo.appendChild(nextButton);
   } else {

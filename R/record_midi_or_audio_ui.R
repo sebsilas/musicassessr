@@ -104,7 +104,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(!page_text_first) page_text,
 
-      shiny::tags$script(htmltools::HTML(paste0('var apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"')))
+      shiny::tags$script(htmltools::HTML(paste0('let apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"')))
     )
   ),
   label = label,
@@ -117,7 +117,6 @@ record_midi_or_audio_ui <- function(body = "",
 
 
 set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
-
 
   if(is.null(db_vars$onset)) {
     db_vars$onset <- FALSE
@@ -148,38 +147,43 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
           "user_id",
           "feedback",
           "feedback_type",
-          "trial_paradigm"),
+          "trial_paradigm",
+          "additional"),
         names(db_vars)
         )
       ) == 0)
 
+  print('vddasw')
+  print(db_vars)
+
   shiny::tags$script(htmltools::HTML(
     paste0('
-  var db_trial_time_started = \"', db_vars$trial_time_started,'\";
-  var db_trial_time_completed = \"', db_vars$trial_time_completed,'\";
-  var db_instrument = \"', db_vars$instrument,'\";
-  var db_attempt = \"', db_vars$attempt,'\";
-  var db_item_id = \"', db_vars$item_id,'\";
-  var db_display_modality = \"', db_vars$display_modality,'\";
-  var db_phase = \"', db_vars$phase,'\";
-  var db_rhythmic = \"', db_vars$rhythmic,'\";
-  var db_session_id = \"', db_vars$session_id,'\";
-  var db_test_id = \"', db_vars$test_id,'\";
-  var db_stimuli = \"', db_vars$stimuli,'\";
-  var db_stimuli_durations = \"', db_vars$stimuli_durations,'\";
-  var db_onset = \"', db_vars$onset,'\";
-  var db_review_items_id = \"', db_vars$review_items_id,'\";
-  var db_new_items_id = \"', db_vars$new_items_id,'\";
-  var db_user_id = \"', db_vars$user_id,'\";
-  var db_feedback = \"', db_vars$feedback,'\";
-  var db_feedback_type = \"', db_vars$feedback_type,'\";
-  var db_trial_paradigm = \"', db_vars$trial_paradigm,'\";
+  db_trial_time_started = \"', db_vars$trial_time_started,'\";
+  db_trial_time_completed = \"', db_vars$trial_time_completed,'\";
+  db_instrument = \"', db_vars$instrument,'\";
+  db_attempt = \"', db_vars$attempt,'\";
+  db_item_id = \"', db_vars$item_id,'\";
+  db_display_modality = \"', db_vars$display_modality,'\";
+  db_phase = \"', db_vars$phase,'\";
+  db_rhythmic = \"', db_vars$rhythmic,'\";
+  db_session_id = \"', db_vars$session_id,'\";
+  db_test_id = \"', db_vars$test_id,'\";
+  db_stimuli = \"', db_vars$stimuli,'\";
+  db_stimuli_durations = \"', db_vars$stimuli_durations,'\";
+  db_onset = \"', db_vars$onset,'\";
+  db_review_items_id = \"', db_vars$review_items_id,'\";
+  db_new_items_id = \"', db_vars$new_items_id,'\";
+  db_user_id = \"', db_vars$user_id,'\";
+  db_feedback = \"', db_vars$feedback,'\";
+  db_feedback_type = \"', db_vars$feedback_type,'\";
+  db_trial_paradigm = \"', db_vars$trial_paradigm,'\";
+  db_additional = \"', jsonlite::toJSON(db_vars$additional),'\";
   ')))
 
 }
 
 send_page_label_to_js <- function(label) {
-  shiny::tags$script(paste0('var page_label = \"', label, '\";'))
+  shiny::tags$script(paste0('let page_label = \"', label, '\";'))
 }
 
 
@@ -243,11 +247,11 @@ happy_with_response_message <- function(happy_with_response_message, attempts_le
   if(happy_with_response_message) {
     shiny::tags$div(
       return_correct_attempts_left(attempts_left, max_goes_forced),
-      shiny::tags$script('var show_happy_with_response = true;')
+      shiny::tags$script('let show_happy_with_response = true;')
     )
   } else {
     shiny::tags$div(
-      shiny::tags$script('var show_happy_with_response = false;')
+      shiny::tags$script('let show_happy_with_response = false;')
     )
   }
 }
@@ -274,7 +278,7 @@ present_record_button <- function(show_record_button,
   }
 
   shiny::tags$div(id = "button_area",
-                  shiny::tags$script(paste0("var stop_button_text = \"", stop_button_text, "\"")),
+                  shiny::tags$script(paste0("stop_button_text = \"", stop_button_text, "\"")),
                   shiny::tags$button(record_button_text, id = "recordButton", class = "btn btn-default action-button", style = if(show_record_button) "visibility: visible;" else "visibility: hidden"),
                   shiny::tags$button(stop_button_text, id = "stopButton", class = "btn btn-default action-button", style = "visibility: hidden;"),
                   shiny::tags$script(shiny::HTML(paste0('document.getElementById("recordButton").addEventListener("click", function() {

@@ -15,11 +15,13 @@ musicassessr_init(
   default_range = set_default_range("Piano"),
   username = NULL,
   get_user_info = TRUE,
-  redirect_on_failure_url = "https://www.google.com/"
+  redirect_on_failure_url = "https://www.google.com/",
+  async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+  use_presigned_url = TRUE
 )
 }
 \arguments{
-\item{redirect_on_failure_url}{}
+\item{use_presigned_url}{}
 }
 \description{
 Initiate a musicassessr test

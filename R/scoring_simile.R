@@ -57,7 +57,7 @@ ngrukkon_warning <- function(v) {
 #' @export
 #'
 #' @examples
-get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner = TRUE){
+get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner = TRUE) {
 
   #warning('Segmentation format must be as segment ID')
 
@@ -83,7 +83,7 @@ get_implicit_harmonies <- function(pitch_vec, segmentation = NULL, only_winner =
       w_minor <- cor.test(pitch_freq, ks_weights_minor[((0:11 - t) %% 12) + 1]) %>% broom::tidy() %>% dplyr::pull(estimate)
       dplyr::bind_rows(tidyr::tibble(transposition = t,  match = w_major, type = "major", key = sprintf("%s-maj", itembankr::pc_labels_flat[t+1])),
                        tidyr::tibble(transposition = t,  match = w_minor, type = "minor", key = sprintf("%s-min", itembankr::pc_labels_flat[t+1])))
-    }) %>% dplyr::arrange(desc(match))
+    }) %>% dplyr::arrange(dplyr::desc(match))
   if(only_winner){
     return(correlations[1,])
   }

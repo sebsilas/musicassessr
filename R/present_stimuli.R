@@ -63,6 +63,7 @@
 #' @param lyrics
 #' @param feedback
 #' @param asynchronous_api_mode
+#' @param key
 #'
 #' @return
 #' @export
@@ -118,7 +119,8 @@ present_stimuli <- function(stimuli,
                             lowest_reading_note = NA,
                             lyrics = NULL,
                             feedback = FALSE,
-                            asynchronous_api_mode = FALSE, ...) {
+                            asynchronous_api_mode = FALSE,
+                            key = NULL, ...) {
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
             is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
@@ -164,7 +166,8 @@ present_stimuli <- function(stimuli,
             is.na(lowest_reading_note) || is.numeric(lowest_reading_note),
             is.null.or(lyrics, is.scalar.character),
             is.scalar.logical(feedback),
-            is.scalar.logical(asynchronous_api_mode)
+            is.scalar.logical(asynchronous_api_mode),
+            is.null.or(key, is.scalar.character)
             )
 
   # Generic stimuli types
@@ -201,7 +204,8 @@ present_stimuli <- function(stimuli,
                                                  first_note_message = first_note_message,
                                                  transposed_message = transposed_message,
                                                  play_first_note_button_text = play_first_note_button_text,
-                                                 lowest_reading_note = lowest_reading_note)
+                                                 lowest_reading_note = lowest_reading_note,
+                                                 key = key)
   } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)
   } else if (stimuli_type == "pitch_classes") {

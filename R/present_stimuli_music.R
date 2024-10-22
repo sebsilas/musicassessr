@@ -105,7 +105,8 @@ present_stimuli_midi_notes_visual <- function(stimuli,
                                               transpose_visual_notation = 0L,
                                               audio_play_button_id = "playButton",
                                               sheet_music_start_hidden = FALSE,
-                                              durations = NULL) {
+                                              durations = NULL,
+                                              key = NULL) {
 
   if(transpose_visual_notation != 0) {
     stimuli <- stimuli + transpose_visual_notation
@@ -117,7 +118,7 @@ present_stimuli_midi_notes_visual <- function(stimuli,
       shiny::tags$div(id=id),
     )
   } else {
-    xml <- wrap.xml.template(type = "midi_notes", notes = stimuli, asChord = asChord, clef = clef)
+    xml <- wrap.xml.template(type = "midi_notes", notes = stimuli, asChord = asChord, clef = clef, key = key)
     res <- shiny::tags$div(open.music.display.wrapper(xml, id, present_div, sheet_music_start_hidden))
   }
 
@@ -152,6 +153,7 @@ present_stimuli_midi_notes_visual <- function(stimuli,
 #' @param first_note_message
 #' @param transposed_message
 #' @param play_first_note_button_text
+#' @param key
 #'
 #' @return
 #' @export
@@ -168,7 +170,8 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = 
                                             clef = "auto",
                                             first_note_message = psychTestR::i18n("first_note_is"),
                                             transposed_message = psychTestR::i18n("transposed"),
-                                            play_first_note_button_text = psychTestR::i18n("play_first_note")) {
+                                            play_first_note_button_text = psychTestR::i18n("play_first_note"),
+                                            key = NULL) {
 
 
 
@@ -185,7 +188,7 @@ present_stimuli_midi_notes_both <- function(stimuli, note_length = 0.5, sound = 
                                                                  play_first_note_button_text = play_first_note_button_text)
 
   return_stimuli_visual <- present_stimuli_midi_notes_visual(stimuli = stimuli, note_length = note_length, asChord = asChord, ascending = ascending,
-                                                             id = visual_music_notation_id, sheet_music_start_hidden = sheet_music_start_hidden, clef = clef)
+                                                             id = visual_music_notation_id, sheet_music_start_hidden = sheet_music_start_hidden, clef = clef, key = key)
 
   shiny::tags$div(return_stimuli_auditory, return_stimuli_visual)
 }
@@ -212,7 +215,8 @@ present_stimuli_midi_notes <- function(stimuli,
                                        first_note_message = psychTestR::i18n("first_note_is"),
                                        transposed_message = psychTestR::i18n("transposed"),
                                        play_first_note_button_text = psychTestR::i18n("play_first_note"),
-                                       lowest_reading_note = NA, ...) {
+                                       lowest_reading_note = NA,
+                                       key = NULL, ...) {
 
 
   if (display_modality == "auditory") {
@@ -241,7 +245,8 @@ present_stimuli_midi_notes <- function(stimuli,
                                                         sheet_music_start_hidden = sheet_music_start_hidden,
                                                         durations = durations,
                                                         clef = clef,
-                                                        transpose_visual_notation = transpose_visual_notation, ...)
+                                                        transpose_visual_notation = transpose_visual_notation,
+                                                        key = key, ...)
   } else {
     return_stimuli <- present_stimuli_midi_notes_both(stimuli = stimuli, note_length = note_length, sound = sound,
                                                       asChord = asChord, ascending = ascending,
@@ -294,13 +299,13 @@ present_stimuli_scientific_music_notation_auditory <- function(stimuli, note_len
   )
 }
 
-present_stimuli_scientific_music_notation <- function(stimuli, display_modality, note_length = 0.5, sound = "piano") {
+present_stimuli_scientific_music_notation <- function(stimuli, display_modality, note_length = 0.5, sound = "piano", key = NULL) {
 
   if (display_modality == "auditory") {
     return_stimuli <- present_stimuli_scientific_music_notation_auditory(stimuli = stimuli, note_length = note_length, sound = sound)
   }
   else {
-    return_stimuli <- present_stimuli_scientific_music_notation_visual(stimuli = stimuli)
+    return_stimuli <- present_stimuli_scientific_music_notation_visual(stimuli = stimuli, key = key)
   }
 
   return_stimuli
@@ -591,9 +596,20 @@ display_previous_answer_music_notation_pitch_class_aws <- function() {
 
 
 
-wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "midi_notes", octave = 4L) {
+wrap.xml.template <- function(notes,
+                              clef = "auto",
+                              asChord = FALSE,
+                              type = "midi_notes",
+                              octave = 4L,
+                              key = NULL) {
 
   mean_notes <- get_mean_of_notes(notes, type, octave)
+
+  if(!is.null(key)) {
+    key_string <- get_key_string(key)
+  } else {
+    key_string <- "<fifths>0</fifths>"
+  }
 
   notes <- format.notes(type = type, notes = notes, asChord = asChord, octave = octave)
 
@@ -622,7 +638,7 @@ wrap.xml.template <- function(notes, clef = "auto", asChord = FALSE, type = "mid
         <attributes>
           <divisions>1</divisions>
           <key>
-            <fifths>0</fifths>
+            ', key_string, '
           </key>
           <time>
             <beats>4</beats>
@@ -714,7 +730,7 @@ format.notes.scientific_music_notation <- function(notes, asChord = FALSE) {
 }
 
 
-iformat.notes.pitch.classes <- function(notes, octave = 4L, asChord = FALSE) {
+format.notes.pitch.classes <- function(notes, octave = 4L, asChord = FALSE) {
 
   res <- ""
 
@@ -860,7 +876,8 @@ show_first_melody_note <- function(give_first_melody_note,
                                    first_note_message = psychTestR::i18n("first_note_is"),
                                    transposed_message = psychTestR::i18n("transposed"),
                                    play_first_note_button_text = psychTestR::i18n("play_first_note"),
-                                   lowest_reading_note = NA) {
+                                   lowest_reading_note = NA,
+                                   key = NULL) {
 
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation
@@ -879,7 +896,7 @@ show_first_melody_note <- function(give_first_melody_note,
       id = "first_note",
       shiny::tags$p(first_note_message),
       if(transpose_visual_notation != 0L) shiny::tags$p(transposed_message),
-      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(transposed_visual_note, clef = clef, id = "firstMelodyNoteVisual"),
+      if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(transposed_visual_note, clef = clef, id = "firstMelodyNoteVisual", key = key),
       present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = play_first_note_button_text, clef = clef,
                                           play_button_id = audio_play_button_id, transpose_visual_notation = 0L)
     )
@@ -887,3 +904,51 @@ show_first_melody_note <- function(give_first_melody_note,
     return(" ")
   }
 }
+
+
+compute_key_on_the_fly <- function(notes) {
+
+  key <- get_implicit_harmonies(notes)$key
+
+  logging::loginfo("Predicted key: %s", key)
+
+  return(key)
+
+}
+
+get_key_string <- function(key) {
+  paste0("<fifths>", get_no_sharps_or_flats_from_key("C-maj"), "</fifths>")
+}
+
+get_no_sharps_or_flats_from_key <- function(key) {
+  switch(key,
+         `C-maj` = 0,
+         `Db-maj` = -5,
+         `D-maj` = 2,
+         `Eb-maj` = -3,
+         `E-maj` = 4,
+         `F-maj` = -1,
+         `Gb-maj` = -6,
+         `G-maj` = 1,
+         `Ab-maj` = -3,
+         `A-maj` = 4,
+         `Bb-maj` = -2,
+         `B-maj` = 5,
+         `A-min` = 0,
+         `Bb-min` = -5,
+         `B-min` = 2,
+         `C-min` = -3,
+         `Db-min` = -7,
+         `D-min` = -1,
+         `Eb-min` = -6,
+         `E-min` = 1,
+         `F-min` = -4,
+         `Gb-min` = -6,
+         `G-min` = -2,
+         `Ab-min` = -5,
+         stop("Invalid `key` value")
+  )
+}
+
+
+

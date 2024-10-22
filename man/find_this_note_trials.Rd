@@ -8,18 +8,18 @@ find_this_note_trials(
   num_items,
   num_examples = 0L,
   feedback = FALSE,
-  page_title = "Find This Note",
+  page_title = psychTestR::i18n("find_this_note_page_title"),
   get_answer = get_answer_pyin_melodic_production,
   page_type = "record_audio_page",
-  page_text =
-    "Press play to hear the note. Try and play it on your instrument when you can.",
+  page_text = psychTestR::i18n("find_this_note_page_text"),
   trial_paradigm = c("simultaneous_recall", "call_and_response"),
   call_and_response_end = c("manual", "auto"),
-  singing_trials = FALSE
+  singing_trials = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{page_text}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Present "Find This Note" trials

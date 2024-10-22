@@ -11,6 +11,8 @@
 #' @param username
 #' @param get_user_info
 #' @param redirect_on_failure_url
+#' @param async_success_msg
+#' @param use_presigned_url
 #'
 #' @return
 #' @export
@@ -26,7 +28,9 @@ musicassessr_init <- function(app_name = "",
                               default_range = set_default_range("Piano"),
                               username = NULL,
                               get_user_info = TRUE,
-                              redirect_on_failure_url = "https://www.google.com/") {
+                              redirect_on_failure_url = "https://www.google.com/",
+                              async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+                              use_presigned_url = TRUE) {
 
 
   psychTestR::join(
@@ -147,7 +151,7 @@ musicassessr_init <- function(app_name = "",
           session_token <- NULL
         }
 
-        return_correct_entry_page(asynchronous_api_mode, user_id, username, language, session_token)
+        return_correct_entry_page(asynchronous_api_mode, user_id, username, language, session_token, async_success_msg, use_presigned_url)
 
       }),
 
@@ -222,7 +226,13 @@ musicassessr_init <- function(app_name = "",
   )
 }
 
-return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, language = "en", session_token = NULL) {
+return_correct_entry_page <- function(asynchronous_api_mode,
+                                      user_id,
+                                      username,
+                                      language = "en",
+                                      session_token = NULL,
+                                      async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+                                      use_presigned_url = TRUE ) {
 
   stopifnot(
     is.null.or(session_token, is.character)
@@ -231,7 +241,7 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, 
   if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p('You could not be validated.'))
   } else if(asynchronous_api_mode && !is.null(user_id) && !is.null(username)) {
-    ui <- async_success_ui(username)
+    ui <- async_success_ui(username, async_success_msg, use_presigned_url)
   } else {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p(psychTestR::i18n("lets_proceed")))
   }
@@ -242,21 +252,27 @@ return_correct_entry_page <- function(asynchronous_api_mode, user_id, username, 
       shiny::HTML(paste0("localStorage.setItem('jwkToken', \'", session_token, "\');"))
       ))
 
-  psychTestR::one_button_page(ui)
+  print('bt..')
+  print(psychTestR::i18n("Next"))
+
+  psychTestR::one_button_page(ui, button_text = psychTestR::i18n("Next"))
 
 }
 
 
-async_success_ui <- function(username) {
+async_success_ui <- function(username,
+                             msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+                             use_presigned_url = TRUE) {
   shiny::tags$div(
     musicassessr_css(),
     turn_on_upload_to_s3_mode(log = TRUE),
-    shiny::tags$p(paste0(psychTestR::i18n("Hello"), " ", username, "!"))
+    if(!use_presigned_url) shiny::tags$script("use_presigned_url = false;"),
+    shiny::tags$p(msg)
   )
 }
 
 turn_on_upload_to_s3_mode <- function(log = FALSE) {
-  scr <- "var upload_to_s3 = true;"
+  scr <- "upload_to_s3 = true;"
   if(log) {
     scr <- paste0(scr, " console.log('Turning S3 mode on');")
   }
@@ -317,7 +333,7 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
 
       inst <- insts_table %>%
         dplyr::mutate(id = dplyr::row_number()) %>%
-        dplyr::filter(id == instrument_id)
+        dplyr::filter(id == !! instrument_id)
 
       logging::loginfo("Instrument: %s", inst$en)
       logging::loginfo("Transpose: %s", inst$transpose)

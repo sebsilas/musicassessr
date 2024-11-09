@@ -25,7 +25,6 @@ let onsets_noteon = [];
 let onsets_noteoff = [];
 let stop_button_text;
 let startTime;
-let midi_device;
 let recordkey;
 let file_url;
 let onsets_noteon_timecode = [];
@@ -36,6 +35,11 @@ let get_async_feedback = false;
 let intervalId;
 let audioPlayerUserPaused = false;
 let use_presigned_url = true;
+let show_happy_with_response = false;
+let apiUrl;
+let page_label = '';
+let stimuli = "";
+let stimuli_durations = "";
 
 // Grab the language from psychTestR via the URL parameter
 const queryString = window.location.search;
@@ -1247,9 +1251,6 @@ function getFeedback(score) {
 
   let feedback;
 
-  console.log('getFeedback');
-  console.log(score);
-
   if (score >= 0 && score <= 2) {
     feedback = "Das kannst du besser!";
   } else if (score >= 3 && score <= 4) {
@@ -1351,4 +1352,5 @@ function appendNextButton(onClick = next_page, id = 'async-feedback') {
     console.error('Element with ID ', + id, ' not found.');
   }
 }
+
 

@@ -2,21 +2,55 @@
 
 console.log('getMIDIin.js loaded');
 
-function generateDeviceDropdown(){
+let interactive_midi = false;
+let midi_device;
+
+
+function generateDeviceDropdown() {
+
+  console.log('generateDeviceDropdown called');
+
+  const loading = document.getElementById('loading');
+  const hollowDotsSpinner = document.getElementById('hollowDotsSpinner');
+  const nextButton = document.getElementById('next');
+  loading.style.display = "none";
+  hollowDotsSpinner.style.display = "none";
+
+  loading.style.display = "block";
+  hollowDotsSpinner.style.display = "block";
+  nextButton.style.display = "none";
+
 	WebMidi.enable(function(err) {
+
+	  console.log('err');
+	  console.log(err);
+
 	//error collector
-    if (err) console.log("WebMidi could not be enabled");
+    if (err) {
+      console.log("WebMidi could not be enabled");
+    }
+
 	//generate dropdown with MIDI inputs
 	var dropdown = document.getElementById("midiDeviceSelector");
-	for (var i=0; i<(WebMidi.inputs.length); i++) {
-		var option = document.createElement("option");
-		option.text=WebMidi.inputs[i].name;
-		option.value=i;
-		dropdown.add(option);
-	}
 
-  var chosenMIDIDevice = dropdown[dropdown.selectedIndex].text;
+  console.log('before loop');
+
+  WebMidi.inputs.forEach(({ name }, index) => {
+    const option = document.createElement("option");
+    option.text = name;
+    option.value = index;
+    dropdown.add(option);
+  });
+
+	console.log('after loop');
+
+  const chosenMIDIDevice = dropdown[dropdown.selectedIndex].text;
+
   console.log(chosenMIDIDevice);
+
+  loading.style.display = "none";
+  hollowDotsSpinner.style.display = "none";
+  nextButton.style.display = "block";
 
   Shiny.setInputValue("midi_device", chosenMIDIDevice);
 
@@ -27,12 +61,19 @@ function generateDeviceDropdown(){
 
 
 
-function instantiateMIDI(midi_device, interactive_midi = false, mute_midi_playback = false) {
+function instantiateMIDI(midi_device,
+                         interactive = false,
+                         mute_midi_playback = false) {
 
   // reinstantiate (first disable)
   WebMidi.disable();
 
   console.log("instantiateMIDI called");
+
+  console.log('interactive');
+  console.log(interactive);
+
+  interactive_midi = interactive;
 
   console.log(interactive_midi);
 
@@ -134,7 +175,8 @@ function instantiateMIDI(midi_device, interactive_midi = false, mute_midi_playba
 
               // console
               console.log(user_response_midi_note_on);
-
+              console.log("interactive_midi??!");
+              console.log(interactive_midi);
               // if interactive midi enabled, contiously update the display
               if (interactive_midi) {
                 parse_midi_notes_open_display(user_response_midi_note_on);
@@ -177,6 +219,12 @@ function instantiateMIDI(midi_device, interactive_midi = false, mute_midi_playba
 
       } // end if
 
+       //interactive_midi = false;
+
+      console.log('fin');
+
+      console.log(interactive_midi);
+
   });
 
 }
@@ -186,10 +234,10 @@ function instantiateMIDI(midi_device, interactive_midi = false, mute_midi_playba
 /// interactive visual notation loading
 
 function parse_midi_notes_open_display(midi_notes) {
-                sci_notation = [];
-                midi_notes.forEach(x => sci_notation.push(fromMidi(x)));
-                formatted_notes = format_notes_scientific_music_notation(sci_notation);
-                open_music_display_wrapper(wrap_xml_template(formatted_notes));
+  sci_notation = [];
+  midi_notes.forEach(x => sci_notation.push(fromMidi(x)));
+  formatted_notes = format_notes_scientific_music_notation(sci_notation);
+  open_music_display_wrapper(wrap_xml_template(formatted_notes));
 }
 
 function open_music_display_wrapper(xml) {

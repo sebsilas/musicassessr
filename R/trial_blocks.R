@@ -960,7 +960,6 @@ api_check_pages <- function() {
 wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items_through_url_parameter) {
 
   # If a review block, we wrap these conditional to check there are enough review items for a given user.
-
   psychTestR::join(
 
     # Success: if there are enough review items, load a trial block
@@ -1003,8 +1002,7 @@ wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items
       }
 
 
-    }, psychTestR::one_button_page("Sorry, there are not enough items for you to review!")
-    )
+    }, psychTestR::one_button_page("Sorry, there are not enough items for you to review!"))
 
   )
 }

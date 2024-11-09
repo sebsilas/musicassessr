@@ -130,6 +130,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
   )
 
   if(is.null(presampled_items) && is.infinite(num_items)) {
+
     # Then the test stops when defined by the user
     items <- psychTestR::join(
 
@@ -289,6 +290,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  if(sample_item_bank_via_api) start_from_trial_no else NULL,
                                  pass_items_through_url_parameter = pass_items_through_url_parameter,
                                  feedback = feedback)
+
     })
 
 
@@ -341,6 +343,11 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
 
     })
 
+  }
+
+  # Potentially unnest
+  if(purrr::some(items, is.list)) {
+    items <- items %>% unlist()
   }
 
   psychTestR::join(
@@ -832,6 +839,8 @@ present_melody <- function(stimuli,
       additional <- list()
     }
 
+    psychTestR::set_global("additional", additional, state) # For MIDI
+
     db_vars <- if(asynchronous_api_mode) {
 
       list(
@@ -852,7 +861,7 @@ present_melody <- function(stimuli,
         feedback = psychTestR::get_global("async_feedback", state),
         feedback_type = psychTestR::get_global("async_feedback_type", state),
         trial_paradigm = melody_trial_paradigm,
-        additional = additional
+        additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE)
       )
     } else NULL
 

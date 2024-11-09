@@ -26,9 +26,11 @@ microphone_calibration_page <- function(button_text = psychTestR::i18n("Start_te
 
     shiny::tags$h2(psychTestR::i18n("Microphone_Test")),
     volume_meter(),
-      wording, shiny::tags$br(),
+      wording,
+    shiny::tags$p(psychTestR::i18n("take_several_seconds")),
     shiny::tags$button(button_text, id = "startButton", class="btn btn-default action-button"),
     shiny::tags$br(),
+    loading(),
     psychTestR::trigger_button(label = psychTestR::i18n("microphone_calibration_button"), inputId = "nextButton", style = "visibility: hidden;"),
     shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr"))
 

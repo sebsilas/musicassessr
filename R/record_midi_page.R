@@ -138,6 +138,7 @@ select_midi_device_page <- function(title = "Select MIDI device",
       shiny::tags$select(id = "midiDeviceSelector"),
       shiny::tags$br(),
       shiny::tags$br(),
+      loading(),
       psychTestR::trigger_button("next", button_text),
       shiny::tags$script('generateDeviceDropdown();'),
     ),
@@ -157,7 +158,7 @@ autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive, mu
   if (instantiate) {
     scr <- shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', TRUE_to_js_true(interactive), ', ', TRUE_to_js_true(mute_midi_playback), ')'))
   } else {
-    scr <- shiny::tags$script(paste0('var midi_device = \"', midi_device, '\";'))
+    scr <- shiny::tags$script(paste0('midi_device = \"', midi_device, '\";'))
   }
   return(scr)
 }
@@ -170,10 +171,12 @@ test_midi_page <- function() {
                     stimuli_type = "midi_notes",
                     page_type = "record_midi_page",
                     display_modality = "visual",
-                    page_title = "MIDI test",
+                    page_title = "MIDI Test",
                     page_text = shiny::tags$div(volume_meter(high = "30", max = "127"),
-                                                tags$p("See if you get feedback when you use your MIDI device."),
-                                                psychTestR::trigger_button("next", psychTestR::i18n("Next"))),
+                                                tags$p(psychTestR::i18n("midi_test_message")),
+                                                shiny::tags$button(id = "next", psychTestR::i18n("Next"),
+                                                                   class="btn btn-default action-button",
+                                                                   onclick = "interactive_midi = false; next_page();")),
                     autoInstantiate = TRUE,
                     interactive = TRUE,
                     get_answer = get_answer_fake,

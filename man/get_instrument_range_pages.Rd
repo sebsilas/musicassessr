@@ -9,11 +9,12 @@ get_instrument_range_pages(
   show_musical_notation = FALSE,
   adjust_range = FALSE,
   test_type = c("voice", "instrument"),
-  concise_wording = FALSE
+  concise_wording = FALSE,
+  asynchronous_api_mode = FALSE
 )
 }
 \arguments{
-\item{concise_wording}{}
+\item{asynchronous_api_mode}{}
 }
 \description{
 Get Instrument Range Pages

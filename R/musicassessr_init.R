@@ -349,6 +349,8 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
         lowest_reading_note <- NA
       }
 
+      lowest_reading_note <- as.integer(lowest_reading_note)
+
       logging::loginfo("lowest_reading_note: %s", lowest_reading_note)
 
       psychTestR::set_global("lowest_reading_note", lowest_reading_note, state)

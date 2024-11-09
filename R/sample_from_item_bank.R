@@ -75,17 +75,19 @@ item_sampler_v2 <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE
     is.scalar.logical(replace)
   )
 
-  no_Ns <- item_bank %>% dplyr::pull(N) %>% unique() %>% length()
+  # Calculate the number of unique values of N directly in SQL
+  no_Ns <- item_bank %>% dplyr::summarize(no_Ns = n_distinct(N)) %>% dplyr::pull(no_Ns)
+  proportion <- no_items / no_Ns
 
-  proportion <- no_items/no_Ns
-
-  # This gives you rough stratified sampling, but with a pre-determined number of items.
-  # There won't be a perfect number of items per N, but it should work out across many participants
+  # Sampling with index optimization and SQL-friendly methods
   sampled_data <- item_bank %>%
-    dplyr::slice_sample(n = ceiling(proportion), by = "N") %>% # First get roughly the amount per stratified N
-    dplyr::slice_sample(n = no_items) %>% # Then make sure there the correct number of items in the end. We do this randomly.
+    dplyr::group_by(N) %>%
+    dplyr::slice_sample(n = ceiling(proportion), .preserve = TRUE) %>%
+    dplyr::ungroup() %>%
+    dplyr::slice_sample(n = no_items) %>%
     dplyr::mutate(trial_no = dplyr::row_number()) %>%
     dplyr::collect()
+
 
   # Shuffle the row order
   if(shuffle) {
@@ -94,6 +96,7 @@ item_sampler_v2 <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE
 
   sampled_data
 }
+
 
 
 #' Item sampler (stratified sampling)

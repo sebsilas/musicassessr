@@ -408,6 +408,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
          phase <- psychTestR::get_global('phase', state)
          rhythmic <- psychTestR::get_global('rhythmic', state)
          session_id <- get_promise_value(psychTestR::get_global("session_id", state))
+         additional <- psychTestR::get_global('additional', state)
+         additional <- if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE)
 
          dur <- midi_res$pyin_style_res$dur
          onset <- midi_res$pyin_style_res$onset
@@ -437,7 +439,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                                                                        dur = dur,
                                                                        onset = onset,
                                                                        note = note,
-                                                                       attempt = attempt)
+                                                                       attempt = attempt,
+                                                                       additional = additional)
 
          }, seed = NULL, future.plan = future::multisession) %>%
            promises::then(
@@ -948,6 +951,8 @@ get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, ...) 
   csv_file <- paste0(input$key, ".csv")
 
   logging::loginfo("csv_file: %s", csv_file)
+
+  psychTestR::set_global("wav_file", input$key, state)
 
   list(
     user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,

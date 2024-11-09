@@ -8,6 +8,7 @@
 #' @param adjust_range
 #' @param test_type
 #' @param concise_wording
+#' @param asynchronous_api_mode
 #'
 #' @return
 #' @export
@@ -17,34 +18,84 @@ get_instrument_range_pages <- function(input_type,
                                        show_musical_notation = FALSE,
                                        adjust_range = FALSE,
                                        test_type = c("voice", "instrument"),
-                                       concise_wording = FALSE) {
+                                       concise_wording = FALSE,
+                                       asynchronous_api_mode = FALSE) {
 
 
   # A short multi-page protocol to get the user's frequency range
 
   stopifnot(is.scalar.character(input_type),
             is.logical(show_musical_notation),
+            is.scalar.logical(adjust_range),
             is.scalar.character(test_type),
-            is.scalar.logical(concise_wording))
+            is.scalar.logical(concise_wording),
+            is.scalar.logical(asynchronous_api_mode))
 
   if (input_type == "microphone") {
-    get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording)
+    get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording, asynchronous_api_mode = asynchronous_api_mode)
   } else if(input_type == "midi_keyboard") {
     get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
   } else {
-    midi_or_audio_reactive(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type)
+    midi_or_audio_reactive(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, asynchronous_api_mode = asynchronous_api_mode)
   }
 
 
 }
 
-get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
-                                          button_text = psychTestR::i18n("Record"), show_musical_notation = FALSE) {
+
+get_note_until_satisfied_loop <- function(prompt_text,
+                                          var_name,
+                                          page_type,
+                                          button_text = psychTestR::i18n("Record"),
+                                          show_musical_notation = FALSE,
+                                          asynchronous_api_mode = FALSE) {
 
 
   stopifnot(is.character(prompt_text) | class(prompt_text) == "shiny.tag",
             is.character(var_name), is.character(page_type), is.character(button_text),
-            is.logical(show_musical_notation))
+            is.logical(show_musical_notation),
+            is.scalar.logical(asynchronous_api_mode))
+
+  if(asynchronous_api_mode) {
+
+    # Note this will run synchronously..
+
+    async_mode_logic <- psychTestR::code_block(function(state, ...) {
+
+      filename <- psychTestR::get_global("wav_file", state)
+      count <- 0
+      result <- NA
+
+      while(count < 4 && is.na(result)) {
+
+        print('result..1')
+        print(result)
+
+        Sys.sleep(5)
+
+        logging::loginfo("count.. %s", count)
+
+        result <- musicassessrdb::get_job_status_api(filename = paste0(filename, ".wav"))
+
+        logging::loginfo("result... %s", result)
+
+        if(is.scalar.na.or.null(result)) {
+          result <- NA
+        } else {
+          result <- jsonlite::fromJSON(result$message)$feedback
+        }
+
+        print('parsed result')
+        print(result)
+
+        count <- count + 1
+
+        psychTestR::set_global("sung_note", result, state)
+
+      }
+
+    })
+  }
 
   psychTestR::join(
     # set the user satisfied state to false
@@ -61,8 +112,9 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
       user_satisfied %in% dict_key_to_translations("No") | is.na(note) },
       logic = list(
         # logic page 1, get new note
-        midi_or_audio(page_type, prompt_text, var_name),
+        midi_or_audio(page_type, prompt_text, var_name, asynchronous_api_mode),
         # logic page 2, was everything ok with this note?
+        if(asynchronous_api_mode) async_mode_logic else empty_code_block(),
         check_note_ok(var_name, page_type, show_musical_notation),
         psychTestR::code_block(function(state, answer, ...) {
           psychTestR::set_global("user_satisfied", answer, state)
@@ -79,8 +131,11 @@ get_note_until_satisfied_loop <- function(prompt_text, var_name, page_type,
 
 
 
-midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument")) {
-  c(
+midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), asynchronous_api_mode = FALSE) {
+
+  audio_logic <- get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, asynchronous_api_mode = asynchronous_api_mode)
+
+  psychTestR::join(
     # is MIDI?
     psychTestR::conditional(test = function(state, ...) {
       response_type <- psychTestR::get_global("response_type", state)
@@ -92,7 +147,7 @@ midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range =
       response_type <- psychTestR::get_global("response_type", state)
       response_type == "Microphone"
     },
-    logic = get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type))
+    logic = unlist(audio_logic))
   )
 }
 
@@ -110,7 +165,12 @@ range_explanation_page <- function(test_type = c("voice", "instrument"), concise
   psychTestR::one_button_page(text, button_text = psychTestR::i18n("Next"))
 }
 
-get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), concise_wording = FALSE) {
+get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE,
+                                                adjust_range = FALSE,
+                                                test_type = c("voice", "instrument"),
+                                                concise_wording = FALSE,
+                                                asynchronous_api_mode = FALSE) {
+
 
   if(test_type == "voice") {
     low_note_text <- psychTestR::i18n("get_range_low_note_voice")
@@ -123,8 +183,8 @@ get_note_until_satisfied_loop_audio <- function(show_musical_notation = FALSE, a
 
   psychTestR::join(
     range_explanation_page(test_type, concise_wording),
-    get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), low_note_text), var_name = "bottom_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
-    get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), high_note_text), var_name = "top_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation),
+    get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), low_note_text), var_name = "bottom_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation, asynchronous_api_mode = asynchronous_api_mode),
+    get_note_until_satisfied_loop(prompt_text = shiny::tags$div(shiny::tags$h2(psychTestR::i18n("Range_Test")), high_note_text), var_name = "top_range", page_type = "record_audio_page", show_musical_notation = show_musical_notation, asynchronous_api_mode = asynchronous_api_mode),
     present_range(show_musical_notation, adjust_range, test_type)
   )
 }
@@ -138,9 +198,8 @@ get_note_until_satisfied_loop_midi <- function(show_musical_notation = FALSE, ad
 }
 
 
+
 check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
-
-
 
 
   stopifnot(is.character(var_name), is.character(page_type), is.logical(show_musical_notation))
@@ -159,7 +218,11 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
     }
 
     if(page_type == "record_audio_page") {
-      note <- answer$user_response
+      if(psychTestR::get_global("asynchronous_api_mode", state)) {
+        note <- psychTestR::get_global("sung_note", state)
+      } else {
+        note <- answer$user_response
+      }
     } else {
       note <- answer$note
     }
@@ -168,22 +231,22 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
       psychTestR::one_button_page(shiny::tags$div(
         shiny::tags$p(psychTestR::i18n("nothing_entered")),
         shiny::tags$p(psychTestR::i18n("audio_error_suggestion"))))
+
     } else {
 
       musical_notation <- present_musical_notation_range_page(show_musical_notation, note, transpose, var_name, transposed_note_message)
 
       psychTestR::set_global(var_name, note, state)
 
-
-        present_stimuli(stimuli = note,
-                        stimuli_type = "midi_notes",
-                        display_modality = "auditory",
-                        page_text = shiny::tags$div(psychTestR::i18n("correct_note_message"), musical_notation),
-                        page_type = "NAFC_page",
-                        choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No")),
-                        label = var_name,
-                        play_button_text = psychTestR::i18n("Play"),
-                        clef = clef)
+      present_stimuli(stimuli = note,
+                      stimuli_type = "midi_notes",
+                      display_modality = "auditory",
+                      page_text = shiny::tags$div(psychTestR::i18n("correct_note_message"), musical_notation),
+                      page_type = "NAFC_page",
+                      choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No")),
+                      label = var_name,
+                      play_button_text = psychTestR::i18n("Play"),
+                      clef = clef)
 
 
     }
@@ -284,15 +347,44 @@ both_or_auditory <- function(both) {
 }
 
 
-midi_or_audio <- function(type, prompt_text, var_name) {
+midi_or_audio <- function(type, prompt_text, var_name, asynchronous_api_mode) {
 
   if (type == "record_audio_page") {
 
-    record_audio_page(page_text = prompt_text,
-                      label = var_name,
-                      get_answer = get_answer_average_frequency_ff("round"),
-                      button_text = psychTestR::i18n("Record"),
-                      stop_button_text = psychTestR::i18n("Stop"))
+    psychTestR::reactive_page(function(state, ...) {
+
+      db_vars <- if(asynchronous_api_mode) {
+
+        list(
+          stimuli = "NA",
+          stimuli_durations = "NA",
+          trial_time_started = Sys.time(),
+          instrument = NA,
+          attempt = NA,
+          item_id = NA,
+          display_modality = "auditory",
+          phase = "setup",
+          rhythmic = NA,
+          session_id = get_promise_value(psychTestR::get_global("session_id", state)),
+          test_id = 1L,
+          user_id = NA,
+          review_items_id = NA,
+          new_items_id = NA,
+          feedback = TRUE,
+          feedback_type = "produced_note",
+          trial_paradigm = "setup_sing_range_note",
+          additional = NA
+        )
+      } else NULL
+
+      record_audio_page(page_text = prompt_text,
+                        label = var_name,
+                        db_vars = db_vars,
+                        get_answer = if(asynchronous_api_mode) get_answer_add_trial_and_compute_trial_scores_s3 else get_answer_average_frequency_ff("round"),
+                        button_text = psychTestR::i18n("Record"),
+                        stop_button_text = psychTestR::i18n("Stop"))
+
+    })
 
   } else {
     psychTestR::reactive_page(function(state, ...) {

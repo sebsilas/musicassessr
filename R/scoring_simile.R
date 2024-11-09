@@ -11,11 +11,11 @@
 #'
 #' @examples
 ngrukkon <- function(x, y, N = 3){
-  x <- itembankr::get_all_ngrams(x, N = N) %>% dplyr::pull(value)
-  y <- itembankr::get_all_ngrams(y, N = N) %>% dplyr::pull(value)
-  joint <- c(x, y) %>% table()
-  tx <- factor(x, levels = names(joint)) %>% table()
-  ty <- factor(y, levels = names(joint)) %>% table()
+  x_ngrams <- itembankr::get_all_ngrams(x, N = N) %>% dplyr::pull(value)
+  y_ngrams <- itembankr::get_all_ngrams(y, N = N) %>% dplyr::pull(value)
+  joint <- c(x_ngrams, y_ngrams) %>% table()
+  tx <- factor(x_ngrams, levels = names(joint)) %>% table()
+  ty <- factor(y_ngrams, levels = names(joint)) %>% table()
   1 - sum(abs(tx  - ty))/(length(x) + length(y))
 }
 

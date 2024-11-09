@@ -64,9 +64,9 @@ set_melodic_stimuli <- function(stimuli, durations) {
 
   # Send stimuli to JS
   shiny::tags$script(
-    htmltools::HTML(paste0('var stimuli = ', jsonlite::toJSON(stimuli), ';
+    htmltools::HTML(paste0('stimuli = ', jsonlite::toJSON(stimuli), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
-                       var stimuli_durations = ', jsonlite::toJSON(durations), ';
+                       stimuli_durations = ', jsonlite::toJSON(durations), ';
                        Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
                        ')
     )

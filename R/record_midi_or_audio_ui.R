@@ -104,7 +104,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(!page_text_first) page_text,
 
-      shiny::tags$script(htmltools::HTML(paste0('let apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"')))
+      shiny::tags$script(htmltools::HTML(paste0('apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"')))
     )
   ),
   label = label,
@@ -153,8 +153,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
         )
       ) == 0)
 
-  print('vddasw')
-  print(db_vars)
+  additional <- if(is.scalar.character(db_vars$additional)) db_vars$additional else jsonlite::toJSON(db_vars$additional, auto_unbox = TRUE)
 
   shiny::tags$script(htmltools::HTML(
     paste0('
@@ -176,25 +175,27 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   db_user_id = \"', db_vars$user_id,'\";
   db_feedback = \"', db_vars$feedback,'\";
   db_feedback_type = \"', db_vars$feedback_type,'\";
-  db_trial_paradigm = \"', db_vars$trial_paradigm,'\";
-  db_additional = \"', jsonlite::toJSON(db_vars$additional),'\";
-  ')))
+  db_trial_paradigm = \"', db_vars$trial_paradigm,"\";
+  db_additional = \'", additional,"\';
+  ")))
+
+
 
 }
 
 send_page_label_to_js <- function(label) {
-  shiny::tags$script(paste0('let page_label = \"', label, '\";'))
+  shiny::tags$script(paste0('page_label = \"', label, '\";'))
 }
 
 
 loading <- function() {
   htmltools::HTML('
-  <div class="hollow-dots-spinner" :style="spinnerStyle;display:none;">
+  <div id="hollowDotsSpinner" class="hollow-dots-spinner" :style="spinnerStyle;">
     <div class="dot"></div>
       <div class="dot"></div>
         <div class="dot"></div>
           </div>
-    <div id="loading" style="display: none;"></div>
+    <div id="loading"></div>
     ')
 }
 
@@ -247,11 +248,11 @@ happy_with_response_message <- function(happy_with_response_message, attempts_le
   if(happy_with_response_message) {
     shiny::tags$div(
       return_correct_attempts_left(attempts_left, max_goes_forced),
-      shiny::tags$script('let show_happy_with_response = true;')
+      shiny::tags$script('show_happy_with_response = true;')
     )
   } else {
     shiny::tags$div(
-      shiny::tags$script('let show_happy_with_response = false;')
+      shiny::tags$script('show_happy_with_response = false;')
     )
   }
 }

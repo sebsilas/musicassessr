@@ -59,6 +59,9 @@ setup_pages <- function(input_type = c("microphone",
                         asynchronous_api_mode = FALSE,
                         show_microphone_type_page = TRUE) {
 
+  print('asynchronous_api_mode setup')
+  print(asynchronous_api_mode)
+
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
@@ -140,7 +143,7 @@ setup_pages <- function(input_type = c("microphone",
 
       record_instructions(playful_volume_meter_setup),
 
-      if(get_instrument_range) get_instrument_range_pages(input_type, show_musical_notation = get_instrument_range_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording)
+      if(get_instrument_range) get_instrument_range_pages(input_type, show_musical_notation = get_instrument_range_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording, asynchronous_api_mode = asynchronous_api_mode)
     ))
 
   }
@@ -148,9 +151,9 @@ setup_pages <- function(input_type = c("microphone",
   # Set the response/input type when it is definitely either microphone or MIDI (i.e., non-user specified):
   psychTestR::join(
     if(input_type %in% c("microphone", "midi_keyboard")) set_response_type(if(input_type == "microphone") "Microphone" else if(input_type == "midi_keyboard") "MIDI" else stop("Input type not recognised.")),
-    setup,
+    setup#,
     # After, check async stuff has resolved, if async mode
-    if(asynchronous_api_mode) api_check_pages()
+    #if(asynchronous_api_mode) api_check_pages()
   )
 
 }

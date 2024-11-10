@@ -28,7 +28,10 @@ item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE, v
 }
 
 
-item_sampler_materialized_view <- function(db_con, no_items, table = "Berkowitz_ngram_n_view", shuffle = TRUE) {
+item_sampler_materialized_view <- function(db_con,
+                                           no_items,
+                                           table = "Berkowitz_ngram_n_view",
+                                           shuffle = TRUE) {
 
   stopifnot(
     DBI::dbIsValid(db_con),

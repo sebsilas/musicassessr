@@ -28,6 +28,17 @@ item_sampler <- function(item_bank, no_items, replace = FALSE, shuffle = TRUE, v
 }
 
 
+#' Item sampler materialized view
+#'
+#' @param db_con
+#' @param no_items
+#' @param table
+#' @param shuffle
+#'
+#' @return
+#' @export
+#'
+#' @examples
 item_sampler_materialized_view <- function(db_con,
                                            no_items,
                                            table = "Berkowitz_ngram_n_view",
@@ -57,6 +68,7 @@ item_sampler_materialized_view <- function(db_con,
 }
 
 # db_con <- musicassessrdb::musicassessr_con()
+# t <- item_sampler_materialized_view(db_con, 20) %>% dplyr::arrange(N)
 # t <- item_sampler_materialized_view(db_con, 20)
 
 #' Item sampler (stratified sampling) v2

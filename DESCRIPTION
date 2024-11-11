@@ -29,8 +29,7 @@ Suggests:
     lavaan,
     car,
     lme4,
-    warbleR,
-    musicassessrdb
+    warbleR
 Config/testthat/edition: 3
 Imports: 
     sjmisc,
@@ -72,12 +71,13 @@ Imports:
     logging,
     changepoint,
     vampr (>= 0.1.0),
-    shinyalert
+    shinyalert,
+    musicassessrdb (>= 0.3.1)
 Depends: 
     R (>= 2.10),
     itembankr (>= 0.1.0),
     psych
-Remotes: 
+Remotes:  
     pmcharrison/psychTestR,
     sebsilas/itembankr,
     pmcharrison/hrep,
@@ -85,5 +85,6 @@ Remotes:
     sebsilas/pyin,
     sebsilas/vampr,
     sebsilas/musicassessrdocs,
-    crsh/citr
+    crsh/citr,
+    sebsilas/musicassessrdb
 URL: https://sebsilas.github.io/musicassessr/

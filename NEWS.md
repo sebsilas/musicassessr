@@ -1,5 +1,7 @@
 # musicassessr 2.6.0
 
+- Lots of new updates including a new approach to including dictionaries in `make_musicassessr_test`
+
 # musicassessr 2.5.1
 
 # musicassessr 2.5.0

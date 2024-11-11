@@ -9,6 +9,14 @@ hollowDotsSpinner.style.display = "none";
 
 let stream; // Declare stream variable to store the media stream
 
+// Thresholds for color-coding and warning
+const lowThreshold = 0.25;     // Safe - Green
+const moderateThreshold = 0.5; // Moderate - Yellow
+const highThreshold = 0.7;     // High - Orange, close to warning
+const maxThreshold = 0.7;      // Too high - Red, triggers warning
+
+let lastWarningTime = 0; // Tracks the last warning time for cooldown
+
 if (startButtonEl !== null) {
 
   startButtonEl.onclick = () => {
@@ -37,7 +45,6 @@ if (startButtonEl !== null) {
         return;
       }
       console.log("Media stream is ready:", mediaStream);
-      // `stream` is also assigned now, and you can use it outside this callback
 
       let audioContext = new AudioContext();
       let mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
@@ -49,26 +56,52 @@ if (startButtonEl !== null) {
       hollowDotsSpinner.style.display = "none";
 
       let pcmData = new Float32Array(analyserNode.fftSize);
+
       let onFrame = () => {
         analyserNode.getFloatTimeDomainData(pcmData);
-        let sumSquares = 0.0;
-        for (let amplitude of pcmData) { sumSquares += amplitude * amplitude; }
-        let val = Math.sqrt(sumSquares / pcmData.length);
 
-        /* Update the meter */
-        if (volumeMeterEl.tagName === "IMG") {
-          let val_scaled = 10 * val;
-          volumeMeterEl.style.filter = "alpha(opacity=" + val_scaled + ")";
-          volumeMeterEl.style.opacity = val_scaled;
-        } else {
-          volumeMeterEl.value = val;
+        // Calculate RMS
+        let sumSquares = 0.0;
+        for (let amplitude of pcmData) {
+          sumSquares += amplitude * amplitude;
+        }
+        let rms = Math.sqrt(sumSquares / pcmData.length);
+
+        // Update the volume meter value directly
+        if (volumeMeterEl.tagName === "METER") {
+          volumeMeterEl.value = rms;
+
+          // Color-coding by changing the meter attributes based on thresholds
+          if (rms < lowThreshold) {
+            volumeMeterEl.setAttribute("low", lowThreshold);
+            volumeMeterEl.setAttribute("optimum", lowThreshold);
+          } else if (rms < moderateThreshold) {
+            volumeMeterEl.setAttribute("low", lowThreshold);
+            volumeMeterEl.setAttribute("high", moderateThreshold);
+          } else if (rms < highThreshold) {
+            volumeMeterEl.setAttribute("high", highThreshold);
+            volumeMeterEl.setAttribute("max", maxThreshold);
+          } else {
+            // Set red level and trigger warning if above maxThreshold
+            volumeMeterEl.setAttribute("max", maxThreshold);
+
+            // Trigger warning if cooldown has elapsed
+            const currentTime = Date.now();
+            if (currentTime - lastWarningTime > 5000) { // 5-second cooldown
+              alert("Warning: Microphone signal is too loud! Please reduce microphone gain or move away from the microphone.");
+              lastWarningTime = currentTime; // Reset warning time
+            }
+          }
+        } else if (volumeMeterEl.tagName === "IMG") {
+          // For image type volume meter, only adjust opacity based on RMS
+          let scaledOpacity = Math.min(1, rms); // Cap opacity at 1
+          volumeMeterEl.style.opacity = scaledOpacity;
         }
 
         window.requestAnimationFrame(onFrame);
       };
+
       window.requestAnimationFrame(onFrame);
     });
-
   };
-
 }

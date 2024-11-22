@@ -25,6 +25,7 @@
 #' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
 #' @param asynchronous_api_mode Is asynchronous_api_mode being used?
 #' @param show_microphone_type_page Should you ask the user what kind of microphone they are using?
+#' @param with_additional_recording_instructions Add the extra recording instructions?
 #'
 #' @return
 #' @export
@@ -57,11 +58,8 @@ setup_pages <- function(input_type = c("microphone",
                         requirements_page = TRUE,
                         playful_volume_meter_setup = FALSE,
                         asynchronous_api_mode = FALSE,
-                        show_microphone_type_page = TRUE) {
-
-  print('asynchronous_api_mode setup')
-  print(asynchronous_api_mode)
-
+                        show_microphone_type_page = TRUE,
+                        with_additional_recording_instructions = FALSE) {
 
   input_type <- match.arg(input_type)
   test_type <- match.arg(test_type)
@@ -92,7 +90,8 @@ setup_pages <- function(input_type = c("microphone",
             is.scalar.logical(requirements_page),
             is.scalar.logical(playful_volume_meter_setup),
             is.scalar.logical(asynchronous_api_mode),
-            is.scalar.logical(show_microphone_type_page)
+            is.scalar.logical(show_microphone_type_page),
+            is.scalar.logical(with_additional_recording_instructions)
   )
 
   if(get_user_info) {
@@ -133,15 +132,13 @@ setup_pages <- function(input_type = c("microphone",
 
       if(requirements_page) requirements_page(headphones = headphones, input_type = input_type, musical_instrument = musical_instrument),
 
-      # if(get_user_info) get_user_info_page(),
-
       if(headphones) test_headphones_page(concise_wording),
 
       if(select_instrument) select_musical_instrument_page(set_range_based_on_selection = !get_instrument_range),
 
       correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode),
 
-      record_instructions(playful_volume_meter_setup),
+      record_instructions(playful_volume_meter_setup, with_additional_recording_instructions),
 
       if(get_instrument_range) get_instrument_range_pages(input_type, show_musical_notation = get_instrument_range_musical_notation, adjust_range = adjust_range, test_type = test_type, concise_wording = concise_wording, asynchronous_api_mode = asynchronous_api_mode)
     ))
@@ -154,6 +151,9 @@ setup_pages <- function(input_type = c("microphone",
     setup#,
     # After, check async stuff has resolved, if async mode
     #if(asynchronous_api_mode) api_check_pages()
+
+    # Why did I remove this?!
+
   )
 
 }
@@ -273,7 +273,15 @@ microphone_setup <- function(SNR_test, absolute_url = character(), microphone_te
     microphone_pages <- psychTestR::join(
       # Don't show the microphone type page if we are skipping setup
       if(!skip_setup %in% c("except_microphone", TRUE) && show_microphone_type_page) microphone_type_page(),
-      microphone_calibration_page(concise_wording = concise_wording, musical_instrument = musical_instrument)
+      # We have this logic in case the mic was already setup in another test previously in the timeline
+      # i.e., we only want the user to setup their mic once.
+      psychTestR::conditional(function(state, ...) {
+        ! psychTestR::get_global("microphone_setup", state)
+      }, logic = microphone_calibration_page(concise_wording = concise_wording, musical_instrument = musical_instrument)),
+      # Update the state to say the mic is now setup:
+      psychTestR::code_block(function(state, ...) {
+        psychTestR::set_global("microphone_setup", TRUE, state)
+      })
     )
   } else {
     microphone_pages <- empty_code_block() # There needs to be the possibility of something resolving
@@ -286,16 +294,23 @@ microphone_setup <- function(SNR_test, absolute_url = character(), microphone_te
   )
 }
 
-record_instructions <- function(playful_volume_meter_setup = FALSE) {
+record_instructions <- function(playful_volume_meter_setup = FALSE, with_additional_recording_instructions = FALSE) {
+
+  additional_instructions <- shiny::tags$div(
+    shiny::tags$p("You need to be directly in front of the microphone. Depending on where your laptop is placed, this may mean sitting rather than standing when you play."),
+    shiny::tags$p("Remember to wait to see the red circle flash before you start playing and stay very quiet until recording has stopped."),
+    shiny::tags$p("To avoid making accidental noises it is recommended that someone else click ‘play’ and ‘stop’ for you.")
+  )
 
   ui <- shiny::tags$div(
     shiny::tags$p(psychTestR::i18n("record_instructions")),
     shiny::tags$img(src = "musicassessr-assets/img/record.gif"),
+    if(with_additional_recording_instructions) additional_instructions,
     if(playful_volume_meter_setup) shiny::tags$div(shiny::tags$p(psychTestR::i18n("record_instructions_playful")), volume_meter(type = "playful"), shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr")))
-    )
+  )
 
 
-    psychTestR::one_button_page(body = ui, button_text = psychTestR::i18n("Next"))
+  psychTestR::one_button_page(body = ui, button_text = psychTestR::i18n("Next"))
 }
 
 

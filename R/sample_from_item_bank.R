@@ -575,3 +575,26 @@ compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = N
 
   user_trials
 }
+
+
+sample_in_deciles <- function(item_bank, no_to_sample_from_each_decile, decile_upper_bound = 10, col_name = "rhythmic_difficulty_percentile") {
+  item_bank <- item_bank %>%
+    tibble::as_tibble()
+  1:decile_upper_bound %>%
+    purrr::map_dfr(function(decile_no) {
+      sample_in_deciles_helper(item_bank, decile_no, no_to_sample_from_each_decile, col_name)
+    })
+}
+
+sample_in_deciles_helper <- function(item_bank, decile_no, no_to_sample, col_name = "rhythmic_difficulty_percentile") {
+
+  decile_no <- decile_no - 1 # Zero-index it
+  lower_bound <- decile_no * 10
+  upper_bound <- lower_bound + 9
+  col_name <- rlang::sym(col_name)
+
+  item_bank %>%
+    dplyr::filter(dplyr::between(!! col_name, lower_bound, upper_bound)) %>%
+    dplyr::slice_sample(n = no_to_sample)
+}
+

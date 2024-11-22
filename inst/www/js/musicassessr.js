@@ -43,12 +43,8 @@ let stimuli_durations = "";
 
 // Grab the language from psychTestR via the URL parameter
 const queryString = window.location.search;
-console.log('queryString: ' + queryString);
 const urlParams = new URLSearchParams(queryString);
-console.log('urlParams: ' + urlParams);
 const lang = urlParams.get('language');
-console.log('lang: ' + lang);
-
 
 // // Trial info
 
@@ -70,6 +66,10 @@ let db_user_id;
 let db_feedback;
 let db_feedback_type;
 let db_trial_paradigm;
+let db_melody_block_paradigm;
+let db_additional;
+let db_file_type;
+let db_noise_filename;
 
 // Functions
 
@@ -92,7 +92,7 @@ function initSynth() {
       }
     };
 
-  //create a synth and connect it to the master output (your speakers)
+  // Create a synth and connect it to the master output (your speakers)
   window.synth = new Tone.Synth(synthParameters).toMaster();
 
 }
@@ -165,36 +165,13 @@ function toneJSInit() {
 }
 
 function connect_sound(sound) {
-   //create a synth and connect it to the master output (your speakers)
+   // Create a synth and connect it to the master output (your speakers)
   if(sound === "tone") {
-    window.piano.disconnect();
-    //window.voice_doo.disconnect();
-    //window.voice_daa.disconnect();
     //create a synth and connect it to the master output (your speakers)
-    window.synth = new Tone.Synth(synthParameters).toMaster();
+    synth = new Tone.Synth(synthParameters).toMaster();
 
-  } else if(sound === "voice_doo") {
-
-    window.piano.disconnect();
-    window.synth.disconnect();
-    //window.voice_daa.disconnect();
-    //window.voice_doo.toMaster();
-
-  } else if(sound === "voice_daa") {
-
-    window.piano.disconnect();
-    window.synth.disconnect();
-    //window.voice_doo.disconnect();
-    //window.voice_daa.toMaster();
-  } else if(sound === "rhythm") {
-    window.piano.disconnect();
-    window.synth.disconnect();
-  }
-  else {
-    window.synth.disconnect();
-    //window.voice_daa.disconnect();
-    //window.voice_doo.disconnect();
-    window.piano.toMaster();
+  } else {
+    piano.toMaster();
   }
 }
 
@@ -1108,7 +1085,11 @@ async function upload_file_to_s3(blob) {
     "user-id": String(db_user_id),
     "feedback": String(db_feedback),
     "feedback-type": String(db_feedback_type),
-    "trial-paradigm": String(db_trial_paradigm)
+    "trial-paradigm": String(db_trial_paradigm),
+    "melody-block-paradigm": String(db_melody_block_paradigm),
+    "additional": String(db_additional),
+    "file-type": String(db_file_type),
+    "noise-filename" : String(db_noise_filename)
   };
 
   console.log(md);

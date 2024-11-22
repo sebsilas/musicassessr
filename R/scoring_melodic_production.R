@@ -114,6 +114,13 @@ score_melodic_production <- function(user_melody_freq = numeric(),
   opti3 <- get_opti3(stimuli, stimuli_durations, stimuli_length, features_df)
   no_recalled_notes <- length(user_melody_input)
 
+  ngrukkon_N2 <- tryCatch({
+    ngrukkon_safe(diff(stimuli), diff(user_melody_input), N = 2)
+  }, error = function(err) {
+    logging::logerror(err)
+    NA
+  })
+
   # accuracy style measures
 
   ## proportion of correct note events i.e., no_correct_notes/no_recalled_notes
@@ -189,6 +196,7 @@ score_melodic_production <- function(user_melody_freq = numeric(),
     proportion_of_stimuli_notes_found_octaves_allowed = proportion_of_stimuli_notes_found_octaves_allowed,
     opti3 = opti3$opti3,
     ngrukkon = opti3$ngrukkon,
+    ngrukkon_N2 = ngrukkon_N2,
     harmcore = opti3$harmcore,
     rhythfuzz = opti3$rhythfuzz,
     melody_dtw = melody_dtw,

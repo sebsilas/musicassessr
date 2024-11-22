@@ -388,89 +388,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
        midi_res <- get_answer_midi(input, state, ...)
 
-       if(psychTestR::get_global("asynchronous_api_mode", state)) {
+       if(!psychTestR::get_global("asynchronous_api_mode", state)) {
 
-         review_items_id <- psychTestR::get_global('review_items_id', state)
-         new_items_id <- psychTestR::get_global('new_items_id', state)
-         review_items_id <- if(is.null(review_items_id)) NA else review_items_id
-         new_items_id <- if(is.null(new_items_id)) NA else new_items_id
-
-         stimuli <- as.numeric(jsonlite::fromJSON(input$stimuli))
-         stimuli_durations <- as.numeric(jsonlite::fromJSON(input$stimuli_durations))
-         test_id <- psychTestR::get_global('test_id', state)
-         item_id = psychTestR::get_global('item_id', state)
-         user_id = psychTestR::get_global('user_id', state)
-         instrument = psychTestR::get_global('inst', state)
-         trial_time_started <- psychTestR::get_global('trial_time_started', state)
-         trial_time_completed <- Sys.time()
-         score_to_use <- "opti3"
-         display_modality <- psychTestR::get_global('display_modality', state)
-         phase <- psychTestR::get_global('phase', state)
-         rhythmic <- psychTestR::get_global('rhythmic', state)
-         session_id <- get_promise_value(psychTestR::get_global("session_id", state))
-         additional <- psychTestR::get_global('additional', state)
-         additional <- if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE)
-
-         dur <- midi_res$pyin_style_res$dur
-         onset <- midi_res$pyin_style_res$onset
-         note <- midi_res$pyin_style_res$note
-         attempt <- psychTestR::get_global('number_attempts', state)
-
-         logging::loginfo("Appending MIDI trial result")
-
-         midi_trial_result <- promises::future_promise({
-
-
-           musicassessrdb::midi_add_trial_and_compute_trial_scores_api(stimuli = stimuli,
-                                                                       stimuli_durations = stimuli_durations,
-                                                                       test_id = test_id,
-                                                                       item_id = item_id,
-                                                                       user_id = user_id,
-                                                                       instrument = instrument,
-                                                                       trial_time_started = trial_time_started,
-                                                                       trial_time_completed = trial_time_completed,
-                                                                       score_to_use = score_to_use,
-                                                                       display_modality = display_modality,
-                                                                       phase = phase,
-                                                                       rhythmic = rhythmic,
-                                                                       session_id = session_id,
-                                                                       review_items_id = review_items_id,
-                                                                       new_items_id = new_items_id,
-                                                                       dur = dur,
-                                                                       onset = onset,
-                                                                       note = note,
-                                                                       attempt = attempt,
-                                                                       additional = additional)
-
-         }, seed = NULL, future.plan = future::multisession) %>%
-           promises::then(
-             onFulfilled = function(result) {
-
-               logging::loginfo("Promise fulfilled.")
-               logging::loginfo("Returning promise result: %s", result)
-
-               if(is.scalar.na.or.null(result)) {
-                 return(NA)
-               } else if(result$status == 200) {
-                 return(result)
-               } else {
-                 return(NA)
-               }
-
-             },
-             onRejected = function(err) {
-
-               logging::logerror("Promise failed: %s", err)
-
-             }
-           )
-
-         res <- list(midi_trial_result = midi_trial_result,
-                     user_satisfied = if (is.null(input$user_satisfied)) NA else input$user_satisfied,
-                     user_rating = if (is.null(input$user_rating)) NA else input$user_rating,
-                     attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt))
-
-       } else {
          res <- concat_mel_prod_results(input,
                                         state,
                                         melconv_res = list(notes = NA, durations = NA),
@@ -479,6 +398,107 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
        }
      }
 
+  # We want to register the file in the DB even if there is no input:
+  if(psychTestR::get_global("asynchronous_api_mode", state)) {
+
+    review_items_id <- psychTestR::get_global('review_items_id', state)
+    new_items_id <- psychTestR::get_global('new_items_id', state)
+    review_items_id <- if(is.null(review_items_id)) NA else review_items_id
+    new_items_id <- if(is.null(new_items_id)) NA else new_items_id
+    stimuli <- as.numeric(jsonlite::fromJSON(input$stimuli))
+    stimuli_durations <- as.numeric(jsonlite::fromJSON(input$stimuli_durations))
+    test_id <- psychTestR::get_global('test_id', state)
+    item_id = psychTestR::get_global('item_id', state)
+    user_id = psychTestR::get_global('user_id', state)
+    instrument = psychTestR::get_global('inst', state)
+    trial_time_started <- psychTestR::get_global('trial_time_started', state)
+    trial_time_completed <- Sys.time()
+    score_to_use <- "opti3"
+    display_modality <- psychTestR::get_global('display_modality', state)
+    phase <- psychTestR::get_global('phase', state)
+    rhythmic <- psychTestR::get_global('rhythmic', state)
+
+    session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
+
+    if(length(session_id) > 1) {
+      session_id <- session_id$session_id
+    }
+
+
+    additional <- psychTestR::get_global('additional', state)
+    additional <- if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE)
+    melody_block_paradigm <- psychTestR::get_global('melody_block_paradigm', state)
+
+    logging::loginfo('melody_block_paradigm: %s', melody_block_paradigm)
+
+    dur <- midi_res$pyin_style_res$dur
+    onset <- midi_res$pyin_style_res$onset
+    note <- midi_res$pyin_style_res$note
+
+    attempt <- psychTestR::get_global('number_attempts', state)
+
+    if(length(attempt) == 0) {
+      attempt <- 1L
+    }
+
+    logging::loginfo("Appending MIDI trial result")
+
+
+    midi_trial_result <- promises::future_promise({
+
+
+      musicassessrdb::midi_add_trial_and_compute_trial_scores_api(stimuli = stimuli,
+                                                                  stimuli_durations = stimuli_durations,
+                                                                  test_id = test_id,
+                                                                  item_id = if(length(item_id) == 0) NA else item_id, # N.B. needs to be a scalar character, hence the NA string
+                                                                  user_id = user_id,
+                                                                  instrument = instrument,
+                                                                  trial_time_started = trial_time_started,
+                                                                  trial_time_completed = trial_time_completed,
+                                                                  score_to_use = score_to_use,
+                                                                  display_modality = display_modality,
+                                                                  phase = if(length(phase) == 0 || musicassessr::is.scalar.na(phase)) "test" else phase,
+                                                                  rhythmic = if(length(rhythmic) == 0 || musicassessr::is.scalar.logical(rhythmic)) FALSE else rhythmic,
+                                                                  session_id = session_id,
+                                                                  review_items_id = review_items_id,
+                                                                  new_items_id = new_items_id,
+                                                                  dur = dur,
+                                                                  onset = onset,
+                                                                  note = note,
+                                                                  attempt = attempt,
+                                                                  additional = additional,
+                                                                  melody_block_paradigm = melody_block_paradigm)
+
+    },
+    seed = NULL, future.plan = future::multisession) %>%
+      promises::then(
+        onFulfilled = function(result) {
+
+          logging::loginfo("Promise fulfilled.")
+          logging::loginfo("Returning promise result: %s", result)
+
+          if(is.scalar.na.or.null(result)) {
+            return(NA)
+          } else if(result$status == 200) {
+            return(result)
+          } else {
+            return(NA)
+          }
+
+        },
+        onRejected = function(err) {
+
+          logging::logerror("Promise failed: %s", err)
+
+        }
+      )
+
+    res <- list(midi_trial_result = midi_trial_result,
+                user_satisfied = if (is.null(input$user_satisfied)) NA else input$user_satisfied,
+                user_rating = if (is.null(input$user_rating)) NA else input$user_rating,
+                attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt))
+
+  }
 
   return(res)
 

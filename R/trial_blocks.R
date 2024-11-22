@@ -869,7 +869,7 @@ melody_trials <- function(var_name,
         psychTestR::join(
           # Instructions
           psychTestR::one_button_page(shiny::tags$div(
-            if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
+            if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2(psychTestR::i18n("Sing"), " ", shiny::tags$em(psychTestR::i18n("then")), " ", psychTestR::i18n("play_the_melody")) else shiny::tags$h2(page_title),
             shiny::tags$p(paste0(psychTestR::i18n("First_try"), " ", num_examples_flat, " ", psychTestR::i18n("example_trials"), "."))
           ), button_text = psychTestR::i18n("Next")),
 
@@ -919,7 +919,7 @@ melody_trials <- function(var_name,
               pass_items_through_url_parameter = pass_items_through_url_parameter) },
 
           psychTestR::one_button_page(shiny::tags$div(
-            if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2("Sing ", shiny::tags$em("then"), " play the melody") else shiny::tags$h2(page_title),
+            if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2(psychTestR::i18n("Sing"), " ", shiny::tags$em(psychTestR::i18n("then")), " ", psychTestR::i18n("play_the_melody")) else shiny::tags$h2(page_title),
             shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))), button_text = psychTestR::i18n("Next"))
         )
       },
@@ -1009,8 +1009,12 @@ wrap_review_trials <- function(main_trials, var_name, num_items_flat, pass_items
 
 handle_item_sampling <- function(item_bank,
                                  num_items_flat, item_characteristics_sampler_function,
-                                 item_characteristics_pars, sampler_function, review = FALSE, var_name, phase = "test",
-                                 learn_test_paradigm = FALSE, rhythmic = FALSE) {
+                                 item_characteristics_pars,
+                                 sampler_function,
+                                 review = FALSE,
+                                 var_name, phase = "test",
+                                 learn_test_paradigm = FALSE,
+                                 rhythmic = FALSE) {
 
 
   if(review) {
@@ -1403,17 +1407,27 @@ interval_perception_trials <- function(num_items = 26L,
                                        ) {
 
   if(is.numeric(num_items) & num_items > 0L) {
+
+
     psychTestR::module("interval_perception",
-                       # no examples (too self explanatory/easy)
-                       psychTestR::join(
+
+                       # We give no examples (too self explanatory/easy)
+
+                       conditional_proceed_if_yes(question_page = psychTestR::NAFC_page(label = "able_to_identify_intervals",
+                                                                                        prompt = psychTestR::i18n("interval_perception_trials_conditional"),
+                                                                                        choices = c( psychTestR::i18n("Yes"), psychTestR::i18n("No") )
+                       ),
+                       logic_if_yes = psychTestR::join(
                          psychTestR::one_button_page(shiny::tags$div(
                            shiny::tags$h2(page_title),
                            instruction_text
                          ), button_text = psychTestR::i18n("Next")),
                          sample_intervals(num_items = num_items),
-                         multi_interval_page(num_items)))
+                         multi_interval_page(num_items))
+                       )
+                       ) # End module
   } else {
-    c()
+    empty_code_block()
   }
 }
 

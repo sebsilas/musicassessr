@@ -281,6 +281,7 @@ end_session_api <- function(state, session) {
 #' @param requirements_page Show a requirements page?
 #' @param playful_volume_meter_setup Should there be some additional functionality to demo the playful volume meter?
 #' @param show_microphone_type_page Should you ask the user what kind of microphone they are using?
+#' @param with_additional_recording_instructions Should additional recording instructions be presented?
 #'
 #' @return
 #' @export
@@ -308,7 +309,8 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
                                 allow_SNR_failure = FALSE,
                                 requirements_page = TRUE,
                                 playful_volume_meter_setup = FALSE,
-                                show_microphone_type_page = TRUE) {
+                                show_microphone_type_page = TRUE,
+                                with_additional_recording_instructions = FALSE) {
 
   # Note, we don't use asynchronous_api_mode here. We take this from musicassessr_opt
 
@@ -322,7 +324,7 @@ setup_pages_options <- function(input_type = c("microphone", "midi_keyboard", "m
                                 absolute_url, select_instrument, get_instrument_range_musical_notation,
                                 adjust_range, test_type, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording,
                                 skip_setup, get_self_chosen_anonymous_id, musical_instrument, allow_SNR_failure, requirements_page,
-                                playful_volume_meter_setup, asynchronous_api_mode, show_microphone_type_page)
+                                playful_volume_meter_setup, asynchronous_api_mode, show_microphone_type_page, with_additional_recording_instructions)
 
   }
 

@@ -126,8 +126,21 @@ bootstrap_implicit_harmonies <- function(pitch_vec, segmentation = NULL, sample_
 #'
 #' @examples
 rhythfuzz <- function(ioi_class1, ioi_class2) {
+
+  logging::loginfo("rhythfuzz")
+  logging::loginfo("ioi_class1: %s", ioi_class1)
+  logging::loginfo("ioi_class2: %s", ioi_class2)
+
+  assertthat::assert_that(
+    all(c(ioi_class1, ioi_class2) %in% -2:2),
+    msg = "Input contains non-ioi classes!"
+  )
   edit_sim(intToUtf8(ioi_class1 + 128), intToUtf8(ioi_class2 + 128))
 }
+
+# t1 <- c(0.5, 1, 3)
+# t2 <- t1*3
+# rhythfuzz(classify_duration(t1), classify_duration(t2))
 
 
 #' Compute harmcore

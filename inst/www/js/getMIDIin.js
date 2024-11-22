@@ -159,7 +159,6 @@ function instantiateMIDI(midi_device,
               }
 
 
-
               var responseTime = new Date().getTime();
               var timeElapsed = Math.abs(startTime - responseTime);
 

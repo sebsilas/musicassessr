@@ -137,3 +137,46 @@ musicassessr_css <- function() {
   shiny::tags$link(rel="stylesheet", type="text/css", href="https://musicassessr.com/assets/css/style_songbird.css")
 }
 
+
+#' Conditional logic if posed a yes or no question
+#'
+#' @param question_page Should be an NAFC_page with Yes and No only options
+#' @param logic_if_use Logic to execute if the user clicks Yes.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+conditional_proceed_if_yes <- function(question_page, logic_if_yes) {
+  psychTestR::join(
+
+    question_page,
+
+    psychTestR::conditional(function(state, ...) {
+      answer <- psychTestR::answer(state)
+      lang <- psychTestR::get_session_info(state, complete = FALSE)$language
+
+      if(lang != "en") {
+        answer <- translate_from_dict(answer, lang)
+      }
+      answer == "Yes"
+    }, logic_if_yes )
+  )
+}
+
+
+sure_you_want_to_continue_button <- function(extra_js_to_execute_on_click = NULL,
+                                             confirmation_msg = psychTestR::i18n("sure_continue")) {
+  shiny::tags$button(
+    id = "next",
+    type = "button",
+    class = "btn btn-default action-button",
+    psychTestR::i18n("Next"),
+    onclick = paste0("if(confirm('", confirmation_msg, "')) {
+        trigger_button(this.id);", extra_js_to_execute_on_click, "
+        } else {
+          return false;
+        }")
+  )
+}
+

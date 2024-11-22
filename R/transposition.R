@@ -1,38 +1,68 @@
 
 
-#' Sample melody in key (v2)
+#' Transpose a melody to a given key
 #'
-#' @param item_bank
-#' @param inst
+#' @param abs_melody
+#' @param key
 #' @param bottom_range
 #' @param top_range
-#' @param difficulty
-#' @param length
 #'
 #' @return
 #' @export
 #'
 #' @examples
-sample_melody_in_key_v2 <- function(item_bank, inst, bottom_range, top_range, difficulty, length = NULL) {
+transpose_melody_to_key <- function(abs_melody, key, bottom_range, top_range) {
 
-  logging::loginfo('Sample melody in key...')
-  logging::loginfo("Range: %s %s", bottom_range, top_range)
+  logging::loginfo('Transpose melody to key')
 
-  stopifnot(is(item_bank, "tbl"), # This checks for a tibble, but allows a database backend too (i.e., from tbl(db_con, "tbl_name"))
-            is.scalar.character(inst),
-            is_midi_note(bottom_range),
-            is_midi_note(top_range),
-            difficulty == "easy" || difficulty == "hard",
-            is.null.or(length, is.scalar.numeric))
+  stopifnot(is.numeric(abs_melody),
+            key %in% keys_table$key,
+            is.scalar.numeric(bottom_range),
+            is.scalar.numeric(top_range))
 
-  if (difficulty == "easy") {
-    key <- sample_easy_key(inst)
-  } else {
-    key <- sample_hard_key(inst)
+  # Check key
+  mel_key <- get_implicit_harmonies(abs_melody)
+  mel_key_centre <- unlist(strsplit(mel_key$key, "-"))[[1]]
+  # How far away is it from being the correct tonal centre?
+  key_centre <- unlist(strsplit(key, "-"))[[1]]
+
+  dist <- itembankr::pitch_class_to_numeric_pitch_class(key_centre) - itembankr::pitch_class_to_numeric_pitch_class(mel_key_centre)
+
+  if (dist != 0) {
+    # then must transpose
+    abs_melody <- abs_melody + dist
   }
+
+  abs_mel_up <- abs_melody + 12
+  abs_mel_down <- abs_melody - 12
+
+  range <- bottom_range:top_range
+
+  res <- tibble::tibble(
+    abs_melody = c(list(abs_melody), list(abs_mel_up), list(abs_mel_down))
+  ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(no_notes_in_range = sum(abs_melody %in% range, na.rm = TRUE)) %>%
+    dplyr::ungroup()
+
+  res <- res %>%
+    dplyr::slice_max(no_notes_in_range)
+
+  if(nrow(res) > 1) {
+    res <- res %>%
+      dplyr::slice_sample(n = 1)
+  }
+
+  res <- res %>%
+    dplyr::pull(abs_melody) %>%
+    unlist()
+
+  return(res)
 
 
 }
+
+# t <- transpose_melody_to_key(60:65, "C-maj", 50, 62)
 
 #' Sample melody in key
 #'
@@ -80,7 +110,7 @@ sample_melody_in_key <- function(item_bank, inst, bottom_range, top_range, diffi
   if(get_nrows(item_bank_subset) == 0) {
     item_bank_subset <- itembankr::subset_item_bank(item_bank, item_length = length)
   }
-  # failure for major, span == 24, length = 15
+  # Failure for major, span == 24, length = 15
 
   found_melody <- FALSE
   count <- 0

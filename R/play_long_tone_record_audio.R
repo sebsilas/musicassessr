@@ -118,12 +118,15 @@ play_long_tone_record_audio_page <- function(note = NULL,
       note <- user_range[long_note_no]
     }
 
+    melody_block_paradigm <- "long_note"
+
     trial_time_started <- Sys.time()
     psychTestR::set_global("trial_time_started", trial_time_started, state)
     psychTestR::set_global("singing_trial", singing_trial, state)
     psychTestR::set_global('display_modality', "auditory", state)
     psychTestR::set_global('phase', NA, state)
     psychTestR::set_global('rhythmic', NA, state)
+    psychTestR::set_global('melody_block_paradigm', melody_block_paradigm, state)
 
 
     db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
@@ -146,7 +149,10 @@ play_long_tone_record_audio_page <- function(note = NULL,
         feedback = FALSE,
         feedback_type = NA,
         trial_paradigm = paste0("long_note_", trial_paradigm),
-        additional = NA
+        melody_block_paradigm = melody_block_paradigm,
+        additional = NA,
+        file_type = NA,
+        noise_filename = NA
       )
     } else NULL
 

@@ -402,7 +402,7 @@ construct_play_melody_page <- function(melody = NULL,
                                        pass_items_through_url_parameter = FALSE,
                                        feedback = FALSE) {
 
-  if(melody_block_paradigm == "sing_melody_first") {
+  if(!singing_trials) {
     page_text <- shiny::tags$div(
       shiny::tags$img(src = "https://musicassessr.com/assets/img/saxophone.png", height = 100, width = 100),
       shiny::tags$br(),
@@ -815,8 +815,12 @@ present_melody <- function(stimuli,
     trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = is_function_or_true(feedback), asynchronous_api_mode = asynchronous_api_mode)
 
     if(display_modality == "visual") {
-      key <- compute_key_on_the_fly(stimuli)
+
+      notes <- melody_checks$melody
+      key <- compute_key_on_the_fly(notes)
       key_sharps_or_flats <- get_no_sharps_or_flats_from_key(key)
+      no_accidentals <- count_visible_accidentals(notes, key)
+
       if(key_sharps_or_flats == 0) {
         no_sharps <- 0
         no_flats <- 0
@@ -832,11 +836,25 @@ present_melody <- function(stimuli,
         clef = clef,
         key_signature = key,
         no_flats_key_signature = no_sharps,
-        no_sharps_key_signature = no_flats
+        no_sharps_key_signature = no_flats,
+        no_accidentals = no_accidentals
       )
+
     } else {
       key <- NULL
       additional <- list()
+    }
+
+    old_additional <-  psychTestR::get_global("additional", state)
+
+    if(!is.null(old_additional)) {
+      if(is.character(old_additional)) {
+
+        old_additional <- jsonlite::fromJSON(old_additional)
+
+        additional <- c(old_additional, additional)
+
+      }
     }
 
     psychTestR::set_global("additional", additional, state) # For MIDI
@@ -860,8 +878,11 @@ present_melody <- function(stimuli,
         new_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
         feedback = psychTestR::get_global("async_feedback", state),
         feedback_type = psychTestR::get_global("async_feedback_type", state),
+        melody_block_paradigm = melody_block_paradigm,
         trial_paradigm = melody_trial_paradigm,
-        additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE)
+        additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE),
+        file_type = NA,
+        noise_filename = NA
       )
     } else NULL
 
@@ -969,10 +990,24 @@ grab_sampled_melody <- function(item_bank = NULL,
       melody_no <- if(reactive_melody_no) psychTestR::get_global("reactive_melody_no", state) else melody_no
       trial_characteristics <- psychTestR::get_global(paste0(var_name, "_trial_characteristics"), state)
       trial_char <- get_trial_characteristics_function(trial_df = trial_characteristics, trial_no = melody_no)
-      melody_row <- sample_melody_in_key(item_bank, inst = inst, bottom_range = bottom_range, top_range = top_range, difficulty = trial_char$key_difficulty, length = trial_char$melody_length)
-      melody_row <- cbind(melody_row, tibble::tibble(key_difficulty = trial_char$key_difficulty, display_modality = trial_char$display_modality) )
-      # Not fully abstracted from PBET setup, yet
+
+      # Not fully abstracted from PBET setup, yet:
       abs_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(abs_melody))
+      difficulty <- trial_char$key_difficulty
+
+      if (difficulty == "easy") {
+        key <- sample_easy_key(inst)
+      } else {
+        key <- sample_hard_key(inst)
+      }
+      abs_melody <- transpose_melody_to_key(abs_melody, key, bottom_range, top_range)
+      melody_row$abs_melody <- paste0(abs_melody, collapse = ",")
+      melody_row <- cbind(melody_row,
+                          tibble::tibble(key_difficulty = difficulty,
+                                         display_modality = trial_char$display_modality) )
+
+      psychTestR::set_global("additional", tibble::tibble(key_difficulty = difficulty), state)
+
       rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
       rel_to_abs_mel_function <- NULL
       display_modality <- trial_char$display_modality
@@ -1274,4 +1309,103 @@ get_similarity_to_previous_melody <- function(get_similarity_to_previous_melody,
 
   similarity_to_previous_melody
 }
+
+
+
+count_visible_accidentals <- function(notes, key) {
+
+  # Convert to scientific notation for easier pitch checking
+  pitch_classes <- itembankr::midi_to_pitch_class(notes)
+
+  # Define expected pitches in the key signature (e.g., G major has F#)
+  expected_pitches <- get_expected_pitches_for_key(key)
+
+  accidental_count <- length(setdiff(pitch_classes, expected_pitches))
+
+  return(accidental_count)
+}
+
+get_expected_pitches_for_key <- function(key) {
+  switch(key,
+         # Major Keys
+         "C-maj" = c("C", "D", "E", "F", "G", "A", "B"),
+         "G-maj" = c("G", "A", "B", "C", "D", "E", "F#"),
+         "D-maj" = c("D", "E", "F#", "G", "A", "B", "C#"),
+         "A-maj" = c("A", "B", "C#", "D", "E", "F#", "G#"),
+         "E-maj" = c("E", "F#", "G#", "A", "B", "C#", "D#"),
+         "B-maj" = c("B", "C#", "D#", "E", "F#", "G#", "A#"),
+         "F#-maj" = c("F#", "G#", "A#", "B", "C#", "D#", "E#"),
+         "Gb-maj" = c("Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"),
+         "Db-maj" = c("Db", "Eb", "F", "Gb", "Ab", "Bb", "C"),
+         "C#-maj" = c("C#", "D#", "E#", "F#", "G#", "A#", "B#"),  # Enharmonic of Db-maj
+         "Ab-maj" = c("Ab", "Bb", "C", "Db", "Eb", "F", "G"),
+         "G#-maj" = c("G#", "A#", "B#", "C#", "D#", "E#", "F##"), # Enharmonic of Ab-maj
+         "Eb-maj" = c("Eb", "F", "G", "Ab", "Bb", "C", "D"),
+         "D#-maj" = c("D#", "E#", "F##", "G#", "A#", "B#", "C##"), # Enharmonic of Eb-maj
+         "Bb-maj" = c("Bb", "C", "D", "Eb", "F", "G", "A"),
+         "A#-maj" = c("A#", "B#", "C##", "D#", "E#", "F##", "G##"), # Enharmonic of Bb-maj
+         "F-maj" = c("F", "G", "A", "Bb", "C", "D", "E"),
+         "E#-maj" = c("E#", "F##", "G##", "A#", "B#", "C##", "D##"), # Enharmonic of F-maj
+
+         # Minor Keys
+         "A-min" = c("A", "B", "C", "D", "E", "F", "G"),
+         "E-min" = c("E", "F#", "G", "A", "B", "C", "D"),
+         "B-min" = c("B", "C#", "D", "E", "F#", "G", "A"),
+         "F#-min" = c("F#", "G#", "A", "B", "C#", "D", "E"),
+         "Gb-min" = c("Gb", "Ab", "Bbb", "Cb", "Db", "Ebb", "Fb"), # Enharmonic of F#-min
+         "C#-min" = c("C#", "D#", "E", "F#", "G#", "A", "B"),
+         "Db-min" = c("Db", "Eb", "Fb", "Gb", "Ab", "Bbb", "Cb"),  # Enharmonic of C#-min
+         "G#-min" = c("G#", "A#", "B", "C#", "D#", "E", "F#"),
+         "Ab-min" = c("Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb"),  # Enharmonic of G#-min
+         "D#-min" = c("D#", "E#", "F#", "G#", "A#", "B", "C#"),
+         "Eb-min" = c("Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"),   # Enharmonic of D#-min
+         "A#-min" = c("A#", "B#", "C#", "D#", "E#", "F#", "G#"),
+         "Bb-min" = c("Bb", "C", "Db", "Eb", "F", "Gb", "Ab"),    # Enharmonic of A#-min
+         "D-min" = c("D", "E", "F", "G", "A", "Bb", "C"),
+         "G-min" = c("G", "A", "Bb", "C", "D", "Eb", "F"),
+         "C-min" = c("C", "D", "Eb", "F", "G", "Ab", "Bb"),
+         "F-min" = c("F", "G", "Ab", "Bb", "C", "Db", "Eb"),
+         "Bb-min" = c("Bb", "C", "Db", "Eb", "F", "Gb", "Ab"),
+         "Eb-min" = c("Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"),
+         "Ab-min" = c("Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb"),
+
+         # Default case
+         stop(paste0("Key ", key, " not recognized"))
+  )
+}
+
+#
+#
+# # Test 1: C Major scale, no accidentals expected
+# notes <- c(60, 62, 64, 65, 67, 69, 71)  # MIDI notes for C, D, E, F, G, A, B
+# key <- "C-maj"
+# accidental_count <- count_visible_accidentals(notes, key)
+# print(paste("Test 1 - C Major:", accidental_count))  # Expected output: 0
+#
+# # Test 2: G Major scale with an F natural
+# notes <- c(67, 69, 71, 72, 74, 76, 77)  # MIDI notes for G, A, B, C, D, E, F
+# key <- "G-maj"
+# accidental_count <- count_visible_accidentals(notes, key)
+# print(paste("Test 2 - G Major with F natural:", accidental_count))  # Expected output: 1
+#
+#
+# # Test 4: A minor scale with a G#
+# notes <- c(69, 71, 72, 74, 76, 77, 80)  # MIDI notes for A, B, C, D, E, F, G#
+# key <- "A-min"
+# accidental_count <- count_visible_accidentals(notes, key)
+# print(paste("Test 4 - A Minor with G#:", accidental_count))  # Expected output: 1
+#
+#
+# # Test 5: F Major scale with a B natural
+# notes <- c(65, 67, 69, 71, 72, 74, 76)  # MIDI notes for F, G, A, B, C, D, E
+# key <- "F-maj"
+# accidental_count <- count_visible_accidentals(notes, key)
+# print(paste("Test 5 - F Major with B natural:", accidental_count))  # Expected output: 1
+#
+#
+# # Test 1: C Major scale in B major
+# notes <- c(60, 62, 64, 65, 67, 69, 71)  # MIDI notes for C, D, E, F, G, A, B
+# key <- "B-maj"
+# accidental_count <- count_visible_accidentals(notes, key)
+# print(paste("Test 6 - B Major:", accidental_count))  # Expected output: 0
 

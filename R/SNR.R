@@ -19,7 +19,8 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
     record_background_page(asynchronous_api_mode),
     record_signal_page(asynchronous_api_mode = asynchronous_api_mode),
     SNR_preconclusion_page(),
-    psychTestR::reactive_page(function(state, ...) {
+    if(asynchronous_api_mode) get_audio_file_job_process(asynchronous_api_mode, state_var_name = "SNR_noise", var_name_to_set_result = "SNR"),
+    if(!asynchronous_api_mode) { psychTestR::code_block(function(state, ...) {
 
       if(length(absolute_url) > 0) {
 
@@ -51,9 +52,19 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
 
       psychTestR::set_global("SNR", SNR, state)
 
+    })},
+     # Conclude
+    psychTestR::reactive_page(function(state, ...) {
+      SNR <- psychTestR::get_global("SNR", state)
+      logging::loginfo("SNR: %s", SNR)
+      if(asynchronous_api_mode) {
+        SNR <- as.numeric(stringr::str_remove(SNR, "SNR:"))
+      }
+      logging::loginfo("SNR: %s", SNR)
       SNR_conclusion(SNR, min_SNR, report_SNR, allow_SNR_failure)
-
     })
+
+
   )
 
 }
@@ -82,9 +93,10 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
       !psychTestR::get_global("found_SNR", state)
     }, logic = psychTestR::join(
         record_background_page(asynchronous_api_mode),
-        record_signal_page(asynchronous_api_mode),
+        record_signal_page(asynchronous_api_mode = asynchronous_api_mode),
         SNR_preconclusion_page(),
-        psychTestR::reactive_page(function(state, ...) {
+        if(asynchronous_api_mode) get_audio_file_job_process(asynchronous_api_mode, state_var_name = "SNR_noise", var_name_to_set_result = "SNR"),
+        if(!asynchronous_api_mode) { psychTestR::code_block(function(state, ...) {
 
           if(length(absolute_url) > 0) {
 
@@ -114,9 +126,18 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
 
           psychTestR::set_global("SNR", SNR, state)
 
-          SNR_conclusion_loop(SNR, min_SNR, report_SNR, allow_SNR_failure)
+        })},
 
+        psychTestR::reactive_page(function(state, ...) {
+          SNR <- psychTestR::get_global("SNR", state)
+          logging::loginfo("SNR: %s", SNR)
+          if(asynchronous_api_mode) {
+            SNR <- as.numeric(stringr::str_remove(SNR, "SNR:"))
+          }
+          logging::loginfo("SNR: %s", SNR)
+          SNR_conclusion_loop(SNR, min_SNR, report_SNR, allow_SNR_failure)
         })
+
       ))
   )
 }
@@ -146,7 +167,12 @@ record_background_page <- function(asynchronous_api_mode) {
 
   psychTestR::reactive_page(function(state, ...) {
 
-    db_vars <- create_db_vars_obj_snr(asynchronous_api_mode, state)
+    if(asynchronous_api_mode) {
+      db_vars <- create_db_vars_template()
+      db_vars$file_type <- "noise"
+    } else {
+      db_vars <- NULL
+    }
 
     record_audio_page(page_text = shiny::tags$div(
       shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
@@ -175,7 +201,14 @@ record_signal_page <- function(page_text = shiny::tags$div(
 
   psychTestR::reactive_page(function(state, ...) {
 
-    db_vars <- create_db_vars_obj_snr(asynchronous_api_mode, state)
+    if(asynchronous_api_mode) {
+      db_vars <- create_db_vars_template()
+      db_vars$file_type <- "signal"
+      db_vars$noise_filename <- psychTestR::get_global("SNR_noise", state)
+    } else {
+      db_vars <- NULL
+    }
+
 
     record_audio_page(page_text = page_text,
                       label = "SNR_test_signal",
@@ -189,30 +222,6 @@ record_signal_page <- function(page_text = shiny::tags$div(
 
 }
 
-
-create_db_vars_obj_snr <- function(asynchronous_api_mode, state) {
-
-  db_vars <- if(asynchronous_api_mode) {
-
-    list(
-      stimuli = NA,
-      stimuli_durations = NA,
-      trial_time_started = Sys.time(),
-      instrument = NA,
-      attempt = NA,
-      item_id = NA,
-      display_modality = NA,
-      phase = "setup",
-      rhythmic = NA,
-      session_id = get_promise_value(psychTestR::get_global("session_id", state)),
-      test_id = psychTestR::get_global("test_id", state),
-      review_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
-      new_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id
-    )
-  } else NULL
-
-  return(db_vars)
-}
 
 SNR_conclusion_loop <- function(SNR, min_SNR, report_SNR = TRUE, allow_SNR_failure = FALSE) {
 

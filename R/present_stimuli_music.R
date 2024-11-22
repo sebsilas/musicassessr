@@ -108,6 +108,10 @@ present_stimuli_midi_notes_visual <- function(stimuli,
                                               durations = NULL,
                                               key = NULL) {
 
+  print('present_stimuli_midi_notes_visual')
+  print('key')
+  print(key)
+
   if(transpose_visual_notation != 0) {
     stimuli <- stimuli + transpose_visual_notation
   }
@@ -217,6 +221,9 @@ present_stimuli_midi_notes <- function(stimuli,
                                        play_first_note_button_text = psychTestR::i18n("play_first_note"),
                                        lowest_reading_note = NA,
                                        key = NULL, ...) {
+  print('present_stimuli_midi_notes')
+  print('key')
+  print(key)
 
 
   if (display_modality == "auditory") {
@@ -603,6 +610,7 @@ wrap.xml.template <- function(notes,
                               octave = 4L,
                               key = NULL) {
 
+
   mean_notes <- get_mean_of_notes(notes, type, octave)
 
   if(!is.null(key)) {
@@ -917,7 +925,14 @@ compute_key_on_the_fly <- function(notes) {
 }
 
 get_key_string <- function(key) {
-  paste0("<fifths>", get_no_sharps_or_flats_from_key("C-maj"), "</fifths>")
+
+  print('get_key_string')
+  print('key')
+  print(key)
+  print('get_no_sharps_or_flats_from_key(key)')
+  print(get_no_sharps_or_flats_from_key(key))
+
+  paste0("<fifths>", get_no_sharps_or_flats_from_key(key), "</fifths>")
 }
 
 get_no_sharps_or_flats_from_key <- function(key) {

@@ -40,7 +40,7 @@ translate_from_dict <- function(non_english_translation, language) {
 
   lang_sym <- rlang::sym(language)
 
-  musicassessr::insts_table %>%
+  musicassessr::musicassessr_dict_df %>%
     dplyr::filter(!! lang_sym == !! non_english_translation) %>%
     dplyr::pull(en) %>%
     as.character()

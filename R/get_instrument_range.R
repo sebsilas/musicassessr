@@ -21,7 +21,6 @@ get_instrument_range_pages <- function(input_type,
                                        concise_wording = FALSE,
                                        asynchronous_api_mode = FALSE) {
 
-
   # A short multi-page protocol to get the user's frequency range
 
   stopifnot(is.scalar.character(input_type),
@@ -56,46 +55,10 @@ get_note_until_satisfied_loop <- function(prompt_text,
             is.logical(show_musical_notation),
             is.scalar.logical(asynchronous_api_mode))
 
-  if(asynchronous_api_mode) {
-
-    # Note this will run synchronously..
-
-    async_mode_logic <- psychTestR::code_block(function(state, ...) {
-
-      filename <- psychTestR::get_global("wav_file", state)
-      count <- 0
-      result <- NA
-
-      while(count < 4 && is.na(result)) {
-
-        print('result..1')
-        print(result)
-
-        Sys.sleep(5)
-
-        logging::loginfo("count.. %s", count)
-
-        result <- musicassessrdb::get_job_status_api(filename = paste0(filename, ".wav"))
-
-        logging::loginfo("result... %s", result)
-
-        if(is.scalar.na.or.null(result)) {
-          result <- NA
-        } else {
-          result <- jsonlite::fromJSON(result$message)$feedback
-        }
-
-        print('parsed result')
-        print(result)
-
-        count <- count + 1
-
-        psychTestR::set_global("sung_note", result, state)
-
-      }
-
-    })
-  }
+  async_mode_logic <- get_audio_file_job_process(asynchronous_api_mode,
+                                                 state_var_name = "wav_file",
+                                                 var_name_to_set_result = var_name,
+                                                 var_to_take_from_message = "feedback")
 
   psychTestR::join(
     # set the user satisfied state to false
@@ -105,11 +68,17 @@ get_note_until_satisfied_loop <- function(prompt_text,
       psychTestR::set_global(var_name, NA, state)
     }),
 
-    # keep in loop until the participant confirms the note is correct
+    # Keep in loop until the participant confirms the note is correct
     psychTestR::while_loop(test = function(state, ...) {
       user_satisfied <- psychTestR::get_global("user_satisfied", state)
       note <- psychTestR::get_global(var_name, state)
-      user_satisfied %in% dict_key_to_translations("No") | is.na(note) },
+      logging::loginfo("Check note in while_loop: %s", note)
+      logging::loginfo("user_satisfied: %s", user_satisfied)
+      logging::loginfo("user_satisfied in dict_key_to_translations: %s", user_satisfied %in% dict_key_to_translations("No") )
+      logging::loginfo("user_satisfied in dict_key_to_translations || is.na(note): %s", user_satisfied %in% dict_key_to_translations("No") || is.na(note) )
+
+      user_satisfied %in% dict_key_to_translations("No") || is.na(note)
+      },
       logic = list(
         # logic page 1, get new note
         midi_or_audio(page_type, prompt_text, var_name, asynchronous_api_mode),
@@ -117,6 +86,10 @@ get_note_until_satisfied_loop <- function(prompt_text,
         if(asynchronous_api_mode) async_mode_logic else empty_code_block(),
         check_note_ok(var_name, page_type, show_musical_notation),
         psychTestR::code_block(function(state, answer, ...) {
+          if("user_satisfied" %in% names(answer)) {
+            answer <- answer$user_satisfied
+          }
+          logging::loginfo("setting user_satisfied: %s", answer)
           psychTestR::set_global("user_satisfied", answer, state)
         })
       )
@@ -126,6 +99,76 @@ get_note_until_satisfied_loop <- function(prompt_text,
 
 
 
+get_audio_file_job_process <- function(asynchronous_api_mode,
+                                       state_var_name = "wav_file",
+                                       var_name_to_set_result,
+                                       var_to_take_from_message = NULL) {
+  if(asynchronous_api_mode) {
+
+    # Note this will run synchronously..
+
+    return(psychTestR::code_block(function(state, ...) {
+
+      filename <- psychTestR::get_global(state_var_name, state)
+
+      count <- 0
+      status <- "PENDING"
+
+      while(count < 4 && status == "PENDING") {
+
+        Sys.sleep(5)
+
+        logging::loginfo("count.. %s", count)
+
+        if(tools::file_ext(filename) != "wav") {
+          filename <- paste0(filename, ".wav")
+        }
+
+        logging::loginfo("filename:s %s", filename)
+
+        result <- musicassessrdb::get_job_status_api(filename = filename)
+
+        logging::loginfo("result... %s", result)
+
+        if(is.scalar.na.or.null(result)) {
+          status <- "PENDING"
+        } else {
+          status <- result$status
+        }
+
+        logging::loginfo("status %s", status)
+
+        count <- count + 1
+
+      }
+
+      logging::loginfo("Out of while...")
+      logging::loginfo("result: %s", result)
+      logging::loginfo("result$message %s", result$message)
+
+      response <- tryCatch({
+        if(!is.null(var_to_take_from_message)) {
+          result <- jsonlite::fromJSON(result$message)
+          result <-  result[[var_to_take_from_message]]
+        } else {
+          result <- result$message
+        }
+        result
+
+      }, error = function(err) {
+        logging::logerror(err)
+        NA
+      })
+
+      logging::loginfo("Setting result: %s", response)
+
+      psychTestR::set_global(var_name_to_set_result, response, state)
+
+    }))
+  }
+}
+# success result$message {"feedback":[53]}
+# jsonlite::fromJSON("{0.644353741,1.097142857,171.34\n}")
 
 
 
@@ -219,13 +262,15 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
 
     if(page_type == "record_audio_page") {
       if(psychTestR::get_global("asynchronous_api_mode", state)) {
-        note <- psychTestR::get_global("sung_note", state)
+        note <- psychTestR::get_global(var_name, state)
       } else {
         note <- answer$user_response
       }
     } else {
       note <- answer$note
     }
+
+    logging::loginfo("note: %s", note)
 
     if(is.na(note)) {
       psychTestR::one_button_page(shiny::tags$div(
@@ -372,8 +417,11 @@ midi_or_audio <- function(type, prompt_text, var_name, asynchronous_api_mode) {
           new_items_id = NA,
           feedback = TRUE,
           feedback_type = "produced_note",
+          melody_block_paradigm = NA,
           trial_paradigm = "setup_sing_range_note",
-          additional = NA
+          additional = NA,
+          file_type = NA,
+          noise_filename = NA
         )
       } else NULL
 

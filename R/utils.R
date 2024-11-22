@@ -34,6 +34,14 @@ is.scalar.numeric <- function(x) {
   is.numeric(x) && is.scalar(x)
 }
 
+#' Check if an object is a scalar logical
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
 is.scalar.logical <- function(x) {
   is.logical(x) && is.scalar(x)
 }
@@ -42,6 +50,14 @@ is.scalar <- function(x) {
   identical(length(x), 1L)
 }
 
+#' Check if an object is an NA (of length 1)
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
 is.scalar.na <- function(x) {
   all(is.na(x)) & length(x) == 1
 }

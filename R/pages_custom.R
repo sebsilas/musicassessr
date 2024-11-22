@@ -44,13 +44,31 @@ select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
 
 
 midi_vs_audio_select_page <- function(prompt = psychTestR::i18n("input_selector_message")) {
-  psychTestR::dropdown_page(label = "select_input",
-                next_button_text = psychTestR::i18n("Next"),
-                prompt = prompt,
-                choices = c("Microphone", "MIDI"),
-                on_complete = function(answer, state, ...) {
-                  psychTestR::set_global("response_type", answer, state)
-                })
+
+  # Remake the psychTestR page so I can confirm what the user selects
+
+  prompt <- tagify(prompt)
+  style <- sprintf("max-width:%ipx", 200)
+
+  dropdown <- shiny::selectizeInput("dropdown",
+                                    label = NULL,
+                                    choices =  c("Microphone", "MIDI"),
+                                    multiple = FALSE)
+
+
+
+  response_ui <- shiny::div(style = style,
+                            dropdown,
+                            sure_you_want_to_continue_button(confirmation_msg = psychTestR::i18n("happy_with_selection"))
+                            )
+
+  ui <- shiny::div(prompt, response_ui)
+  get_answer_fun <- get("dropdown_page.get_answer", asNamespace("psychTestR"))
+  get_answer <- get_answer_fun("Other (please state)")
+  psychTestR::page(ui = ui, label = "select_input", get_answer = get_answer, save_answer = TRUE,
+                   validate = validate, on_complete = function(answer, state, ...) {
+         psychTestR::set_global("response_type", answer, state)
+       }, final = FALSE)
 }
 
 
@@ -130,17 +148,7 @@ play_interval_page <- function(interval = NULL,
                          label = NULL,
                          choices = unlist(as.vector(intervals_dict)), #names(intervals),
                          width = "30%"),
-      shiny::tags$button(
-        id = "next",
-        type = "button",
-        class = "btn btn-default action-button",
-        psychTestR::i18n("Next"),
-        onclick = paste0("if(confirm('", psychTestR::i18n("sure_continue"), "')) {
-        trigger_button(this.id);
-        } else {
-          return false;
-        }")
-      )
+      sure_you_want_to_continue_button(confirmation_msg = psychTestR::i18n("happy_with_selection"))
   )
 
     psychTestR::page(ui = ui,

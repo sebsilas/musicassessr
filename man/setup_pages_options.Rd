@@ -28,7 +28,8 @@ setup_pages_options(
   allow_SNR_failure = FALSE,
   requirements_page = TRUE,
   playful_volume_meter_setup = FALSE,
-  show_microphone_type_page = TRUE
+  show_microphone_type_page = TRUE,
+  with_additional_recording_instructions = FALSE
 )
 }
 \arguments{
@@ -77,6 +78,8 @@ setup_pages_options(
 \item{playful_volume_meter_setup}{Should there be some additional functionality to demo the playful volume meter?}
 
 \item{show_microphone_type_page}{Should you ask the user what kind of microphone they are using?}
+
+\item{with_additional_recording_instructions}{Should additional recording instructions be presented?}
 }
 \description{
 Setup page options for a musicassessr test

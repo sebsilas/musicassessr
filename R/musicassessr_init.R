@@ -218,6 +218,7 @@ musicassessr_init <- function(app_name = "",
           psychTestR::set_global("musicassessr_inited", TRUE, state)
           psychTestR::set_global("user_info", user_info, state)
           psychTestR::set_global("redirect_on_failure_url", redirect_on_failure_url, state)
+          psychTestR::set_global("microphone_setup", FALSE, state)
 
       })
     )

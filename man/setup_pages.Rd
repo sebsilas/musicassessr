@@ -29,7 +29,8 @@ setup_pages(
   requirements_page = TRUE,
   playful_volume_meter_setup = FALSE,
   asynchronous_api_mode = FALSE,
-  show_microphone_type_page = TRUE
+  show_microphone_type_page = TRUE,
+  with_additional_recording_instructions = FALSE
 )
 }
 \arguments{
@@ -80,6 +81,8 @@ setup_pages(
 \item{asynchronous_api_mode}{Is asynchronous_api_mode being used?}
 
 \item{show_microphone_type_page}{Should you ask the user what kind of microphone they are using?}
+
+\item{with_additional_recording_instructions}{Add the extra recording instructions?}
 }
 \description{
 Setup pages for musicassessr test

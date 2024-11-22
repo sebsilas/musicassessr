@@ -127,31 +127,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
 
   # Leave the is.nulls() above before the stopifnot, so that e.g., onset is created, if it doesn't already exist
 
-  stopifnot(
-    length(
-      setdiff(
-          c("stimuli",
-          "stimuli_durations",
-          "trial_time_started",
-          "instrument",
-          "attempt",
-          "item_id",
-          "display_modality",
-          "phase",
-          "rhythmic",
-          "session_id",
-          "test_id",
-          "onset",
-          "new_items_id",
-          "review_items_id",
-          "user_id",
-          "feedback",
-          "feedback_type",
-          "trial_paradigm",
-          "additional"),
-        names(db_vars)
-        )
-      ) == 0)
+  stopifnot(length(setdiff(db_var_names, names(db_vars))) == 0)
 
   additional <- if(is.scalar.character(db_vars$additional)) db_vars$additional else jsonlite::toJSON(db_vars$additional, auto_unbox = TRUE)
 
@@ -177,10 +153,40 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   db_feedback_type = \"', db_vars$feedback_type,'\";
   db_trial_paradigm = \"', db_vars$trial_paradigm,"\";
   db_additional = \'", additional,"\';
+  db_melody_block_paradigm = \'", db_vars$melody_block_paradigm,"\';
+  db_file_type = \'", db_vars$file_type,"\';
+  db_noise_filename = \'", db_vars$noise_filename,"\';
   ")))
 
+}
 
+db_var_names <- c("stimuli",
+  "stimuli_durations",
+  "trial_time_started",
+  "instrument",
+  "attempt",
+  "item_id",
+  "display_modality",
+  "phase",
+  "rhythmic",
+  "session_id",
+  "test_id",
+  "onset",
+  "new_items_id",
+  "review_items_id",
+  "user_id",
+  "feedback",
+  "feedback_type",
+  "trial_paradigm",
+  "additional",
+  "melody_block_paradigm",
+  "file_type",
+  "noise_filename")
 
+create_db_vars_template <- function(init_with_time_started = TRUE) {
+  empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
+  empty_obj$trial_time_started <- Sys.time()
+  return(empty_obj)
 }
 
 send_page_label_to_js <- function(label) {

@@ -10,11 +10,11 @@ hollowDotsSpinner.style.display = "none";
 let stream; // Declare stream variable to store the media stream
 
 // Thresholds for color-coding and warning
-const lowThreshold = 0.25;     // Safe - Green
-const moderateThreshold = 0.5; // Moderate - Yellow
-const highThreshold = 0.7;     // High - Orange, close to warning
-const maxThreshold = 0.7;      // Too high - Red, triggers warning
-
+const lowThreshold = 0.05;
+const optimumThreshold = 0.15;
+const moderateThreshold = 0.4;
+const highThreshold = 0.50;
+const maxThreshold = 0.6
 let lastWarningTime = 0; // Tracks the last warning time for cooldown
 
 if (startButtonEl !== null) {
@@ -74,7 +74,7 @@ if (startButtonEl !== null) {
           // Color-coding by changing the meter attributes based on thresholds
           if (rms < lowThreshold) {
             volumeMeterEl.setAttribute("low", lowThreshold);
-            volumeMeterEl.setAttribute("optimum", lowThreshold);
+            volumeMeterEl.setAttribute("optimum", optimumThreshold);
           } else if (rms < moderateThreshold) {
             volumeMeterEl.setAttribute("low", lowThreshold);
             volumeMeterEl.setAttribute("high", moderateThreshold);

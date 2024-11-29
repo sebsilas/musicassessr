@@ -849,12 +849,9 @@ present_melody <- function(stimuli,
 
     if(!is.null(old_additional)) {
       if(is.character(old_additional)) {
-
         old_additional <- jsonlite::fromJSON(old_additional)
-
-        additional <- c(old_additional, additional)
-
       }
+      additional <- c(old_additional, additional)
     }
 
     psychTestR::set_global("additional", additional, state) # For MIDI
@@ -989,24 +986,47 @@ grab_sampled_melody <- function(item_bank = NULL,
 
       melody_no <- if(reactive_melody_no) psychTestR::get_global("reactive_melody_no", state) else melody_no
       trial_characteristics <- psychTestR::get_global(paste0(var_name, "_trial_characteristics"), state)
+      melody_row <- psychTestR::get_global(var_name, state) %>% dplyr::slice(!! melody_no)
       trial_char <- get_trial_characteristics_function(trial_df = trial_characteristics, trial_no = melody_no)
 
       # Not fully abstracted from PBET setup, yet:
       abs_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(abs_melody))
       difficulty <- trial_char$key_difficulty
 
-      if (difficulty == "easy") {
-        key <- sample_easy_key(inst)
-      } else {
-        key <- sample_hard_key(inst)
-      }
-      abs_melody <- transpose_melody_to_key(abs_melody, key, bottom_range, top_range)
-      melody_row$abs_melody <- paste0(abs_melody, collapse = ",")
-      melody_row <- cbind(melody_row,
-                          tibble::tibble(key_difficulty = difficulty,
-                                         display_modality = trial_char$display_modality) )
+      tranpos_result <- transpose_melody_to_easy_or_hard_key(abs_melody, difficulty, inst, bottom_range, top_range)
+      abs_melody <- tranpos_result$abs_melody
+      key <- tranpos_result$key
 
-      psychTestR::set_global("additional", tibble::tibble(key_difficulty = difficulty), state)
+      melody_row$abs_melody <- paste0(abs_melody, collapse = ",")
+
+      extra_metadata <- tibble::tibble(key_difficulty = difficulty,
+                                       key = key,
+                                       display_modality = trial_char$display_modality)
+
+      if(learn_test_paradigm) {
+        if(phase == "example") {
+          # Then we need to infer the phase
+          if(any(c("key_difficulty", "key", "display_modality") %in% names(melody_row))) {
+            extra_metadata <- extra_metadata %>%
+              dplyr::rename_with(~ paste0("example_test_", .x))
+          } else {
+            extra_metadata <- extra_metadata %>%
+              dplyr::rename_with(~ paste0("example_learn_", .x))
+          }
+
+        } else {
+          extra_metadata <- extra_metadata %>%
+            dplyr::rename_with(~ paste0(.x, "_", phase))
+        }
+      }
+
+      melody_row <- cbind(melody_row, extra_metadata)
+
+      psychTestR::set_global("additional",
+                              list(key_difficulty = difficulty,
+                                   key = key,
+                                   no_notes_in_range = sum(abs_melody %in% bottom_range:top_range) ),
+                             state)
 
       rel_melody <- itembankr::str_mel_to_vector(melody_row %>% dplyr::pull(melody))
       rel_to_abs_mel_function <- NULL

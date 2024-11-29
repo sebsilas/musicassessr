@@ -146,10 +146,21 @@ get_audio_file_job_process <- function(asynchronous_api_mode,
       logging::loginfo("result: %s", result)
       logging::loginfo("result$message %s", result$message)
 
+
       response <- tryCatch({
+
         if(!is.null(var_to_take_from_message)) {
-          result <- jsonlite::fromJSON(result$message)
-          result <-  result[[var_to_take_from_message]]
+
+          result <- result$message
+
+          if(!substr(result, 1, 1) %in% c("{", "[")) {
+            result <- paste0("[", result, "]")
+            result <- jsonlite::fromJSON(result)
+          } else {
+            result <- jsonlite::fromJSON(result)
+            result <-  result[[var_to_take_from_message]]
+          }
+
         } else {
           result <- result$message
         }
@@ -263,6 +274,10 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
     if(page_type == "record_audio_page") {
       if(psychTestR::get_global("asynchronous_api_mode", state)) {
         note <- psychTestR::get_global(var_name, state)
+        # To handle the case where the object comes back not as proper JSON
+        if(length(note) == 3) {
+          note <- round(hrep::freq_to_midi(note[3]))
+        }
       } else {
         note <- answer$user_response
       }

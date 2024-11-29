@@ -1,5 +1,33 @@
 
 
+#' Transpose a melody to a common/easy or uncommon/hard key
+#'
+#' @param abs_melody
+#' @param difficulty
+#' @param inst
+#' @param bottom_range
+#' @param top_range
+#'
+#' @return
+#' @export
+#'
+#' @examples
+transpose_melody_to_easy_or_hard_key <- function(abs_melody, difficulty, inst, bottom_range, top_range) {
+  if (difficulty == "easy") {
+    key <- sample_easy_key(inst)
+  } else {
+    key <- sample_hard_key(inst)
+  }
+  key <- key$key
+  abs_melody <- transpose_melody_to_key(abs_melody, key, bottom_range, top_range)
+
+  list(
+    abs_melody = abs_melody,
+    key = key
+  )
+}
+
+
 #' Transpose a melody to a given key
 #'
 #' @param abs_melody
@@ -52,6 +80,9 @@ transpose_melody_to_key <- function(abs_melody, key, bottom_range, top_range) {
     res <- res %>%
       dplyr::slice_sample(n = 1)
   }
+
+  logging::loginfo("res: %s", res)
+  logging::loginfo("names(res): %s", names(res))
 
   res <- res %>%
     dplyr::pull(abs_melody) %>%

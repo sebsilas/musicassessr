@@ -1036,15 +1036,13 @@ handle_item_sampling <- function(item_bank,
     })
 
   } else {
-    if(is.null(item_characteristics_sampler_function)) {
-      if(!is.null(sampler_function)) {
-        logging::loginfo("Sample using sampler function")
-        sampler_function(item_bank, num_items_flat)
-      }
-    } else {
-      logging::loginfo("Sample via item characteristics")
-      sample_item_characteristics(var_name = var_name, item_characteristics_sampler_function, item_characteristics_pars)
-    }
+
+    psychTestR::join(
+
+      if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat),
+
+      if(!is.null(item_characteristics_sampler_function)) sample_item_characteristics(var_name = var_name, item_characteristics_sampler_function, item_characteristics_pars)
+    )
   }
 }
 

@@ -47,6 +47,9 @@ midi_vs_audio_select_page <- function(prompt = psychTestR::i18n("input_selector_
 
   # Remake the psychTestR page so I can confirm what the user selects
 
+  validate_fun <- get("dropdown_page.validate", asNamespace("psychTestR"))
+  validate <- validate_fun(FALSE, "Other (please state)")
+
   prompt <- tagify(prompt)
   style <- sprintf("max-width:%ipx", 200)
 

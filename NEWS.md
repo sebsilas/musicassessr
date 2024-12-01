@@ -1,5 +1,7 @@
 # musicassessr 2.8.1
 
+- Remove incorrect use of key argument.
+
 # musicassessr 2.8.0
 
 - Add metronome functionality

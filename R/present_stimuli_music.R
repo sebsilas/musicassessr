@@ -312,7 +312,7 @@ present_stimuli_scientific_music_notation <- function(stimuli, display_modality,
     return_stimuli <- present_stimuli_scientific_music_notation_auditory(stimuli = stimuli, note_length = note_length, sound = sound)
   }
   else {
-    return_stimuli <- present_stimuli_scientific_music_notation_visual(stimuli = stimuli, key = key)
+    return_stimuli <- present_stimuli_scientific_music_notation_visual(stimuli = stimuli)
   }
 
   return_stimuli

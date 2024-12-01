@@ -1,3 +1,8 @@
+# musicassessr 2.8.0
+
+- Add metronome functionality
+- Add new Berkowitz selected musicxml item bank for better visual notation engraving
+
 # musicassessr 2.7.0
 
 - Add microphone volume check feature and more

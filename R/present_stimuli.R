@@ -122,13 +122,12 @@ present_stimuli <- function(stimuli,
                             asynchronous_api_mode = FALSE,
                             key = NULL, ...) {
 
-  print('present_stimuli')
-  print('key')
-  print(key)
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
-            is.character(page_text) | class(page_text) == "shiny.tag", is.character(page_title),  is.numeric(slide_length),
-            is.character(answer_meta_data) | is.data.frame(answer_meta_data),
+            is.character(page_text) || is(page_text, "shiny.tag") || is(page_text, "shiny.tag.list"),
+            is.character(page_title),
+            is.numeric(slide_length),
+            is.character(answer_meta_data) || is.data.frame(answer_meta_data),
             is.function(get_answer), is.scalar.logical(save_answer),
             is.scalar.logical(stimuli_reactive), is.character(midi_device),
             is.character(page_label),
@@ -323,7 +322,8 @@ retrieve_page_type <- function(page_type = character(),
 
   stopifnot(is.scalar.character(page_type),
             class(stimuli_wrapped) == "shiny.tag",
-            is.scalar.character(page_text) || class (page_text) == "shiny.tag", is.scalar.character(page_title),
+            is.scalar.character(page_text) || is(page_text, "shiny.tag") || is(page_text, "shiny.tag.list"),
+            is.scalar.character(page_title),
             is.scalar.logical(interactive),
             is.scalar.logical(stimuli_reactive),
             is.character(answer_meta_data) || is.data.frame(answer_meta_data),

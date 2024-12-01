@@ -180,3 +180,87 @@ sure_you_want_to_continue_button <- function(extra_js_to_execute_on_click = NULL
   )
 }
 
+js_metronome <- function() {
+  # https://github.com/grantjames/metronome/blob/master/metronome.js
+  shiny::tagList(
+      shiny::tags$style(HTML("
+        .metronome-container #play-button {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column;
+        }
+        .metronome-container button {
+            padding: 6px;
+            border: none;
+            border-radius: 100%;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            background-color: #A5C54D;
+            color: #e9e9e9;
+            cursor: pointer;
+        }
+        .metronome-container button:focus {
+            outline: none;
+        }
+        .metronome-container a {
+            color: #e9e9e9;
+        }
+        .metronome-container a:hover {
+            color: #356161;
+        }
+        .metronome-container .play {
+          width: 0;
+          height: 0;
+          border-top: 12px solid transparent;
+          border-bottom: 12px solid transparent;
+          border-left: 20px solid #fff;
+          margin-left: 6px;
+        }
+        .metronome-container .pause {
+            width: 5px;
+            height: 20px;
+            border: none;
+            border-left: 10px solid #fff;
+            border-right: 10px solid #fff;
+        }
+      ")),
+    shiny::tags$div(
+      class = "metronome-container",
+      htmltools::HTML('<button id="play-button" class="">
+          <div id="play-pause-icon" class="play"></div>
+      </button>
+      ')
+    ),
+    shiny::tags$script(HTML("
+          var metronome = new Metronome(); // Ensure Metronome.js is loaded and functional
+
+          var playPauseIcon = document.getElementById('play-pause-icon');
+          var playButton = document.getElementById('play-button');
+
+          console.log(playButton);
+
+          // Play button event listener
+          playButton.addEventListener('click', function() {
+              console.log('Play button clicked');
+              metronome.startStop();
+
+              if (metronome.isRunning) {
+                  playPauseIcon.className = 'pause';
+              } else {
+                  playPauseIcon.className = 'play';
+              }
+          });
+
+          document.getElementById('recordButton').addEventListener('click', function() {
+                            metronome.stop();
+                            playButton.style.display = 'none';
+                          });
+    "))
+  )
+}
+
+

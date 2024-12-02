@@ -183,7 +183,7 @@ sure_you_want_to_continue_button <- function(extra_js_to_execute_on_click = NULL
 js_metronome <- function() {
   # https://github.com/grantjames/metronome/blob/master/metronome.js
   shiny::tagList(
-      shiny::tags$style(HTML("
+      shiny::tags$style(htmltools::HTML("
         .metronome-container #play-button {
             width: 50px;
             height: 50px;
@@ -235,7 +235,7 @@ js_metronome <- function() {
       </button>
       ')
     ),
-    shiny::tags$script(HTML("
+    shiny::tags$script(htmltools::HTML("
           var metronome = new Metronome(); // Ensure Metronome.js is loaded and functional
 
           var playPauseIcon = document.getElementById('play-pause-icon');

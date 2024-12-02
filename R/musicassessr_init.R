@@ -233,7 +233,8 @@ return_correct_entry_page <- function(asynchronous_api_mode,
                                       language = "en",
                                       session_token = NULL,
                                       async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
-                                      use_presigned_url = TRUE ) {
+                                      use_presigned_url = TRUE,
+                                      next_button_text = psychTestR::i18n("Next")) {
 
   stopifnot(
     is.null.or(session_token, is.character)
@@ -254,9 +255,9 @@ return_correct_entry_page <- function(asynchronous_api_mode,
       ))
 
   print('bt..')
-  print(psychTestR::i18n("Next"))
+  print(next_button_text)
 
-  psychTestR::one_button_page(ui, button_text = psychTestR::i18n("Next"))
+  psychTestR::one_button_page(ui, button_text = next_button_text)
 
 }
 

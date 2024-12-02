@@ -1,3 +1,7 @@
+# musicassessr 2.8.2
+
+- Update dicts
+
 # musicassessr 2.8.1
 
 - Remove incorrect use of key argument.

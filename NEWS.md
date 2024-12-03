@@ -1,3 +1,7 @@
+# musicassessr 2.8.3
+
+- Add BPM parameter to metronome
+
 # musicassessr 2.8.2
 
 - Update dicts

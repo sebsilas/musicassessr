@@ -1,10 +1,13 @@
 
 
 
-pbet_trial <- function(trial_dat, trial_paradigm, attempt) {
+pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm) {
+
+  crotchet_seconds <- 60/bpm
+
   present_stimuli(
     stimuli = itembankr::str_mel_to_vector(trial_dat$abs_melody),
-    durations = itembankr::str_mel_to_vector(trial_dat$durations) / 2,
+    durations = itembankr::str_mel_to_vector(trial_dat$durations) * crotchet_seconds,
     stimuli_type = "midi_notes",
     display_modality = "auditory",
     page_type = "record_audio_page",
@@ -18,7 +21,11 @@ pbet_trial <- function(trial_dat, trial_paradigm, attempt) {
 # Learn block
 
 
-learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm) {
+learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm) {
+
+  stopifnot(
+    is.numeric(bpm)
+  )
 
   trial_dat <- user_sample[trial_no, ]
 
@@ -33,14 +40,14 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm) {
       page_title = "Play the melody from sight",
       page_text = shiny::tags$div(
         shiny::tags$p("Use metronome to get the correct BPM: "),
-        js_metronome()
+        js_metronome(bpm)
       ),
       get_answer = get_answer_add_trial_and_compute_trial_scores_s3,
       show_record_button = TRUE,
       attempt = attempt
     )
   } else {
-    trial <- pbet_trial(trial_dat, trial_paradigm, attempt)
+    trial <- pbet_trial(trial_dat, trial_paradigm, attempt, bpm)
   }
 }
 
@@ -70,22 +77,22 @@ learn_practice_trial <- function(user_sample, trial_no, attempt) {
 }
 
 
-learn_phase <- function(user_sample, trial_paradigm) {
+learn_phase <- function(user_sample, trial_paradigm, bpm) {
   no_trials <- nrow(user_sample)
   1:no_trials %>%
     purrr::map(function(trial_no) {
       psychTestR::join(
 
         psychTestR::one_button_page("Here is your first attempt."),
-        learn_trial(user_sample, trial_no = trial_no, attempt = 1, trial_paradigm),
+        learn_trial(user_sample, trial_no = trial_no, attempt = 1, trial_paradigm, bpm),
         learn_practice_trial(user_sample, trial_no = trial_no, attempt = 1),
 
         psychTestR::one_button_page("Now is your second attempt."),
-        learn_trial(user_sample, trial_no = trial_no, attempt = 2, trial_paradigm),
+        learn_trial(user_sample, trial_no = trial_no, attempt = 2, trial_paradigm, bpm),
         learn_practice_trial(user_sample, trial_no = trial_no, attempt = 2),
 
         psychTestR::one_button_page("Now is your final attempt."),
-        learn_trial(user_sample, trial_no = trial_no, attempt = 3, trial_paradigm),
+        learn_trial(user_sample, trial_no = trial_no, attempt = 3, trial_paradigm, bpm),
         learn_practice_trial(user_sample, trial_no = trial_no, attempt = 3),
 
         if(trial_no != no_trials) psychTestR::one_button_page("Time for the next melody!")
@@ -93,7 +100,7 @@ learn_phase <- function(user_sample, trial_paradigm) {
     })
 }
 
-test_phase <- function(user_sample, trial_paradigm) {
+test_phase <- function(user_sample, trial_paradigm, bpm) {
 
   # Randomise
   no_trials <- nrow(user_sample)
@@ -101,11 +108,16 @@ test_phase <- function(user_sample, trial_paradigm) {
   1:no_trials %>%
     purrr::map(function(trial_no) {
       trial_dat <- user_sample[trial_no, ]
-      pbet_trial(trial_dat, trial_paradigm, attempt = 1)
+      pbet_trial(trial_dat, trial_paradigm, attempt = 1, bpm)
     })
 }
 
-get_tl <- function() {
+pbet_learn_test_paradigm <- function(no_trials = 4L, bpm = 100) {
+
+  shiny::addResourcePath('assets', "/Users/sebsilas/Berkowitz_measures_divided")
+
+  no_visual <- no_trials/2
+  no_auditory <- no_trials/2
 
   trial_paradigm <- paradigm()
 
@@ -114,11 +126,12 @@ get_tl <- function() {
   user_sample <- Berkowitz_selected_musicxml_item_bank %>%
     dplyr::filter(dplyr::between(N, 6, 24)) %>%
     dplyr::group_by(SAA_rhythmic_difficulty_quartile) %>%
-    dplyr::slice_sample(n = 1) %>%
+    dplyr::slice_sample(n = no_trials/4) %>%
     # Randomise order
-    dplyr::slice_sample(n = 4) %>%
+    dplyr::slice_sample(n = no_trials) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(display_modality = sample(c("visual", "auditory", "visual", "auditory")) )
+    dplyr::mutate(display_modality = sample(c(rep("visual", no_visual),
+                                              rep("auditory", no_auditory))) )
 
 
   psychTestR::join(
@@ -128,9 +141,9 @@ get_tl <- function() {
     psychTestR::one_button_page(shiny::tags$div(shiny::tags$p("You will have three attempts to learn each melody."), shiny::tags$p("After each attempt, you will be asked to try and play the melody from memory."))),
     psychTestR::one_button_page(shiny::tags$div(shiny::tags$p("Afterwards, in the test phase, we will ask you to play all melodies you learned again from memory, but you will hear them all by ear."), shiny::tags$p("Try your best to recognise and play the melody from ear. "))),
     psychTestR::one_button_page(shiny::tags$p("Now we will begin the ", shiny::tags$strong("learning"), " phase, where you will learn the melodies either by sight or by ear.")),
-    learn_phase(user_sample, trial_paradigm),
+    learn_phase(user_sample, trial_paradigm, bpm),
     psychTestR::one_button_page(shiny::tags$p("Now we will begin the", shiny::tags$strong("test"), " phase, where you will be asked to play all the melodies you heard by ear.")),
-    test_phase(user_sample, trial_paradigm),
+    test_phase(user_sample, trial_paradigm, bpm),
     psychTestR::text_input_page("extra_comments_sight_vs_ear",
                                 one_line = FALSE,
                                 prompt = "Please share some thoughts about your experience of learning to play melodies by ear or by sight, within this test, and/or in your broader musical life. You can leave this blank if you have nothing you would like to share.")
@@ -144,11 +157,12 @@ get_tl <- function() {
 #' @export
 #'
 #' @examples
-pbet_learn_test <- function() {
+pbet_learn_test_paradigm_standalone <- function(no_trials) {
+
   make_musicassessr_test(
     welcome_page = psychTestR::one_button_page("Trialing the new learn-test audio-visual paradigm."),
     elts = function() {
-      get_tl()
+      pbet_learn_test_paradigm(no_trials)
     },
     opt = musicassessr_opt(setup_pages = TRUE,
                            visual_notation = TRUE,

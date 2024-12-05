@@ -1,3 +1,8 @@
+# musicassessr 2.9.0
+
+- Centralise PBET/SAA/musicassessr item banks
+- Various other PBET/SAA updates
+
 # musicassessr 2.8.3
 
 - Add BPM parameter to metronome

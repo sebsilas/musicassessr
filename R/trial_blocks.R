@@ -1404,6 +1404,7 @@ interval_perception_trials <- function(num_items = 26L,
                                                                           shiny::tags$p(shiny::tags$em(psychTestR::i18n("interval_perception_instruction_4"))))
                                        ) {
 
+
   if(is.numeric(num_items) & num_items > 0L) {
 
 

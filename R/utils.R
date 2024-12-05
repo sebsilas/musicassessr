@@ -612,3 +612,20 @@ log_err_but_return_na <- function(err) {
   NA
 }
 
+
+midi_or_audio_reactive <- function(midi_logic, audio_logic) {
+  psychTestR::join(
+    # Is MIDI?
+    psychTestR::conditional(test = function(state, ...) {
+      response_type <- psychTestR::get_global("response_type", state)
+      response_type == "MIDI"
+    },
+    logic = midi_logic),
+    # Is audio?
+    psychTestR::conditional(test = function(state, ...){
+      response_type <- psychTestR::get_global("response_type", state)
+      response_type == "Microphone"
+    },
+    logic = audio_logic)
+  )
+}

@@ -1,7 +1,6 @@
-//
-
 console.log('getMIDIin.js loaded');
 
+const CHROMATIC = [ 'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B' ];
 let interactive_midi = false;
 let midi_device;
 
@@ -30,8 +29,8 @@ function generateDeviceDropdown() {
       console.log("WebMidi could not be enabled");
     }
 
-	//generate dropdown with MIDI inputs
-	var dropdown = document.getElementById("midiDeviceSelector");
+	// Generate dropdown with MIDI inputs
+	const dropdown = document.getElementById("midiDeviceSelector");
 
   console.log('before loop');
 
@@ -70,14 +69,9 @@ function instantiateMIDI(midi_device,
 
   console.log("instantiateMIDI called");
 
-  console.log('interactive');
-  console.log(interactive);
-
   interactive_midi = interactive;
 
-  console.log(interactive_midi);
-
-  console.log(midi_device);
+  console.log('MIDI device:', midi_device);
 
   // Empty previous buffer
   user_response_midi_note_on = [];
@@ -123,9 +117,9 @@ function instantiateMIDI(midi_device,
               console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
 
               // Get volumeMeter, if there is one..
-              var volumeMeter = document.getElementById('volumeMeter');
+              const volumeMeter = document.getElementById('volumeMeter');
 
-              var velocity = e.rawVelocity;
+              const velocity = e.rawVelocity;
               console.log("Raw velocity: (" + velocity + ").");
 
               if(volumeMeter !== null) {
@@ -136,7 +130,7 @@ function instantiateMIDI(midi_device,
                 });
               }
 
-              var midi_note_on = e.note.number;
+              const midi_note_on = e.note.number;
 
               console.log(midi_note_on);
 
@@ -144,14 +138,7 @@ function instantiateMIDI(midi_device,
 
               // Play note
 
-              // there is a bug with the piano sound where it plays an octave higher
-              // need to make sure this doesn't apply to tones though FIX
-              piano_midi_note_on = midi_note_on-12;
-              freq_tone = Tone.Frequency(piano_midi_note_on, "midi").toNote();
-
-
-              console.log('well?');
-              console.log(!mute_midi_playback);
+              freq_tone = Tone.Frequency(midi_note_on, "midi").toNote();
 
 
               if(!mute_midi_playback) {
@@ -159,8 +146,8 @@ function instantiateMIDI(midi_device,
               }
 
 
-              var responseTime = new Date().getTime();
-              var timeElapsed = Math.abs(startTime - responseTime);
+              const responseTime = new Date().getTime();
+              const timeElapsed = Math.abs(startTime - responseTime);
 
               onsets_noteon.push(timeElapsed);
               onsets_noteon_timecode.push(responseTime);
@@ -172,11 +159,7 @@ function instantiateMIDI(midi_device,
               Shiny.setInputValue("onsets_noteon_timecode", JSON.stringify(onsets_noteon_timecode));
               Shiny.setInputValue("velocities", JSON.stringify(velocities));
 
-              // console
-              console.log(user_response_midi_note_on);
-              console.log("interactive_midi??!");
-              console.log(interactive_midi);
-              // if interactive midi enabled, contiously update the display
+              // if interactive midi enabled, continuously update the display
               if (interactive_midi) {
                 parse_midi_notes_open_display(user_response_midi_note_on);
               }
@@ -191,13 +174,13 @@ function instantiateMIDI(midi_device,
 
               console.log("Received 'noteoff' message (" + e.note.name + e.note.octave + ").");
               console.log(e.note);
-              var midi_note_off = e.note.number;
+              const midi_note_off = e.note.number;
 
               console.log(midi_note_off);
 
 
-              var responseTime = new Date().getTime();
-              var timeElapsed = Math.abs(startTime - responseTime);
+              const responseTime = new Date().getTime();
+              const timeElapsed = Math.abs(startTime - responseTime);
 
               // only push note off if it has a corresponding note on
 
@@ -241,10 +224,10 @@ function parse_midi_notes_open_display(midi_notes) {
 
 function open_music_display_wrapper(xml) {
 
-  var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("sheet_music", { drawingParameters: "compact",
+  const osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("sheet_music", { drawingParameters: "compact",
   drawPartNames: false, drawMeasureNumbers: false, drawMetronomeMarks: false });
 
-  var loadPromise = osmd.load(xml);
+  const loadPromise = osmd.load(xml);
   loadPromise.then(function(){
   osmd.render();
   });
@@ -308,7 +291,7 @@ function format_accidentals_for_music_xml (pitch_class_string) {
   // if not, return empty string
   // also return the pitch class with the flat removed
 
-  var last_char = get_last_char_of_string(pitch_class_string);
+  const last_char = get_last_char_of_string(pitch_class_string);
 
   if (last_char == "b") {
     alter_text = '<alter>-1</alter>';
@@ -330,7 +313,7 @@ function format_accidentals_for_music_xml (pitch_class_string) {
 
 function format_notes_scientific_music_notation(notes, asChord = false) {
 
-  var res = "";
+  let res = "";
 
   for(i = 0; i < notes.length; i++) {
 
@@ -378,11 +361,9 @@ function format_notes_scientific_music_notation(notes, asChord = false) {
 }
 
 
-var CHROMATIC = [ 'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B' ];
-
 function fromMidi (midi) {
-  var name = CHROMATIC[midi % 12];
-  var oct = Math.floor(midi / 12) - 1;
+  const name = CHROMATIC[midi % 12];
+  const oct = Math.floor(midi / 12) - 1;
   return name + oct;
 }
 

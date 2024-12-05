@@ -118,7 +118,8 @@ play_interval_page <- function(interval = NULL,
                                label = "interval_",
                                save_answer = TRUE,
                                get_answer = get_answer_interval_page,
-                               trial_no = NULL) {
+                               trial_no = NULL,
+                               no_trials) {
 
 
   if(example) {
@@ -141,6 +142,7 @@ play_interval_page <- function(interval = NULL,
 
     ui <- shiny::tags$div(
       shiny::tags$h2(page_title),
+      shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
       present_stimuli(stimuli = itembankr::str_mel_to_vector(abs_interval$abs_interval),
                       stimuli_type = "midi_notes",
                       display_modality = "auditory",
@@ -174,9 +176,10 @@ play_interval_page <- function(interval = NULL,
 #' @examples
 multi_interval_page <- function(num_items = 26L,
                                 page_title = psychTestR::i18n("interval_perception_page_title")) {
+
   psychTestR::module(label = "interval_perception",
-    lapply(1:num_items, function(trial_no) {
-      play_interval_page(trial_no = trial_no, page_title = page_title)
+    purrr::map(1:num_items, function(trial_no) {
+      play_interval_page(trial_no = trial_no, page_title = page_title, no_trials = num_items)
     })
   )
 }

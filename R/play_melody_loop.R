@@ -501,7 +501,10 @@ construct_play_melody_page <- function(melody = NULL,
                                   pass_items_through_url_parameter = pass_items_through_url_parameter,
                                   feedback = feedback)
 
-    sing_then_play_pages <- psychTestR::join(sing_page, page)
+    sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(paste0(psychTestR::i18n("Now_you_will"), psychTestR::i18n("sing"), psychTestR::i18n("you_the_melody"))),
+                                             sing_page,
+                                             psychTestR::one_button_page(paste0(psychTestR::i18n("Now_you_will"), psychTestR::i18n("play"), psychTestR::i18n("the_melody_on_your_instrument"))),
+                                             page)
 
     return(sing_then_play_pages)
 

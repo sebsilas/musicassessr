@@ -135,6 +135,7 @@ setup_pages <- function(input_type = c("microphone",
       if(headphones) test_headphones_page(concise_wording),
 
       if(select_instrument) select_musical_instrument_page(set_range_based_on_selection = !get_instrument_range),
+      if(select_instrument) psychTestR::one_button_page(psychTestR::i18n("first_instrument_question")),
 
       correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode),
 
@@ -225,7 +226,6 @@ test_headphones_page <- function(concise_wording = FALSE) {
                     shiny::tags$p(psychTestR::i18n("headphone_test1"), shiny::tags$img(src = 'https://adaptiveeartraining.com/assets/img/play_triangle.png', width = 30, height = 31, style = "margin: 0 0 5px 0;")),
                     shiny::tags$p(psychTestR::i18n("headphone_test2")),
                     shiny::tags$p(psychTestR::i18n("headphone_test3")),
-                    shiny::tags$p(psychTestR::i18n("headphone_test4")),
                     shiny::tags$p(psychTestR::i18n("normal_loudness")))
   }
 

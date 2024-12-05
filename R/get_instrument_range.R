@@ -35,7 +35,7 @@ get_instrument_range_pages <- function(input_type,
   } else if(input_type == "midi_keyboard") {
     get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
   } else {
-    midi_or_audio_reactive(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, asynchronous_api_mode = asynchronous_api_mode)
+    midi_or_audio_reactive_get_note_until_satisfied(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, asynchronous_api_mode = asynchronous_api_mode)
   }
 
 
@@ -185,24 +185,15 @@ get_audio_file_job_process <- function(asynchronous_api_mode,
 
 
 
-midi_or_audio_reactive <- function(show_musical_notation = FALSE, adjust_range = FALSE, test_type = c("voice", "instrument"), asynchronous_api_mode = FALSE) {
+midi_or_audio_reactive_get_note_until_satisfied <- function(show_musical_notation = FALSE,
+                                                           adjust_range = FALSE,
+                                                           test_type = c("voice", "instrument"),
+                                                           asynchronous_api_mode = FALSE) {
 
-  audio_logic <- get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, asynchronous_api_mode = asynchronous_api_mode)
+  audio_logic <- unlist(get_note_until_satisfied_loop_audio(show_musical_notation = show_musical_notation, adjust_range = adjust_range, test_type = test_type, asynchronous_api_mode = asynchronous_api_mode))
+  midi_logic <- get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)
 
-  psychTestR::join(
-    # is MIDI?
-    psychTestR::conditional(test = function(state, ...) {
-      response_type <- psychTestR::get_global("response_type", state)
-      response_type == "MIDI"
-    },
-    logic = get_note_until_satisfied_loop_midi(show_musical_notation = show_musical_notation, adjust_range = adjust_range)),
-
-    psychTestR::conditional(test = function(state, ...){
-      response_type <- psychTestR::get_global("response_type", state)
-      response_type == "Microphone"
-    },
-    logic = unlist(audio_logic))
-  )
+  midi_or_audio_reactive(midi_logic, audio_logic)
 }
 
 range_explanation_page <- function(test_type = c("voice", "instrument"), concise_wording = FALSE) {

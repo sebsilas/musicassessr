@@ -80,8 +80,7 @@ load('data-raw/melody_pca2_data.rda')
 load('data-raw/melody_pca2.rda')
 
 
-musicassessr_dict <- musicassessr::dict(additional_dict = NULL,
-                          main_dict = musicassessr_dict_df)
+musicassessr_dict <- psychTestR::i18n_dict$new(musicassessr_dict_df)
 
 
 

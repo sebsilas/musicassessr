@@ -1,26 +1,5 @@
 
-#' Use musicassessr standard dictionary plus concatenate with your own
-#'
-#' @param additional_dict
-#' @param main_dict
-#'
-#' @return
-#' @export
-#'
-#' @examples
-dict <- function(additional_dict = NULL, main_dict = musicassessr::musicassessr_dict_df) {
-  if(all(names(main_dict) ==  names(additional_dict))) {
-    dict_df <- rbind(main_dict, additional_dict)
-    dict <- psychTestR::i18n_dict$new(dict_df)
-  } else {
-    mar_names <- paste0(names(main_dict), collapse = " ")
-    stop(paste0("Your dictionary dataframe must have the same column names as musicassessr's: ", mar_names))
-  }
-  dict
-}
-
-
-# dictionary functions
+# Dictionary functions
 
 dict_key_to_translations <- function(key) {
   cols <- names(musicassessr::musicassessr_dict_df)[!names(musicassessr::musicassessr_dict_df) %in% "key"]

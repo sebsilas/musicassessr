@@ -1,5 +1,7 @@
 # musicassessr 2.10.0
 
+- Various updates to support play by ear testing
+
 # musicassessr 2.9.0
 
 - Centralise PBET/SAA/musicassessr item banks

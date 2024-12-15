@@ -460,7 +460,7 @@ construct_play_melody_page <- function(melody = NULL,
     sing_page <- play_melody_loop(melody_no = melody_no,
                                   var_name = var_name,
                                   max_goes = max_goes,
-                                  page_type = page_type,
+                                  page_type = "record_audio_page",
                                   page_title = psychTestR::i18n("Sing_the_Melody"),
                                   page_text = shiny::tags$div(
                                     shiny::tags$img(id = "singImage", src = "https://musicassessr.com/assets/img/singing.png", height = 100, width = 100),
@@ -501,9 +501,9 @@ construct_play_melody_page <- function(melody = NULL,
                                   pass_items_through_url_parameter = pass_items_through_url_parameter,
                                   feedback = feedback)
 
-    sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(paste0(psychTestR::i18n("Now_you_will"), psychTestR::i18n("sing"), psychTestR::i18n("you_the_melody"))),
+    sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("sing")), " ", psychTestR::i18n("you_the_melody"))),
                                              sing_page,
-                                             psychTestR::one_button_page(paste0(psychTestR::i18n("Now_you_will"), psychTestR::i18n("play"), psychTestR::i18n("the_melody_on_your_instrument"))),
+                                             psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("play")), " ", psychTestR::i18n("the_melody_on_your_instrument"))),
                                              page)
 
     return(sing_then_play_pages)
@@ -647,6 +647,7 @@ play_melody_loop <- function(item_bank = NULL,
       psychTestR::set_global("display_modality", display_modality, state)
       psychTestR::set_global("phase", phase, state)
       psychTestR::set_global("rhythmic", ! arrhythmic, state)
+      psychTestR::set_global("melody_block_paradigm", melody_block_paradigm, state)
       # Grab sampled melody for this trial (if one not specified)
       if(is.null(melody) && ! skip_sampling_and_take_from_last_melody && phase != "review") grab_sampled_melody(item_bank, melody_row, var_name, stimuli_type, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, get_trial_characteristics_function, psychTestRCAT, get_similarity_to_previous_melody, phase, display_modality, reactive_melody_no, learn_test_paradigm, sample_item_bank_via_api, start_from_trial_no, pass_items_through_url_parameter)
       if(phase == "review") grab_sampled_melody_review(var_name, state, melody_no, arrhythmic, rel_to_abs_mel_function, note_length, pass_items_through_url_parameter)
@@ -673,7 +674,6 @@ play_melody_loop <- function(item_bank = NULL,
                      answer_meta_data = answer_meta_data,
                      get_answer = get_answer,
                      save_answer = save_answer,
-                     page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
                      button_text = psychTestR::i18n("Record"),
                      play_button_text = play_button_text,
                      start_note = start_note,
@@ -728,7 +728,6 @@ present_melody <- function(stimuli,
                            answer_meta_data = data.frame(),
                            get_answer,
                            save_answer,
-                           page_label,
                            button_text,
                            play_button_text,
                            start_note = 1L,
@@ -776,6 +775,7 @@ present_melody <- function(stimuli,
     number_attempts <- psychTestR::get_global("number_attempts", state)
     max_goes <- psychTestR::get_global("max_goes", state)
     attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
+    page_label <- paste0(var_name,"_", melody_no, "_attempt_", number_attempts)
 
     transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
     transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
@@ -882,7 +882,8 @@ present_melody <- function(stimuli,
         trial_paradigm = melody_trial_paradigm,
         additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE),
         file_type = NA,
-        noise_filename = NA
+        noise_filename = NA,
+        page_label = page_label
       )
     } else NULL
 
@@ -900,7 +901,7 @@ present_melody <- function(stimuli,
                     get_answer = get_answer,
                     save_answer = save_answer,
                     midi_device = midi_device,
-                    page_label = paste0(var_name,"_", melody_no, "_attempt_", number_attempts),
+                    page_label = page_label,
                     play_button_text = play_button_text,
                     start_note = melody_checks$start_note,
                     end_note = melody_checks$end_note,

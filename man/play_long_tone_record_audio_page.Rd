@@ -6,7 +6,7 @@
 \usage{
 play_long_tone_record_audio_page(
   note = NULL,
-  long_note_no = 0,
+  long_note_no = NULL,
   long_tone_length = 5,
   page_title = psychTestR::i18n("long_tone_title"),
   page_text = psychTestR::i18n("long_tone_text"),
@@ -19,11 +19,12 @@ play_long_tone_record_audio_page(
   show_progress = FALSE,
   trial_paradigm = c("simultaneous_recall", "call_and_response"),
   call_and_response_end = c("manual", "auto"),
-  singing_trial = TRUE
+  singing_trial = TRUE,
+  on_complete = NULL
 )
 }
 \arguments{
-\item{singing_trial}{}
+\item{on_complete}{}
 }
 \description{
 Create a page which produces a given tone

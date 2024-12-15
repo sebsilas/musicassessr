@@ -4,10 +4,10 @@
 \alias{sample_rhythmic}
 \title{Sample rhythmic}
 \usage{
-sample_rhythmic(item_bank, num_items_rhythmic, id = "rhythmic_melody")
+sample_rhythmic(item_bank, num_items, id = "rhythmic_melody", phase = NULL)
 }
 \arguments{
-\item{id}{}
+\item{phase}{Currently not used by required.}
 }
 \description{
 Sample rhythmic

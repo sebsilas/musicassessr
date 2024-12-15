@@ -104,7 +104,6 @@ get_answer_pyin_long_note <- function(input, state, ...) {
 
   pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
 
-
   if(is.scalar.na.or.null(pyin_res)) {
 
     long_note_pitch_measures <- list(
@@ -359,7 +358,6 @@ get_melconv <- function(melconv, pyin_res) {
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
 
-
   if(check_midi_melodic_production_lengths(input$user_response_midi_note_on,
                                           input$user_response_midi_note_off,
                                           input$onsets_noteon,
@@ -418,6 +416,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
     phase <- psychTestR::get_global('phase', state)
     rhythmic <- psychTestR::get_global('rhythmic', state)
 
+    page_label <- input$page_label
+
     session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
 
     if(length(session_id) > 1) {
@@ -427,6 +427,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
     additional <- psychTestR::get_global('additional', state)
     additional <- if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE)
+
     melody_block_paradigm <- psychTestR::get_global('melody_block_paradigm', state)
 
     logging::loginfo('melody_block_paradigm: %s', melody_block_paradigm)
@@ -443,9 +444,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
     logging::loginfo("Appending MIDI trial result")
 
-
     midi_trial_result <- promises::future_promise({
-
 
       musicassessrdb::midi_add_trial_and_compute_trial_scores_api(stimuli = stimuli,
                                                                   stimuli_durations = stimuli_durations,
@@ -467,7 +466,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                                                                   note = note,
                                                                   attempt = attempt,
                                                                   additional = additional,
-                                                                  melody_block_paradigm = melody_block_paradigm)
+                                                                  melody_block_paradigm = melody_block_paradigm,
+                                                                  page_label = if(length(page_label) > 0) page_label else "NA")
 
     },
     seed = NULL, future.plan = future::multisession) %>%
@@ -493,8 +493,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
         }
       )
 
-    res <- list(midi_trial_result = midi_trial_result,
-                user_satisfied = if (is.null(input$user_satisfied)) NA else input$user_satisfied,
+    res <- list(user_satisfied = if (is.null(input$user_satisfied)) NA else input$user_satisfied,
                 user_rating = if (is.null(input$user_rating)) NA else input$user_rating,
                 attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt))
 
@@ -918,6 +917,21 @@ check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
                                                   onsets_noteon,
                                                   onsets_noteoff) {
 
+  args <- c(user_response_midi_note_on,
+            user_response_midi_note_off,
+            onsets_noteon,
+            onsets_noteoff)
+
+  if(is.null(args)) {
+    return(TRUE)
+  }
+
+  if(purrr::some(args, function(x) {
+             length(x) == 0
+  })) {
+    return(TRUE)
+  }
+
   lengths <- c(length(jsonlite::fromJSON(user_response_midi_note_on)),
                length(jsonlite::fromJSON(user_response_midi_note_off)),
                length(jsonlite::fromJSON(onsets_noteon)),
@@ -973,13 +987,15 @@ get_answer_add_trial_and_compute_trial_scores_s3 <- function(input, state, ...) 
   logging::loginfo("csv_file: %s", csv_file)
 
   psychTestR::set_global("wav_file", input$key, state)
+  psychTestR::set_global("musicxml_file", input$musicxml_file, state)
 
   list(
     user_satisfied = if(is.null(input$user_satisfied)) NA else input$user_satisfied,
     user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
     attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
     csv_file = csv_file,
-    wav_file = input$key
+    wav_file = input$key,
+    musicxml_file = input$musicxml_file
   )
 
 
@@ -1057,7 +1073,13 @@ get_answer_async_midi_vs_audio <- function(input, state, ...) {
 
   res_type <- psychTestR::get_global("response_type", state)
 
-  if(res_type == "Microphone") {
+  logging::loginfo("response_type: %s", res_type)
+
+  singing_trial <- psychTestR::get_global("singing_trial", state)
+
+  logging::loginfo("singing_trial: %s", singing_trial)
+
+  if(singing_trial || res_type == "Microphone") {
 
     res <- get_answer_add_trial_and_compute_trial_scores_s3(input, state, ...)
 
@@ -1068,5 +1090,9 @@ get_answer_async_midi_vs_audio <- function(input, state, ...) {
   } else {
     stop("response_type invalid")
   }
+
+  logging::loginfo("End of get_answer_async_midi_vs_audio")
+
+  return(res)
 
 }

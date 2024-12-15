@@ -74,13 +74,14 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #' @param trial_paradigm
 #' @param call_and_response_end
 #' @param singing_trial
+#' @param on_complete
 #'
 #' @return
 #' @export
 #'
 #' @examples
 play_long_tone_record_audio_page <- function(note = NULL,
-                                             long_note_no = 0,
+                                             long_note_no = NULL,
                                              long_tone_length = 5,
                                              page_title = psychTestR::i18n("long_tone_title"),
                                              page_text = psychTestR::i18n("long_tone_text"),
@@ -93,7 +94,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              show_progress = FALSE,
                                              trial_paradigm = c("simultaneous_recall", "call_and_response"),
                                              call_and_response_end = c("manual", "auto"),
-                                             singing_trial = TRUE) {
+                                             singing_trial = TRUE,
+                                             on_complete = NULL) {
 
   # A page type for playing a 5-second tone and recording a user singing with it
 
@@ -113,8 +115,18 @@ play_long_tone_record_audio_page <- function(note = NULL,
 
   psychTestR::reactive_page(function(state, ...) {
 
+
     if(is.null(note)) {
+
       user_range <- psychTestR::get_global("user_range_sample", state)
+
+      if(is.null(long_note_no)) {
+        long_note_no <- psychTestR::get_global("dynamic_long_note_no", state)
+        logging::loginfo("long_note_no: %s", long_note_no)
+        # A weird psychTestR quirk is that reactive_pages can be fired twice, so we need to manage it
+        # But updating outside of this reative_page, e.g., with a code_block
+        page_label <- paste0("long_tone_", long_note_no)
+      }
       note <- user_range[long_note_no]
     }
 
@@ -127,6 +139,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
     psychTestR::set_global('phase', NA, state)
     psychTestR::set_global('rhythmic', NA, state)
     psychTestR::set_global('melody_block_paradigm', melody_block_paradigm, state)
+    psychTestR::set_global('page_label', page_label, state)
 
 
     db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
@@ -172,6 +185,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     melody_no = long_note_no,
                     total_no_melodies = total_no_long_notes,
                     show_progress = show_progress,
+                    on_complete = on_complete,
                     trigger_start_of_stimulus_fun = paradigm$trigger_start_of_stimulus_fun,
                     trigger_end_of_stimulus_fun= paradigm$trigger_end_of_stimulus_fun)
 

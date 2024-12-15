@@ -219,6 +219,7 @@ musicassessr_init <- function(app_name = "",
           psychTestR::set_global("user_info", user_info, state)
           psychTestR::set_global("redirect_on_failure_url", redirect_on_failure_url, state)
           psychTestR::set_global("microphone_setup", FALSE, state)
+          psychTestR::set_global("singing_trial", FALSE, state)
 
       })
     )
@@ -253,9 +254,6 @@ return_correct_entry_page <- function(asynchronous_api_mode,
     shiny::tags$script(
       shiny::HTML(paste0("localStorage.setItem('jwkToken', \'", session_token, "\');"))
       ))
-
-  print('bt..')
-  print(next_button_text)
 
   psychTestR::one_button_page(ui, button_text = next_button_text)
 

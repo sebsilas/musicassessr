@@ -209,6 +209,10 @@ to_string_df <- function(df, exclude_cols = character()) {
 set_response_type <- function(type = c("Microphone", "MIDI")) {
   psychTestR::code_block(function(state, ...) {
 
+    # Before updating, pick up if there was a previous response type, to switch back at the end of a test, if need be
+    previous_response_type <- psychTestR::get_global("response_type", state)
+    psychTestR::set_global("previous_response_type", previous_response_type, state)
+
     if(type == "microphone") {
       type <- "Microphone"
     }

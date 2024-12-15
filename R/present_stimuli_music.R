@@ -55,19 +55,25 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
 #'
 #' @param stimuli
 #' @param durations
+#' @param musicxml_file
 #'
 #' @return
 #' @export
 #'
 #' @examples
-set_melodic_stimuli <- function(stimuli, durations) {
+set_melodic_stimuli <- function(stimuli, durations, musicxml_file = "NA") {
 
+  logging::loginfo("set_melodic_stimuli")
+  logging::loginfo("musicxml_file: %s", musicxml_file)
+musicxml_file
   # Send stimuli to JS
   shiny::tags$script(
     htmltools::HTML(paste0('stimuli = ', jsonlite::toJSON(stimuli), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
                        stimuli_durations = ', jsonlite::toJSON(durations), ';
                        Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
+                       musicxml_file = "', musicxml_file, '";
+                       Shiny.setInputValue("musicxml_file", musicxml_file);
                        ')
     )
   )
@@ -950,5 +956,43 @@ get_no_sharps_or_flats_from_key <- function(key) {
   )
 }
 
+read_musicxml_score <- function(musicxml_file) {
+  readtext::readtext(musicxml_file)$text
+}
+
+extract_tags <- function(input_string, tag) {
+  # Use a regex pattern that allows matching across multiple lines
+  matches <- regmatches(input_string,
+                        gregexpr(paste0("<", tag, ">[\\s\\S]*?</", tag, ">"),
+                                 input_string, perl = TRUE))
+  return(unlist(matches))
+}
+
+extract_no_sharps_or_flats_from_musicxml_file <- function(f) {
+  input_string <- read_musicxml_score(f)
+  tags <- extract_tags(input_string, "key") %>%
+    stringr::str_remove("<key>") %>%
+    stringr::str_remove("</key>") %>%
+    stringr::str_remove_all("\n") %>%
+    trimws()
+
+  no <- abs(readr::parse_number(tags))
+
+  flat_or_sharp <- if(grepl(0, tags)) {
+    "neither"
+    } else if(grepl("fifths", tags)) {
+      "sharp"
+    } else if(grepl("fourths", tags)) {
+      "flat"
+    } else {
+      NA
+    }
+
+  list(flat_or_sharp = flat_or_sharp,
+       no_sharps_flats = no)
+
+}
+
+# t <- extract_no_sharps_or_flats_from_musicxml_file("/Users/sebsilas/Berkowitz_measures_divided/Berkowitz284_noBars_3_startAtBar_10.musicxml")
 
 

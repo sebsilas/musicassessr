@@ -40,6 +40,9 @@ let apiUrl;
 let page_label = '';
 let stimuli = "";
 let stimuli_durations = "";
+let p_id = "";
+let page_type = "";
+let musicxml_file = "";
 
 // Grab the language from psychTestR via the URL parameter
 const queryString = window.location.search;
@@ -70,6 +73,7 @@ let db_melody_block_paradigm;
 let db_additional;
 let db_file_type;
 let db_noise_filename;
+let db_page_label;
 
 // Functions
 
@@ -542,6 +546,8 @@ function startRecording(type = "record_audio_page", stop_recording_automatically
         // Initiate startTime
     startTime = new Date().getTime();
     Shiny.setInputValue('trial_start_time', startTime);
+
+    page_type = type;
 
     if (type === "record_audio_page") {
       startAudioRecording();
@@ -1089,7 +1095,8 @@ async function upload_file_to_s3(blob) {
     "melody-block-paradigm": String(db_melody_block_paradigm),
     "additional": String(db_additional),
     "file-type": String(db_file_type),
-    "noise-filename" : String(db_noise_filename)
+    "noise-filename" : String(db_noise_filename),
+    "page-label": String(db_page_label)
   };
 
   console.log(md);

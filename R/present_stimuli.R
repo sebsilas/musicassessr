@@ -64,6 +64,7 @@
 #' @param feedback
 #' @param asynchronous_api_mode
 #' @param key
+#' @param on_complete
 #'
 #' @return
 #' @export
@@ -120,7 +121,8 @@ present_stimuli <- function(stimuli,
                             lyrics = NULL,
                             feedback = FALSE,
                             asynchronous_api_mode = FALSE,
-                            key = NULL, ...) {
+                            key = NULL,
+                            on_complete = NULL, ...) {
 
 
   stopifnot(is.vector(stimuli), is.character(stimuli_type), is.character(display_modality), is.character(page_type),
@@ -128,7 +130,8 @@ present_stimuli <- function(stimuli,
             is.character(page_title),
             is.numeric(slide_length),
             is.character(answer_meta_data) || is.data.frame(answer_meta_data),
-            is.function(get_answer), is.scalar.logical(save_answer),
+            is.null.or(get_answer, is.function),
+            is.scalar.logical(save_answer),
             is.scalar.logical(stimuli_reactive), is.character(midi_device),
             is.character(page_label),
             is.character(button_text), is.character(play_button_text),
@@ -170,7 +173,8 @@ present_stimuli <- function(stimuli,
             is.null.or(lyrics, is.scalar.character),
             is.scalar.logical(feedback),
             is.scalar.logical(asynchronous_api_mode),
-            is.null.or(key, is.scalar.character)
+            is.null.or(key, is.scalar.character),
+            is.null.or(on_complete, is.function)
             )
 
   # Generic stimuli types
@@ -255,7 +259,7 @@ present_stimuli <- function(stimuli,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type,
                               show_record_button = show_record_button, show_sheet_music_after_record = show_sheet_music_after_record, reactive_melody_no = reactive_melody_no,
                               mute_midi_playback = mute_midi_playback,
-                              db_vars = db_vars, ...)
+                              db_vars = db_vars, on_complete = on_complete, ...)
 
   } else if(page_type == "record_audio_page") {
 
@@ -275,7 +279,7 @@ present_stimuli <- function(stimuli,
                               volume_meter = volume_meter, volume_meter_type = volume_meter_type, show_sheet_music_after_record = show_sheet_music_after_record,
                               show_record_button = show_record_button,
                               reactive_melody_no = reactive_melody_no,
-                              db_vars = db_vars,
+                              db_vars = db_vars, on_complete = on_complete,
                               lyrics = lyrics, feedback = feedback, asynchronous_api_mode = asynchronous_api_mode, ...)
   } else {
     if(page_text_first) {
@@ -317,6 +321,7 @@ retrieve_page_type <- function(page_type = character(),
                                lyrics = NULL,
                                feedback = FALSE,
                                asynchronous_api_mode = FALSE,
+                               on_complete = NULL,
                                ...) {
 
 
@@ -329,7 +334,8 @@ retrieve_page_type <- function(page_type = character(),
             is.character(answer_meta_data) || is.data.frame(answer_meta_data),
             is.scalar.character(midi_device),
             is.scalar.character(page_label), is.scalar.character(button_text),
-            is.scalar.character(play_button_text), is.function(get_answer),
+            is.scalar.character(play_button_text),
+            is.null.or(get_answer, is.function),
             is.scalar.logical(save_answer),
             is.character(choices), is.scalar.logical(user_rating), is.scalar.logical(page_text_first),
             is.scalar.logical(happy_with_response), is.scalar.numeric(attempts_left), is.scalar.logical(max_goes_forced),
@@ -349,7 +355,8 @@ retrieve_page_type <- function(page_type = character(),
             is.null.or(db_vars, is.list),
             is.null.or(lyrics, is.scalar.character),
             is.scalar.logical(feedback),
-            is.scalar.logical(asynchronous_api_mode)
+            is.scalar.logical(asynchronous_api_mode),
+            is.null.or(on_complete, is.function)
             )
 
 
@@ -413,7 +420,8 @@ retrieve_page_type <- function(page_type = character(),
                 "db_vars" = db_vars,
                 "lyrics" = lyrics,
                 "feedback" = feedback,
-                "asynchronous_api_mode" = asynchronous_api_mode
+                "asynchronous_api_mode" = asynchronous_api_mode,
+                "on_complete" = on_complete
                 ))
 
   } else if(page_type == "record_key_presses_page") {

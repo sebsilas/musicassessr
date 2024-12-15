@@ -4,10 +4,10 @@
 \alias{set_melodic_stimuli}
 \title{Set melodic stimuli}
 \usage{
-set_melodic_stimuli(stimuli, durations)
+set_melodic_stimuli(stimuli, durations, musicxml_file = "NA")
 }
 \arguments{
-\item{durations}{}
+\item{musicxml_file}{}
 }
 \description{
 Set melodic stimuli

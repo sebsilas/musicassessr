@@ -64,7 +64,8 @@ key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 
 
 musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")
-musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
+
+#musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
 
 nrow(musicassessr_dict_df)
 

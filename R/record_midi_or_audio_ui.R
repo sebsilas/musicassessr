@@ -50,6 +50,10 @@ record_midi_or_audio_ui <- function(body = "",
 
   section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
+  if(is.list(db_vars)) {
+    db_vars$page_label <- label
+  }
+
   psychTestR::page(ui = shiny::tags$div(
 
     shiny::tags$head(
@@ -65,7 +69,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(page_type == "record_midi_page") autoInstantiateMidi(autoInstantiate, midi_device, interactive, mute_midi_playback),
 
-      if(page_type == "record_audio_page") send_page_label_to_js(label),
+      send_page_label_to_js(label),
 
       shiny::tags$script(set_answer_meta_data(answer_meta_data)),
 
@@ -131,32 +135,15 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
 
   additional <- if(is.scalar.character(db_vars$additional)) db_vars$additional else jsonlite::toJSON(db_vars$additional, auto_unbox = TRUE)
 
-  shiny::tags$script(htmltools::HTML(
-    paste0('
-  db_trial_time_started = \"', db_vars$trial_time_started,'\";
-  db_trial_time_completed = \"', db_vars$trial_time_completed,'\";
-  db_instrument = \"', db_vars$instrument,'\";
-  db_attempt = \"', db_vars$attempt,'\";
-  db_item_id = \"', db_vars$item_id,'\";
-  db_display_modality = \"', db_vars$display_modality,'\";
-  db_phase = \"', db_vars$phase,'\";
-  db_rhythmic = \"', db_vars$rhythmic,'\";
-  db_session_id = \"', db_vars$session_id,'\";
-  db_test_id = \"', db_vars$test_id,'\";
-  db_stimuli = \"', db_vars$stimuli,'\";
-  db_stimuli_durations = \"', db_vars$stimuli_durations,'\";
-  db_onset = \"', db_vars$onset,'\";
-  db_review_items_id = \"', db_vars$review_items_id,'\";
-  db_new_items_id = \"', db_vars$new_items_id,'\";
-  db_user_id = \"', db_vars$user_id,'\";
-  db_feedback = \"', db_vars$feedback,'\";
-  db_feedback_type = \"', db_vars$feedback_type,'\";
-  db_trial_paradigm = \"', db_vars$trial_paradigm,"\";
-  db_additional = \'", additional,"\';
-  db_melody_block_paradigm = \'", db_vars$melody_block_paradigm,"\';
-  db_file_type = \'", db_vars$file_type,"\';
-  db_noise_filename = \'", db_vars$noise_filename,"\';
-  ")))
+  js_holder <- db_var_names %>%
+    purrr::map(function(name) {
+      htmltools::HTML(paste0("db_", name, " = \'", db_vars[[name]], "\';"))
+    })
+
+
+  scr <- htmltools::HTML(paste0(js_holder))
+
+  shiny::tags$script(scr)
 
 }
 
@@ -181,7 +168,8 @@ db_var_names <- c("stimuli",
   "additional",
   "melody_block_paradigm",
   "file_type",
-  "noise_filename")
+  "noise_filename",
+  "page_label")
 
 create_db_vars_template <- function(init_with_time_started = TRUE) {
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
@@ -190,7 +178,11 @@ create_db_vars_template <- function(init_with_time_started = TRUE) {
 }
 
 send_page_label_to_js <- function(label) {
-  shiny::tags$script(paste0('page_label = \"', label, '\";'))
+  shiny::tags$script(
+    paste0('page_label = \"', label, '\";
+           Shiny.setInputValue("page_label", page_label);'
+           )
+    )
 }
 
 

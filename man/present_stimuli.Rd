@@ -76,6 +76,7 @@ present_stimuli(
   feedback = FALSE,
   asynchronous_api_mode = FALSE,
   key = NULL,
+  on_complete = NULL,
   ...
 )
 }
@@ -88,7 +89,7 @@ present_stimuli(
 
 \item{db_vars}{Vars for the DB as a named list.}
 
-\item{key}{}
+\item{on_complete}{}
 }
 \description{
 Present stimuli

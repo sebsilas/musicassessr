@@ -4,10 +4,10 @@
 \alias{sample_arrhythmic}
 \title{Sample arrhythmic}
 \usage{
-sample_arrhythmic(item_bank, num_items_arrhythmic, id = "arrhythmic_melody")
+sample_arrhythmic(item_bank, num_items, id = "arrhythmic_melody", phase = NULL)
 }
 \arguments{
-\item{id}{}
+\item{phase}{Currently not used by required.}
 }
 \description{
 Sample arrhythmic

@@ -15,11 +15,14 @@ find_this_note_trials(
   trial_paradigm = c("simultaneous_recall", "call_and_response"),
   call_and_response_end = c("manual", "auto"),
   singing_trials = FALSE,
-  asynchronous_api_mode = FALSE
+  asynchronous_api_mode = FALSE,
+  interleaved_with_piat = FALSE,
+  long_tone_length = 5,
+  on_complete = NULL
 )
 }
 \arguments{
-\item{asynchronous_api_mode}{}
+\item{on_complete}{}
 }
 \description{
 Present "Find This Note" trials

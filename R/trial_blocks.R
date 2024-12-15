@@ -754,6 +754,13 @@ melody_trials <- function(var_name,
     is.scalar.logical(asynchronous_api_mode)
   )
 
+  sampler_fun_args <- c("item_bank", "num_items", "id", "phase")
+
+  assertthat::assert_that(
+    length(setdiff(sampler_fun_args, formalArgs(sampler_function))) == 0,
+    msg = paste0("sampler_function must contain the arguments: ", paste(sampler_fun_args, collapse = ", "))
+    )
+
   if(review && phase != 'review') {
     stop("If review is TRUE phase should be 'review")
   }
@@ -876,7 +883,7 @@ melody_trials <- function(var_name,
 
           ## Sample example items
           #### (review phase should not have example items)
-          if(!presampled && !pass_items_through_url_parameter && !review) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase, learn_test_paradigm, !arrhythmic),
+          if(!presampled && !pass_items_through_url_parameter && !review) handle_item_sampling(item_bank, num_examples_flat, item_characteristics_sampler_function, item_characteristics_pars, sampler_function, review, var_name, phase = "example", learn_test_paradigm, !arrhythmic),
 
           ## Run examples
           if(!review) {
@@ -1012,7 +1019,8 @@ handle_item_sampling <- function(item_bank,
                                  item_characteristics_pars,
                                  sampler_function,
                                  review = FALSE,
-                                 var_name, phase = "test",
+                                 var_name,
+                                 phase = "test",
                                  learn_test_paradigm = FALSE,
                                  rhythmic = FALSE) {
 
@@ -1039,7 +1047,7 @@ handle_item_sampling <- function(item_bank,
 
     psychTestR::join(
 
-      if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat),
+      if(!is.null(sampler_function)) sampler_function(item_bank, num_items_flat, var_name, phase),
 
       if(!is.null(item_characteristics_sampler_function)) sample_item_characteristics(var_name = var_name, item_characteristics_sampler_function, item_characteristics_pars)
     )
@@ -1191,6 +1199,9 @@ long_tone_trials <- function(num_items,
 #' @param page_type
 #' @param page_text
 #' @param asynchronous_api_mode
+#' @param interleaved_with_piat
+#' @param long_tone_length
+#' @param on_complete
 #'
 #' @return
 #' @export
@@ -1206,7 +1217,10 @@ find_this_note_trials <- function(num_items,
                                   trial_paradigm = c("simultaneous_recall", "call_and_response"),
                                   call_and_response_end = c("manual", "auto"),
                                   singing_trials = FALSE,
-                                  asynchronous_api_mode = FALSE) {
+                                  asynchronous_api_mode = FALSE,
+                                  interleaved_with_piat = FALSE,
+                                  long_tone_length = 5,
+                                  on_complete = NULL) {
 
   # Get trial paradigm info
   trial_paradigm <- match.arg(trial_paradigm)
@@ -1222,16 +1236,67 @@ find_this_note_trials <- function(num_items,
       }
     }
 
+    if(interleaved_with_piat) {
+
+      interleaving_trial_page <-  psychTestR::join(
+        play_long_tone_record_audio_page(page_type = page_type,
+                                         page_title = page_title,
+                                         page_text = page_text,
+                                         example = FALSE,
+                                         get_answer = get_answer,
+                                         page_label = "find_this_note_trial",
+                                         on_complete = on_complete,
+                                         total_no_long_notes = num_items,
+                                         show_progress = FALSE,
+                                         trial_paradigm = trial_paradigm,
+                                         call_and_response_end = call_and_response_end,
+                                         long_tone_length = long_tone_length,
+                                         singing_trial = FALSE),
+        psychTestR::code_block(function(state, ...) {
+          long_note_no <- psychTestR::get_global("dynamic_long_note_no", state)
+          psychTestR::set_global("dynamic_long_note_no", long_note_no + 1L, state)
+        })
+      )
+
+      main_trials <- piat::piat(
+        take_training = TRUE, # Should be TRUE for test!
+        num_items = num_items,
+        label = "PIAT_interleaved_with_find_this_note_trials",
+        # dict = # Probably need to update this,
+        post_training_tl = psychTestR::join(
+          psychTestR::one_button_page(psychTestR::i18n("find_this_note_instructions_piat_interleaved")),
+          psychTestR::code_block(function(state, ...) {
+            psychTestR::set_global("dynamic_long_note_no", 1L, state)
+          })
+        ),
+        append_interleaving_trial_page = interleaving_trial_page
+      )
+    } else {
+      main_trials <-
+        multi_play_long_tone_record_audio_pages(no_items = num_items,
+                                                page_text = page_text,
+                                                page_title = page_title,
+                                                page_type = page_type,
+                                                feedback = feedback,
+                                                get_answer = get_answer,
+                                                trial_paradigm = trial_paradigm,
+                                                call_and_response_end = call_and_response_end,
+                                                singing_trial = FALSE)
+    }
+
+    find_this_note_instructions <- psychTestR::one_button_page(shiny::div(
+      shiny::tags$h2(page_title),
+      shiny::tags$p(psychTestR::i18n("find_this_note_instructions"))
+    ), button_text = psychTestR::i18n("Next"))
+
     # Sample melodies based on range
     psychTestR::module("find_this_note_trials",
                        psychTestR::join(
                          # Set item bank ID in code block
+                         set_test("PBET", 2L),
                          set_item_bank_id(NA),
                          # Instructions
-                         psychTestR::one_button_page(shiny::div(
-                           shiny::tags$h2(page_title),
-                           shiny::tags$p(psychTestR::i18n("find_this_note_instructions"))
-                         ), button_text = psychTestR::i18n("Next")),
+                         #if(!interleaved_with_piat) find_this_note_instructions,
                          # Examples
                          if(is.numeric(num_examples) & num_examples > 0L) {
                            psychTestR::join(psychTestR::one_button_page(
@@ -1258,16 +1323,8 @@ find_this_note_trials <- function(num_items,
                            )},
                          # Sample
                          sample_from_user_range(num_items),
-                         # Build pages
-                         multi_play_long_tone_record_audio_pages(no_items = num_items,
-                                                                 page_text = page_text,
-                                                                 page_title = page_title,
-                                                                 page_type = page_type,
-                                                                 feedback = feedback,
-                                                                 get_answer = get_answer,
-                                                                 trial_paradigm = trial_paradigm,
-                                                                 call_and_response_end = call_and_response_end,
-                                                                 singing_trial = FALSE)
+
+                         main_trials
                        )
     )
   }

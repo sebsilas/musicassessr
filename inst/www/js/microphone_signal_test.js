@@ -87,7 +87,7 @@ if (startButtonEl !== null) {
 
             // Trigger warning if cooldown has elapsed
             const currentTime = Date.now();
-            if (currentTime - lastWarningTime > 5000) { // 5-second cooldown
+            if (currentTime - lastWarningTime > 5000 && page_type === "record_audio_page") { // 5-second cooldown
               alert("Warning: Microphone signal is too loud! Please reduce microphone gain or move away from the microphone.");
               lastWarningTime = currentTime; // Reset warning time
             }

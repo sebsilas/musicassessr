@@ -6,57 +6,62 @@ let midi_device;
 
 
 function generateDeviceDropdown() {
-
   console.log('generateDeviceDropdown called');
 
   const loading = document.getElementById('loading');
   const hollowDotsSpinner = document.getElementById('hollowDotsSpinner');
   const nextButton = document.getElementById('next');
-  loading.style.display = "none";
-  hollowDotsSpinner.style.display = "none";
+  const dropdown = document.getElementById("midiDeviceSelector");
+
+  // Reset dropdown content
+  dropdown.innerHTML = "";
 
   loading.style.display = "block";
   hollowDotsSpinner.style.display = "block";
   nextButton.style.display = "none";
 
-	WebMidi.enable(function(err) {
+  WebMidi.enable(function(err) {
+    console.log('err', err);
 
-	  console.log('err');
-	  console.log(err);
-
-	//error collector
+    // Error handling
     if (err) {
-      console.log("WebMidi could not be enabled");
+      console.error("WebMidi could not be enabled", err);
+      loading.style.display = "none";
+      hollowDotsSpinner.style.display = "none";
+      return;
     }
 
-	// Generate dropdown with MIDI inputs
-	const dropdown = document.getElementById("midiDeviceSelector");
+    // Generate dropdown with MIDI inputs
+    WebMidi.inputs.forEach(({ name }, index) => {
+      const option = document.createElement("option");
+      option.text = name;
+      option.value = index;
+      dropdown.add(option);
+    });
 
-  console.log('before loop');
+    console.log('Dropdown populated with MIDI devices');
 
-  WebMidi.inputs.forEach(({ name }, index) => {
-    const option = document.createElement("option");
-    option.text = name;
-    option.value = index;
-    dropdown.add(option);
+    // Set initial selection and notify Shiny
+    if (dropdown.options.length > 0) {
+      dropdown.selectedIndex = 0;
+      const chosenMIDIDevice = dropdown[dropdown.selectedIndex].text;
+      console.log("Initial chosenMIDIDevice", chosenMIDIDevice);
+      Shiny.setInputValue("midi_device", chosenMIDIDevice);
+    }
+
+    loading.style.display = "none";
+    hollowDotsSpinner.style.display = "none";
+    nextButton.style.display = "block";
   });
 
-	console.log('after loop');
-
-  const chosenMIDIDevice = dropdown[dropdown.selectedIndex].text;
-
-  console.log(chosenMIDIDevice);
-
-  loading.style.display = "none";
-  hollowDotsSpinner.style.display = "none";
-  nextButton.style.display = "block";
-
-  Shiny.setInputValue("midi_device", chosenMIDIDevice);
-
-
-  }
-);
+  // Add event listener to detect dropdown changes
+  dropdown.addEventListener("change", () => {
+    const chosenMIDIDevice = dropdown[dropdown.selectedIndex]?.text || "";
+    console.log("Chosen MIDI device changed to", chosenMIDIDevice);
+    Shiny.setInputValue("midi_device", chosenMIDIDevice);
+  });
 }
+
 
 
 

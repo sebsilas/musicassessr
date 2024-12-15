@@ -135,7 +135,9 @@ setup_pages <- function(input_type = c("microphone",
       if(headphones) test_headphones_page(concise_wording),
 
       if(select_instrument) select_musical_instrument_page(set_range_based_on_selection = !get_instrument_range),
-      if(select_instrument) psychTestR::one_button_page(psychTestR::i18n("first_instrument_question")),
+      if(select_instrument) psychTestR::NAFC_page(label = "first_instrument_question",
+                                                  prompt = psychTestR::i18n("first_instrument_question"),
+                                                  choices = c(psychTestR::i18n("Yes"), psychTestR::i18n("No"))),
 
       correct_setup(input_type, SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, musical_instrument = musical_instrument, allow_SNR_failure = allow_SNR_failure, show_microphone_type_page = show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode),
 
@@ -149,19 +151,18 @@ setup_pages <- function(input_type = c("microphone",
   # Set the response/input type when it is definitely either microphone or MIDI (i.e., non-user specified):
   psychTestR::join(
     if(input_type %in% c("microphone", "midi_keyboard")) set_response_type(if(input_type == "microphone") "Microphone" else if(input_type == "midi_keyboard") "MIDI" else stop("Input type not recognised.")),
-    setup#,
-    # After, check async stuff has resolved, if async mode
-    #if(asynchronous_api_mode) api_check_pages()
-
-    # Why did I remove this?!
-
+    setup
   )
 
 }
 
 
-correct_setup <- function(input_type, SNR_test, absolute_url, microphone_test = TRUE, allow_repeat_SNR_tests = TRUE, report_SNR = FALSE,
-                          concise_wording = FALSE, skip_setup = FALSE, musical_instrument = FALSE, allow_SNR_failure = FALSE, show_microphone_type_page = TRUE, asynchronous_api_mode = FALSE) {
+correct_setup <- function(input_type, SNR_test, absolute_url,
+                          microphone_test = TRUE, allow_repeat_SNR_tests = TRUE,
+                          report_SNR = FALSE, concise_wording = FALSE,
+                          skip_setup = FALSE, musical_instrument = FALSE,
+                          allow_SNR_failure = FALSE, show_microphone_type_page = TRUE,
+                          asynchronous_api_mode = FALSE) {
 
   if(!sjmisc::str_contains(input_type, "midi_keyboard")) {
     microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure, show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)
@@ -181,7 +182,6 @@ correct_setup <- function(input_type, SNR_test, absolute_url, microphone_test = 
 
       psychTestR::conditional(function(state, ...) {
         psychTestR::get_global("response_type", state) == "Microphone"
-
       }, logic = microphone_setup(SNR_test, absolute_url, microphone_test, allow_repeat_SNR_tests, report_SNR, concise_wording, skip_setup, musical_instrument, allow_SNR_failure, show_microphone_type_page, asynchronous_api_mode = asynchronous_api_mode)),
 
       psychTestR::conditional(function(state, ...) {

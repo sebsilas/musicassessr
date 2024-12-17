@@ -169,7 +169,8 @@ db_var_names <- c("stimuli",
   "melody_block_paradigm",
   "file_type",
   "noise_filename",
-  "page_label")
+  "page_label",
+  "module")
 
 create_db_vars_template <- function(init_with_time_started = TRUE) {
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)

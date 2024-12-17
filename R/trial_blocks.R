@@ -1202,6 +1202,7 @@ long_tone_trials <- function(num_items,
 #' @param interleaved_with_piat
 #' @param long_tone_length
 #' @param on_complete
+#' @param take_piat_training
 #'
 #' @return
 #' @export
@@ -1220,7 +1221,8 @@ find_this_note_trials <- function(num_items,
                                   asynchronous_api_mode = FALSE,
                                   interleaved_with_piat = FALSE,
                                   long_tone_length = 5,
-                                  on_complete = NULL) {
+                                  on_complete = NULL,
+                                  take_piat_training = TRUE) {
 
   # Get trial paradigm info
   trial_paradigm <- match.arg(trial_paradigm)
@@ -1259,12 +1261,15 @@ find_this_note_trials <- function(num_items,
       )
 
       main_trials <- piat::piat(
-        take_training = TRUE, # Should be TRUE for test!
+        take_training = take_piat_training, # Should be TRUE for test!
         num_items = num_items,
         label = "PIAT_interleaved_with_find_this_note_trials",
         # dict = # Probably need to update this,
         post_training_tl = psychTestR::join(
-          psychTestR::one_button_page(psychTestR::i18n("find_this_note_instructions_piat_interleaved")),
+          psychTestR::one_button_page(shiny::tags$div(
+            psychTestR::i18n("find_this_note_instructions_piat_interleaved"),
+            psychTestR::i18n("find_this_note_instructions_piat_interleaved_2")
+            )),
           psychTestR::code_block(function(state, ...) {
             psychTestR::set_global("dynamic_long_note_no", 1L, state)
           })
@@ -1324,7 +1329,9 @@ find_this_note_trials <- function(num_items,
                          # Sample
                          sample_from_user_range(num_items),
 
-                         main_trials
+                         main_trials,
+
+                         psychTestR::elt_save_results_to_disk(complete = FALSE)
                        )
     )
   }
@@ -1479,7 +1486,7 @@ interval_perception_trials <- function(num_items = 26L,
                            instruction_text
                          ), button_text = psychTestR::i18n("Next")),
                          sample_intervals(num_items = num_items),
-                         multi_interval_page(num_items))
+                         unlist(multi_interval_page(num_items)))
                        )
                        ) # End module
   } else {

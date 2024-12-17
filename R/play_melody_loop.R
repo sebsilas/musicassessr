@@ -859,6 +859,9 @@ present_melody <- function(stimuli,
 
     psychTestR::set_global("additional", additional, state) # For MIDI
 
+    module <- psychTestR::get_local(".module", state)
+    logging::loginfo("module: %s", module)
+
     db_vars <- if(asynchronous_api_mode) {
 
       list(
@@ -883,7 +886,8 @@ present_melody <- function(stimuli,
         additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE),
         file_type = NA,
         noise_filename = NA,
-        page_label = page_label
+        page_label = page_label,
+        module = module
       )
     } else NULL
 

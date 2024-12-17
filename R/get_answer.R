@@ -415,6 +415,9 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
     display_modality <- psychTestR::get_global('display_modality', state)
     phase <- psychTestR::get_global('phase', state)
     rhythmic <- psychTestR::get_global('rhythmic', state)
+    module <- psychTestR::get_local(".module", state)
+
+    logging::loginfo("module: %s", module)
 
     page_label <- input$page_label
 
@@ -467,7 +470,8 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                                                                   attempt = attempt,
                                                                   additional = additional,
                                                                   melody_block_paradigm = melody_block_paradigm,
-                                                                  page_label = if(length(page_label) > 0) page_label else "NA")
+                                                                  page_label = if(length(page_label) > 0) page_label else "NA",
+                                                                  module = module)
 
     },
     seed = NULL, future.plan = future::multisession) %>%
@@ -541,6 +545,7 @@ get_answer_midi <- function(input, state, ...) {
     stimulus_trigger_times <- if(is.null(input$stimulus_trigger_times)) NA else (as.numeric(jsonlite::fromJSON(input$stimulus_trigger_times)) - trial_start_time_timecode) / 1000
     velocities <- if(is.scalar.na.or.null(input$velocities)) NA else as.numeric(jsonlite::fromJSON(input$velocities))
     stimulus <- if(is.null(input$stimuli)) NA else as.numeric(jsonlite::fromJSON(input$stimuli))
+    stimulus_durations <- if(is.null(input$stimuli_durations)) NA else as.numeric(jsonlite::fromJSON(input$stimuli_durations))
 
     # We just assume the last duration is 0.5 always (or the last duration of the stimulus, if there is one).
     # There is no way of telling when the participant really designates that a "hit" is over
@@ -548,7 +553,7 @@ get_answer_midi <- function(input, state, ...) {
     if(is.scalar.na.or.null(stimulus)) {
       last_dur <- 0.5
     } else {
-      last_dur <- stimulus[length(stimulus)]
+      last_dur <- stimulus_durations[length(stimulus_durations)]
     }
 
     pyin_style_res <- tibble::tibble(
@@ -559,6 +564,11 @@ get_answer_midi <- function(input, state, ...) {
       file_name = NA,
     ) %>%
       dplyr::relocate(file_name)
+
+
+    otf_r <- rhythfuzz(classify_duration(stimulus_durations), classify_duration(pyin_style_res$dur))
+
+    logging::loginfo("otf_r: %s", otf_r)
 
     list(
       stimulus_trigger_times = stimulus_trigger_times,
@@ -727,21 +737,40 @@ get_answer_midi_note_mode <- function(input, state, ...) {
   }
 }
 
-# other
+# Other
 
 get_answer_interval_page <- function(input, state, ...) {
 
   answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
+  trial_time_started <- psychTestR::get_global("trial_time_started", state)
+
+  print('get_answer_interval_page called')
+
+  language <- psychTestR::get_url_params(state)$language
+
+  answer <- input$dropdown
+
+  if(language != "en") {
+    answer <- translate_from_dict(non_english_translation = answer, language = language)
+  }
+
+  correct <- answer == answer_meta_data$interval
+
+  trial_time_completed <- Sys.time()
+  trial_time_taken <- trial_time_completed - trial_time_started
 
   # TODO: The following works as feedback, but make an option to enable it conditionally (optionally):
-
-  # msg <- if(input$dropdown == answer_meta_data$interval) "Correct Answer!" else "Wrong Answer!"
+  # msg <- if(correct) "Correct Answer!" else "Wrong Answer!"
   # shiny::showNotification(msg)
 
   c(
     list(
       user_choice = input$dropdown),
-    as.list(answer_meta_data)
+    as.list(answer_meta_data),
+    correct = correct,
+    trial_time_started = trial_time_started,
+    trial_time_completed = trial_time_completed,
+    trial_time_taken = trial_time_taken
   )
 }
 

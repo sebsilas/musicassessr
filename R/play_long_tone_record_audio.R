@@ -144,6 +144,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
 
     db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
 
+      module <- psychTestR::get_local(".module", state)
+
       list(
         stimuli = note,
         stimuli_durations = long_tone_length,
@@ -165,7 +167,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
         melody_block_paradigm = melody_block_paradigm,
         additional = NA,
         file_type = NA,
-        noise_filename = NA
+        noise_filename = NA,
+        module = module
       )
     } else NULL
 

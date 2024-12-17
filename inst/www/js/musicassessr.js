@@ -74,6 +74,7 @@ let db_additional;
 let db_file_type;
 let db_noise_filename;
 let db_page_label;
+let db_module;
 
 // Functions
 
@@ -1096,7 +1097,8 @@ async function upload_file_to_s3(blob) {
     "additional": String(db_additional),
     "file-type": String(db_file_type),
     "noise-filename" : String(db_noise_filename),
-    "page-label": String(db_page_label)
+    "page-label": String(db_page_label),
+    "module": String(db_module)
   };
 
   console.log(md);

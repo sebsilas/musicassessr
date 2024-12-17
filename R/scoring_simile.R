@@ -31,6 +31,9 @@ ngrukkon <- function(x, y, N = 3){
 #'
 #' @examples
 ngrukkon_safe <- function(x, y, N = 3) {
+  logging::loginfo("ngrukkon_safe")
+  logging::loginfo("x: %s", x)
+  logging::loginfo("y: %s", y)
   ngrukkon_warning(x)
   ngrukkon_warning(y)
   if( length(x) < N | length(y) < N ) {
@@ -43,7 +46,10 @@ ngrukkon_safe <- function(x, y, N = 3) {
 
 ngrukkon_warning <- function(v) {
   # ngrukkon must be used on intervals not pitches, so warn based on a guess that the input might be pitch rather than interval values
-  if(mean(v, na.rm = TRUE) > 20) warning("Are you definitely using intervals for ngrukkon?")
+  if(mean(v, na.rm = TRUE) > 20) {
+    logging::logwarn("Are you definitely using intervals for ngrukkon?")
+    logging::loginfo("v: %s", v)
+  }
 }
 
 

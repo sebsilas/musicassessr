@@ -115,7 +115,7 @@ play_interval_page <- function(interval = NULL,
                                page_title = psychTestR::i18n("interval_perception_page_title"),
                                play_button_text = psychTestR::i18n("Play"),
                                example = FALSE,
-                               label = "interval_",
+                               label = paste0("interval_perception_", trial_no),
                                save_answer = TRUE,
                                get_answer = get_answer_interval_page,
                                trial_no = NULL,
@@ -128,39 +128,48 @@ play_interval_page <- function(interval = NULL,
     save_answer <- TRUE
   }
 
-  psychTestR::reactive_page(function(state, ...) {
+  psychTestR::join(
 
-    if(is.null(interval)) {
-      abs_intervals <- psychTestR::get_global("abs_intervals", state)
-      abs_interval <- abs_intervals[trial_no, ]
-      psychTestR::set_global("answer_meta_data", abs_interval,  state)
-    }
+      psychTestR::code_block(function(state, ...) {
+        # If you set in the reactive page it resets because reactive pages get called twice
+        psychTestR::set_global("trial_time_started", Sys.time(),  state)
 
-    # Do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
-    # intervals_dict <- lapply(intervals, psychTestR::i18n)
-    intervals_dict <- lapply(paste0("interval_", 0:12), psychTestR::i18n)
+      }),
 
-    ui <- shiny::tags$div(
-      shiny::tags$h2(page_title),
-      shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
-      present_stimuli(stimuli = itembankr::str_mel_to_vector(abs_interval$abs_interval),
-                      stimuli_type = "midi_notes",
-                      display_modality = "auditory",
-                      page_label = "interval_",
-                      play_button_text = play_button_text,
-                      sound = "piano"),
-      shiny::selectInput(inputId = "dropdown",
-                         label = NULL,
-                         choices = unlist(as.vector(intervals_dict)), #names(intervals),
-                         width = "30%"),
-      sure_you_want_to_continue_button(confirmation_msg = psychTestR::i18n("happy_with_selection"))
+      psychTestR::reactive_page(function(state, ...) {
+
+      if(is.null(interval)) {
+        abs_intervals <- psychTestR::get_global("abs_intervals", state)
+        abs_interval <- abs_intervals[trial_no, ]
+        psychTestR::set_global("answer_meta_data", abs_interval,  state)
+      }
+
+      # Do not remove the following line to e.g., /data-raw. it has to be called within the psychTestR timeline
+      # intervals_dict <- lapply(intervals, psychTestR::i18n)
+      intervals_dict <- lapply(paste0("interval_", 0:12), psychTestR::i18n)
+
+      ui <- shiny::tags$div(
+        shiny::tags$h2(page_title),
+        shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
+        present_stimuli(stimuli = itembankr::str_mel_to_vector(abs_interval$abs_interval),
+                        stimuli_type = "midi_notes",
+                        display_modality = "auditory",
+                        page_label = label,
+                        play_button_text = play_button_text,
+                        sound = "piano"),
+        shiny::selectInput(inputId = "dropdown",
+                           label = NULL,
+                           choices = unlist(as.vector(intervals_dict)), #names(intervals),
+                           width = "30%"),
+        sure_you_want_to_continue_button(confirmation_msg = psychTestR::i18n("happy_with_selection"))
+    )
+
+      psychTestR::page(ui = ui,
+                       label = label,
+                       get_answer = get_answer,
+                       save_answer = save_answer)
+    })
   )
-
-    psychTestR::page(ui = ui,
-                     label = label,
-                     get_answer = get_answer,
-                     save_answer = save_answer)
-  })
 
 }
 

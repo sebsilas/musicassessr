@@ -494,6 +494,8 @@ midi_or_audio <- function(type, prompt_text, var_name, asynchronous_api_mode) {
 
     db_vars <- if(asynchronous_api_mode) {
 
+      module <- psychTestR::get_local(".module", state)
+
       list(
         stimuli = "NA",
         stimuli_durations = "NA",
@@ -515,7 +517,8 @@ midi_or_audio <- function(type, prompt_text, var_name, asynchronous_api_mode) {
         trial_paradigm = "setup_sing_range_note",
         additional = NA,
         file_type = NA,
-        noise_filename = NA
+        noise_filename = NA,
+        module = module
       )
     } else NULL
   }

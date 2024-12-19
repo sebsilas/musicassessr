@@ -2,7 +2,6 @@
 
 score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NULL) {
 
-
   if(is.scalar.na.or.null(user_durations) || length(user_durations) == 0) {
 
     res <- list(

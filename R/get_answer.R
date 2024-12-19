@@ -357,7 +357,6 @@ get_melconv <- function(melconv, pyin_res) {
 #' @examples
 get_answer_midi_melodic_production <- function(input, state, ...) {
 
-
   if(check_midi_melodic_production_lengths(input$user_response_midi_note_on,
                                           input$user_response_midi_note_off,
                                           input$onsets_noteon,
@@ -566,9 +565,9 @@ get_answer_midi <- function(input, state, ...) {
       dplyr::relocate(file_name)
 
 
-    otf_r <- rhythfuzz(classify_duration(stimulus_durations), classify_duration(pyin_style_res$dur))
+    # otf_r <- rhythfuzz(classify_duration(stimulus_durations), classify_duration(pyin_style_res$dur))
 
-    logging::loginfo("otf_r: %s", otf_r)
+    # logging::loginfo("otf_r: %s", otf_r)
 
     list(
       stimulus_trigger_times = stimulus_trigger_times,
@@ -603,7 +602,11 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
 
   type <- match.arg(type)
 
-  stimuli_durations <- if(is.scalar.na.or.null.or.length.zero(jsonlite::fromJSON(input$stimuli_durations))) NA else round(jsonlite::fromJSON(input$stimuli_durations), 2)
+  if(length(input$stimuli_durations) == 0 || is.scalar.na.or.null.or.length.zero(jsonlite::fromJSON(input$stimuli_durations))) {
+    stimuli_durations <- NA
+  } else {
+    stimuli_durations <- round(jsonlite::fromJSON(input$stimuli_durations), 2)
+  }
 
   if(type == "midi") {
 
@@ -962,11 +965,9 @@ check_midi_melodic_production_lengths <- function(user_response_midi_note_on,
   }
 
   lengths <- c(length(jsonlite::fromJSON(user_response_midi_note_on)),
-               length(jsonlite::fromJSON(user_response_midi_note_off)),
-               length(jsonlite::fromJSON(onsets_noteon)),
-               length(jsonlite::fromJSON(onsets_noteoff)))
+               length(jsonlite::fromJSON(onsets_noteon)))
 
-  are_lengths_equal <- length(unique(lengths)) == 1
+  are_lengths_equal <- lengths[1] == lengths[2]
 
   any(lengths == 0) | ! are_lengths_equal
 }

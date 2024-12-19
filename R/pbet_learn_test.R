@@ -44,12 +44,14 @@ pbet_learn_test_paradigm <- function(no_trials = 4L,
 
   user_sample <- item_bank_filtered %>%
     dplyr::group_by(SAA_rhythmic_difficulty_quartile) %>%
-    dplyr::slice_sample(n = no_trials/4) %>%
-    # Randomise order
+    dplyr::slice_sample(n = ceiling(no_trials/4) ) %>% # Handle case of under 4 trials with ceiling
+    # Randomise order (and also handle case for < 4 trials i.e., remove any extras as a result of the quartile sampling)
     dplyr::slice_sample(n = no_trials) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(display_modality = sample(c(rep("visual", no_visual),
-                                              rep("auditory", no_auditory))) )
+    dplyr::mutate(display_modality = sample(c(rep("visual", nrow(.)/2 ),
+                                              rep("auditory", nrow(.)/2 ))) ) %>%
+    # Randomise order again
+    dplyr::slice_sample(n = no_trials)
 
   examples <- item_bank_filtered %>%
                 dplyr::filter(!file_name %in% user_sample$file_name,
@@ -147,7 +149,8 @@ test_phase <- function(user_sample, trial_paradigm, bpm, page_type) {
       pbet_trial(trial_dat,
                  trial_paradigm,
                  attempt = 1L,
-                 bpm, page_type, trial_no = trial_no, no_trials = no_trials, page_label = page_label, phase = "test")
+                 bpm, page_type, trial_no = trial_no,
+                 no_trials = no_trials, page_label = page_label, phase = "test")
     })
 }
 
@@ -177,7 +180,11 @@ pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial
     give_first_melody_note = TRUE,
     attempt = attempt,
     page_label = page_label
-  ) %>% init_trial_time_started(attempt, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase)
+  ) %>% init_trial_time_started(attempt,
+                                item_id = trial_dat$item_id,
+                                page_label = page_label,
+                                display_modality = "auditory", # PBET always auditory
+                                phase = phase)
 
 
 
@@ -254,7 +261,7 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, pag
       get_answer = get_answer_async_midi_vs_audio,
       show_record_button = TRUE,
       attempt = attempt
-    ) %>% init_trial_time_started(attempt, additional, item_id, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase)
+    ) %>% init_trial_time_started(attempt, additional, item_id = item_id, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase)
   } else {
     page_label <- paste0("auditory_", page_label)
     trial <- pbet_trial(trial_dat, trial_paradigm, attempt, bpm, page_type, trial_no = trial_no, no_trials = no_trials, page_label, phase = phase)

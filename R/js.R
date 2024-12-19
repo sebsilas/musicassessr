@@ -88,7 +88,10 @@ musicassessr_js <- function(app_name = "",
 
 get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
-  if(!asynchronous_api_mode) {
+  if(asynchronous_api_mode || on_musicassessr_aws() ) {
+    system.file("www/js/musicassessr_production.js", package = "musicassessr")
+
+  } else {
 
     if( check_port() ) {
       cat(file=stderr(), "Kill port 3000...", "\n")
@@ -98,9 +101,6 @@ get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
     system2(command = "node", args = 'node/app.js', wait = FALSE)
 
     system.file("www/js/musicassessr_test.js", package = "musicassessr")
-
-  } else {
-    system.file("www/js/musicassessr_production.js", package = "musicassessr")
   }
 
 }

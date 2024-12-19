@@ -88,7 +88,7 @@ musicassessr_js <- function(app_name = "",
 
 get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
-  if(!asynchronous_api_mode && ! on_musicassessr_aws() ) {
+  if(!asynchronous_api_mode) {
 
     if( check_port() ) {
       cat(file=stderr(), "Kill port 3000...", "\n")

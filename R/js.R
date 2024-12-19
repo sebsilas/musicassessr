@@ -89,6 +89,7 @@ musicassessr_js <- function(app_name = "",
 get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
 
   if(asynchronous_api_mode || on_musicassessr_aws() ) {
+
     system.file("www/js/musicassessr_production.js", package = "musicassessr")
 
   } else {

@@ -31,7 +31,7 @@ app.post('/upload-audio', async (req, res) => {
             let file = req.files.audio_data;
 
             //Use the mv() method to place the file in upload directory (i.e. "uploads")
-            file.mv('www/audio/' + file.name+".wav");
+            file.mv('www/audio/' + file.name + ".wav");
 
             //send response
             res.send({

@@ -964,7 +964,7 @@ function stopAudioRecording() {
   if(upload_to_s3) {
     rec.exportWAV(upload_file_to_s3);
   } else {
-    rec.exportWAV(process_file_on_server);
+    rec.exportWAV(process_file_locally);
   }
 
 
@@ -995,7 +995,9 @@ function create_recordkey() {
   return(recordkey)
 }
 
-function store_file_locally(blob) {
+
+
+function process_file_locally(blob) {
 
 	let xhr = new XMLHttpRequest();
 
@@ -1009,45 +1011,10 @@ function store_file_locally(blob) {
 	}
 
 	if(this.musicassessr_state === "production") {
+	  console.log("Upload local to musicassessr AWS server...")
 	  xhr.open("POST","/api/store_audio/",true); // production
   } else {
-    console.log('Upload local...');
-    xhr.open("POST","http://localhost:3000/upload-audio",true); // local
-  }
-
-	xhr.send(fd);
-
-
-	xhr.onload = () => {
-	  console.log(xhr.responseText);
-		// call next page after credentials saved
-		spinner = document.getElementsByClassName("hollow-dots-spinner");
-		if(spinner[0] !== undefined) {
-		  spinner[0].style.display = "none";
-		}
-		file_is_ready = true;
-	};
-}
-
-
-
-function process_file_on_server(blob) {
-
-	let xhr = new XMLHttpRequest();
-
-	let fd = new FormData();
-
-	fd.append("audio_data", blob, recordkey);
-
-	if (typeof shiny_app_name !== 'undefined') {
-	  fd.append("app_name", shiny_app_name);
-	  Shiny.setInputValue("shiny_app_name", shiny_app_name);
-	}
-
-	if(this.musicassessr_state === "production") {
-	  xhr.open("POST","/api/store_audio/",true); // production
-  } else {
-    console.log('Upload local...');
+    console.log('Upload local to user machine e.g...');
     xhr.open("POST","http://localhost:3000/upload-audio",true); // local
   }
 

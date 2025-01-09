@@ -83,6 +83,8 @@ load('data-raw/melody_pca2.rda')
 
 musicassessr_dict <- psychTestR::i18n_dict$new(musicassessr_dict_df)
 
+check_musicassessr_dict <- musicassessr_dict %>%
+  as.data.frame()
 
 
 # test the long note predict method

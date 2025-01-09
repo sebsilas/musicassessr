@@ -42,57 +42,62 @@ make_musicassessr_test <- function(title,
 
   setup_enclosure <- opt$setup_page_options(asynchronous_api_mode = opt$asynchronous_api_mode)
 
+
+  pre_elts <- psychTestR::new_timeline(
+    psychTestR::join(
+
+      # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
+      welcome_page,
+
+      # Get participant ID
+      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
+
+      # Init musicassessr
+      musicassessr_init(
+        app_name = opt$app_name,
+        experiment_id = opt$experiment_id,
+        experiment_condition_id = opt$experiment_condition_id,
+        user_id = opt$user_id,
+        default_range = opt$default_range,
+        username = opt$username,
+        asynchronous_api_mode =  opt$asynchronous_api_mode,
+        instrument_id = opt$instrument_id,
+        inst = opt$instrument,
+        get_user_info = opt$get_user_info,
+        redirect_on_failure_url = opt$redirect_on_failure_url,
+        async_success_msg = opt$async_success_msg,
+        use_presigned_url = opt$use_presigned_url),
+
+      # Timeline before setup pages
+      elts_before_setup_pages(),
+
+      # Setup pages
+      if (opt$setup_pages) setup_enclosure
+
+      # Timeline after setup pages
+    ), dict = dict)
+
+  post_elts <-
+    psychTestR::new_timeline(
+      psychTestR::join(
+        # Save results
+        psychTestR::elt_save_results_to_disk(complete = TRUE),
+
+        # Add final session information to DB (if asynchronous_api_mode)
+        musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
+
+        # Final page
+        final_page
+
+      ), dict = dict)
+
   tl <- psychTestR::join(
 
-      psychTestR::new_timeline(
-        psychTestR::join(
-
-          # Welcome page: required because you need a page before musicassessr_init to instantiate a p_id.
-          welcome_page,
-
-          # Get participant ID
-          if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
-
-          # Init musicassessr
-          musicassessr_init(
-            app_name = opt$app_name,
-            experiment_id = opt$experiment_id,
-            experiment_condition_id = opt$experiment_condition_id,
-            user_id = opt$user_id,
-            default_range = opt$default_range,
-            username = opt$username,
-            asynchronous_api_mode =  opt$asynchronous_api_mode,
-            instrument_id = opt$instrument_id,
-            inst = opt$instrument,
-            get_user_info = opt$get_user_info,
-            redirect_on_failure_url = opt$redirect_on_failure_url,
-            async_success_msg = opt$async_success_msg,
-            use_presigned_url = opt$use_presigned_url
-          ),
-
-          # Timeline before setup pages
-          elts_before_setup_pages(),
-
-          # Setup pages
-          if (opt$setup_pages) setup_enclosure
-
-          # Timeline after setup pages
-        ), dict = dict),
+      pre_elts,
 
         elts(),
 
-        psychTestR::new_timeline(
-          psychTestR::join(
-          # Save results
-          psychTestR::elt_save_results_to_disk(complete = TRUE),
-
-          # Add final session information to DB (if asynchronous_api_mode)
-          musicassessrdb::elt_add_final_session_info_to_db(opt$asynchronous_api_mode),
-
-          # Final page
-          final_page
-
-          ), dict = dict)
+      post_elts
 
       )
 

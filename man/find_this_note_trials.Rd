@@ -18,11 +18,12 @@ find_this_note_trials(
   asynchronous_api_mode = FALSE,
   interleaved_with_piat = FALSE,
   long_tone_length = 5,
-  on_complete = NULL
+  on_complete = NULL,
+  take_piat_training = TRUE
 )
 }
 \arguments{
-\item{on_complete}{}
+\item{take_piat_training}{}
 }
 \description{
 Present "Find This Note" trials

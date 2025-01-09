@@ -1012,10 +1012,10 @@ function process_file_locally(blob) {
 
 	if(this.musicassessr_state === "production") {
 	  console.log("Upload local to musicassessr AWS server...")
-	  xhr.open("POST","/api/store_audio/",true); // production
+	  xhr.open("POST","/api/store_audio/", true); // production
   } else {
     console.log('Upload local to user machine e.g...');
-    xhr.open("POST","http://localhost:3000/upload-audio",true); // local
+    xhr.open("POST","http://localhost:3000/upload-audio", true); // local
   }
 
 	xhr.send(fd);

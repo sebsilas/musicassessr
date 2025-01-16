@@ -1099,6 +1099,16 @@ get_answer_syllable_classification <- function(input,
 }
 
 
+#' Get answer async midi vs audio
+#'
+#' @param input
+#' @param state
+#' @param ...
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 get_answer_async_midi_vs_audio <- function(input, state, ...) {
 
   res_type <- psychTestR::get_global("response_type", state)

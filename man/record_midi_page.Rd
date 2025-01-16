@@ -23,7 +23,7 @@ record_midi_page(
   happy_with_response = FALSE,
   attempts_left = NULL,
   max_goes_forced = FALSE,
-  autoInstantiate = FALSE,
+  autoInstantiate = TRUE,
   midi_device = "",
   max_goes = 1,
   show_progress = FALSE,

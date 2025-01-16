@@ -19,7 +19,7 @@ record_midi_or_audio_ui <- function(body = "",
                                     happy_with_response =  FALSE,
                                     attempts_left = 1L,
                                     max_goes_forced = FALSE,
-                                    autoInstantiate = FALSE,
+                                    autoInstantiate = TRUE,
                                     midi_device = " ",
                                     max_goes = 1L,
                                     show_progress = FALSE,
@@ -131,6 +131,7 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
 
   # Leave the is.nulls() above before the stopifnot, so that e.g., onset is created, if it doesn't already exist
 
+  print(setdiff(db_var_names, names(db_vars)))
   stopifnot(length(setdiff(db_var_names, names(db_vars))) == 0)
 
   additional <- if(is.scalar.character(db_vars$additional)) db_vars$additional else jsonlite::toJSON(db_vars$additional, auto_unbox = TRUE)
@@ -175,6 +176,7 @@ db_var_names <- c("stimuli",
 create_db_vars_template <- function(init_with_time_started = TRUE) {
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
   empty_obj$trial_time_started <- Sys.time()
+  empty_obj$trial_paradigm <- "call_and_response"
   return(empty_obj)
 }
 

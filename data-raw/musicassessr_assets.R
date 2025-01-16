@@ -65,8 +65,6 @@ key_rankings$key_tonality[key_rankings$key_tonality == "min"] <- "minor"
 
 musicassessr_dict_df <- readxl::read_excel("data-raw/musicassessr_dict.xlsx")
 
-#musicassessr_dict_df <- rbind(musicassessr_dict_df, insts_table2)
-
 nrow(musicassessr_dict_df)
 
 anyNA(musicassessr_dict_df)
@@ -137,11 +135,21 @@ usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
 
 # Not internal
 
+
+musicassessr_dict_plus_piat <- piat::piat_dict %>%
+  as.data.frame() %>%
+  mutate(it = NA) %>%
+  select(names(musicassessr_dict_df)) %>%
+  rbind(musicassessr_dict_df)
+
+musicassessr_dict_plus_piat <- psychTestR::i18n_dict$new(musicassessr_dict_plus_piat)
+
 use_data(musicassessr_dict,
          key_rankings, instrument_list, keys_table,
          wjd_meta, insts, insts_table, insts_table2, musicassessr_dict_df,
          lm2.2, lm3.2, melody_pca2,
          melody_pca2_data, long_note_agg,
+         musicassessr_dict_plus_piat,
          overwrite = TRUE)
 
 document()
@@ -149,4 +157,5 @@ document()
 credentials::set_github_pat()
 
 install()
+
 

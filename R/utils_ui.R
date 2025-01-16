@@ -159,6 +159,7 @@ conditional_proceed_if_yes <- function(question_page, logic_if_yes) {
       if(lang != "en") {
         answer <- translate_from_dict(answer, lang)
       }
+
       answer == "Yes"
     }, logic_if_yes )
   )

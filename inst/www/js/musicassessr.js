@@ -44,6 +44,11 @@ let p_id = "";
 let page_type = "";
 let musicxml_file = "";
 
+// MIDI
+let interactive_midi = false;
+let midi_device;
+let play_midi_aloud = true;
+
 // Grab the language from psychTestR via the URL parameter
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -553,7 +558,8 @@ function startRecording(type = "record_audio_page", stop_recording_automatically
     if (type === "record_audio_page") {
       startAudioRecording();
     } else if(type === "record_midi_page") {
-      instantiateMIDI(midi_device);
+      let mute_midi_playback = !play_midi_aloud;
+      instantiateMIDI(midi_device, interactive_midi, mute_midi_playback);
     } else {
       console.log('type not recognised');
     }

@@ -11,7 +11,7 @@
 pbet_learn_test_paradigm_standalone <- function(no_trials) {
 
   make_musicassessr_test(
-    welcome_page = psychTestR::one_button_page("Trialing the new learn-test audio-visual paradigm."),
+    welcome_page = psychTestR::one_button_page("Trialing the new learn-test audio-visual paradigm.", button_text = psychTestR::i18n("Next")),
     elts = function() {
       pbet_learn_test_paradigm(no_trials)
     },
@@ -94,19 +94,20 @@ pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples) {
 
     psychTestR::one_button_page(shiny::tags$div(shiny::tags$p(psychTestR::i18n("pbet_learn_test_1"), " ", shiny::tags$strong(psychTestR::i18n("learning_phase")), " ", psychTestR::i18n("pbet_learn_test_2"), " ", shiny::tags$strong(psychTestR::i18n("test_phase")), "."),
                                                 shiny::tags$p(psychTestR::i18n("pbet_learn_test_3"), " ", shiny::tags$em(psychTestR::i18n("learning_phase")), ", ", psychTestR::i18n("pbet_learn_test_4"), "."),
-                                                shiny::tags$p(psychTestR::i18n("pbet_learn_test_5")))),
-    psychTestR::one_button_page(shiny::tags$div(shiny::tags$p(psychTestR::i18n("pbet_learn_test_6")), shiny::tags$p(psychTestR::i18n("pbet_learn_test_7")))),
-    psychTestR::one_button_page(shiny::tags$div(shiny::tags$p(psychTestR::i18n("pbet_learn_test_8")), shiny::tags$p(psychTestR::i18n("pbet_learn_test_9")))),
-    psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_10"), " ", shiny::tags$strong(psychTestR::i18n("learning_phase")), " ", psychTestR::i18n("pbet_learn_test_11"), ".")),
-    psychTestR::one_button_page(psychTestR::i18n("pbet_learn_test_12")),
+                                                shiny::tags$p(psychTestR::i18n("pbet_learn_test_5"))), button_text = psychTestR::i18n("Next")),
+    psychTestR::one_button_page(shiny::tags$div(shiny::tags$p(psychTestR::i18n("pbet_learn_test_6")), shiny::tags$p(psychTestR::i18n("pbet_learn_test_7"))), button_text = psychTestR::i18n("Next")),
+    psychTestR::one_button_page(shiny::tags$div(shiny::tags$p(psychTestR::i18n("pbet_learn_test_8")), shiny::tags$p(psychTestR::i18n("pbet_learn_test_9"))), button_text = psychTestR::i18n("Next")),
+    psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_10"), " ", shiny::tags$strong(psychTestR::i18n("learning_phase")), " ", psychTestR::i18n("pbet_learn_test_11"), "."), button_text = psychTestR::i18n("Next")),
+    psychTestR::one_button_page(psychTestR::i18n("pbet_learn_test_12"), button_text = psychTestR::i18n("Next")),
     learn_phase(examples, trial_paradigm, bpm, page_type),
-    psychTestR::one_button_page(psychTestR::i18n("ready_for_real_thing")),
+    psychTestR::one_button_page(psychTestR::i18n("ready_for_real_thing"), button_text = psychTestR::i18n("Next")),
     learn_phase(user_sample, trial_paradigm, bpm, page_type),
-    psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_13"), " ", shiny::tags$strong(psychTestR::i18n("test_phase")), " ", psychTestR::i18n("pbet_learn_test_14"))),
+    psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_13"), " ", shiny::tags$strong(psychTestR::i18n("test_phase")), " ", psychTestR::i18n("pbet_learn_test_14")), button_text = psychTestR::i18n("Next")),
     test_phase(user_sample, trial_paradigm, bpm, page_type),
     psychTestR::text_input_page("extra_comments_sight_vs_ear",
                                 one_line = FALSE,
-                                prompt = psychTestR::i18n("pbet_learn_test_share_thoughts"))
+                                prompt = psychTestR::i18n("pbet_learn_test_share_thoughts"),
+                                button_text = psychTestR::i18n("Next"))
   )
 }
 
@@ -120,19 +121,19 @@ learn_phase <- function(user_sample, trial_paradigm, bpm, page_type) {
     purrr::map(function(trial_no) {
       psychTestR::join(
 
-        psychTestR::one_button_page(psychTestR::i18n("here_first_attempt")),
+        psychTestR::one_button_page(psychTestR::i18n("here_first_attempt"), button_text = psychTestR::i18n("Next")),
         learn_trial(user_sample, trial_no = trial_no, attempt = 1, trial_paradigm, bpm, page_type, phase = "learn"),
         learn_practice_trial(user_sample, trial_no = trial_no, attempt = 1, page_type = page_type, bpm = bpm, phase = "learn"),
 
-        psychTestR::one_button_page(psychTestR::i18n("here_second_attempt")),
+        psychTestR::one_button_page(psychTestR::i18n("here_second_attempt"), button_text = psychTestR::i18n("Next")),
         learn_trial(user_sample, trial_no = trial_no, attempt = 2, trial_paradigm, bpm, page_type, phase = "learn"),
         learn_practice_trial(user_sample, trial_no = trial_no, attempt = 2, page_type = page_type, bpm = bpm, phase = "learn"),
 
-        psychTestR::one_button_page(psychTestR::i18n("here_final_attempt")),
+        psychTestR::one_button_page(psychTestR::i18n("here_final_attempt"), button_text = psychTestR::i18n("Next")),
         learn_trial(user_sample, trial_no = trial_no, attempt = 3, trial_paradigm, bpm, page_type, phase = "learn"),
         learn_practice_trial(user_sample, trial_no = trial_no, attempt = 3, page_type = page_type, bpm = bpm, phase = "learn"),
 
-        if(trial_no != no_trials) psychTestR::one_button_page(psychTestR::i18n("time_for_next_melody"))
+        if(trial_no != no_trials) psychTestR::one_button_page(psychTestR::i18n("time_for_next_melody"), button_text = psychTestR::i18n("Next"))
       )
     })
 }
@@ -163,43 +164,63 @@ pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial
   abs_melody <- itembankr::str_mel_to_vector(trial_dat$abs_melody)
   durations <- itembankr::str_mel_to_vector(trial_dat$durations) * quaver_seconds
 
-  present_stimuli(
-    stimuli = abs_melody,
-    durations = durations,
-    stimuli_type = "midi_notes",
-    display_modality = "auditory",
-    page_type = page_type,
-    page_title = psychTestR::i18n("Play_the_melody_by_ear"),
-    page_text = shiny::tags$div(
-      shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
-      if(phase != "test") shiny::tags$h4(psychTestR::i18n("Attempt"), " ", attempt, "/3"),
-      set_melodic_stimuli(abs_melody, durations)
-    ),
-    trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
-    get_answer = get_answer_async_midi_vs_audio,
-    give_first_melody_note = TRUE,
-    attempt = attempt,
-    page_label = page_label
-  ) %>% init_trial_time_started(attempt,
-                                item_id = trial_dat$item_id,
-                                page_label = page_label,
-                                display_modality = "auditory", # PBET always auditory
-                                phase = phase)
+  db_vars <- create_db_vars_template()
+  db_vars$attempt <- attempt
+  db_vars$item_id <- trial_dat$item_id
+  db_vars$page_label <- page_label
+  db_vars$display_modality <- "auditory" # PBET always auditory
+  db_vars$phase <- phase
+  db_vars$feedback <- FALSE
+  trial_time_started <- Sys.time()
+  db_vars$trial_time_started <- trial_time_started
+  db_vars$test_id <- 2L
 
+  psychTestR::reactive_page(function(state, ...) {
+
+
+    session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
+    db_vars$session_id <- session_id
+
+    present_stimuli(
+      stimuli = abs_melody,
+      durations = durations,
+      stimuli_type = "midi_notes",
+      display_modality = "auditory",
+      page_type = page_type,
+      page_title = psychTestR::i18n("Play_the_melody_by_ear"),
+      page_text = shiny::tags$div(
+        shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
+        if(phase != "test") shiny::tags$h4(psychTestR::i18n("Attempt"), " ", attempt, "/3"),
+        set_melodic_stimuli(abs_melody, durations)
+      ),
+      trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
+      get_answer = get_answer_async_midi_vs_audio,
+      give_first_melody_note = TRUE,
+      attempt = attempt,
+      page_label = page_label,
+      db_vars = db_vars
+      )
+   }) %>% init_trial_time_started(trial_time_started = trial_time_started,
+                                  attempt, # For MIDI
+                                  item_id = trial_dat$item_id,
+                                  page_label = page_label,
+                                  display_modality = "auditory", # PBET always auditory
+                                  phase = phase)
 
 
 }
 
-init_trial_time_started <- function(page, attempt = 1L, additional = NULL, item_id = NULL, page_label = NULL, display_modality = "auditory", phase = "test") {
+init_trial_time_started <- function(page, attempt = 1L, additional = NULL, item_id = NULL, page_label = NULL, display_modality = "auditory", phase = "test", trial_time_started = Sys.time()) {
 
   stopifnot(psychTestR::is.test_element(page))
 
   psychTestR::join(
+
     # With a code_block, rather than reactive_page, we don't get two executions of the function,
     # which causes issues, such as the trial_time_started being the same as trial_time_completed
     psychTestR::code_block(function(state, ...) {
 
-      psychTestR::set_global("trial_time_started", Sys.time(), state)
+      psychTestR::set_global("trial_time_started", trial_time_started, state)
       psychTestR::set_global('melody_block_paradigm', "call_and_response", state)
       psychTestR::set_global('number_attempts', attempt, state)
       psychTestR::set_global('additional', additional, state)
@@ -237,31 +258,51 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, pag
   page_label <- paste0("play_by_ear_learn_trial_", trial_no, "_attempt_", attempt)
 
   item_id <- trial_dat$item_id
+  # Setup DB vars
+  db_vars <- create_db_vars_template()
+  db_vars$attempt <- attempt
+  db_vars$item_id <- item_id
+  db_vars$page_label <- page_label
+  db_vars$display_modality <- trial_dat$display_modality
+  db_vars$phase <- phase
+  trial_time_started <- Sys.time()
+  db_vars$trial_time_started <- trial_time_started
+  db_vars$feedback <- FALSE
+  db_vars$additional <- additional
+  db_vars$test_id <- 2L
+
 
   if(trial_dat$display_modality == "visual") {
 
     page_label <- paste0("visual_", page_label)
 
-    trial <- present_stimuli(
-      stimuli = musicxml_file,
-      stimuli_type = "musicxml_file",
-      display_modality = "visual",
-      page_type = page_type,
-      sheet_music_start_hidden = TRUE,
-      show_sheet_music_after_record = TRUE,
-      page_title = psychTestR::i18n("Play_the_melody_from_sight"),
-      page_text = shiny::tags$div(
-        shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
-        shiny::tags$h4(psychTestR::i18n("Attempt"), " ", attempt, "/3"),
-        set_melodic_stimuli(abs_melody, durations, musicxml_file),
-        shiny::tags$p(psychTestR::i18n("use_metronome_correct_bpm"), " "),
-        js_metronome(bpm)
-      ),
-      page_label = page_label,
-      get_answer = get_answer_async_midi_vs_audio,
-      show_record_button = TRUE,
-      attempt = attempt
-    ) %>% init_trial_time_started(attempt, additional, item_id = item_id, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase)
+    trial <- psychTestR::reactive_page(function(state, ...) {
+
+        session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
+        db_vars$session_id <- session_id
+
+        present_stimuli(
+        stimuli = musicxml_file,
+        stimuli_type = "musicxml_file",
+        display_modality = "visual",
+        page_type = page_type,
+        sheet_music_start_hidden = TRUE,
+        show_sheet_music_after_record = TRUE,
+        page_title = psychTestR::i18n("Play_the_melody_from_sight"),
+        page_text = shiny::tags$div(
+          shiny::tags$h3(paste0(psychTestR::i18n("Section_Progress"), ': ', trial_no, "/", no_trials)),
+          shiny::tags$h4(psychTestR::i18n("Attempt"), " ", attempt, "/3"),
+          set_melodic_stimuli(abs_melody, durations, musicxml_file),
+          shiny::tags$p(psychTestR::i18n("use_metronome_correct_bpm"), " "),
+          js_metronome(bpm)
+        ),
+        page_label = page_label,
+        get_answer = get_answer_async_midi_vs_audio,
+        show_record_button = TRUE,
+        attempt = attempt,
+        db_vars = db_vars
+      )
+    }) %>% init_trial_time_started(attempt, additional, item_id = item_id, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase, trial_time_started = trial_time_started)
   } else {
     page_label <- paste0("auditory_", page_label)
     trial <- pbet_trial(trial_dat, trial_paradigm, attempt, bpm, page_type, trial_no = trial_no, no_trials = no_trials, page_label, phase = phase)
@@ -277,31 +318,61 @@ learn_practice_trial <- function(user_sample, trial_no, attempt, page_type, bpm,
   quaver_seconds <- 60/bpm/2
 
   page_label <- paste0("play_by_ear_learn_practice_from_memory_trial_", trial_no, "_attempt_", attempt)
+  item_id <- trial_dat$item_id
+  additional <- if(length(trial_dat$additional) == 0) NA else trial_dat$additional
 
-  trial <- present_stimuli(
-    stimuli = itembankr::str_mel_to_vector(trial_dat$abs_melody),
-    durations = itembankr::str_mel_to_vector(trial_dat$durations) * quaver_seconds,
-    stimuli_type = "midi_notes",
-    display_modality = "auditory",
-    page_type = page_type,
-    page_label = page_label,
-    page_title = psychTestR::i18n("Play_from_memory"),
-    page_text = shiny::tags$div(
-      shiny::tags$p(psychTestR::i18n("play_from_memory_message")),
-      shiny::tags$script("document.getElementById('playButton').style.display = 'none';")
-    ),
-    show_record_button = TRUE,
-    trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
-    get_answer = get_answer_async_midi_vs_audio,
-    attempt = attempt
-  ) %>% init_trial_time_started(attempt, additional = trial_dat$additional, item_id = trial_dat$item_id, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase)
+  # Setup DB vars
+  db_vars <- create_db_vars_template()
+  db_vars$attempt <- attempt
+  db_vars$item_id <- item_id
+  db_vars$page_label <- page_label
+  db_vars$display_modality <- trial_dat$display_modality
+  db_vars$phase <- phase
+  trial_time_started <- Sys.time()
+  db_vars$trial_time_started <- trial_time_started
+  db_vars$feedback <- FALSE
+  db_vars$additional <- additional
+  db_vars$test_id <- 2L
+
+  trial <-
+    psychTestR::reactive_page(function(state, ...) {
+
+      session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
+      db_vars$session_id <- session_id
+
+      present_stimuli(
+        stimuli = itembankr::str_mel_to_vector(trial_dat$abs_melody),
+        durations = itembankr::str_mel_to_vector(trial_dat$durations) * quaver_seconds,
+        stimuli_type = "midi_notes",
+        display_modality = "auditory",
+        page_type = page_type,
+        page_label = page_label,
+        page_title = psychTestR::i18n("Play_from_memory"),
+        page_text = shiny::tags$div(
+          shiny::tags$p(psychTestR::i18n("play_from_memory_message")),
+          shiny::tags$script("document.getElementById('playButton').style.display = 'none';")
+        ),
+        show_record_button = TRUE,
+        trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
+        get_answer = get_answer_async_midi_vs_audio,
+        attempt = attempt,
+        db_vars = db_vars
+      )
+
+    })
+
+
+
+    trial <- trial %>%
+      init_trial_time_started(attempt,
+                              additional = additional,
+                              item_id = item_id,
+                              page_label = page_label,
+                              display_modality = trial_dat$display_modality,
+                              phase = phase,
+                              trial_time_started = trial_time_started)
 
   return(trial)
 }
-
-
-
-#     additional <- extract_no_sharps_or_flats_from_musicxml_file(musicxml_file)
-
 
 

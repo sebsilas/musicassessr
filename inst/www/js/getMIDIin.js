@@ -1,8 +1,6 @@
 console.log('getMIDIin.js loaded');
 
 const CHROMATIC = [ 'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B' ];
-let interactive_midi = false;
-let midi_device;
 
 
 function generateDeviceDropdown() {
@@ -68,6 +66,12 @@ function generateDeviceDropdown() {
 function instantiateMIDI(midi_device,
                          interactive = false,
                          mute_midi_playback = false) {
+
+  console.log('instantiateMIDI called');
+  console.log('mute_midi_playback', mute_midi_playback);
+
+  // Set the global var
+  play_midi_aloud = !mute_midi_playback;
 
   // reinstantiate (first disable)
   WebMidi.disable();
@@ -145,11 +149,11 @@ function instantiateMIDI(midi_device,
 
               freq_tone = Tone.Frequency(midi_note_on, "midi").toNote();
 
+              console.log('play_midi_aloud', play_midi_aloud);
 
-              if(!mute_midi_playback) {
+              if(play_midi_aloud) {
                 triggerNote("piano", freq_tone, 0.25);
               }
-
 
               const responseTime = new Date().getTime();
               const timeElapsed = Math.abs(startTime - responseTime);

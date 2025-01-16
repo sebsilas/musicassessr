@@ -40,6 +40,7 @@
 #' @param learn_test_paradigm
 #' @param sample_item_bank_via_api
 #' @param pass_items_through_url_parameter
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -82,7 +83,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         play_first_note_button_text = psychTestR::i18n("play_first_note"),
                                         learn_test_paradigm = FALSE,
                                         sample_item_bank_via_api = FALSE,
-                                        pass_items_through_url_parameter = FALSE) {
+                                        pass_items_through_url_parameter = FALSE,
+                                        mute_midi_playback = FALSE) {
 
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
@@ -126,7 +128,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.character(play_first_note_button_text),
             is.scalar.logical(learn_test_paradigm),
             is.scalar.logical(sample_item_bank_via_api),
-            is.scalar.logical(pass_items_through_url_parameter)
+            is.scalar.logical(pass_items_through_url_parameter),
+            is.scalar.logical(mute_midi_playback)
   )
 
   if(is.null(presampled_items) && is.infinite(num_items)) {
@@ -204,7 +207,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                    learn_test_paradigm,
                                    sample_item_bank_via_api,
                                    pass_items_through_url_parameter = pass_items_through_url_parameter,
-                                   feedback = feedback),
+                                   feedback = feedback,
+                                   mute_midi_playback = mute_midi_playback),
 
         psychTestR::conditional(function(state, ...) {
 
@@ -289,7 +293,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  sample_item_bank_via_api,
                                  if(sample_item_bank_via_api) start_from_trial_no else NULL,
                                  pass_items_through_url_parameter = pass_items_through_url_parameter,
-                                 feedback = feedback)
+                                 feedback = feedback,
+                                 mute_midi_playback = mute_midi_playback)
 
     })
 
@@ -339,7 +344,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  learn_test_paradigm,
                                  sample_item_bank_via_api,
                                  pass_items_through_url_parameter = pass_items_through_url_parameter,
-                                 feedback = feedback)
+                                 feedback = feedback,
+                                 mute_midi_playback = mute_midi_playback)
 
     })
 
@@ -400,7 +406,8 @@ construct_play_melody_page <- function(melody = NULL,
                                        sample_item_bank_via_api = FALSE,
                                        start_from_trial_no = NULL,
                                        pass_items_through_url_parameter = FALSE,
-                                       feedback = FALSE) {
+                                       feedback = FALSE,
+                                       mute_midi_playback = FALSE) {
 
   if(!singing_trials) {
     page_text <- shiny::tags$div(
@@ -452,7 +459,8 @@ construct_play_melody_page <- function(melody = NULL,
                            sample_item_bank_via_api = sample_item_bank_via_api,
                            start_from_trial_no = start_from_trial_no,
                            pass_items_through_url_parameter = pass_items_through_url_parameter,
-                           feedback = feedback)
+                           feedback = feedback,
+                           mute_midi_playback = mute_midi_playback)
   # In the case of putting a sing melody page first, we do the sampling on the sing page (in code below, but which chronogically comes first); then we skip sampling on the "real" (instrument) version, and just use the sampled melody from the sing page
 
   if (melody_block_paradigm == "sing_melody_first") {
@@ -499,7 +507,8 @@ construct_play_melody_page <- function(melody = NULL,
                                   sample_item_bank_via_api = sample_item_bank_via_api,
                                   start_from_trial_no = start_from_trial_no,
                                   pass_items_through_url_parameter = pass_items_through_url_parameter,
-                                  feedback = feedback)
+                                  feedback = feedback,
+                                  mute_midi_playback = mute_midi_playback)
 
     sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("sing")), " ", psychTestR::i18n("you_the_melody"))),
                                              sing_page,
@@ -567,6 +576,7 @@ construct_play_melody_page <- function(melody = NULL,
 #' @param sample_item_bank_via_api
 #' @param pass_items_through_url_parameter
 #' @param feedback
+#' @param mute_midi_playback
 #'
 #'
 #' @return
@@ -622,7 +632,8 @@ play_melody_loop <- function(item_bank = NULL,
                              sample_item_bank_via_api = FALSE,
                              start_from_trial_no = NULL,
                              pass_items_through_url_parameter = FALSE,
-                             feedback = FALSE) {
+                             feedback = FALSE,
+                             mute_midi_playback = FALSE) {
 
   save_answer <- ! example
 
@@ -707,7 +718,8 @@ play_melody_loop <- function(item_bank = NULL,
                      reactive_melody_no = reactive_melody_no,
                      pass_items_through_url_parameter = pass_items_through_url_parameter,
                      feedback = feedback,
-                     asynchronous_api_mode = asynchronous_api_mode),
+                     asynchronous_api_mode = asynchronous_api_mode,
+                     mute_midi_playback = mute_midi_playback),
 
       if(is.function(feedback)) feedback(),
 
@@ -763,7 +775,8 @@ present_melody <- function(stimuli,
                            reactive_melody_no = FALSE,
                            pass_items_through_url_parameter = FALSE,
                            feedback = FALSE,
-                           asynchronous_api_mode = FALSE, ...) {
+                           asynchronous_api_mode = FALSE,
+                           mute_midi_playback = FALSE, ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
@@ -940,7 +953,8 @@ present_melody <- function(stimuli,
                     lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
                     feedback = feedback,
                     asynchronous_api_mode = asynchronous_api_mode,
-                    key = key)
+                    key = key,
+                    mute_midi_playback = mute_midi_playback)
 
   })
 }

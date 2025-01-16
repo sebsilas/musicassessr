@@ -60,7 +60,7 @@ record_midi_page <- function(body = "",
                              happy_with_response =  FALSE,
                              attempts_left = NULL,
                              max_goes_forced = FALSE,
-                             autoInstantiate = FALSE,
+                             autoInstantiate = TRUE,
                              midi_device = "",
                              max_goes = 1,
                              show_progress = FALSE,
@@ -155,6 +155,7 @@ select_midi_device_page <- function(title = "Select MIDI device",
 }
 
 autoInstantiateMidi <- function(instantiate = TRUE, midi_device, interactive, mute_midi_playback = FALSE) {
+
   if (instantiate) {
     scr <- shiny::tags$script(paste0('instantiateMIDI(\"',midi_device,'\", ', TRUE_to_js_true(interactive), ', ', TRUE_to_js_true(mute_midi_playback), ')'))
   } else {

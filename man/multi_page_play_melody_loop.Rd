@@ -44,11 +44,12 @@ multi_page_play_melody_loop(
   play_first_note_button_text = psychTestR::i18n("play_first_note"),
   learn_test_paradigm = FALSE,
   sample_item_bank_via_api = FALSE,
-  pass_items_through_url_parameter = FALSE
+  pass_items_through_url_parameter = FALSE,
+  mute_midi_playback = FALSE
 )
 }
 \arguments{
-\item{pass_items_through_url_parameter}{}
+\item{mute_midi_playback}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

@@ -50,7 +50,7 @@ make_musicassessr_test <- function(title,
       welcome_page,
 
       # Get participant ID
-      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt) ),
+      if(opt$get_p_id) psychTestR::get_p_id(prompt = get_p_id_content(opt$get_pid_prompt), button_text = psychTestR::i18n("Next")),
 
       # Init musicassessr
       musicassessr_init(

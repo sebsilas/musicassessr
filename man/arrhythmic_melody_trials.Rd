@@ -48,11 +48,12 @@ arrhythmic_melody_trials(
   sample_item_bank_via_api = FALSE,
   start_from_sampled_trial_no = 1L,
   pass_items_through_url_parameter = FALSE,
-  asynchronous_api_mode = FALSE
+  asynchronous_api_mode = FALSE,
+  mute_midi_playback = FALSE
 )
 }
 \arguments{
-\item{asynchronous_api_mode}{}
+\item{mute_midi_playback}{}
 }
 \description{
 Arrhythmic melody trials block

@@ -376,6 +376,7 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param start_from_sampled_trial_no
 #' @param pass_items_through_url_parameter
 #' @param asynchronous_api_mode
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -421,7 +422,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      sample_item_bank_via_api = FALSE,
                                      start_from_sampled_trial_no = 1L,
                                      pass_items_through_url_parameter = FALSE,
-                                     asynchronous_api_mode = FALSE) {
+                                     asynchronous_api_mode = FALSE,
+                                     mute_midi_playback = FALSE) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
 
@@ -466,7 +468,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 sample_item_bank_via_api,
                 start_from_sampled_trial_no,
                 pass_items_through_url_parameter,
-                asynchronous_api_mode)
+                asynchronous_api_mode,
+                mute_midi_playback)
 
 }
 
@@ -516,6 +519,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param start_from_sampled_trial_no
 #' @param pass_items_through_url_parameter
 #' @param asynchronous_api_mode
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -561,10 +565,10 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    sample_item_bank_via_api = FALSE,
                                    start_from_sampled_trial_no = 1L,
                                    pass_items_through_url_parameter = FALSE,
-                                   asynchronous_api_mode = FALSE) {
+                                   asynchronous_api_mode = FALSE,
+                                   mute_midi_playback = FALSE) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
-
 
   melody_trials(var_name,
                 module_name,
@@ -607,7 +611,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                 sample_item_bank_via_api,
                 start_from_sampled_trial_no,
                 pass_items_through_url_parameter,
-                asynchronous_api_mode)
+                asynchronous_api_mode,
+                mute_midi_playback)
 
 }
 
@@ -659,6 +664,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param start_from_sampled_trial_no
 #' @param pass_items_through_url_parameter
 #' @param asynchronous_api_mode
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -705,7 +711,8 @@ melody_trials <- function(var_name,
                           sample_item_bank_via_api = FALSE,
                           start_from_sampled_trial_no = 1L,
                           pass_items_through_url_parameter = FALSE,
-                          asynchronous_api_mode = FALSE) {
+                          asynchronous_api_mode = FALSE,
+                          mute_midi_playback = FALSE) {
 
   phase <- match.arg(phase)
 
@@ -751,7 +758,8 @@ melody_trials <- function(var_name,
     is.scalar.logical(sample_item_bank_via_api),
     is.scalar.numeric(start_from_sampled_trial_no),
     is.scalar.logical(pass_items_through_url_parameter),
-    is.scalar.logical(asynchronous_api_mode)
+    is.scalar.logical(asynchronous_api_mode),
+    is.scalar.logical(mute_midi_playback)
   )
 
   sampler_fun_args <- c("item_bank", "num_items", "id", "phase")
@@ -838,7 +846,8 @@ melody_trials <- function(var_name,
       learn_test_paradigm = learn_test_paradigm,
       sample_item_bank_via_api = sample_item_bank_via_api,
       start_from_trial_no = if(sample_item_bank_via_api) start_from_sampled_trial_no + num_examples_flat else 1L,
-      pass_items_through_url_parameter = pass_items_through_url_parameter)
+      pass_items_through_url_parameter = pass_items_through_url_parameter,
+      mute_midi_playback = mute_midi_playback)
 
     if(review) {
 
@@ -923,7 +932,9 @@ melody_trials <- function(var_name,
               learn_test_paradigm = learn_test_paradigm,
               sample_item_bank_via_api = sample_item_bank_via_api,
               start_from_trial_no = start_from_sampled_trial_no,
-              pass_items_through_url_parameter = pass_items_through_url_parameter) },
+              pass_items_through_url_parameter = pass_items_through_url_parameter,
+              mute_midi_playback = mute_midi_playback
+              ) },
 
           psychTestR::one_button_page(shiny::tags$div(
             if(melody_block_paradigm == "sing_melody_first") shiny::tags$h2(psychTestR::i18n("Sing"), " ", shiny::tags$em(psychTestR::i18n("then")), " ", psychTestR::i18n("play_the_melody")) else shiny::tags$h2(page_title),
@@ -950,6 +961,7 @@ melody_trials <- function(var_name,
     tl <- unlist(tl)
 
     # Wrap in module
+    module_name <- paste0(melody_block_paradigm, "__", module_name)
     psychTestR::module(module_name, tl)
 
   }
@@ -1264,7 +1276,7 @@ find_this_note_trials <- function(num_items,
         take_training = take_piat_training, # Should be TRUE for test!
         num_items = num_items,
         label = "PIAT_interleaved_with_find_this_note_trials",
-        # dict = # Probably need to update this,
+        dict = musicassessr::musicassessr_dict_plus_piat,
         post_training_tl = psychTestR::join(
           psychTestR::one_button_page(shiny::tags$div(
             psychTestR::i18n("find_this_note_instructions_piat_interleaved"),
@@ -1297,37 +1309,43 @@ find_this_note_trials <- function(num_items,
     # Sample melodies based on range
     psychTestR::module("find_this_note_trials",
                        psychTestR::join(
-                         # Set item bank ID in code block
-                         set_test("PBET", 2L),
-                         set_item_bank_id(NA),
-                         # Instructions
-                         #if(!interleaved_with_piat) find_this_note_instructions,
-                         # Examples
-                         if(is.numeric(num_examples) & num_examples > 0L) {
-                           psychTestR::join(psychTestR::one_button_page(
-                             shiny::div(
-                             shiny::tags$h2(page_title),
-                             shiny::tags$p(paste0( psychTestR::i18n("First_try"), " ", num_examples, " ", psychTestR::i18n("example_trials"), "."))
-                             ), button_text = psychTestR::i18n("Next")
-                             ),
-                             sample_from_user_range(num_examples),
-                             multi_play_long_tone_record_audio_pages(no_items = num_examples,
-                                                                     page_type = page_type,
-                                                                     page_text = page_text,
-                                                                     page_title = page_title,
-                                                                     example = TRUE,
-                                                                     feedback = feedback,
-                                                                     get_answer = get_answer,
-                                                                     trial_paradigm = trial_paradigm,
-                                                                     call_and_response_end = call_and_response_end,
-                                                                     singing_trial = FALSE),
-                             psychTestR::one_button_page(shiny::div(
+
+                         psychTestR::new_timeline(
+                           psychTestR::join(
+
+                             # Set item bank ID in code block
+                             set_test("PBET", 2L),
+                             set_item_bank_id(NA),
+
+                           # Instructions
+                           #if(!interleaved_with_piat) find_this_note_instructions,
+                           # Examples
+                           if(is.numeric(num_examples) & num_examples > 0L) {
+                             psychTestR::join(psychTestR::one_button_page(
+                               shiny::div(
                                shiny::tags$h2(page_title),
-                               shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))),
-                             button_text = psychTestR::i18n("Next"))
-                           )},
-                         # Sample
-                         sample_from_user_range(num_items),
+                               shiny::tags$p(paste0( psychTestR::i18n("First_try"), " ", num_examples, " ", psychTestR::i18n("example_trials"), "."))
+                               ), button_text = psychTestR::i18n("Next")
+                               ),
+                               sample_from_user_range(num_examples),
+                               multi_play_long_tone_record_audio_pages(no_items = num_examples,
+                                                                       page_type = page_type,
+                                                                       page_text = page_text,
+                                                                       page_title = page_title,
+                                                                       example = TRUE,
+                                                                       feedback = feedback,
+                                                                       get_answer = get_answer,
+                                                                       trial_paradigm = trial_paradigm,
+                                                                       call_and_response_end = call_and_response_end,
+                                                                       singing_trial = FALSE),
+                               psychTestR::one_button_page(shiny::div(
+                                 shiny::tags$h2(page_title),
+                                 shiny::tags$p(psychTestR::i18n("ready_for_real_thing"))),
+                               button_text = psychTestR::i18n("Next"))
+                             )},
+                           # Sample
+                           sample_from_user_range(num_items)
+                           ), dict = musicassessr::musicassessr_dict),
 
                          main_trials,
 

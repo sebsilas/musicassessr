@@ -19,10 +19,16 @@ translate_from_dict <- function(non_english_translation, language) {
 
   lang_sym <- rlang::sym(language)
 
-  musicassessr::musicassessr_dict_df %>%
+  translation <- musicassessr::musicassessr_dict_df %>%
     dplyr::filter(!! lang_sym == !! non_english_translation) %>%
     dplyr::pull(en) %>%
     as.character()
+
+  if(length(translation) > 1L) {
+    translation <- translation[1]
+  }
+
+  return(translation)
 
 }
 

@@ -30,6 +30,15 @@ pbet_learn_test_paradigm_standalone <- function(no_trials) {
   )
 }
 
+#' PBET learn test paradigm
+#'
+#' @param no_trials
+#' @param bpm
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 pbet_learn_test_paradigm <- function(no_trials = 4L,
                                      bpm = 100) {
 

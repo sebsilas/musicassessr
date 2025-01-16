@@ -634,6 +634,18 @@ sample_in_deciles_helper <- function(item_bank, decile_no, no_to_sample, col_nam
 # Generalise to N-tiles
 
 
+#' Sample arrhythmic melodies by N-tiles
+#'
+#' @param item_bank
+#' @param num_items
+#' @param id
+#' @param phase
+#' @param n
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhythmic_melody", phase = "test", n = 4) {
   psychTestR::code_block(function(state, ...) {
 
@@ -648,7 +660,18 @@ arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhy
   })
 }
 
-
+#' Sample rhythmic melodies by N-tiles
+#'
+#' @param item_bank
+#' @param num_items
+#' @param id
+#' @param phase
+#' @param n
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmic_melody", phase = "test", n = 4) {
   psychTestR::code_block(function(state, ...) {
     rhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "SAA_rhythmic_difficulty_percentile", n = n, phase = phase)

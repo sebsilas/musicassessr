@@ -1,5 +1,9 @@
 # musicassessr 2.11.1
 
+- Updated translations
+- `mute_midi_playback` arg working
+- metronome not in 4/4
+
 # musicassessr 2.11.0
 
 # musicassessr 2.10.1

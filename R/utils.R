@@ -617,6 +617,15 @@ log_err_but_return_na <- function(err) {
 }
 
 
+#' A conditional to present either MIDI OR audio logic, depending on test time user decision
+#'
+#' @param midi_logic
+#' @param audio_logic
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 midi_or_audio_reactive <- function(midi_logic, audio_logic) {
   psychTestR::join(
     # Is MIDI?

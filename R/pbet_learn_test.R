@@ -34,13 +34,15 @@ pbet_learn_test_paradigm_standalone <- function(no_trials) {
 #'
 #' @param no_trials
 #' @param bpm
+#' @param mute_midi_playback
 #'
 #' @returns
 #' @export
 #'
 #' @examples
 pbet_learn_test_paradigm <- function(no_trials = 4L,
-                                     bpm = 100) {
+                                     bpm = 100,
+                                     mute_midi_playback = TRUE) {
 
   shiny::addResourcePath('assets', system.file("extdata/Berkowitz_measures_divided", package = "musicassessr", mustWork = TRUE))
 
@@ -69,10 +71,10 @@ pbet_learn_test_paradigm <- function(no_trials = 4L,
                 dplyr::mutate(display_modality = c("visual", "auditory"))
 
 
-  midi_logic <- pbet_learn_test_trial_logic(user_sample, bpm, page_type = "record_midi_page", examples = examples) %>%
+  midi_logic <- pbet_learn_test_trial_logic(user_sample, bpm, page_type = "record_midi_page", examples = examples, mute_midi_playback = mute_midi_playback) %>%
     unlist()
 
-  audio_logic <- pbet_learn_test_trial_logic(user_sample, bpm, page_type = "record_audio_page", examples = examples) %>%
+  audio_logic <- pbet_learn_test_trial_logic(user_sample, bpm, page_type = "record_audio_page", examples = examples, mute_midi_playback = mute_midi_playback) %>%
     unlist()
 
   psychTestR::module("pbet_learn_test_paradigm",
@@ -86,7 +88,7 @@ pbet_learn_test_paradigm <- function(no_trials = 4L,
 
 }
 
-pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples) {
+pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples, mute_midi_playback = TRUE) {
 
   trial_paradigm <- paradigm(page_type = page_type)
 
@@ -108,11 +110,11 @@ pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples) {
     psychTestR::one_button_page(shiny::tags$div(shiny::tags$p(psychTestR::i18n("pbet_learn_test_8")), shiny::tags$p(psychTestR::i18n("pbet_learn_test_9"))), button_text = psychTestR::i18n("Next")),
     psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_10"), " ", shiny::tags$strong(psychTestR::i18n("learning_phase")), " ", psychTestR::i18n("pbet_learn_test_11"), "."), button_text = psychTestR::i18n("Next")),
     psychTestR::one_button_page(psychTestR::i18n("pbet_learn_test_12"), button_text = psychTestR::i18n("Next")),
-    learn_phase(examples, trial_paradigm, bpm, page_type),
+    learn_phase(examples, trial_paradigm, bpm, page_type, mute_midi_playback),
     psychTestR::one_button_page(psychTestR::i18n("ready_for_real_thing"), button_text = psychTestR::i18n("Next")),
-    learn_phase(user_sample, trial_paradigm, bpm, page_type),
+    learn_phase(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback),
     psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_13"), " ", shiny::tags$strong(psychTestR::i18n("test_phase")), " ", psychTestR::i18n("pbet_learn_test_14")), button_text = psychTestR::i18n("Next")),
-    test_phase(user_sample, trial_paradigm, bpm, page_type),
+    test_phase(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback),
     psychTestR::text_input_page("extra_comments_sight_vs_ear",
                                 one_line = FALSE,
                                 prompt = psychTestR::i18n("pbet_learn_test_share_thoughts"),
@@ -124,30 +126,30 @@ pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples) {
 
 
 
-learn_phase <- function(user_sample, trial_paradigm, bpm, page_type) {
+learn_phase <- function(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback = TRUE) {
   no_trials <- nrow(user_sample)
   1:no_trials %>%
     purrr::map(function(trial_no) {
       psychTestR::join(
 
         psychTestR::one_button_page(psychTestR::i18n("here_first_attempt"), button_text = psychTestR::i18n("Next")),
-        learn_trial(user_sample, trial_no = trial_no, attempt = 1, trial_paradigm, bpm, page_type, phase = "learn"),
-        learn_practice_trial(user_sample, trial_no = trial_no, attempt = 1, page_type = page_type, bpm = bpm, phase = "learn"),
+        learn_trial(user_sample, trial_no = trial_no, attempt = 1, trial_paradigm, bpm, page_type, phase = "learn", mute_midi_playback = mute_midi_playback),
+        learn_practice_trial(user_sample, trial_no = trial_no, attempt = 1, page_type = page_type, bpm = bpm, phase = "learn", mute_midi_playback = mute_midi_playback),
 
         psychTestR::one_button_page(psychTestR::i18n("here_second_attempt"), button_text = psychTestR::i18n("Next")),
-        learn_trial(user_sample, trial_no = trial_no, attempt = 2, trial_paradigm, bpm, page_type, phase = "learn"),
-        learn_practice_trial(user_sample, trial_no = trial_no, attempt = 2, page_type = page_type, bpm = bpm, phase = "learn"),
+        learn_trial(user_sample, trial_no = trial_no, attempt = 2, trial_paradigm, bpm, page_type, phase = "learn", mute_midi_playback = mute_midi_playback),
+        learn_practice_trial(user_sample, trial_no = trial_no, attempt = 2, page_type = page_type, bpm = bpm, phase = "learn", mute_midi_playback = mute_midi_playback),
 
         psychTestR::one_button_page(psychTestR::i18n("here_final_attempt"), button_text = psychTestR::i18n("Next")),
-        learn_trial(user_sample, trial_no = trial_no, attempt = 3, trial_paradigm, bpm, page_type, phase = "learn"),
-        learn_practice_trial(user_sample, trial_no = trial_no, attempt = 3, page_type = page_type, bpm = bpm, phase = "learn"),
+        learn_trial(user_sample, trial_no = trial_no, attempt = 3, trial_paradigm, bpm, page_type, phase = "learn", mute_midi_playback = mute_midi_playback),
+        learn_practice_trial(user_sample, trial_no = trial_no, attempt = 3, page_type = page_type, bpm = bpm, phase = "learn", mute_midi_playback = mute_midi_playback),
 
         if(trial_no != no_trials) psychTestR::one_button_page(psychTestR::i18n("time_for_next_melody"), button_text = psychTestR::i18n("Next"))
       )
     })
 }
 
-test_phase <- function(user_sample, trial_paradigm, bpm, page_type) {
+test_phase <- function(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback = TRUE) {
 
   # Randomise
   no_trials <- nrow(user_sample)
@@ -157,6 +159,7 @@ test_phase <- function(user_sample, trial_paradigm, bpm, page_type) {
       trial_dat <- user_sample[trial_no, ]
       page_label <- paste0("play_by_ear_test_trial_", trial_no, "_attempt_1")
       pbet_trial(trial_dat,
+                 mute_midi_playback = mute_midi_playback,
                  trial_paradigm,
                  attempt = 1L,
                  bpm, page_type, trial_no = trial_no,
@@ -164,7 +167,7 @@ test_phase <- function(user_sample, trial_paradigm, bpm, page_type) {
     })
 }
 
-pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial_no, no_trials, page_label = "play_by_ear", phase = "test") {
+pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial_no, no_trials, page_label = "play_by_ear", phase = "test", mute_midi_playback = TRUE) {
 
   logging::loginfo("trial_no: %s", trial_no)
   logging::loginfo("no_trials: %s", no_trials)
@@ -207,7 +210,8 @@ pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial
       give_first_melody_note = TRUE,
       attempt = attempt,
       page_label = page_label,
-      db_vars = db_vars
+      db_vars = db_vars,
+      mute_midi_playback = mute_midi_playback
       )
    }) %>% init_trial_time_started(trial_time_started = trial_time_started,
                                   attempt, # For MIDI
@@ -244,7 +248,7 @@ init_trial_time_started <- function(page, attempt = 1L, additional = NULL, item_
   )
 }
 
-learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, page_type, phase = "learn") {
+learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, page_type, phase = "learn", mute_midi_playback = TRUE) {
 
   stopifnot(
     is.numeric(bpm)
@@ -309,7 +313,8 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, pag
         get_answer = get_answer_async_midi_vs_audio,
         show_record_button = TRUE,
         attempt = attempt,
-        db_vars = db_vars
+        db_vars = db_vars,
+        mute_midi_playback = mute_midi_playback
       )
     }) %>% init_trial_time_started(attempt, additional, item_id = item_id, page_label = page_label, display_modality = trial_dat$display_modality, phase = phase, trial_time_started = trial_time_started)
   } else {
@@ -318,7 +323,7 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, pag
   }
 }
 
-learn_practice_trial <- function(user_sample, trial_no, attempt, page_type, bpm, phase = "learn") {
+learn_practice_trial <- function(user_sample, trial_no, attempt, page_type, bpm, phase = "learn", mute_midi_playback = TRUE) {
 
   trial_dat <- user_sample[trial_no, ]
 
@@ -365,7 +370,8 @@ learn_practice_trial <- function(user_sample, trial_no, attempt, page_type, bpm,
         trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
         get_answer = get_answer_async_midi_vs_audio,
         attempt = attempt,
-        db_vars = db_vars
+        db_vars = db_vars,
+        mute_midi_playback = mute_midi_playback
       )
 
     })

@@ -16,11 +16,12 @@ multi_play_long_tone_record_audio_pages(
   trial_paradigm = c("simultaneous_recall", "call_and_response"),
   call_and_response_end = c("manual", "auto"),
   long_tone_length = 5,
-  singing_trial = FALSE
+  singing_trial = FALSE,
+  mute_midi_playback = FALSE
 )
 }
 \arguments{
-\item{singing_trial}{}
+\item{mute_midi_playback}{}
 }
 \description{
 Build multiple play_long_tone_record_audio_pages based on a user's range

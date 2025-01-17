@@ -19,11 +19,12 @@ find_this_note_trials(
   interleaved_with_piat = FALSE,
   long_tone_length = 5,
   on_complete = NULL,
-  take_piat_training = TRUE
+  take_piat_training = TRUE,
+  mute_midi_playback = FALSE
 )
 }
 \arguments{
-\item{take_piat_training}{}
+\item{mute_midi_playback}{}
 }
 \description{
 Present "Find This Note" trials

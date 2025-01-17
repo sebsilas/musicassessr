@@ -20,11 +20,12 @@ play_long_tone_record_audio_page(
   trial_paradigm = c("simultaneous_recall", "call_and_response"),
   call_and_response_end = c("manual", "auto"),
   singing_trial = TRUE,
-  on_complete = NULL
+  on_complete = NULL,
+  mute_midi_playback = FALSE
 )
 }
 \arguments{
-\item{on_complete}{}
+\item{mute_midi_playback}{}
 }
 \description{
 Create a page which produces a given tone

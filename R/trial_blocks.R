@@ -1215,6 +1215,7 @@ long_tone_trials <- function(num_items,
 #' @param long_tone_length
 #' @param on_complete
 #' @param take_piat_training
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -1234,7 +1235,8 @@ find_this_note_trials <- function(num_items,
                                   interleaved_with_piat = FALSE,
                                   long_tone_length = 5,
                                   on_complete = NULL,
-                                  take_piat_training = TRUE) {
+                                  take_piat_training = TRUE,
+                                  mute_midi_playback = FALSE) {
 
   # Get trial paradigm info
   trial_paradigm <- match.arg(trial_paradigm)
@@ -1255,6 +1257,7 @@ find_this_note_trials <- function(num_items,
       interleaving_trial_page <-  psychTestR::join(
         play_long_tone_record_audio_page(page_type = page_type,
                                          page_title = page_title,
+                                         mute_midi_playback = mute_midi_playback,
                                          page_text = page_text,
                                          example = FALSE,
                                          get_answer = get_answer,
@@ -1293,6 +1296,7 @@ find_this_note_trials <- function(num_items,
         multi_play_long_tone_record_audio_pages(no_items = num_items,
                                                 page_text = page_text,
                                                 page_title = page_title,
+                                                mute_midi_playback = mute_midi_playback,
                                                 page_type = page_type,
                                                 feedback = feedback,
                                                 get_answer = get_answer,

@@ -14,6 +14,7 @@
 #' @param call_and_response_end
 #' @param long_tone_length
 #' @param singing_trial
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -30,7 +31,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                                     trial_paradigm = c("simultaneous_recall", "call_and_response"),
                                                     call_and_response_end = c("manual", "auto"),
                                                     long_tone_length = 5,
-                                                    singing_trial = FALSE) {
+                                                    singing_trial = FALSE,
+                                                    mute_midi_playback = FALSE) {
 
   trial_paradigm <- match.arg(trial_paradigm)
   call_and_response_end <- match.arg(call_and_response_end)
@@ -49,7 +51,8 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
                                      trial_paradigm = trial_paradigm,
                                      call_and_response_end = call_and_response_end,
                                      long_tone_length = long_tone_length,
-                                     singing_trial = singing_trial)
+                                     singing_trial = singing_trial,
+                                     mute_midi_playback = mute_midi_playback)
     })
 
   items <- add_feedback(items, feedback)
@@ -75,6 +78,7 @@ multi_play_long_tone_record_audio_pages <- function(no_items,
 #' @param call_and_response_end
 #' @param singing_trial
 #' @param on_complete
+#' @param mute_midi_playback
 #'
 #' @return
 #' @export
@@ -95,7 +99,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
                                              trial_paradigm = c("simultaneous_recall", "call_and_response"),
                                              call_and_response_end = c("manual", "auto"),
                                              singing_trial = TRUE,
-                                             on_complete = NULL) {
+                                             on_complete = NULL,
+                                             mute_midi_playback = FALSE) {
 
   # A page type for playing a 5-second tone and recording a user singing with it
 
@@ -189,6 +194,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     total_no_melodies = total_no_long_notes,
                     show_progress = show_progress,
                     on_complete = on_complete,
+                    mute_midi_playback = mute_midi_playback,
                     trigger_start_of_stimulus_fun = paradigm$trigger_start_of_stimulus_fun,
                     trigger_end_of_stimulus_fun= paradigm$trigger_end_of_stimulus_fun)
 

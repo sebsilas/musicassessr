@@ -4,10 +4,10 @@
 \alias{pbet_learn_test_paradigm}
 \title{PBET learn test paradigm}
 \usage{
-pbet_learn_test_paradigm(no_trials = 4L, bpm = 100)
+pbet_learn_test_paradigm(no_trials = 4L, bpm = 100, mute_midi_playback = TRUE)
 }
 \arguments{
-\item{bpm}{}
+\item{mute_midi_playback}{}
 }
 \description{
 PBET learn test paradigm

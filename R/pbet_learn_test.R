@@ -42,7 +42,7 @@ pbet_learn_test_paradigm_standalone <- function(no_trials) {
 pbet_learn_test_paradigm <- function(no_trials = 4L,
                                      bpm = 100) {
 
-  shiny::addResourcePath('assets', "/Users/sebsilas/Berkowitz_measures_divided")
+  shiny::addResourcePath('assets', system.file("extdata/Berkowitz_measures_divided", package = "musicassessr", mustWork = TRUE))
 
   no_visual <- no_trials/2
   no_auditory <- no_trials/2

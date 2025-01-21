@@ -93,13 +93,18 @@ custom_questions <- function() {
 questionnaires <- function() {
   psychTestR::join(
 
-    # psyquest::DEG(year_range = c(1930, 2024)),
-    #
-    # psyquest::GMS(subscales = c("Musical Training", "Singing Abilities",
-    #                             "Absolute Pitch", "Start Age")),
+    psyquest::DEG(year_range = c(1930, 2024)),
+
+    psyquest::GMS(subscales = c("Musical Training", "Singing Abilities",
+                                "Absolute Pitch", "Start Age")),
 
     psychTestR::new_timeline(
       psychTestR::join(
+
+        select_musical_instrument_page(set_range_based_on_selection = FALSE,
+                                       include_other_in_dropdown = TRUE,
+                                       with_voice = TRUE,
+                                       prompt = psychTestR::i18n("main_instrument_question")),
 
         custom_questions(),
 

@@ -183,8 +183,6 @@ pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial
   db_vars$display_modality <- "auditory" # PBET always auditory
   db_vars$phase <- phase
   db_vars$feedback <- FALSE
-  trial_time_started <- Sys.time()
-  db_vars$trial_time_started <- trial_time_started
   db_vars$test_id <- 2L
 
   psychTestR::reactive_page(function(state, ...) {
@@ -192,6 +190,10 @@ pbet_trial <- function(trial_dat, trial_paradigm, attempt, bpm, page_type, trial
 
     session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
     db_vars$session_id <- session_id
+
+    trial_time_started <- Sys.time()
+    db_vars$trial_time_started <- trial_time_started
+    psychTestR::set_global("trial_time_started", trial_time_started, state)
 
     present_stimuli(
       stimuli = abs_melody,
@@ -278,8 +280,6 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, pag
   db_vars$page_label <- page_label
   db_vars$display_modality <- trial_dat$display_modality
   db_vars$phase <- phase
-  trial_time_started <- Sys.time()
-  db_vars$trial_time_started <- trial_time_started
   db_vars$feedback <- FALSE
   db_vars$additional <- additional
   db_vars$test_id <- 2L
@@ -293,6 +293,9 @@ learn_trial <- function(user_sample, trial_no, attempt, trial_paradigm, bpm, pag
 
         session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
         db_vars$session_id <- session_id
+        trial_time_started <- Sys.time()
+        db_vars$trial_time_started <- trial_time_started
+        psychTestR::set_global("trial_time_started", trial_time_started, state)
 
         present_stimuli(
         stimuli = musicxml_file,
@@ -342,8 +345,6 @@ learn_practice_trial <- function(user_sample, trial_no, attempt, page_type, bpm,
   db_vars$page_label <- page_label
   db_vars$display_modality <- trial_dat$display_modality
   db_vars$phase <- phase
-  trial_time_started <- Sys.time()
-  db_vars$trial_time_started <- trial_time_started
   db_vars$feedback <- FALSE
   db_vars$additional <- additional
   db_vars$test_id <- 2L
@@ -353,6 +354,10 @@ learn_practice_trial <- function(user_sample, trial_no, attempt, page_type, bpm,
 
       session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
       db_vars$session_id <- session_id
+
+      trial_time_started <- Sys.time()
+      db_vars$trial_time_started <- trial_time_started
+      psychTestR::set_global("trial_time_started", trial_time_started, state) # For MIDI
 
       present_stimuli(
         stimuli = itembankr::str_mel_to_vector(trial_dat$abs_melody),

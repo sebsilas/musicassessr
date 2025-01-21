@@ -1,3 +1,7 @@
+# musicassessr 2.11.3
+
+- Various updates
+
 # musicassessr 2.11.2
 
 - Add `Berkowitz_measures_divided`

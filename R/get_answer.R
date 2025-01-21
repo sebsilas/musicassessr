@@ -405,11 +405,12 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
     stimuli <- as.numeric(jsonlite::fromJSON(input$stimuli))
     stimuli_durations <- as.numeric(jsonlite::fromJSON(input$stimuli_durations))
     test_id <- psychTestR::get_global('test_id', state)
-    item_id = psychTestR::get_global('item_id', state)
-    user_id = psychTestR::get_global('user_id', state)
-    instrument = psychTestR::get_global('inst', state)
+    item_id <- psychTestR::get_global('item_id', state)
+    user_id <- psychTestR::get_global('user_id', state)
+    instrument <- psychTestR::get_global('inst', state)
     trial_time_started <- psychTestR::get_global('trial_time_started', state)
     trial_time_completed <- Sys.time()
+
     score_to_use <- "opti3"
     display_modality <- psychTestR::get_global('display_modality', state)
     phase <- psychTestR::get_global('phase', state)
@@ -580,7 +581,8 @@ get_answer_midi <- function(input, state, ...) {
       trial_start_time_timecode = trial_start_time_timecode,
       trial_start_time_timecode2 = trial_start_time_timecode2,
       latency_estimate = latency_estimate,
-      velocities = velocities)
+      velocities = velocities
+      )
   }
 
 }

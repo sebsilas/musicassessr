@@ -285,8 +285,8 @@ opti3 <- function(pitch_vec1, onset_vec1,
   ioi1 <- c(NA, diff(onset_vec1))
   ioi2 <- c(NA, diff(onset_vec2))
 
-  ioi_class1 <- classify_duration(ioi1)
-  ioi_class2 <- classify_duration(ioi2)
+  ioi_class1 <- itembankr::classify_duration(ioi1)
+  ioi_class2 <- itembankr::classify_duration(ioi2)
 
   v_rhythfuzz <- rhythfuzz(ioi_class1, ioi_class2)
 

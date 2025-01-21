@@ -145,6 +145,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
     psychTestR::set_global('rhythmic', NA, state)
     psychTestR::set_global('melody_block_paradigm', melody_block_paradigm, state)
     psychTestR::set_global('page_label', page_label, state)
+    psychTestR::set_global('item_id', NA, state)
+
 
 
     db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {

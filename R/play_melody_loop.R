@@ -782,181 +782,185 @@ present_melody <- function(stimuli,
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
   call_and_response_end <- match.arg(call_and_response_end)
 
-  psychTestR::reactive_page(function(state, ...) {
+  psychTestR::join(
+    psychTestR::code_block(function(state, ...) {
+      # Set some vars for storing in DB
+      trial_time_started <- Sys.time()
+      psychTestR::set_global("trial_time_started", trial_time_started, state)
+      psychTestR::set_global("singing_trial", singing_trial, state)
+      # Note that, you must set the trial_time_started var in a code_block but not a reactive_page. The latter runs twice and you end up with the wrong time.
+    }),
 
-    # Grab various variables
-    number_attempts <- psychTestR::get_global("number_attempts", state)
-    max_goes <- psychTestR::get_global("max_goes", state)
-    attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
-    page_label <- paste0(var_name,"_", melody_no, "_attempt_", number_attempts)
+    psychTestR::reactive_page(function(state, ...) {
 
-    transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
-    transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
+      # Grab various variables
+      number_attempts <- psychTestR::get_global("number_attempts", state)
+      max_goes <- psychTestR::get_global("max_goes", state)
+      attempts_left <- psychTestR::get_global("attempts_left", state) - 1L
+      page_label <- paste0(var_name,"_", melody_no, "_attempt_", number_attempts)
 
-    clef <- psychTestR::get_global("clef", state)
-    clef <- if(is.null(clef)) "auto" else clef
+      transpose_visual_notation <- psychTestR::get_global("transpose_visual_notation", state)
+      transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
 
-    if(length(answer_meta_data) < 1L) {
-      answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
-      if(is.null(answer_meta_data)) {
-        answer_meta_data <- data.frame()
-      }
-    }
+      clef <- psychTestR::get_global("clef", state)
+      clef <- if(is.null(clef)) "auto" else clef
 
-    logging::loginfo("Transpose visual notation play melody loop: %s", transpose_visual_notation)
-    logging::loginfo("Getting clef: %s", clef)
-
-    # MIDI checks
-    midi_device <- midi_device_check(page_type, state)
-
-    # Grab vars
-    melody_checks <- melody_checks(stimuli, state, stimuli_type, arrhythmic, note_length)
-
-    if(psychTestRCAT) {
-      melody_no <- psychTestR::get_local("item", state) %>%
-        psychTestRCAT::get_item_number()
-    }
-
-    # Set some vars for storing in DB
-    trial_time_started <- Sys.time()
-    psychTestR::set_global("trial_time_started", trial_time_started, state)
-    psychTestR::set_global("singing_trial", singing_trial, state)
-
-    # Use a display_modality created at test time, if appropriate
-    display_modality <- if(is.null(melody_checks$display_modality)) display_modality else melody_checks$display_modality
-
-    asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
-
-    # Get trial paradigm info
-    trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = is_function_or_true(feedback), asynchronous_api_mode = asynchronous_api_mode)
-
-    if(display_modality == "visual") {
-
-      notes <- melody_checks$melody
-      key <- compute_key_on_the_fly(notes)
-      key_sharps_or_flats <- get_no_sharps_or_flats_from_key(key)
-      no_accidentals <- count_visible_accidentals(notes, key)
-
-      if(key_sharps_or_flats == 0) {
-        no_sharps <- 0
-        no_flats <- 0
-      } else if(key_sharps_or_flats < 0) {
-        no_sharps <- 0
-        no_flats <- abs(key_sharps_or_flats)
-      } else if(key_sharps_or_flats > 0) {
-        no_sharps <- key_sharps_or_flats
-        no_flats <- 0
+      if(length(answer_meta_data) < 1L) {
+        answer_meta_data <- psychTestR::get_global("answer_meta_data", state)
+        if(is.null(answer_meta_data)) {
+          answer_meta_data <- data.frame()
+        }
       }
 
-      additional <- list(
-        clef = clef,
-        key_signature = key,
-        no_flats_key_signature = no_sharps,
-        no_sharps_key_signature = no_flats,
-        no_accidentals = no_accidentals
-      )
+      logging::loginfo("Transpose visual notation play melody loop: %s", transpose_visual_notation)
+      logging::loginfo("Getting clef: %s", clef)
 
-    } else {
-      key <- NULL
-      additional <- list()
-    }
+      # MIDI checks
+      midi_device <- midi_device_check(page_type, state)
 
-    old_additional <-  psychTestR::get_global("additional", state)
+      # Grab vars
+      melody_checks <- melody_checks(stimuli, state, stimuli_type, arrhythmic, note_length)
 
-    if(!is.null(old_additional)) {
-      if(is.character(old_additional)) {
-        old_additional <- jsonlite::fromJSON(old_additional)
+      if(psychTestRCAT) {
+        melody_no <- psychTestR::get_local("item", state) %>%
+          psychTestRCAT::get_item_number()
       }
-      additional <- c(old_additional, additional)
-    }
 
-    psychTestR::set_global("additional", additional, state) # For MIDI
+      # Use a display_modality created at test time, if appropriate
+      display_modality <- if(is.null(melody_checks$display_modality)) display_modality else melody_checks$display_modality
 
-    module <- psychTestR::get_local(".module", state)
-    logging::loginfo("module: %s", module)
+      asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
-    db_vars <- if(asynchronous_api_mode) {
+      # Get trial paradigm info
+      trial_paradigm <- paradigm(paradigm_type = melody_trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, attempts_left = attempts_left, feedback = is_function_or_true(feedback), asynchronous_api_mode = asynchronous_api_mode)
 
-      list(
-        stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
-        stimuli_durations = paste0(melody_checks$durations, collapse = ","),
-        trial_time_started = trial_time_started,
-        instrument = if(singing_trial) "Voice" else psychTestR::get_global("inst", state),
-        attempt = number_attempts,
-        item_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
-        display_modality = display_modality,
-        phase = psychTestR::get_global("phase", state),
-        rhythmic = !arrhythmic,
-        session_id = get_promise_value(psychTestR::get_global("session_id", state)),
-        test_id = psychTestR::get_global("test_id", state),
-        user_id = psychTestR::get_global("user_id", state),
-        review_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
-        new_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
-        feedback = psychTestR::get_global("async_feedback", state),
-        feedback_type = psychTestR::get_global("async_feedback_type", state),
-        melody_block_paradigm = melody_block_paradigm,
-        trial_paradigm = melody_trial_paradigm,
-        additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE),
-        file_type = NA,
-        noise_filename = NA,
-        page_label = page_label,
-        module = module
-      )
-    } else NULL
+      if(display_modality == "visual") {
 
+        notes <- melody_checks$melody
+        key <- compute_key_on_the_fly(notes)
+        key_sharps_or_flats <- get_no_sharps_or_flats_from_key(key)
+        no_accidentals <- count_visible_accidentals(notes, key)
 
-    logging::loginfo("Present stimulus")
+        if(key_sharps_or_flats == 0) {
+          no_sharps <- 0
+          no_flats <- 0
+        } else if(key_sharps_or_flats < 0) {
+          no_sharps <- 0
+          no_flats <- abs(key_sharps_or_flats)
+        } else if(key_sharps_or_flats > 0) {
+          no_sharps <- key_sharps_or_flats
+          no_flats <- 0
+        }
 
-    # Present the stimulus
-    present_stimuli(stimuli = melody_checks$melody,
-                    stimuli_type = stimuli_type,
-                    display_modality = display_modality,
-                    page_title = page_title,
-                    page_text = page_text,
-                    page_type = page_type,
-                    answer_meta_data = answer_meta_data,
-                    get_answer = get_answer,
-                    save_answer = save_answer,
-                    midi_device = midi_device,
-                    page_label = page_label,
-                    play_button_text = play_button_text,
-                    start_note = melody_checks$start_note,
-                    end_note = melody_checks$end_note,
-                    durations = melody_checks$durations,
-                    user_rating = user_rating,
-                    happy_with_response = happy_with_response,
-                    attempts_left = attempts_left,
-                    sound = sound,
-                    trigger_start_of_stimulus_fun = trial_paradigm$trigger_start_of_stimulus_fun,
-                    trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
-                    hideOnPlay = hideOnPlay,
-                    max_goes = max_goes,
-                    max_goes_forced = max_goes_forced,
-                    transpose_visual_notation = transpose_visual_notation,
-                    clef = clef,
-                    melody_no = if(reactive_melody_no) psychTestR::get_global("reactive_melody_no", state) else melody_no,
-                    show_progress = if(reactive_melody_no) FALSE else show_progress,
-                    total_no_melodies = if(pass_items_through_url_parameter) nrow(psychTestR::get_global(var_name, state)) else total_no_melodies,
-                    sheet_music_start_hidden = if(melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual") TRUE else sheet_music_start_hidden,
-                    sound_only_first_melody_note = sound_only_first_melody_note,
-                    sheet_music_id = sheet_music_id,
-                    give_first_melody_note = if(melody_block_paradigm == 'learn_phase_visual_display_modality') FALSE else give_first_melody_note,
-                    volume_meter = volume_meter,
-                    volume_meter_type = volume_meter_type,
-                    show_sheet_music_after_record = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
-                    show_record_button = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
-                    first_note_message = first_note_message,
-                    transposed_message = transposed_message,
-                    play_first_note_button_text = play_first_note_button_text,
-                    reactive_melody_no = reactive_melody_no,
-                    db_vars = db_vars,
-                    lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
-                    feedback = feedback,
-                    asynchronous_api_mode = asynchronous_api_mode,
-                    key = key,
-                    mute_midi_playback = mute_midi_playback)
+        additional <- list(
+          clef = clef,
+          key_signature = key,
+          no_flats_key_signature = no_sharps,
+          no_sharps_key_signature = no_flats,
+          no_accidentals = no_accidentals
+        )
 
-  })
+      } else {
+        key <- NULL
+        additional <- list()
+      }
+
+      old_additional <-  psychTestR::get_global("additional", state)
+
+      if(!is.null(old_additional)) {
+        if(is.character(old_additional)) {
+          old_additional <- jsonlite::fromJSON(old_additional)
+        }
+        additional <- c(old_additional, additional)
+      }
+
+      psychTestR::set_global("additional", additional, state) # For MIDI
+
+      module <- psychTestR::get_local(".module", state)
+      logging::loginfo("module: %s", module)
+
+      db_vars <- if(asynchronous_api_mode) {
+
+        list(
+          stimuli = paste0(melody_checks$melody, collapse = ","), # Note the duplication
+          stimuli_durations = paste0(melody_checks$durations, collapse = ","),
+          trial_time_started = psychTestR::get_global("trial_time_started", state),
+          instrument = if(singing_trial) "Voice" else psychTestR::get_global("inst", state),
+          attempt = number_attempts,
+          item_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$item_id else answer_meta_data$item_id,
+          display_modality = display_modality,
+          phase = psychTestR::get_global("phase", state),
+          rhythmic = !arrhythmic,
+          session_id = get_promise_value(psychTestR::get_global("session_id", state)),
+          test_id = psychTestR::get_global("test_id", state),
+          user_id = psychTestR::get_global("user_id", state),
+          review_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$review_items_id else answer_meta_data$review_items_id,
+          new_items_id = if(is.scalar.character(answer_meta_data)) jsonlite::fromJSON(answer_meta_data)$new_items_id else answer_meta_data$new_items_id,
+          feedback = psychTestR::get_global("async_feedback", state),
+          feedback_type = psychTestR::get_global("async_feedback_type", state),
+          melody_block_paradigm = melody_block_paradigm,
+          trial_paradigm = melody_trial_paradigm,
+          additional = if(is.scalar.character(additional)) additional else jsonlite::toJSON(additional, auto_unbox = TRUE),
+          file_type = NA,
+          noise_filename = NA,
+          page_label = page_label,
+          module = module
+        )
+      } else NULL
+
+      logging::loginfo("Present stimulus")
+
+      # Present the stimulus
+      present_stimuli(stimuli = melody_checks$melody,
+                      stimuli_type = stimuli_type,
+                      display_modality = display_modality,
+                      page_title = page_title,
+                      page_text = page_text,
+                      page_type = page_type,
+                      answer_meta_data = answer_meta_data,
+                      get_answer = get_answer,
+                      save_answer = save_answer,
+                      midi_device = midi_device,
+                      page_label = page_label,
+                      play_button_text = play_button_text,
+                      start_note = melody_checks$start_note,
+                      end_note = melody_checks$end_note,
+                      durations = melody_checks$durations,
+                      user_rating = user_rating,
+                      happy_with_response = happy_with_response,
+                      attempts_left = attempts_left,
+                      sound = sound,
+                      trigger_start_of_stimulus_fun = trial_paradigm$trigger_start_of_stimulus_fun,
+                      trigger_end_of_stimulus_fun = trial_paradigm$trigger_end_of_stimulus_fun,
+                      hideOnPlay = hideOnPlay,
+                      max_goes = max_goes,
+                      max_goes_forced = max_goes_forced,
+                      transpose_visual_notation = transpose_visual_notation,
+                      clef = clef,
+                      melody_no = if(reactive_melody_no) psychTestR::get_global("reactive_melody_no", state) else melody_no,
+                      show_progress = if(reactive_melody_no) FALSE else show_progress,
+                      total_no_melodies = if(pass_items_through_url_parameter) nrow(psychTestR::get_global(var_name, state)) else total_no_melodies,
+                      sheet_music_start_hidden = if(melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual") TRUE else sheet_music_start_hidden,
+                      sound_only_first_melody_note = sound_only_first_melody_note,
+                      sheet_music_id = sheet_music_id,
+                      give_first_melody_note = if(melody_block_paradigm == 'learn_phase_visual_display_modality') FALSE else give_first_melody_note,
+                      volume_meter = volume_meter,
+                      volume_meter_type = volume_meter_type,
+                      show_sheet_music_after_record = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
+                      show_record_button = melody_block_paradigm == 'learn_phase_visual_display_modality' && display_modality == "visual",
+                      first_note_message = first_note_message,
+                      transposed_message = transposed_message,
+                      play_first_note_button_text = play_first_note_button_text,
+                      reactive_melody_no = reactive_melody_no,
+                      db_vars = db_vars,
+                      lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
+                      feedback = feedback,
+                      asynchronous_api_mode = asynchronous_api_mode,
+                      key = key,
+                      mute_midi_playback = mute_midi_playback)
+
+    })
+  )
 }
 
 

@@ -7,7 +7,8 @@
 select_musical_instrument_page(
   set_range_based_on_selection = TRUE,
   include_other_in_dropdown = FALSE,
-  with_voice = FALSE
+  with_voice = FALSE,
+  prompt = psychTestR::i18n("instrument_selection_message")
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ select_musical_instrument_page(
 \item{include_other_in_dropdown}{Include Other as an option?}
 
 \item{with_voice}{Include Voice as an option?}
+
+\item{prompt}{Prompt?}
 }
 \description{
 Page to select what instrument the participant is using

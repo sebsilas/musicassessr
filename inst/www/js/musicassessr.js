@@ -784,30 +784,23 @@ function removeElement(element) {
   el.parentNode.removeChild(el);
 }
 
-function getDateTime() {
+function getUTCDateTime() {
   let now = new Date();
-  let year = now.getFullYear();
-  let month = now.getMonth()+1;
-  let day = now.getDate();
-  let hour = now.getHours();
-  let minute = now.getMinutes();
-  let second = now.getSeconds();
-  if(month.toString().length == 1) {
-    month = '0'+month;
-  }
-  if(day.toString().length == 1) {
-    day = '0'+day;
-  }
-  if(hour.toString().length == 1) {
-    hour = '0'+hour;
-  }
-  if(minute.toString().length == 1) {
-       minute = '0'+minute;
-  }
-  if(second.toString().length == 1) {
-    second = '0'+second;
-  }
-  let dateTime = year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
+  let year = now.getUTCFullYear();
+  let month = now.getUTCMonth() + 1; // Months are zero-based in JS
+  let day = now.getUTCDate();
+  let hour = now.getUTCHours();
+  let minute = now.getUTCMinutes();
+  let second = now.getUTCSeconds();
+
+  // Ensure two-digit formatting
+  month = month.toString().padStart(2, '0');
+  day = day.toString().padStart(2, '0');
+  hour = hour.toString().padStart(2, '0');
+  minute = minute.toString().padStart(2, '0');
+  second = second.toString().padStart(2, '0');
+
+  let dateTime = `${year}-${month}-${day} ${hour}:${minute}:${second} UTC`;
   return dateTime;
 }
 
@@ -1050,7 +1043,7 @@ async function upload_file_to_s3(blob) {
     "stimuli": vectorToString(stimuli),
     "stimuli-durations": vectorToString(stimuli_durations),
     "trial-time-started": String(db_trial_time_started),
-    "trial-time-completed": String(getDateTime()),
+    "trial-time-completed": String(getUTCDateTime()),
     "instrument": String(db_instrument),
     "attempt": String(db_attempt),
     "item-id": String(db_item_id),

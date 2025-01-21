@@ -3,6 +3,7 @@
 #' @param set_range_based_on_selection Should the range be set based on the selection?
 #' @param include_other_in_dropdown Include Other as an option?
 #' @param with_voice Include Voice as an option?
+#' @param prompt Prompt?
 #'
 #' @return
 #' @export
@@ -10,7 +11,8 @@
 #' @examples
 select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
                                            include_other_in_dropdown = FALSE,
-                                           with_voice = FALSE) {
+                                           with_voice = FALSE,
+                                           prompt = psychTestR::i18n("instrument_selection_message") ) {
   insts <- musicassessr::insts
 
   if(!with_voice) {
@@ -21,12 +23,12 @@ select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
   insts_dict <- lapply(insts, psychTestR::i18n)
 
   psychTestR::dropdown_page(label = "select_musical_instrument",
-                prompt = psychTestR::i18n("instrument_selection_message"),
-                next_button_text = psychTestR::i18n("Next"),
-                choices = as.vector(unlist(insts_dict)),
-                alternative_choice = TRUE,
-                alternative_text = psychTestR::i18n("other_please_state"),
-                on_complete = function(state, answer, ...) {
+                            prompt = prompt,
+                            next_button_text = psychTestR::i18n("Next"),
+                            choices = as.vector(unlist(insts_dict)),
+                            alternative_choice = TRUE,
+                            alternative_text = psychTestR::i18n("other_please_state"),
+                            on_complete = function(state, answer, ...) {
 
                   language <- psychTestR::get_url_params(state)$language
 

@@ -198,7 +198,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     on_complete = on_complete,
                     mute_midi_playback = mute_midi_playback,
                     trigger_start_of_stimulus_fun = paradigm$trigger_start_of_stimulus_fun,
-                    trigger_end_of_stimulus_fun= paradigm$trigger_end_of_stimulus_fun)
+                    trigger_end_of_stimulus_fun = paradigm$trigger_end_of_stimulus_fun)
 
   })
 

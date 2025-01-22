@@ -36,10 +36,9 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
   trigger_start_of_stimulus_fun <- NA_to_js_null(trigger_start_of_stimulus_fun)
   trigger_end_of_stimulus_fun <- NA_to_js_null(trigger_end_of_stimulus_fun)
 
-  js_script <- paste0("playSeq(\'", play_button_id, "\', ", jsonlite::toJSON(stimuli),", ", jsonlite::toJSON(durations), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
+  js_script <- paste0("playSeq(\'", play_button_id, "\', ", jsonlite::toJSON(stimuli, auto_unbox = TRUE),", ", jsonlite::toJSON(durations, auto_unbox = TRUE), ', \"', sound, '\", ', trigger_start_of_stimulus_fun, ', ', trigger_end_of_stimulus_fun, ')')
 
   play_button <- shiny::tags$button(play_button_text, id = play_button_id, onclick = js_script, class="btn btn-default")
-
   shiny::tags$div(
     # Should the first note be shown/played?
     show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message,
@@ -68,9 +67,9 @@ set_melodic_stimuli <- function(stimuli, durations, musicxml_file = "NA") {
 musicxml_file
   # Send stimuli to JS
   shiny::tags$script(
-    htmltools::HTML(paste0('stimuli = ', jsonlite::toJSON(stimuli), ';
+    htmltools::HTML(paste0('stimuli = ', jsonlite::toJSON(stimuli, auto_unbox = TRUE), ';
                        Shiny.setInputValue("stimuli", JSON.stringify(stimuli));
-                       stimuli_durations = ', jsonlite::toJSON(durations), ';
+                       stimuli_durations = ', jsonlite::toJSON(durations, auto_unbox = TRUE), ';
                        Shiny.setInputValue("stimuli_durations", JSON.stringify(stimuli_durations));
                        musicxml_file = "', musicxml_file, '";
                        Shiny.setInputValue("musicxml_file", musicxml_file);

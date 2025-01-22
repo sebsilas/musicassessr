@@ -51,6 +51,19 @@ get_answer_pyin_melodic_production <- function(input,
 
   logging::loginfo("Got pyin")
 
+  answer_meta_data <- input$answer_meta_data
+
+  if(is.character(answer_meta_data) && length(answer_meta_data) > 1L) {
+    answer_meta_data <- named_chr_v_to_tib(answer_meta_data)
+  } else {
+    answer_meta_data <- tibble::as_tibble(answer_meta_data)
+  }
+
+  if("ngrukkon" %in% names(answer_meta_data)) {
+    answer_meta_data <- answer_meta_data %>%
+      dplyr::rename(ngrukkon_with_parent_melody = ngrukkon)
+  }
+
   if(is.scalar.na.or.null(pyin_res$pyin_res) || is.scalar.na.or.null(pyin_res$pyin_res$freq)) {
 
     res <- list(
@@ -60,7 +73,7 @@ get_answer_pyin_melodic_production <- function(input,
       user_rating = if(is.null(input$user_rating)) NA else input$user_rating,
       attempt = if(length(input$attempt) == 0) NA else as.numeric(input$attempt),
       opti3 = NA,
-      answer_meta_data = tibble::as_tibble(input$answer_meta_data),
+      answer_meta_data = answer_meta_data,
       stimuli = as.numeric(jsonlite::fromJSON(input$stimuli))
       )
 
@@ -370,6 +383,19 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
       freq = NA,
       note = NA))
 
+    answer_meta_data <- input$answer_meta_data
+
+    if(is.character(answer_meta_data) && length(answer_meta_data) > 0L) {
+      answer_meta_data <- named_chr_v_to_tib(answer_meta_data)
+    } else {
+      answer_meta_data <- tibble::as_tibble(answer_meta_data)
+    }
+
+    if("ngrukkon" %in% names(answer_meta_data)) {
+      answer_meta_data <- answer_meta_data %>%
+        dplyr::rename(ngrukkon_with_parent_melody = ngrukkon)
+    }
+
 
     res <- list(error = TRUE,
                 reason = "No midi notes / lengths unequal.",
@@ -377,7 +403,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                 user_rating = if (is.null(input$user_rating)) NA else input$user_rating,
                 attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt),
                 opti3 = NA,
-                answer_meta_data = tibble::as_tibble(input$answer_meta_data),
+                answer_meta_data = answer_meta_data,
                 stimuli = as.numeric(jsonlite::fromJSON(input$stimuli)),
                 stimuli_durations = as.numeric(jsonlite::fromJSON(input$stimuli_durations)))
 
@@ -809,6 +835,19 @@ concat_mel_prod_results <- function(input,
                                     additional_scoring_measures = NULL,
                                     file_used = NULL, ...) {
 
+  answer_meta_data <- input$answer_meta_data
+
+  if(is.character(answer_meta_data) && length(answer_meta_data) > 1L) {
+    answer_meta_data <- named_chr_v_to_tib(answer_meta_data)
+  } else {
+    answer_meta_data <- tibble::as_tibble(answer_meta_data)
+  }
+
+  if("ngrukkon" %in% names(answer_meta_data)) {
+    answer_meta_data <- answer_meta_data %>%
+      dplyr::rename(ngrukkon_with_parent_melody = ngrukkon)
+  }
+
   # Grab MIDI-specific data if available
   if(length(input$user_response_midi_note_off) == 0) {
     user_response_midi_note_off <- NA
@@ -837,7 +876,7 @@ concat_mel_prod_results <- function(input,
                                      pyin_pitch_track = pyin_pitch_track,
                                      user_response_midi_note_off = user_response_midi_note_off,
                                      onsets_noteoff = onsets_noteoff,
-                                     answer_meta_data = tibble::as_tibble(input$answer_meta_data),
+                                     answer_meta_data = answer_meta_data,
                                      as_tb = FALSE,
                                      additional_scoring_measures = additional_scoring_measures)
 

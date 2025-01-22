@@ -1,45 +1,57 @@
 console.log('microphone_signal_test.js imported');
-const volumeMeterEl = document.getElementById('volumeMeter');
-const startButtonEl = document.getElementById('startButton');
-const nextButtonEl = document.getElementById('nextButton');
-const loading = document.getElementById('loading');
-const hollowDotsSpinner = document.getElementById('hollowDotsSpinner');
-loading.style.display = "none";
-hollowDotsSpinner.style.display = "none";
 
-let stream; // Declare stream variable to store the media stream
+// Functions to get elements dynamically (for elements that may change)
+function getVolumeMeterEl() {
+  return document.getElementById('volumeMeter');
+}
+function getStartButtonEl() {
+  return document.getElementById('startButton');
+}
+function getNextButtonEl() {
+  return document.getElementById('nextButton');
+}
+function getLoadingEl() {
+  return document.getElementById('loading');
+}
+function getHollowDotsSpinnerEl() {
+  return document.getElementById('hollowDotsSpinner');
+}
 
-// Thresholds for color-coding and warning
-const lowThreshold = 0.05;
-const optimumThreshold = 0.15;
-const moderateThreshold = 0.4;
-const highThreshold = 0.50;
-const maxThreshold = 0.6
-let lastWarningTime = 0; // Tracks the last warning time for cooldown
+// Store persistent variables in `window`
+window.stream = window.stream || null;
 
-if (startButtonEl !== null) {
+// Store thresholds and tracking variables globally
+window.lowThreshold = window.lowThreshold ?? 0.05;
+window.optimumThreshold = window.optimumThreshold ?? 0.15;
+window.moderateThreshold = window.moderateThreshold ?? 0.4;
+window.highThreshold = window.highThreshold ?? 0.50;
+window.maxThreshold = window.maxThreshold ?? 0.6;
+window.lastWarningTime = window.lastWarningTime ?? 0; // Tracks the last warning time for cooldown
 
-  startButtonEl.onclick = () => {
+// Ensure elements exist before modifying them
+if (getLoadingEl()) getLoadingEl().style.display = "none";
+if (getHollowDotsSpinnerEl()) getHollowDotsSpinnerEl().style.display = "none";
 
-    loading.style.display = "block";
-    hollowDotsSpinner.style.display = "block";
-    startButtonEl.style.display = "none";
+if (getStartButtonEl()) {
+  getStartButtonEl().onclick = () => {
+    if (getLoadingEl()) getLoadingEl().style.display = "block";
+    if (getHollowDotsSpinnerEl()) getHollowDotsSpinnerEl().style.display = "block";
+    if (getStartButtonEl()) getStartButtonEl().style.display = "none";
 
     console.log('start button clicked');
 
     function getMediaStream(callback) {
       navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then(mediaStream => {
-          stream = mediaStream; // Assign the obtained stream to the outer variable
-          callback(null, stream); // Call the callback with the stream
+          window.stream = mediaStream; // Assign globally
+          callback(null, mediaStream);
         })
         .catch(error => {
-          callback(error, null); // Call the callback with the error if there's an issue
+          callback(error, null);
         });
     }
 
     getMediaStream((error, mediaStream) => {
-
       if (error) {
         console.error("Error accessing media devices:", error);
         return;
@@ -47,54 +59,50 @@ if (startButtonEl !== null) {
       console.log("Media stream is ready:", mediaStream);
 
       let audioContext = new AudioContext();
-      let mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
+      let mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(window.stream);
       let analyserNode = audioContext.createAnalyser();
       mediaStreamAudioSourceNode.connect(analyserNode);
-      nextButtonEl.style.visibility = 'visible';
-      startButtonEl.style.visibility = 'hidden';
-      loading.style.display = "none";
-      hollowDotsSpinner.style.display = "none";
+
+      if (getNextButtonEl()) getNextButtonEl().style.visibility = 'visible';
+      if (getStartButtonEl()) getStartButtonEl().style.visibility = 'hidden';
+      if (getLoadingEl()) getLoadingEl().style.display = "none";
+      if (getHollowDotsSpinnerEl()) getHollowDotsSpinnerEl().style.display = "none";
 
       let pcmData = new Float32Array(analyserNode.fftSize);
 
       let onFrame = () => {
         analyserNode.getFloatTimeDomainData(pcmData);
 
-        // Calculate RMS
         let sumSquares = 0.0;
         for (let amplitude of pcmData) {
           sumSquares += amplitude * amplitude;
         }
         let rms = Math.sqrt(sumSquares / pcmData.length);
 
-        // Update the volume meter value directly
-        if (volumeMeterEl.tagName === "METER") {
+        const volumeMeterEl = getVolumeMeterEl();
+        if (volumeMeterEl && volumeMeterEl.tagName === "METER") {
           volumeMeterEl.value = rms;
 
-          // Color-coding by changing the meter attributes based on thresholds
-          if (rms < lowThreshold) {
-            volumeMeterEl.setAttribute("low", lowThreshold);
-            volumeMeterEl.setAttribute("optimum", optimumThreshold);
-          } else if (rms < moderateThreshold) {
-            volumeMeterEl.setAttribute("low", lowThreshold);
-            volumeMeterEl.setAttribute("high", moderateThreshold);
-          } else if (rms < highThreshold) {
-            volumeMeterEl.setAttribute("high", highThreshold);
-            volumeMeterEl.setAttribute("max", maxThreshold);
+          if (rms < window.lowThreshold) {
+            volumeMeterEl.setAttribute("low", window.lowThreshold);
+            volumeMeterEl.setAttribute("optimum", window.optimumThreshold);
+          } else if (rms < window.moderateThreshold) {
+            volumeMeterEl.setAttribute("low", window.lowThreshold);
+            volumeMeterEl.setAttribute("high", window.moderateThreshold);
+          } else if (rms < window.highThreshold) {
+            volumeMeterEl.setAttribute("high", window.highThreshold);
+            volumeMeterEl.setAttribute("max", window.maxThreshold);
           } else {
-            // Set red level and trigger warning if above maxThreshold
-            volumeMeterEl.setAttribute("max", maxThreshold);
+            volumeMeterEl.setAttribute("max", window.maxThreshold);
 
-            // Trigger warning if cooldown has elapsed
             const currentTime = Date.now();
-            if (currentTime - lastWarningTime > 5000 && page_type === "record_audio_page") { // 5-second cooldown
+            if (currentTime - window.lastWarningTime > 5000 && page_type === "record_audio_page") {
               alert("Warning: Microphone signal is too loud! Please reduce microphone gain or move away from the microphone.");
-              lastWarningTime = currentTime; // Reset warning time
+              window.lastWarningTime = currentTime;
             }
           }
-        } else if (volumeMeterEl.tagName === "IMG") {
-          // For image type volume meter, only adjust opacity based on RMS
-          let scaledOpacity = Math.min(1, rms); // Cap opacity at 1
+        } else if (volumeMeterEl && volumeMeterEl.tagName === "IMG") {
+          let scaledOpacity = Math.min(1, rms);
           volumeMeterEl.style.opacity = scaledOpacity;
         }
 

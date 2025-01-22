@@ -342,6 +342,7 @@ set_answer_meta_data <- function(meta_data) {
   if(is.data.frame(meta_data)) {
     meta_data <- jsonlite::toJSON(meta_data)
   }
+
   paste0('Shiny.setInputValue(\"answer_meta_data\", ', meta_data, ');')
 }
 
@@ -642,3 +643,10 @@ midi_or_audio_reactive <- function(midi_logic, audio_logic) {
     logic = audio_logic)
   )
 }
+
+
+named_chr_v_to_tib <- function(chr_v) {
+  as.data.frame(t(chr_v), stringsAsFactors = FALSE) %>%
+    tibble::as_tibble()
+}
+

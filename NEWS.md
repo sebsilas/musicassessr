@@ -1,5 +1,7 @@
 # musicassessr 2.12.0
 
+- Various fixes
+
 # musicassessr 2.11.3
 
 - Various updates

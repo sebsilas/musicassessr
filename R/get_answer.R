@@ -1101,41 +1101,44 @@ get_answer_syllable_classification <- function(input,
     logging::loginfo("valid_file? %s", valid_file)
   }
 
-  new_audio_file <-  paste0("www/audio/new_", basename(audio_file))
+  # new_audio_file <-  paste0("www/audio/new_", basename(audio_file))
 
-  # system(paste0("ffmpeg -i ", audio_file, " -acodec pcm_s16le ", new_audio_file))
-  system(paste0("ffmpeg -i ", audio_file, " -ar 16000 ", new_audio_file))
+  #system(paste0("ffmpeg -i ", audio_file, " -ar 16000 ", new_audio_file))
 
-  # Get audio features
-  audio_features <- extract_audio_features(new_audio_file)
+  # # Get audio features
+  # audio_features <- extract_audio_features(new_audio_file)
+  #
+  # pyin_res <- pyin::pyin(new_audio_file, normalise = TRUE)
+  #
+  # note <- pyin_res$note
+  #
+  # if(length(note) > 1L) {
+  #   note <- note[1]
+  # }
+  #
+  # loadNamespace("workflows")
+  #
+  # audio_features <- audio_features %>%
+  #   dplyr::mutate(midi_note = note) %>%
+  #   dplyr::mutate(dplyr::across(dplyr::where(is.list), ~ purrr::map_dbl(., as.numeric)))  %>%
+  #   dplyr::select(-c(spectral_entropy_ndsi:spectral_entropy_biophony,
+  #                    acoustic_diversity_index, acoustic_diversity_index2))
 
-  syllable_mod <- bundle::unbundle(lyricassessr::syllable_classifier_bundle)
-
-  loadNamespace("workflows")
-
-  preds <- predict(syllable_mod, new_data = audio_features, type = "prob") %>%
-    dplyr::rename_with(~stringr::str_remove_all(.x, ".pred_")) %>%
-    tidyr::pivot_longer(dplyr::everything(),
-                        names_to = "Syllable", values_to = "Probability") %>%
-    dplyr::arrange(dplyr::desc(Probability))
-
-  xgb_model <- parsnip::extract_fit_engine(syllable_mod)
+  # # audio_features
+  # preds <- predict(lyricassessr::mlp_wflow_fit,
+  #                  new_data = audio_features, type = "prob") %>%
+  #   dplyr::rename_with(~stringr::str_remove_all(.x, ".pred_")) %>%
+  #   tidyr::pivot_longer(dplyr::everything(),
+  #                       names_to = "Syllable", values_to = "Probability") %>%
+  #   dplyr::arrange(dplyr::desc(Probability))
 
 
-  audio_features_prepped <- recipes::bake(
-    lyricassessr::prepped_recipe,
-    recipes::has_role("predictor"),
-    new_data = audio_features)
+  preds <-
+    lyricassessr::extract_syllables(audio_file)
 
-  audio_features <- audio_features %>%
-    dplyr::select(dplyr::all_of(names(audio_features_prepped)))
-
-  shap_values <-
-    shapviz::shapviz(xgb_model, X_pred = as.matrix(audio_features_prepped) )
 
   list(syllable_probabilities = preds,
-       shap_values = shap_values,
-       audio_features = audio_features)
+       no_syllables_detected = nrow(preds))
 
 }
 

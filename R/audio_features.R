@@ -15,9 +15,9 @@ extract_audio_features <- function(audio_file_path) {
   file_extension <- tools::file_ext(audio_file_path)
 
   # Load the audio file
-  if(file_extension == "wav") {
+  if(file_extension %in% c("wav", "WAV")) {
     audio <- tuneR::readWave(audio_file_path)
-  } else if(file_extension == "mp3") {
+  } else if(file_extension %in% c("mp3", "MP3")) {
     audio <- tuneR::readMP3(audio_file_path)
   } else {
     stop("Audio file format not supported.")

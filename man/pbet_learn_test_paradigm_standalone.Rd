@@ -4,7 +4,10 @@
 \alias{pbet_learn_test_paradigm_standalone}
 \title{PBET learn test block}
 \usage{
-pbet_learn_test_paradigm_standalone(no_trials)
+pbet_learn_test_paradigm_standalone(no_trials, asynchronous_api_mode = TRUE)
+}
+\arguments{
+\item{asynchronous_api_mode}{}
 }
 \description{
 PBET learn test block

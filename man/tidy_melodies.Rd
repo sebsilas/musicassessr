@@ -4,15 +4,10 @@
 \alias{tidy_melodies}
 \title{Tidy melodies from psychTestR results object}
 \usage{
-tidy_melodies(
-  melody_results,
-  use_for_production = c("production", "pyin_pitch_track")
-)
+tidy_melodies(melody_results, ...)
 }
 \arguments{
 \item{melody_results}{The melody results from psychTestR.}
-
-\item{use_for_production}{Which get_answer output to use for production (the other will be removed).}
 }
 \description{
 Tidy melodies from psychTestR results object

@@ -131,6 +131,10 @@ pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples, m
     learn_phase(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback, asynchronous_api_mode),
     psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("pbet_learn_test_13"), " ", shiny::tags$strong(psychTestR::i18n("test_phase")), " ", psychTestR::i18n("pbet_learn_test_14")), button_text = psychTestR::i18n("Next")),
     test_phase(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback, asynchronous_api_mode),
+    # Clear vars
+    psychTestR::code_block(function(state, ...) {
+      psychTestR::set_global("additional", state, NA)
+    }),
     psychTestR::text_input_page("extra_comments_sight_vs_ear",
                                 one_line = FALSE,
                                 prompt = psychTestR::i18n("pbet_learn_test_share_thoughts"),

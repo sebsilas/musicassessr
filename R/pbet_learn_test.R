@@ -133,7 +133,7 @@ pbet_learn_test_trial_logic <- function(user_sample, bpm, page_type, examples, m
     test_phase(user_sample, trial_paradigm, bpm, page_type, mute_midi_playback, asynchronous_api_mode),
     # Clear vars
     psychTestR::code_block(function(state, ...) {
-      psychTestR::set_global("additional", state, NA)
+      psychTestR::set_global("additional", NA, state)
     }),
     psychTestR::text_input_page("extra_comments_sight_vs_ear",
                                 one_line = FALSE,

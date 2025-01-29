@@ -147,9 +147,11 @@ play_long_tone_record_audio_page <- function(note = NULL,
     psychTestR::set_global('page_label', page_label, state)
     psychTestR::set_global('item_id', NA, state)
 
+    asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
 
-    db_vars <- if(psychTestR::get_global("asynchronous_api_mode", state)) {
+
+    db_vars <- if(asynchronous_api_mode) {
 
       module <- psychTestR::get_local(".module", state)
 
@@ -198,7 +200,8 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     on_complete = on_complete,
                     mute_midi_playback = mute_midi_playback,
                     trigger_start_of_stimulus_fun = paradigm$trigger_start_of_stimulus_fun,
-                    trigger_end_of_stimulus_fun = paradigm$trigger_end_of_stimulus_fun)
+                    trigger_end_of_stimulus_fun = paradigm$trigger_end_of_stimulus_fun,
+                    asynchronous_api_mode = asynchronous_api_mode)
 
   })
 

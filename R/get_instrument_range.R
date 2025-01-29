@@ -530,6 +530,7 @@ midi_or_audio <- function(type, prompt_text, var_name, asynchronous_api_mode) {
       record_audio_page(page_text = prompt_text,
                         label = var_name,
                         db_vars = get_db_vars_range_page(state),
+                        asynchronous_api_mode = asynchronous_api_mode,
                         get_answer = if(asynchronous_api_mode) get_answer_add_trial_and_compute_trial_scores_s3 else get_answer_average_frequency_ff("round"),
                         button_text = psychTestR::i18n("Record"),
                         stop_button_text = psychTestR::i18n("Stop"))

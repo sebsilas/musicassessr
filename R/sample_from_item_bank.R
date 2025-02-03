@@ -680,6 +680,19 @@ rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmi
   })
 }
 
+#' Export sample in ntiles wrapper
+#'
+#' @param item_bank
+#' @param num_items
+#' @param n
+#' @param ntile_sampling_upper_bound
+#' @param col_name
+#' @param phase
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 sample_in_ntiles_wrapper <- function(item_bank,
                                      num_items,
                                      n,

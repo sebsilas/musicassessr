@@ -74,7 +74,7 @@ Imports:
     shinyalert,
     musicassessrdb (>= 0.3.1)
 Depends: 
-    R (>= 2.10),
+    R (>= 3.5),
     itembankr (>= 0.1.0),
     psych
 Remotes: 

@@ -316,7 +316,10 @@ set_test <- function(test_name, test_id = NULL) {
 #' @export
 #'
 #' @examples
-set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = NULL, set_range = TRUE) {
+set_instrument <- function(instrument_id = NULL,
+                           as_code_block = TRUE,
+                           state = NULL,
+                           set_range = TRUE) {
 
   if(!as_code_block && is.null(state)) {
     stop("state must be a state object if as_code_block is FALSE")
@@ -324,7 +327,7 @@ set_instrument <- function(instrument_id = NULL, as_code_block = TRUE, state = N
 
   set_inst <- function(state, ...) {
 
-    if(!is.null(instrument_id)) {
+    if(length(instrument_id) > 0) {
 
 
       logging::loginfo("Setting instrument ID, manually specified. ID: %s", instrument_id)

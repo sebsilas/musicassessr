@@ -1,5 +1,7 @@
 # musicassessr 2.12.4
 
+- Add Drums to musical instruments
+
 # musicassessr 2.12.3
 
 - Add Electric Bass to musical instruments

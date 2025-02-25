@@ -157,19 +157,17 @@ end_session_api <- function(state, session) {
 
   # Get session info
   test_id <- psychTestR::get_global("test_id", state)
-  session_id <- psychTestR::get_global("session_id", state) # Created earlier
+  session_id <- musicassessr::get_promise_value(psychTestR::get_global("session_id", state))  # Created earlier
+
   user_id <- psychTestR::get_global("user_id", state)
   psychTestR_session_id <- psychTestR::get_global("psychTestR_session_id", state)
 
   user_info <- psychTestR::get_global("user_info", state) %>%
     tidy_get_user_info()
 
-  if(length(musicassessr::get_promise_value(session_id)) < 1L) {
-    session_id <- musicassessr::get_promise_value(session_id)$session_id
-  } else {
-    session_id <- musicassessr::get_promise_value(session_id)
+  if(length(session_id) > 1L && "session_id" %in% names(session_id)) {
+    session_id <- session_id$session_id
   }
-
 
   logging::loginfo("call compute_session_scores_and_end_session_api...")
   logging::loginfo("test_id: %s", test_id)

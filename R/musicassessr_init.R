@@ -192,6 +192,10 @@ musicassessr_init <- function(app_name = "",
             psychTestR::set_global("session_api_called", TRUE, state)
             logging::loginfo("...future created.")
 
+            if(length(session_id) > 1L && "session_id" %in% names(session_id)) {
+              session_id <- session_id$session_id
+            }
+
             if(is.null(psychTestR::get_global("session_id", state))) {
               psychTestR::set_global("session_id", session_id, state)
               logging::loginfo("session_id set")

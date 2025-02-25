@@ -1,0 +1,44 @@
+
+
+```{r}
+
+library(tidyverse)
+library(DBI)
+
+load_all()
+
+
+```
+
+```{r}
+
+pbet_hmtm_2024_item_bank <- WJD::WJD_narrowed %>%
+  tibble::as_tibble() %>%
+  dplyr::filter(freq > 1) %>%
+  itembankr::set_item_bank_class()
+
+
+use_data(pbet_hmtm_2024_item_bank)
+
+
+```
+
+
+```{r}
+
+
+#db_con <- musicassessrdb::musicassessr_con()
+db_con <- musicassessrdb::musicassessr_con(db_name = "melody_prod")
+
+dbWriteTable(db_con, 
+             name = 'item_bank_WJD_narrowed_pbet_2025', 
+             value = pbet_hmtm_2024_item_bank,
+             row.names = FALSE, 
+             append = FALSE, 
+             overwrite = TRUE)
+
+
+musicassessrdb::db_disconnect(db_con)
+
+```
+

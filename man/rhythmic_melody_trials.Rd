@@ -42,7 +42,7 @@ rhythmic_melody_trials(
   review = FALSE,
   phase = c("test", "learn", "review"),
   first_note_message = psychTestR::i18n("first_note_is"),
-  transposed_message = "Please note, this is transposed for your instrument.",
+  transposed_message = psychTestR::i18n("transposed"),
   play_first_note_button_text = psychTestR::i18n("play_first_note"),
   learn_test_paradigm = FALSE,
   sample_item_bank_via_api = FALSE,

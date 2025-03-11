@@ -1,5 +1,7 @@
 # musicassessr 2.12.5
 
+- Add correction for `highest_reading_note`.
+
 # musicassessr 2.12.4
 
 - Add Drums to musical instruments

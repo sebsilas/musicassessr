@@ -23,7 +23,8 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
                                                 first_note_message = psychTestR::i18n("first_note_is"),
                                                 transposed_message = psychTestR::i18n("transposed"),
                                                 play_first_note_button_text = psychTestR::i18n("play_first_note"),
-                                                lowest_reading_note = NA, ...) {
+                                                lowest_reading_note = NA,
+                                                highest_reading_note = NA, ...) {
 
   durations <- sort_durations(durations, note_length, stimuli)
 
@@ -42,7 +43,7 @@ present_stimuli_midi_notes_auditory <- function(stimuli,
   shiny::tags$div(
     # Should the first note be shown/played?
     show_first_melody_note(give_first_melody_note, stimuli, transpose_visual_notation, clef = clef, first_note_message = first_note_message,
-                           transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text, lowest_reading_note = lowest_reading_note),
+                           transposed_message = transposed_message, play_first_note_button_text = play_first_note_button_text, lowest_reading_note = lowest_reading_note, highest_reading_note = highest_reading_note),
     set_melodic_stimuli(stimuli, durations),
     shiny::tags$div(id = button_area_id, play_button),
     shiny::tags$br()
@@ -221,6 +222,7 @@ present_stimuli_midi_notes <- function(stimuli,
                                        transposed_message = psychTestR::i18n("transposed"),
                                        play_first_note_button_text = psychTestR::i18n("play_first_note"),
                                        lowest_reading_note = NA,
+                                       highest_reading_note = NA,
                                        key = NULL, ...) {
 
   if (display_modality == "auditory") {
@@ -238,7 +240,8 @@ present_stimuli_midi_notes <- function(stimuli,
                                                           first_note_message = first_note_message,
                                                           transposed_message = transposed_message,
                                                           play_first_note_button_text = play_first_note_button_text, clef = clef,
-                                                          lowest_reading_note = lowest_reading_note, ...)
+                                                          lowest_reading_note = lowest_reading_note,
+                                                          highest_reading_note = highest_reading_note, ...)
 
   } else if (display_modality == "visual") {
     return_stimuli <- present_stimuli_midi_notes_visual(stimuli = stimuli,
@@ -882,7 +885,12 @@ show_first_melody_note <- function(give_first_melody_note,
                                    transposed_message = psychTestR::i18n("transposed"),
                                    play_first_note_button_text = psychTestR::i18n("play_first_note"),
                                    lowest_reading_note = NA,
+                                   highest_reading_note = NA,
                                    key = NULL) {
+
+
+  logging::loginfo("lowest_reading_note: %s", lowest_reading_note)
+  logging::loginfo("highest_reading_note: %s", highest_reading_note)
 
   if(transpose_visual_notation  != 0L) {
     transposed_visual_note <- stimuli[1] + transpose_visual_notation
@@ -896,14 +904,27 @@ show_first_melody_note <- function(give_first_melody_note,
     }
   }
 
+  if(!is.na(highest_reading_note)) {
+    if(transposed_visual_note > highest_reading_note) {
+      transposed_visual_note <- transposed_visual_note - 12
+    }
+    # Do it again just in case
+    if(transposed_visual_note > highest_reading_note) {
+      transposed_visual_note <- transposed_visual_note - 12
+    }
+  }
+
   if(give_first_melody_note) {
     shiny::tags$div(
       id = "first_note",
       shiny::tags$p(first_note_message),
       if(transpose_visual_notation != 0L) shiny::tags$p(transposed_message),
       if(show_first_melody_note_visual) present_stimuli_midi_notes_visual(transposed_visual_note, clef = clef, id = "firstMelodyNoteVisual", key = key),
-      present_stimuli_midi_notes_auditory(stimuli[1], play_button_text = play_first_note_button_text, clef = clef,
-                                          play_button_id = audio_play_button_id, transpose_visual_notation = 0L)
+      present_stimuli_midi_notes_auditory(stimuli[1],
+                                          play_button_text = play_first_note_button_text,
+                                          clef = clef,
+                                          play_button_id = audio_play_button_id,
+                                          transpose_visual_notation = 0L)
     )
   } else {
     return(" ")

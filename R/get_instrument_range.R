@@ -297,8 +297,6 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
       transposed_note_message <- " "
     }
 
-    print("page_type...")
-    print(page_type)
 
     asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
@@ -306,11 +304,8 @@ check_note_ok <- function(var_name, page_type, show_musical_notation = FALSE) {
       if(asynchronous_api_mode) {
 
         note <- psychTestR::get_global(var_name, state)
-        print('just before sort async note')
-        print(note)
+
         note <- sort_async_note(note)
-        print('just after')
-        print(note)
 
       } else {
         note <- answer$user_response

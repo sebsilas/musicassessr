@@ -803,6 +803,7 @@ present_melody <- function(stimuli,
       transpose_visual_notation <- if(is.null(transpose_visual_notation)) 0L else transpose_visual_notation
 
       clef <- psychTestR::get_global("clef", state)
+
       clef <- if(is.null(clef)) "auto" else clef
 
       if(length(answer_meta_data) < 1L) {
@@ -954,6 +955,7 @@ present_melody <- function(stimuli,
                       reactive_melody_no = reactive_melody_no,
                       db_vars = db_vars,
                       lowest_reading_note = psychTestR::get_global("lowest_reading_note", state),
+                      highest_reading_note = psychTestR::get_global("highest_reading_note", state),
                       feedback = feedback,
                       asynchronous_api_mode = asynchronous_api_mode,
                       key = key,

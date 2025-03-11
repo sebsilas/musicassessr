@@ -60,6 +60,7 @@
 #' @param mute_midi_playback Should MIDI audio feedback be muted on record_midi_pages?
 #' @param db_vars Vars for the DB as a named list.
 #' @param lowest_reading_note
+#' @param highest_reading_note
 #' @param lyrics
 #' @param feedback
 #' @param asynchronous_api_mode
@@ -118,6 +119,7 @@ present_stimuli <- function(stimuli,
                             mute_midi_playback = FALSE,
                             db_vars = NULL,
                             lowest_reading_note = NA,
+                            highest_reading_note = NA,
                             lyrics = NULL,
                             feedback = FALSE,
                             asynchronous_api_mode = FALSE,
@@ -170,6 +172,7 @@ present_stimuli <- function(stimuli,
             is.scalar.logical(mute_midi_playback),
             is.null.or(db_vars, is.list),
             is.na(lowest_reading_note) || is.numeric(lowest_reading_note),
+            is.na(highest_reading_note) || is.numeric(highest_reading_note),
             is.null.or(lyrics, is.scalar.character),
             is.scalar.logical(feedback),
             is.scalar.logical(asynchronous_api_mode),
@@ -212,6 +215,7 @@ present_stimuli <- function(stimuli,
                                                  transposed_message = transposed_message,
                                                  play_first_note_button_text = play_first_note_button_text,
                                                  lowest_reading_note = lowest_reading_note,
+                                                 highest_reading_note = highest_reading_note,
                                                  key = key)
   } else if (stimuli_type == "frequencies") {
     return_stimuli <- present_stimuli_frequencies(stimuli, display_modality, ...)

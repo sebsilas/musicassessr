@@ -350,17 +350,8 @@ set_instrument <- function(instrument_id = NULL,
       psychTestR::set_global("transpose_visual_notation", as.integer(inst$transpose), state)
       psychTestR::set_global("clef", inst$clef, state)
 
-      lowest_reading_note <- inst$lowest_reading_note
-
-      if(lowest_reading_note == "NA") {
-        lowest_reading_note <- NA
-      }
-
-      lowest_reading_note <- as.integer(lowest_reading_note)
-
-      logging::loginfo("lowest_reading_note: %s", lowest_reading_note)
-
-      psychTestR::set_global("lowest_reading_note", lowest_reading_note, state)
+      set_reading_note(type = "lowest_reading_note", inst$lowest_reading_note, state)
+      set_reading_note(type = "highest_reading_note", inst$highest_reading_note, state)
 
       if(set_range) {
 
@@ -384,7 +375,15 @@ set_instrument <- function(instrument_id = NULL,
   }
 
 
+}
 
+set_reading_note <- function(type, note, state) {
+  if(note == "NA") {
+    note <- NA
+  }
+  note <- as.integer(note)
+  logging::loginfo(paste0(type, ": %s"), note)
+  psychTestR::set_global(type, note, state)
 }
 
 

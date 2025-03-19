@@ -1,3 +1,8 @@
+# musicassessr 2.12.6
+
+- PBET updates
+- Add Chinese SAA translations
+
 # musicassessr 2.12.5
 
 - Add correction for `highest_reading_note`.

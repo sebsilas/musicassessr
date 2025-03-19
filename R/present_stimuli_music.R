@@ -888,7 +888,6 @@ show_first_melody_note <- function(give_first_melody_note,
                                    highest_reading_note = NA,
                                    key = NULL) {
 
-
   logging::loginfo("lowest_reading_note: %s", lowest_reading_note)
   logging::loginfo("highest_reading_note: %s", highest_reading_note)
 

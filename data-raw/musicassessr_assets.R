@@ -139,6 +139,7 @@ usethis::use_data(musicassessr_dict_df, insts, insts_table, insts_table2,
 musicassessr_dict_plus_piat <- piat::piat_dict %>%
   as.data.frame() %>%
   mutate(it = NA,
+         ch = NA,
          de = de_f) %>% # Make sure we use the formal
   select(names(musicassessr_dict_df)) %>%
   rbind(musicassessr_dict_df)

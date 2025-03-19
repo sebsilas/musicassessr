@@ -584,7 +584,7 @@ compile_item_trials2 <- function (db_con, current_test_id = NULL, session_id = N
 arrhythmic_decile_sampler_codeblock <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
 
-    arrhythmic_sample <- sample_in_deciles_wrapper(item_bank, num_items_arrhythmic, col_name = "SAA_arrhythmic_difficulty_percentile")
+    arrhythmic_sample <- sample_in_deciles_wrapper(item_bank, num_items_arrhythmic, col_name = "arrhythmic_difficulty_percentile")
 
     psychTestR::set_global(id, arrhythmic_sample, state)
 
@@ -594,7 +594,7 @@ arrhythmic_decile_sampler_codeblock <- function(item_bank, num_items_arrhythmic,
 
 rhythmic_decile_sampler_codeblock <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
-    rhythmic_sample <- sample_in_deciles_wrapper(item_bank, num_items_rhythmic, col_name = "SAA_rhythmic_difficulty_percentile")
+    rhythmic_sample <- sample_in_deciles_wrapper(item_bank, num_items_rhythmic, col_name = "rhythmic_difficulty_percentile")
     psychTestR::set_global(id, rhythmic_sample, state)
 
   })
@@ -653,7 +653,7 @@ arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhy
     logging::loginfo("phase: %s", phase)
     logging::loginfo("n: %s", n)
 
-    arrhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "SAA_arrhythmic_difficulty_percentile", n = n, phase = phase)
+    arrhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "arrhythmic_difficulty_percentile", n = n, phase = phase)
 
     psychTestR::set_global(id, arrhythmic_sample, state)
 
@@ -674,7 +674,7 @@ arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhy
 #' @examples
 rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmic_melody", phase = "test", n = 4) {
   psychTestR::code_block(function(state, ...) {
-    rhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "SAA_rhythmic_difficulty_percentile", n = n, phase = phase)
+    rhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "rhythmic_difficulty_percentile", n = n, phase = phase)
     psychTestR::set_global(id, rhythmic_sample, state)
 
   })
@@ -761,17 +761,17 @@ sample_in_ntiles_helper <- function(item_bank, ntile_no, no_to_sample, col_name 
 }
 
 
-# t_rhy <- sample_in_deciles_wrapper(pbet_hmtm_2024_item_bank, 5, col_name = "SAA_rhythmic_difficulty_percentile")
-# t_arr <- sample_in_deciles_wrapper(pbet_hmtm_2024_item_bank, 5, col_name = "SAA_arrhythmic_difficulty_percentile")
+# t_rhy <- sample_in_deciles_wrapper(pbet_hmtm_2024_item_bank, 5, col_name = "rhythmic_difficulty_percentile")
+# t_arr <- sample_in_deciles_wrapper(pbet_hmtm_2024_item_bank, 5, col_name = "arrhythmic_difficulty_percentile")
 
 # t_rhy <- sample_in_ntiles_wrapper(pbet_hmtm_2024_item_bank,
 #                                   num_items = 8,
 #                                   n = 4, # i.e., quartiles
-#                                   col_name = "SAA_rhythmic_difficulty_percentile")
+#                                   col_name = "rhythmic_difficulty_percentile")
 #
 # t_arr <- sample_in_ntiles_wrapper(pbet_hmtm_2024_item_bank,
 #                                   num_items = 8,
 #                                   n = 4, # i.e., quartiles
-#                                   col_name = "SAA_arrhythmic_difficulty_percentile")
+#                                   col_name = "arrhythmic_difficulty_percentile")
 
 

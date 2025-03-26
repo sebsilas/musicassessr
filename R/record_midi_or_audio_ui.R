@@ -56,8 +56,6 @@ record_midi_or_audio_ui <- function(body = "",
 
   psychTestR::page(ui = shiny::tags$div(
 
-    shiny::tags$head(
-
       # We force this to keep turning on to make sure it doesn't get unset e.g., if there is a reload
       if(asynchronous_api_mode) turn_on_upload_to_s3_mode(log = TRUE),
 
@@ -74,10 +72,7 @@ record_midi_or_audio_ui <- function(body = "",
       shiny::tags$script(set_answer_meta_data(answer_meta_data)),
 
       # Set JS vars for musicassessrdb
-      if(!is.scalar.null(db_vars)) set_answer_meta_data_for_db_as_js_vars(db_vars)
-
-    ),
-    shiny::tags$body(
+      if(!is.scalar.null(db_vars)) set_answer_meta_data_for_db_as_js_vars(db_vars),
 
       if(show_progress) shiny::tags$h4(section_progress),
 
@@ -109,7 +104,6 @@ record_midi_or_audio_ui <- function(body = "",
       if(!page_text_first) page_text,
 
       shiny::tags$script(htmltools::HTML(paste0('apiUrl = "', Sys.getenv("ENDPOINT_URL"), '\"')))
-    )
   ),
   label = label,
   get_answer = get_answer,

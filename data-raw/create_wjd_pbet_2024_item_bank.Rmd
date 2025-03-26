@@ -15,10 +15,16 @@ load_all()
 pbet_hmtm_2024_item_bank <- WJD::WJD_narrowed %>%
   tibble::as_tibble() %>%
   dplyr::filter(freq > 1) %>%
+  dplyr::rename(
+    arrhythmic_difficulty = SAA_arrhythmic_difficulty,
+    rhythmic_difficulty = SAA_rhythmic_difficulty,
+    arrhythmic_difficulty_percentile = SAA_arrhythmic_difficulty_percentile,
+    rhythmic_difficulty_percentile = SAA_rhythmic_difficulty_percentile
+  ) %>% 
   itembankr::set_item_bank_class()
 
 
-use_data(pbet_hmtm_2024_item_bank)
+# use_data(pbet_hmtm_2024_item_bank, overwrite = TRUE)
 
 
 ```
@@ -27,7 +33,7 @@ use_data(pbet_hmtm_2024_item_bank)
 ```{r}
 
 
-#db_con <- musicassessrdb::musicassessr_con()
+# db_con <- musicassessrdb::musicassessr_con()
 db_con <- musicassessrdb::musicassessr_con(db_name = "melody_prod")
 
 dbWriteTable(db_con, 

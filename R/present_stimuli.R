@@ -174,7 +174,7 @@ present_stimuli <- function(stimuli,
             is.na(lowest_reading_note) || is.numeric(lowest_reading_note),
             is.na(highest_reading_note) || is.numeric(highest_reading_note),
             is.null.or(lyrics, is.scalar.character),
-            is.scalar.logical(feedback),
+            is.scalar.logical(feedback) || is.function(feedback),
             is.scalar.logical(asynchronous_api_mode),
             is.null.or(key, is.scalar.character),
             is.null.or(on_complete, is.function)
@@ -358,7 +358,7 @@ retrieve_page_type <- function(page_type = character(),
             is.scalar.logical(mute_midi_playback),
             is.null.or(db_vars, is.list),
             is.null.or(lyrics, is.scalar.character),
-            is.scalar.logical(feedback),
+            is.scalar.logical(feedback) || is.function(feedback),
             is.scalar.logical(asynchronous_api_mode),
             is.null.or(on_complete, is.function)
             )

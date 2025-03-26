@@ -1,10 +1,14 @@
+
 body {
+  font-size: 20px;
   line-height: 2em;
+  background: hsla(54, 100%, 98%, 1);
+  background: linear-gradient(90deg, hsla(54, 100%, 98%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
+  background: -moz-linear-gradient(90deg, hsla(54, 100%, 98%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
+  background: -webkit-linear-gradient(90deg, hsla(54, 100%, 98%, 1) 0%, hsla(0, 0%, 100%, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#FFFEF5", endColorstr="#FFFFFF", GradientType=1);
 }
 
-p, h1, h2, h3, h4, img {
-  margin: 20px 0 20px 0;
-}
 
 ul, ol {
     text-align: center;
@@ -19,6 +23,48 @@ ul, ol {
  margin-left: -2em;
 }
 
+
+/* buttons */
+
+.btn,
+.btn:focus {
+  padding: 10px 15px;
+
+  background: hsla(76, 51%, 54%, 1);
+  background: linear-gradient(90deg, hsla(76, 51%, 54%, 1) 0%, hsla(123, 44%, 46%, 1) 100%);
+  background: -moz-linear-gradient(90deg, hsla(76, 51%, 54%, 1) 0%, hsla(123, 44%, 46%, 1) 100%);
+  background: -webkit-linear-gradient(90deg, hsla(76, 51%, 54%, 1) 0%, hsla(123, 44%, 46%, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#A5C54D", endColorstr="#42AA47", GradientType=1);
+
+  border: solid #fff 3px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.5px;
+  border-radius: 0;
+  margin-top: 15px;
+  outline: none;
+}
+
+.btn:hover {
+  color: #A5C54D;
+  border-color: #A5C54D;
+  background: #fff;
+}
+
+.btn:active,
+.btn:active:focus {
+  background-color: #25414b;
+  border-radius: 0;
+  outline: none;
+
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+
+
+
 #sheet_music {
   margin: auto;
 }
@@ -27,6 +73,23 @@ ul, ol {
 ._hidden {
   display: none;
   visibility: hidden;
+}
+
+/* lyrics */
+
+/* miscel */
+
+#lyrics {
+  margin-top: 10px;
+  width: 35%;
+  background: #fafafa;
+  border: solid 2px #e3e3e3;
+}
+
+
+#lyrics h3 {
+  color: #25414b;
+  font-weight: 400;
 }
 
 /* spinner */

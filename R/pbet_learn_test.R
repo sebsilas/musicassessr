@@ -243,9 +243,22 @@ learn_test_pbet_sampler <- function(no_trials) {
 
     # Get sample
     item_bank_filtered <- Berkowitz_selected_musicxml_item_bank %>%
-      dplyr::filter(clef == !!clef) %>%
-      dplyr::filter(lowest_note > lowest_reading_note,
-                    highest_note < highest_reading_note) %>%
+      dplyr::filter(clef == !! clef)
+
+    if(!is.scalar.na(lowest_reading_note)) {
+
+      item_bank_filtered <- item_bank_filtered %>%
+        dplyr::filter(lowest_note > lowest_reading_note)
+
+    }
+    if(!is.scalar.na(highest_reading_note)) {
+
+      item_bank_filtered <- item_bank_filtered %>%
+        dplyr::filter(highest_note < highest_reading_note)
+
+    }
+
+    item_bank_filtered <- item_bank_filtered %>%
       dplyr::filter(dplyr::between(N, 6, 24))
 
     user_sample <- item_bank_filtered %>%
@@ -257,8 +270,12 @@ learn_test_pbet_sampler <- function(no_trials) {
       dplyr::mutate(display_modality = sample(c(
         rep("visual", nrow(.) / 2), rep("auditory", nrow(.) / 2)
       ))) %>%
-      # Randomise order again
-      dplyr::slice_sample(n = no_trials)
+      dplyr::group_by(display_modality) %>%
+      # Randomise order again, but ensure balance of trial display modalities
+      dplyr::slice_sample(n = no_trials/2) %>%
+      dplyr::ungroup()
+
+    logging::loginfo("user_sample$display_modality: %s", user_sample$display_modality)
 
     examples <- item_bank_filtered %>%
       dplyr::filter(!file_name %in% user_sample$file_name,
@@ -382,14 +399,11 @@ test_phase <- function(no_trials,
 
       psychTestR::reactive_page(function(state, ...) {
 
-        page_label <- paste0("play_by_ear_test_trial_", trial_no, "_attempt_1")
-
 
         logging::loginfo("trial_no: %s", trial_no)
         logging::loginfo("no_trials: %s", no_trials)
 
-        user_sample <- psychTestR::get_global("trials_sample", state) %>%
-            dplyr::slice(n = trial_no)
+        user_sample <- psychTestR::get_global("trials_sample", state)
 
         quaver_seconds <- 60 / bpm / 2
         trial_dat <- user_sample[trial_no, ]
@@ -401,23 +415,18 @@ test_phase <- function(no_trials,
 
         additional <- "NA" # For test, we have no visual information
 
-        page_label <- paste0("play_by_ear_learn_trial_",
-                             trial_no,
-                             "_attempt_",
-                             attempt)
-
-        display_modality <- trial_dat$display_modality
+        page_label <- paste0("play_by_ear_test_trial_", trial_no, "_attempt_1")
+        # Only one attempt in test...
 
         item_id <- trial_dat$item_id
         # Setup DB vars
         db_vars <- create_db_vars_template()
-        db_vars$attempt <- attempt
+        db_vars$attempt <- 1L
         db_vars$item_id <- item_id
         db_vars$page_label <- page_label
-        db_vars$display_modality <- display_modality
-        db_vars$phase <- phase
+        db_vars$phase <- "test"
         db_vars$feedback <- FALSE
-        db_vars$additional <- additional
+        db_vars$additional <- "NA"
         db_vars$test_id <- 2L
 
         session_id <- psychTestR::get_global("session_id", state) %>% get_promise_value()
@@ -431,30 +440,22 @@ test_phase <- function(no_trials,
         db_vars$module <- psychTestR::get_local(".module", state)
         db_vars$rhythmic <- TRUE
         db_vars$user_id <- psychTestR::get_global("user_id", state)
-
+        db_vars$display_modality <- "auditory"
 
         psychTestR::set_global('melody_block_paradigm', "visual_auditory_learn_test_paradigm", state)
-        psychTestR::set_global('number_attempts', attempt, state)
-        psychTestR::set_global('additional', additional, state)
+        psychTestR::set_global('number_attempts', 1L, state)
+        psychTestR::set_global('additional', "NA", state)
         psychTestR::set_global('item_id', item_id, state)
         psychTestR::set_global('page_label', page_label, state)
-        psychTestR::set_global("display_modality", display_modality, state)
-        psychTestR::set_global("phase", phase, state)
+        psychTestR::set_global("display_modality", "auditory", state)
+        psychTestR::set_global("phase", "test", state)
 
         transpose <- psychTestR::get_global("transpose_visual_notation", state)
         clef <- psychTestR::get_global("clef", state)
 
-        logging::loginfo("display_modality: %s", display_modality)
+        logging::loginfo("trial_dat$display_modality (learn phase): %s", trial_dat$display_modality)
         logging::loginfo("transpose: %s", transpose)
         logging::loginfo("clef: %s", clef)
-
-
-        # In the test phase transpose the melody so it is in line with the user's reading clef
-        if (phase == "test" && display_modality == "visual" && is.numeric(transpose)) {
-          abs_melody <- abs_melody - transpose
-          db_vars$stimuli <- abs_melody
-        }
-
 
         pbet_trial(
           abs_melody,
@@ -467,11 +468,12 @@ test_phase <- function(no_trials,
           attempt = 1L,
           bpm,
           page_type,
-          trial_no = trial_no,
+          trial_no = which(trial_nos == trial_no), # This is only used for section progress. We need to make sure the number is right here, since the order was randomised before.
           no_trials = no_trials,
           page_label = page_label,
           phase = "test",
-          asynchronous_api_mode = asynchronous_api_mode
+          asynchronous_api_mode = asynchronous_api_mode,
+          learn_phase_display_modality = trial_dat$display_modality
         )
 
       })
@@ -493,7 +495,21 @@ pbet_trial <- function(abs_melody,
                        page_label = "play_by_ear",
                        phase = "test",
                        mute_midi_playback = TRUE,
-                       asynchronous_api_mode = TRUE) {
+                       asynchronous_api_mode = TRUE,
+                       learn_phase_display_modality = NULL) {
+
+  logging::loginfo("learn_phase_display_modality: %s", learn_phase_display_modality)
+
+
+  if(!is.null(learn_phase_display_modality)) {
+    # In the test phase transpose the melody so it is in line with the user's reading clef
+    if (phase == "test" && learn_phase_display_modality == "visual" && is.numeric(transpose)) {
+      abs_melody <- abs_melody - transpose
+      db_vars$stimuli <- abs_melody
+    }
+
+  }
+
   present_stimuli(
     stimuli = abs_melody,
     durations = durations,
@@ -565,15 +581,11 @@ learn_trial <- function(trial_no,
   psychTestR::reactive_page(function(state, ...) {
 
     logging::loginfo("trial_no: %s", trial_no)
-    logging::loginfo("no_trials: %s", no_trials)
-
 
     if (phase == "example") {
-      user_sample <- psychTestR::get_global("examples_sample", state) %>%
-        dplyr::slice(n = trial_no)
+      user_sample <- psychTestR::get_global("examples_sample", state)
     } else {
-      user_sample <- psychTestR::get_global("trials_sample", state) %>%
-        dplyr::slice(n = trial_no)
+      user_sample <- psychTestR::get_global("trials_sample", state)
     }
 
 
@@ -581,15 +593,14 @@ learn_trial <- function(trial_no,
     trial_dat <- user_sample[trial_no, ]
     no_trials <- nrow(user_sample)
 
+    logging::loginfo("no_trials: %s", no_trials)
+
+
     # For DB storage
     abs_melody <- itembankr::str_mel_to_vector(trial_dat$abs_melody)
     durations <- itembankr::str_mel_to_vector(trial_dat$durations) * quaver_seconds
 
     musicxml_file <- paste0("assets/", trial_dat$file_name)
-
-    additional <- trial_dat %>%
-      dplyr::select(flat_or_sharp, no_sharps_flats, no_bars, file_name) %>%
-      dplyr::mutate(bpm = bpm)
 
     page_label <- paste0("play_by_ear_learn_trial_",
                          trial_no,
@@ -597,6 +608,17 @@ learn_trial <- function(trial_no,
                          attempt)
 
     display_modality <- trial_dat$display_modality
+
+    if(display_modality == "visual") {
+      additional <- trial_dat %>%
+        dplyr::select(flat_or_sharp, no_sharps_flats, no_bars, file_name) %>%
+        dplyr::mutate(bpm = bpm)
+    } else {
+      additional <- "NA"
+    }
+
+    print("HAHSHSAD*@")
+    print(additional)
 
     item_id <- trial_dat$item_id
     # Setup DB vars
@@ -637,13 +659,6 @@ learn_trial <- function(trial_no,
     logging::loginfo("display_modality: %s", display_modality)
     logging::loginfo("transpose: %s", transpose)
     logging::loginfo("clef: %s", clef)
-
-
-    # In the test phase transpose the melody so it is in line with the user's reading clef
-    if (phase == "test" && display_modality == "visual" && is.numeric(transpose)) {
-      abs_melody <- abs_melody - transpose
-      db_vars$stimuli <- abs_melody
-    }
 
 
     if (display_modality == "visual") {
@@ -699,6 +714,10 @@ learn_trial_visual <- function(musicxml_file,
                                db_vars,
                                mute_midi_playback,
                                asynchronous_api_mode) {
+
+  print('HAHAH!!')
+  print(db_vars$additional)
+
   present_stimuli(
     stimuli = musicxml_file,
     stimuli_type = "musicxml_file",
@@ -742,10 +761,10 @@ learn_practice_trial <- function(trial_no,
     psychTestR::reactive_page(function(state, ...) {
       if (phase == "example") {
         trial_dat <- psychTestR::get_global("examples_sample", state) %>%
-          dplyr::slice(n = trial_no)
+          dplyr::slice(trial_no)
       } else {
         trial_dat <- psychTestR::get_global("trials_sample", state) %>%
-          dplyr::slice(n = trial_no)
+          dplyr::slice(trial_no)
       }
 
       trial_paradigm <- paradigm(page_type = page_type)
@@ -759,17 +778,16 @@ learn_practice_trial <- function(trial_no,
         attempt
       )
       item_id <- trial_dat$item_id
-      additional <- if (length(trial_dat$additional) == 0)
-        NA
-      else
-        trial_dat$additional
+
+      additional <- if (length(trial_dat$additional) == 0) NA else trial_dat$additional
 
       # Setup DB vars
       db_vars <- create_db_vars_template()
       db_vars$attempt <- attempt
       db_vars$item_id <- item_id
       db_vars$page_label <- page_label
-      db_vars$display_modality <- trial_dat$display_modality
+      display_modality <- trial_dat$display_modality
+      db_vars$display_modality <- display_modality
       db_vars$phase <- phase
       db_vars$feedback <- FALSE
       db_vars$additional <- additional
@@ -788,6 +806,15 @@ learn_practice_trial <- function(trial_no,
       db_vars$module <- psychTestR::get_local(".module", state)
       db_vars$rhythmic <- TRUE
       db_vars$user_id <- psychTestR::get_global("user_id", state)
+
+
+      psychTestR::set_global('melody_block_paradigm', "visual_auditory_learn_test_paradigm", state)
+      psychTestR::set_global('number_attempts', attempt, state)
+      psychTestR::set_global('additional', additional, state)
+      psychTestR::set_global('item_id', item_id, state)
+      psychTestR::set_global('page_label', page_label, state)
+      psychTestR::set_global("display_modality", display_modality, state)
+      psychTestR::set_global("phase", phase, state)
 
       present_stimuli(
         stimuli = itembankr::str_mel_to_vector(trial_dat$abs_melody),
@@ -814,17 +841,6 @@ learn_practice_trial <- function(trial_no,
 
     })
 
-
-
-  trial <- trial %>%
-    init_trial_time_started(
-      attempt,
-      additional = additional,
-      item_id = item_id,
-      page_label = page_label,
-      display_modality = trial_dat$display_modality,
-      phase = phase
-    )
 
   return(trial)
 }

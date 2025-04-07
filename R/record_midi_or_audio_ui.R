@@ -128,7 +128,16 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   print(setdiff(db_var_names, names(db_vars)))
   stopifnot(length(setdiff(db_var_names, names(db_vars))) == 0)
 
+  print("YAYAYAYAY*@")
+  print(db_vars$additional)
+
   additional <- if(is.scalar.character(db_vars$additional)) db_vars$additional else jsonlite::toJSON(db_vars$additional, auto_unbox = TRUE)
+
+  db_vars$additional <- additional
+
+  print("jasuda8sd@392323AY*@")
+  print(db_vars$additional)
+
 
   js_holder <- db_var_names %>%
     purrr::map(function(name) {

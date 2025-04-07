@@ -113,48 +113,63 @@ get_answer_pyin_note_only <- function(input, type = "notes", state, ...) {
 #' @examples
 get_answer_pyin_long_note <- function(input, state, ...) {
 
-  audio_file <- get_audio_file(input, state)
 
-  pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
+  asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
-  if(is.scalar.na.or.null(pyin_res)) {
 
-    long_note_pitch_measures <- list(
-      "long_note_accuracy" = NA,
-      "long_note_var" = NA,
-      "long_note_dtw_distance" = NA,
-      "long_note_autocorrelation_mean" = NA,
-      "long_note_run_test" = NA,
-      "long_note_no_cpts" = NA,
-      "long_note_beginning_of_second_cpt" = NA,
-      "long_note_na_count" = NA,
-      "long_note_dtw_distance_max" = NA,
-      "long_note_accuracy_max" = NA,
-      "long_note_freq_max" = NA,
-      "long_note_freq_min" = NA
-    )
+  if(length(asynchronous_api_mode) != 0L && asynchronous_api_mode) {
 
-    noise.classification <- list(prediction = "noise", failed_tests = 'na_count')
+    res <- list(key = input$key,
+         file_url = input$file_url,
+         user_satisfied = input$user_satisfied)
 
   } else {
-    long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res$freq)
-    noise.classification <- classify_whether_noise(long_note_pitch_measures)
+
+    audio_file <- get_audio_file(input, state)
+
+    pyin_res <- pyin::pyin(audio_file, type = "pitch_track")
+
+    if(is.scalar.na.or.null(pyin_res)) {
+
+      long_note_pitch_measures <- list(
+        "long_note_accuracy" = NA,
+        "long_note_var" = NA,
+        "long_note_dtw_distance" = NA,
+        "long_note_autocorrelation_mean" = NA,
+        "long_note_run_test" = NA,
+        "long_note_no_cpts" = NA,
+        "long_note_beginning_of_second_cpt" = NA,
+        "long_note_na_count" = NA,
+        "long_note_dtw_distance_max" = NA,
+        "long_note_accuracy_max" = NA,
+        "long_note_freq_max" = NA,
+        "long_note_freq_min" = NA
+      )
+
+      noise.classification <- list(prediction = "noise", failed_tests = 'na_count')
+
+    } else {
+      long_note_pitch_measures <- long_note_pitch_metrics(as.numeric(input$stimuli), pyin_res$freq)
+      noise.classification <- classify_whether_noise(long_note_pitch_measures)
+    }
+
+    display_noise_trial_message(noise.classification, state)
+
+    res <- c(
+      list(file = audio_file,
+           stimuli = as.numeric(input$stimuli),
+           onset = if(is.scalar.na.or.null(pyin_res)) NA else pyin_res$onset,
+           freq = if(is.scalar.na.or.null(pyin_res)) NA else pyin_res$freq,
+           noise_classification = noise.classification$prediction,
+           failed_tests = noise.classification$failed_tests),
+      # Append measures
+      long_note_pitch_measures
+
+    )
+
   }
 
-
-  display_noise_trial_message(noise.classification, state)
-
-  c(
-    list(file = audio_file,
-         stimuli = as.numeric(input$stimuli),
-         onset = if(is.scalar.na.or.null(pyin_res)) NA else pyin_res$onset,
-         freq = if(is.scalar.na.or.null(pyin_res)) NA else pyin_res$freq,
-         noise_classification = noise.classification$prediction,
-         failed_tests = noise.classification$failed_tests),
-    # Append measures
-    long_note_pitch_measures
-
-  )
+  return(res)
 
 
 }
@@ -680,6 +695,8 @@ get_answer_rhythm_production <- function(input, state, type = c("midi", "audio",
     res,
     res_scored,
     list(
+      key = input$key,
+      file_url = input$file_url,
       user_satisfied = if (is.scalar.na.or.null(input$user_satisfied)) NA else input$user_satisfied,
       user_rating = if (is.scalar.na.or.null(input$user_rating)) NA else input$user_rating,
       attempt = if (length(input$attempt) == 0) NA else as.numeric(input$attempt)

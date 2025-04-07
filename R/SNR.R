@@ -205,6 +205,7 @@ record_signal_page <- function(page_text = shiny::tags$div(
       db_vars <- create_db_vars_template()
       db_vars$file_type <- "signal"
       db_vars$noise_filename <- psychTestR::get_global("SNR_noise", state)
+      db_vars$feedback <- FALSE
     } else {
       db_vars <- NULL
     }

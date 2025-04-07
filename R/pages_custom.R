@@ -26,7 +26,7 @@ select_musical_instrument_page <- function(set_range_based_on_selection = TRUE,
                             prompt = prompt,
                             next_button_text = psychTestR::i18n("Next"),
                             choices = as.vector(unlist(insts_dict)),
-                            alternative_choice = TRUE,
+                            alternative_choice = include_other_in_dropdown,,
                             alternative_text = psychTestR::i18n("other_please_state"),
                             on_complete = function(state, answer, ...) {
 

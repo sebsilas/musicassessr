@@ -805,8 +805,10 @@ function getUTCDateTime() {
 }
 
 function vectorToString(vector) {
+
   if (!Array.isArray(vector)) {
-    return "Input is not a valid array";
+    console.warn("Input is not a valid array");
+    return String(vector)
   }
 
   return vector.join(', ');

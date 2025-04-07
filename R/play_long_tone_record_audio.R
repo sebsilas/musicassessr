@@ -150,7 +150,6 @@ play_long_tone_record_audio_page <- function(note = NULL,
     asynchronous_api_mode <- psychTestR::get_global("asynchronous_api_mode", state)
 
 
-
     db_vars <- if(asynchronous_api_mode) {
 
       module <- psychTestR::get_local(".module", state)
@@ -185,7 +184,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
                     stimuli_type = "midi_notes",
                     display_modality = "auditory",
                     page_title = page_title,
-                    page_text = page_text,
+                    page_text = shiny::tags$div(set_melodic_stimuli(note, "NA"), page_text),
                     page_type = page_type,
                     page_label = page_label,
                     play_button_text = play_button_text,

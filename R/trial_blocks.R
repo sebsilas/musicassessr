@@ -78,6 +78,7 @@ record_key_presses_block <- function(no_pages,
 #' @param get_answer
 #' @param page_text
 #' @param page_title
+#' @param db_vars
 #'
 #' @return
 #' @export
@@ -88,13 +89,31 @@ record_audio_block <- function(no_pages,
                                feedback = NULL,
                                get_answer = get_answer_pyin,
                                page_title = psychTestR::i18n("Record_audio"),
-                               page_text = psychTestR::i18n("click_to_record_audio")) {
+                               page_text = psychTestR::i18n("click_to_record_audio"),
+                               db_vars = NULL) {
   pages <- psychTestR::join(
 
-    rep(list(record_audio_page(get_answer = get_answer,
-                               label = label,
-                               page_title = page_title,
-                               page_text = page_text)), no_pages)
+    rep(list(
+
+      psychTestR::reactive_page(function(state, ...) {
+
+        if(psychTestR::get_global("asynchronous_api_mode", state)) {
+
+          db_vars$session_id <- musicassessr::get_promise_value(psychTestR::get_global("session_id", state))
+          db_vars$trial_time_started <- Sys.time()
+
+        }
+
+        record_audio_page(get_answer = get_answer,
+                          label = label,
+                          page_title = page_title,
+                          page_text = page_text,
+                          db_vars = db_vars)
+
+      })
+
+
+      ), no_pages)
   )
   if(!is.null(feedback)) {
     pages <- add_feedback(pages, feedback)

@@ -285,6 +285,7 @@ tidy_melodies <- function(melody_results, ...) {
 
     x$pyin_pitch_track <- NULL
     x$production <- NULL
+    x$pyin_style_res <- NULL
 
 
     lapply(x, function(y) {

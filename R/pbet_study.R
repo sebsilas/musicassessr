@@ -102,7 +102,7 @@ questionnaires <- function() {
       psychTestR::join(
 
         select_musical_instrument_page(set_range_based_on_selection = FALSE,
-                                       include_other_in_dropdown = TRUE,
+                                       include_other_in_dropdown = FALSE,
                                        with_voice = TRUE,
                                        prompt = psychTestR::i18n("main_instrument_question")),
 

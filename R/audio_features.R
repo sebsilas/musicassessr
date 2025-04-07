@@ -43,10 +43,10 @@ extract_audio_features <- function(audio_file_path) {
 
   # Combine all features into one data frame
   features_df <- dplyr::bind_cols(
-                                  mfcc_df,
-                                  spec_df,
-                                  tempo_df,
-                                  ecoacoustics_df) %>%
+    mfcc_df,
+    spec_df,
+    tempo_df,
+    ecoacoustics_df) %>%
     dplyr::mutate(file_key = basename(audio_file_path)) %>%
     dplyr::relocate(file_key)
 
@@ -54,8 +54,7 @@ extract_audio_features <- function(audio_file_path) {
 }
 
 
-
-# Function to extract temporal features (example with zero-crossing rate)
+# Function to extract temporal features including envelope features
 extract_temporal_features <- function(audio) {
 
   # Extract basic information
@@ -63,12 +62,33 @@ extract_temporal_features <- function(audio) {
   sample_rate <- audio@samp.rate
   bit_depth <- audio@bit
 
-  # Calculate temporal features
-  env <- seewave::env(audio, plot = FALSE)                # Amplitude envelope
-  rms_val <- seewave::rms(env)            # Root mean square
-  zcr <- seewave::zcr(audio, wl = NULL)                # Zero-crossing rate
+  # Calculate amplitude envelope
+  env <- seewave::env(audio, plot = FALSE)
+  norm_env <- env / max(env)
 
-  shannon_entropy <- seewave::H(audio)      # Shannon entropy
+  # Attack time
+  attack_start <- which(norm_env >= 0.1)[1]
+  attack_end <- which(norm_env >= 0.9)[1]
+  attack_time <- (attack_end - attack_start) / sample_rate
+
+  # Sustain level and decay time
+  sustain_level <- mean(norm_env[(attack_end + 1):(length(norm_env) / 2)])
+  decay_end <- which(norm_env <= sustain_level)[1]
+  decay_time <- (decay_end - attack_end) / sample_rate
+
+  # Release time
+  release_start <- which(norm_env == max(norm_env[(length(norm_env) / 2):length(norm_env)]))[1]
+  release_end <- which(norm_env <= 0.1)[1]
+  release_time <- (release_end - release_start) / sample_rate
+
+  # Temporal centroid
+  time_vector <- seq(0, length(norm_env) - 1) / sample_rate
+  temporal_centroid <- sum(time_vector * norm_env) / sum(norm_env)
+
+  # Root Mean Square (RMS) and Zero-Crossing Rate (ZCR)
+  rms_val <- seewave::rms(env)
+  zcr <- seewave::zcr(audio, wl = NULL)
+  shannon_entropy <- seewave::H(audio)
 
   # Create a list to hold the features
   temporal_features <- tibble::tibble(
@@ -77,11 +97,17 @@ extract_temporal_features <- function(audio) {
     bit_depth = bit_depth,
     rms = rms_val,
     zero_crossing_rate = zcr,
-    shannon_entropy = shannon_entropy
+    shannon_entropy = shannon_entropy,
+    attack_time = attack_time,
+    decay_time = decay_time,
+    sustain_level = sustain_level,
+    release_time = release_time,
+    temporal_centroid = temporal_centroid
   )
 
   return(temporal_features)
 }
+
 
 
 
@@ -134,57 +160,4 @@ compute_ecoacoustics <- function(audio) {
 
 
 # tt <- extract_audio_features("~/lyricassessr/data-raw/Vocals/Tenor2/Eh/Tenor2_Eh_24.wav")
-
-# acoustic_richness_index = AR(f) needs to be done at level of files
-
-# Need to add beta statistics from Sound/Synthesis R book
-#
-# t_wave <- tuneR::readWave("~/lyricassessr/data-raw/Vocals/Tenor2/Eh/Tenor2_Eh_24.wav")
-#
-# seewave::spectro(t_wave)
-
-#
-# audio <- tuneR::readWave("~/lyricassessr/data-raw/Vocals/Tenor2/Eh/Tenor2_Eh_24.wav")
-#
-# mfcc_df <- tuneR::melfcc(audio) %>%
-#   tibble::as_tibble() %>%
-#   dplyr::summarise(dplyr::across(dplyr::everything(), list(mean = mean, sd = sd)))
-
-
-# hrep::milne_pc_spec_dist
-
-#
-
-# x <- hrep::.wave(rep(10, times = 20), sample_rate = 1)
-#
-# plot(x)
-#
-# y <- hrep::filter_adsr(
-#   x,
-#   attack = 3,
-#   decay = 2,
-#   sustain = 0.7,
-#   hold = 5,
-#   release = 2
-# )
-#
-# y %>%
-#   tibble::as_tibble() %>%
-#     ggplot(aes(x = time, y = displacement)) +
-#       geom_line() +
-#       theme_minimal() +
-#       scale_x_continuous(breaks = seq(1, 20, by = 1))
-#
-# plot(y)
-#
-# expect_equal(
-#   as.numeric(y),
-#   c(
-#     0, 10/3, 20/3, 10,
-#     8.5,
-#     7, 7, 7, 7, 7, 7,
-#     3.5,
-#     0, 0, 0, 0, 0, 0, 0, 0
-#   )
-# )
 

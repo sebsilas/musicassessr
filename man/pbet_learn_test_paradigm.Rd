@@ -8,11 +8,12 @@ pbet_learn_test_paradigm(
   no_trials = 4L,
   bpm = 100,
   mute_midi_playback = TRUE,
-  asynchronous_api_mode = TRUE
+  asynchronous_api_mode = TRUE,
+  with_examples = TRUE
 )
 }
 \arguments{
-\item{asynchronous_api_mode}{}
+\item{with_examples}{}
 }
 \description{
 PBET learn test paradigm

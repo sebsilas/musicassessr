@@ -236,14 +236,20 @@ pbet_learn_test_trial_logic <- function(no_trials,
 
 learn_test_pbet_sampler <- function(no_trials) {
   psychTestR::code_block(function(state, ...) {
+
     clef <- psychTestR::get_global("clef", state)
 
     lowest_reading_note <- psychTestR::get_global("lowest_reading_note", state)
     highest_reading_note <- psychTestR::get_global("highest_reading_note", state)
 
     # Get sample
-    item_bank_filtered <- Berkowitz_selected_musicxml_item_bank %>%
-      dplyr::filter(clef == !! clef)
+    if(clef %in% c("treble", "bass") ) {
+      item_bank_filtered <- Berkowitz_selected_musicxml_item_bank %>%
+        dplyr::filter(clef == !! clef)
+    } else {
+      item_bank_filtered <- Berkowitz_selected_musicxml_item_bank
+    }
+
 
     if(!is.scalar.na(lowest_reading_note)) {
 
@@ -266,14 +272,27 @@ learn_test_pbet_sampler <- function(no_trials) {
       dplyr::slice_sample(n = ceiling(no_trials / 4)) %>% # Handle case of under 4 trials with ceiling
       # Randomise order (and also handle case for < 4 trials i.e., remove any extras as a result of the quartile sampling)
       dplyr::slice_sample(n = no_trials) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(display_modality = sample(c(
-        rep("visual", nrow(.) / 2), rep("auditory", nrow(.) / 2)
-      ))) %>%
-      dplyr::group_by(display_modality) %>%
-      # Randomise order again, but ensure balance of trial display modalities
-      dplyr::slice_sample(n = no_trials/2) %>%
       dplyr::ungroup()
+
+    print("user_sample...")
+    print(user_sample)
+
+      user_sample <- user_sample %>%
+        dplyr::mutate(display_modality = sample(c(
+          rep("visual", nrow(.) / 2), rep("auditory", nrow(.) / 2)
+        )))
+
+      print("user_sample2...")
+      print(user_sample)
+
+      user_sample <- user_sample %>%
+        dplyr::group_by(display_modality) %>%
+        # Randomise order again, but ensure balance of trial display modalities
+        dplyr::slice_sample(n = no_trials/2) %>%
+        dplyr::ungroup()
+
+      print("user_sample3...")
+      print(user_sample)
 
     logging::loginfo("user_sample$display_modality: %s", user_sample$display_modality)
 

@@ -617,9 +617,6 @@ learn_trial <- function(trial_no,
       additional <- "NA"
     }
 
-    print("HAHSHSAD*@")
-    print(additional)
-
     item_id <- trial_dat$item_id
     # Setup DB vars
     db_vars <- create_db_vars_template()
@@ -714,9 +711,6 @@ learn_trial_visual <- function(musicxml_file,
                                db_vars,
                                mute_midi_playback,
                                asynchronous_api_mode) {
-
-  print('HAHAH!!')
-  print(db_vars$additional)
 
   present_stimuli(
     stimuli = musicxml_file,

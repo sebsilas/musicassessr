@@ -105,6 +105,17 @@ get_note_until_satisfied_loop <- function(prompt_text,
 
 
 
+#' Get audio file job process
+#'
+#' @param asynchronous_api_mode
+#' @param state_var_name
+#' @param var_name_to_set_result
+#' @param var_to_take_from_message
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 get_audio_file_job_process <- function(asynchronous_api_mode,
                                        state_var_name = "wav_file",
                                        var_name_to_set_result,

@@ -29,8 +29,9 @@ musicassessr_init <- function(app_name = "",
                               username = NULL,
                               get_user_info = TRUE,
                               redirect_on_failure_url = "https://www.google.com/",
-                              async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+                              async_success_msg = if(is.scalar.character(username)) paste0(psychTestR::i18n("Hello"), " ", username, "!") else psychTestR::i18n("lets_proceed"),
                               use_presigned_url = TRUE) {
+
 
 
   psychTestR::join(
@@ -237,7 +238,7 @@ return_correct_entry_page <- function(asynchronous_api_mode,
                                       username,
                                       language = "en",
                                       session_token = NULL,
-                                      async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+                                      async_success_msg = if(is.scalar.character(username)) paste0(psychTestR::i18n("Hello"), " ", username, "!") else psychTestR::i18n("lets_proceed"),
                                       use_presigned_url = TRUE,
                                       next_button_text = psychTestR::i18n("Next")) {
 
@@ -245,9 +246,12 @@ return_correct_entry_page <- function(asynchronous_api_mode,
     is.null.or(session_token, is.character)
   )
 
+  logging::loginfo("Return correct entry page...")
+  logging::loginfo("username: %s", username)
+
   if(asynchronous_api_mode && is.null(user_id) && is.null(username)) {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p('You could not be validated.'))
-  } else if(asynchronous_api_mode && !is.null(user_id) && !is.null(username)) {
+  } else if(asynchronous_api_mode && (!is.null(user_id) || !is.null(username) )) {
     ui <- async_success_ui(username, async_success_msg, use_presigned_url)
   } else {
     ui <- shiny::tags$div(musicassessr_css(), shiny::tags$p(psychTestR::i18n("lets_proceed")))
@@ -264,9 +268,12 @@ return_correct_entry_page <- function(asynchronous_api_mode,
 }
 
 
-async_success_ui <- function(username,
-                             msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+async_success_ui <- function(username = NULL,
+                             msg = if(is.scalar.character(username)) paste0(psychTestR::i18n("Hello"), " ", username, "!") else psychTestR::i18n("lets_proceed"),
                              use_presigned_url = TRUE) {
+
+  logging::loginfo("username: %s", username)
+
   shiny::tags$div(
     musicassessr_css(),
     turn_on_upload_to_s3_mode(log = TRUE),

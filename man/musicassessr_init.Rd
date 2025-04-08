@@ -16,7 +16,9 @@ musicassessr_init(
   username = NULL,
   get_user_info = TRUE,
   redirect_on_failure_url = "https://www.google.com/",
-  async_success_msg = paste0(psychTestR::i18n("Hello"), " ", username, "!"),
+  async_success_msg = if (is.scalar.character(username))
+    paste0(psychTestR::i18n("Hello"), " ", username, "!") else
+    psychTestR::i18n("lets_proceed"),
   use_presigned_url = TRUE
 )
 }

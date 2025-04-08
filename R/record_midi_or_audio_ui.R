@@ -126,18 +126,12 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
   # Leave the is.nulls() above before the stopifnot, so that e.g., onset is created, if it doesn't already exist
 
   print(setdiff(db_var_names, names(db_vars)))
-  stopifnot(length(setdiff(db_var_names, names(db_vars))) == 0)
 
-  print("YAYAYAYAY*@")
-  print(db_vars$additional)
+  stopifnot(length(setdiff(db_var_names, names(db_vars))) == 0)
 
   additional <- if(is.scalar.character(db_vars$additional)) db_vars$additional else jsonlite::toJSON(db_vars$additional, auto_unbox = TRUE)
 
   db_vars$additional <- additional
-
-  print("jasuda8sd@392323AY*@")
-  print(db_vars$additional)
-
 
   js_holder <- db_var_names %>%
     purrr::map(function(name) {
@@ -176,6 +170,14 @@ db_var_names <- c("stimuli",
   "page_label",
   "module")
 
+#' Create a template for db_vars
+#'
+#' @param init_with_time_started
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 create_db_vars_template <- function(init_with_time_started = TRUE) {
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
   empty_obj$trial_time_started <- Sys.time()

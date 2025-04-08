@@ -1,5 +1,15 @@
 
 
+#' Score rhythm production
+#'
+#' @param stimuli_durations
+#' @param user_durations
+#' @param bpm
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 score_rhythm_production <- function(stimuli_durations, user_durations, bpm = NULL) {
 
   if(is.scalar.na.or.null(user_durations) || length(user_durations) == 0) {

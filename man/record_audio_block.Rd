@@ -11,11 +11,12 @@ record_audio_block(
   get_answer = get_answer_pyin,
   page_title = psychTestR::i18n("Record_audio"),
   page_text = psychTestR::i18n("click_to_record_audio"),
-  db_vars = NULL
+  db_vars = NULL,
+  code_block_after = NULL
 )
 }
 \arguments{
-\item{db_vars}{}
+\item{code_block_after}{}
 }
 \description{
 A block of record audio pages

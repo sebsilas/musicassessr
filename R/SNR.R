@@ -170,11 +170,13 @@ record_background_page <- function(asynchronous_api_mode) {
     if(asynchronous_api_mode) {
       db_vars <- create_db_vars_template()
       db_vars$file_type <- "noise"
+      db_vars$phase <- "setup"
     } else {
       db_vars <- NULL
     }
 
     record_audio_page(page_text = shiny::tags$div(
+      set_melodic_stimuli("NA", "NA"),
       shiny::tags$h2(psychTestR::i18n("check_of_bg_noise")),
       shiny::tags$p(psychTestR::i18n("record_bg")),
       shiny::tags$p(psychTestR::i18n("record_bg2")),
@@ -204,14 +206,17 @@ record_signal_page <- function(page_text = shiny::tags$div(
     if(asynchronous_api_mode) {
       db_vars <- create_db_vars_template()
       db_vars$file_type <- "signal"
-      db_vars$noise_filename <- psychTestR::get_global("SNR_noise", state)
+      snr_noise <- psychTestR::get_global("SNR_noise", state)
+      logging::loginfo("SNR_noise: %s", snr_noise)
+      db_vars$noise_filename <- snr_noise
       db_vars$feedback <- FALSE
+      db_vars$phase <- "setup"
     } else {
       db_vars <- NULL
     }
 
 
-    record_audio_page(page_text = page_text,
+    record_audio_page(page_text = shiny::tags$div(set_melodic_stimuli("NA", "NA"), page_text),
                       label = "SNR_test_signal",
                       record_duration = 5,
                       on_complete = function(input, state, ...) {

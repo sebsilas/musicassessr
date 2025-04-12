@@ -79,6 +79,7 @@ record_key_presses_block <- function(no_pages,
 #' @param page_text
 #' @param page_title
 #' @param db_vars
+#' @param code_block_after
 #'
 #' @return
 #' @export
@@ -90,7 +91,10 @@ record_audio_block <- function(no_pages,
                                get_answer = get_answer_pyin,
                                page_title = psychTestR::i18n("Record_audio"),
                                page_text = psychTestR::i18n("click_to_record_audio"),
-                               db_vars = NULL) {
+                               db_vars = NULL,
+                               code_block_after = NULL) {
+
+
   pages <- psychTestR::join(
 
     rep(list(
@@ -110,11 +114,13 @@ record_audio_block <- function(no_pages,
                           page_text = page_text,
                           db_vars = db_vars)
 
-      })
+      }),
 
+      if(is(code_block_after, "code_block") || is.list(code_block_after)) code_block_after
 
       ), no_pages)
-  )
+  ) %>% Filter(Negate(is.null), .)
+
   if(!is.null(feedback)) {
     pages <- add_feedback(pages, feedback)
   }

@@ -230,17 +230,19 @@ add_feedback <- function(items, feedback, after = 2) {
 #' @param items
 #' @param feedback
 #' @param after
+#' @param scale_pr
 #'
 #' @return
 #' @export
 #'
 #' @examples
-add_feedback_with_progress <- function(items, feedback, after = 2) {
+add_feedback_with_progress <- function(items, feedback, after = 2, scale_pr = 1) {
+
   if(is.null(feedback) | !is.function(feedback)) {
     unlist(items)
   } else {
 
-    res <- insert_item_into_every_other_n_position_in_list_with_proportion(items, feedback, n = after)
+    res <- insert_item_into_every_other_n_position_in_list_with_proportion(items, feedback, n = after, scale_pr = scale_pr)
 
     res <- lapply(res, function(x) { if(is.list(x)) unlist(x) else x })
 
@@ -285,12 +287,21 @@ display_rhythm_production_feedback <- function(feedback, res) {
 #' @param width
 #' @param text
 #' @param progress
+#' @param get_async_data
 #'
 #' @return
 #' @export
 #'
 #' @examples
-feedback_image <- function(image, height = NULL, width = NULL, text = "Well done!", progress = NULL) {
+feedback_image <- function(image,
+                           height = NULL,
+                           width = NULL,
+                           text = "Well done!",
+                           progress = NULL,
+                           get_async_data = FALSE) {
+
+  logging::loginfo("feedback_image")
+  logging::loginfo("get_async_data: %s", get_async_data)
 
   stopifnot(
     is.null.or(progress, is.scalar.numeric)
@@ -306,10 +317,34 @@ feedback_image <- function(image, height = NULL, width = NULL, text = "Well done
   ui <- shiny::tags$div(
              if(!is.null(progress)) progress_bar(progress),
              img,
-             shiny::tags$h3(text)
+             shiny::tags$h3(text),
+             if(get_async_data) shiny::tags$div(
+                                  shiny::tags$div(id = "loader", class = "loader"),
+
+                                   shiny::tags$button(psychTestR::i18n("Next"),
+                                                      id = "nextButton",
+                                                      class = "_hidden"),
+                                                 shiny::tags$script("pollDataApi(handleFeedbackRhythmBpm);
+                                                                    document.getElementById('nextButton').onclick = function() {
+                                                                      console.log('next clicked!');
+                                                                      next_page();
+                                                                    }
+                                                                    ")
+                                                 )
              )
 
-  psychTestR::one_button_page(ui)
+  if(get_async_data) {
+
+    page <- psychTestR::page(ui,
+                             get_answer = function(input, state, ...) {
+                                psychTestR::set_global("API_DATA_RESPONSE", input$API_DATA_RESPONSE, state)
+                             })
+
+  } else {
+    page <- psychTestR::one_button_page(ui)
+  }
+
+  return(page)
 }
 
 

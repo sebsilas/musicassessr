@@ -269,26 +269,39 @@ log_normal <- function(x, a = 1) exp(-(log(x)/a)^2)
 #' @param l
 #' @param item_to_add
 #' @param n
+#' @param scale_length
 #'
 #' @return
 #' @export
 #'
 #' @examples
-insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 2) {
-  for (i in seq_along(l)) {
-    l <- append(l, item_to_add, after = (i * n)-1)
+insert_item_into_every_other_n_position_in_list <- function(l, item_to_add, n = 2, scale_length = 1) {
+
+  original_length <- length(l)
+
+  original_length <- scale_length * original_length
+
+  for (i in 1:original_length) {
+    after <- (i * n)-1
+    logging::loginfo("after: %s", (i * n)-1)
+    l <- append(l, item_to_add, after = after)
   }
   l
 }
 
 
-insert_item_into_every_other_n_position_in_list_with_proportion <- function(l, item_to_add, n = 2) {
+insert_item_into_every_other_n_position_in_list_with_proportion <- function(l, item_to_add, n = 2, scale_pr = 1) {
 
-  orig_len <- length(l)
+  orig_len <- length(l)/scale_pr
+
+  if(!is.integerlike(orig_len)) {
+    stop("This should end up being an intenger")
+  }
 
   for (i in seq_along(l)) {
     pr <- i/orig_len
     pr <- as.integer(pr * 100)
+    pr <- scale_pr * pr
     l <- append(l, item_to_add(progress = pr), after = (i * n)-1)
   }
   l

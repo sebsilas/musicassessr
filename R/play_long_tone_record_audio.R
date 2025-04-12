@@ -175,6 +175,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
         melody_block_paradigm = melody_block_paradigm,
         additional = NA,
         file_type = NA,
+        pyin_type = "smoothedpitchtrack",
         noise_filename = NA,
         module = module
       )

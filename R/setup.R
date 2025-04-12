@@ -151,7 +151,8 @@ setup_pages <- function(input_type = c("microphone",
   # Set the response/input type when it is definitely either microphone or MIDI (i.e., non-user specified):
   psychTestR::join(
     if(input_type %in% c("microphone", "midi_keyboard")) set_response_type(if(input_type == "microphone") "Microphone" else if(input_type == "midi_keyboard") "MIDI" else stop("Input type not recognised.")),
-    setup
+    setup,
+    if(asynchronous_api_mode) wait_for_api_page() else empty_code_block()
   )
 
 }

@@ -80,6 +80,7 @@ let db_file_type;
 let db_noise_filename;
 let db_page_label;
 let db_module;
+let db_pyin_type;
 
 // Functions
 
@@ -1066,7 +1067,8 @@ async function upload_file_to_s3(blob) {
     "file-type": String(db_file_type),
     "noise-filename" : String(db_noise_filename),
     "page-label": String(db_page_label),
-    "module": String(db_module)
+    "module": String(db_module),
+    "pyin-type": String(db_pyin_type)
   };
 
   console.log(md);
@@ -1276,6 +1278,7 @@ function hideLyrics() {
 
 
 function stopPolling() {
+  console.log("stop polling: ", intervalId);
   clearInterval(intervalId);
 }
 
@@ -1311,4 +1314,87 @@ function appendNextButton(onClick = next_page, id = 'async-feedback') {
   }
 }
 
+
+// Generalise job grabbing functionality
+
+async function fetchDataApi(triggerWhenDataBack) {
+
+  console.log('Fetching feedback for ' + file_url);
+
+  const payload = {
+    filename: file_url
+  };
+
+  try {
+    const response = await fetch(apiUrl + "v2/get-job-status", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+
+    const data = await response.json();
+
+    // Check if the status is 'FINISHED'
+    if (data.status === 'FINISHED') {
+
+      console.log('Job is finished. Stopping polling.');
+
+      const message = JSON.parse(data.message);
+
+      console.log('message:', message);
+
+      Shiny.setInputValue("API_DATA_RESPONSE", message.feedback[0]);
+
+      stopPolling();
+
+      triggerWhenDataBack();
+
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+function pollDataApi(triggerWhenDataBack) {
+  intervalId = setInterval(() => fetchDataApi(triggerWhenDataBack), pollingInterval);
+}
+
+
+
+function handleFeedbackRhythmBpm() {
+  console.log('handleFeedbackRhythmBpm!');
+  document.getElementById("nextButton").className = "btn btn-default action-button";
+  hideLoader();
+}
+
+// Display score functionality
+
+function displayScore(score) {
+
+  const container = document.getElementById('data-container');
+
+  if(isNaN(score)) {
+    score = 0;
+  }
+
+  if(lang == "en") {
+
+    container.innerHTML = `<p>Well done! </p> <p>Your score was ${score}!</p>`;
+
+
+  } else if(lang == "de") {
+
+    console.log(typeof score);
+
+    container.innerHTML = `<p> ${ getFeedback(score) } </p> <p> Du hast ${score} von 10 Punkten erreicht.</p>`;
+
+  } else {
+    console.log("Language not supported!");
+  }
+}
 

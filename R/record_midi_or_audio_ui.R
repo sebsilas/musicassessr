@@ -89,7 +89,7 @@ record_midi_or_audio_ui <- function(body = "",
         )
       },
 
-      if(!is.null(stimuli)) shiny::tags$div(id = "stimuliArea", stimuli),
+      if(is.null(stimuli)) shiny::tags$script("trigger_next_page = true;") else shiny::tags$div(id = "stimuliArea", stimuli),
 
       if(volume_meter) shiny::tags$div(volume_meter(volume_meter_type, start_hidden = TRUE), shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr"))),
 
@@ -118,6 +118,10 @@ set_answer_meta_data_for_db_as_js_vars <- function(db_vars) {
 
   if(is.null(db_vars$onset)) {
     db_vars$onset <- FALSE
+  }
+
+  if(is.null(db_vars$pyin_type)) {
+    db_vars$pyin_type <- "notes"
   }
 
   # Replace nulls with NAs
@@ -168,7 +172,9 @@ db_var_names <- c("stimuli",
   "file_type",
   "noise_filename",
   "page_label",
-  "module")
+  "module",
+  "pyin_type"
+  )
 
 #' Create a template for db_vars
 #'
@@ -176,12 +182,12 @@ db_var_names <- c("stimuli",
 #'
 #' @returns
 #' @export
-#'
 #' @examples
 create_db_vars_template <- function(init_with_time_started = TRUE) {
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
   empty_obj$trial_time_started <- Sys.time()
   empty_obj$trial_paradigm <- "call_and_response"
+  empty_obj$onset <- FALSE
   return(empty_obj)
 }
 

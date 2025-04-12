@@ -641,14 +641,19 @@ get_answer_midi <- function(input, state, ...) {
 #' @export
 #'
 #' @examples
-get_answer_rhythm_production <- function(input, state, type = c("midi", "audio", "key_presses"), feedback = TRUE, ...) {
+get_answer_rhythm_production <- function(input,
+                                         state, type = c("midi", "audio", "key_presses"), feedback = TRUE, ...) {
 
   type <- match.arg(type)
 
-  if(length(input$stimuli_durations) == 0 || is.scalar.na.or.null.or.length.zero(jsonlite::fromJSON(input$stimuli_durations))) {
+  stimuli_durations <- jsonlite::fromJSON(input$stimuli_durations)
+
+  if(is.scalar.character(stimuli_durations) && stimuli_durations == "NA") {
+    stimuli_durations <- NA
+  } else if(length(input$stimuli_durations) == 0 || is.scalar.na.or.null.or.length.zero(stimuli_durations)) {
     stimuli_durations <- NA
   } else {
-    stimuli_durations <- round(jsonlite::fromJSON(input$stimuli_durations), 2)
+    stimuli_durations <- round(as.numeric(stimuli_durations), 2)
   }
 
   if(type == "midi") {
@@ -756,7 +761,13 @@ get_answer_key_presses_page <- function(input, ...) {
 
 get_answer_rhythm_production_audio <- function(input, state, ...) {
 
-  onset_res <- get_answer_onset_detection(input, state, ...)
+  if(psychTestR::get_global("asynchronous_api_mode", state)) {
+    onset_res <- get_answer_add_trial_and_compute_trial_scores_s3(input, state, ...)
+    return(onset_res)
+  } else {
+    onset_res <- get_answer_onset_detection(input, state, ...)
+  }
+
 
   if(is.scalar.na.or.null(onset_res) || is.scalar.na.or.null(onset_res$onset)) {
 

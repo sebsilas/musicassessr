@@ -32,7 +32,8 @@ musicassessr_init <- function(app_name = "",
                               async_success_msg = if(is.scalar.character(username)) paste0(psychTestR::i18n("Hello"), " ", username, "!") else psychTestR::i18n("lets_proceed"),
                               use_presigned_url = TRUE) {
 
-
+  logging::loginfo("init")
+  logging::loginfo("use_presigned_url: %s", use_presigned_url)
 
   psychTestR::join(
 
@@ -273,6 +274,7 @@ async_success_ui <- function(username = NULL,
                              use_presigned_url = TRUE) {
 
   logging::loginfo("username: %s", username)
+  logging::loginfo("use_presigned_url: %s", use_presigned_url)
 
   shiny::tags$div(
     musicassessr_css(),

@@ -4,10 +4,10 @@
 \alias{add_feedback_with_progress}
 \title{Helper for adding a feedback function to a timeline of pages with a progress bar}
 \usage{
-add_feedback_with_progress(items, feedback, after = 2)
+add_feedback_with_progress(items, feedback, after = 2, scale_pr = 1)
 }
 \arguments{
-\item{after}{}
+\item{scale_pr}{}
 }
 \description{
 Helper for adding a feedback function to a timeline of pages with a progress bar

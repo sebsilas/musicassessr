@@ -9,11 +9,12 @@ feedback_image(
   height = NULL,
   width = NULL,
   text = "Well done!",
-  progress = NULL
+  progress = NULL,
+  get_async_data = FALSE
 )
 }
 \arguments{
-\item{progress}{}
+\item{get_async_data}{}
 }
 \description{
 Feedback as an image

@@ -318,19 +318,7 @@ feedback_image <- function(image,
              if(!is.null(progress)) progress_bar(progress),
              img,
              shiny::tags$h3(text),
-             if(get_async_data) shiny::tags$div(
-                                  shiny::tags$div(id = "loader", class = "loader"),
-
-                                   shiny::tags$button(psychTestR::i18n("Next"),
-                                                      id = "nextButton",
-                                                      class = "_hidden"),
-                                                 shiny::tags$script("pollDataApi(handleFeedbackRhythmBpm);
-                                                                    document.getElementById('nextButton').onclick = function() {
-                                                                      console.log('next clicked!');
-                                                                      next_page();
-                                                                    }
-                                                                    ")
-                                                 )
+             if(get_async_data) get_async_data_ui()
              )
 
   if(get_async_data) {
@@ -347,6 +335,21 @@ feedback_image <- function(image,
   return(page)
 }
 
+
+get_async_data_ui <- function(handle_feedback_fun_name = "handleFeedbackRhythmBpm") {
+  shiny::tags$div(
+    shiny::tags$div(id = "loader", class = "loader"),
+
+    shiny::tags$button(psychTestR::i18n("Next"),
+                       id = "nextButton",
+                       class = "_hidden"),
+    shiny::tags$script(paste0("pollDataApi(", handle_feedback_fun_name, "); document.getElementById('nextButton').onclick = function() {
+                                                                      console.log('next clicked!');
+                                                                      next_page();
+                                                                    }
+                                                                    "))
+  )
+}
 
 feedback_melodic_production_async_ui <- function() {
 

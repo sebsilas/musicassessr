@@ -19,7 +19,8 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
     record_background_page(asynchronous_api_mode),
     record_signal_page(asynchronous_api_mode = asynchronous_api_mode),
     SNR_preconclusion_page(),
-    if(asynchronous_api_mode) get_audio_file_job_process(asynchronous_api_mode, state_var_name = "SNR_noise", var_name_to_set_result = "SNR"),
+    # if(asynchronous_api_mode) get_audio_file_job_process(asynchronous_api_mode, state_var_name = "SNR_noise", var_name_to_set_result = "SNR"),
+    if(asynchronous_api_mode) get_SNR_feedback_async_mode(),
     if(!asynchronous_api_mode) { psychTestR::code_block(function(state, ...) {
 
       if(length(absolute_url) > 0) {
@@ -70,6 +71,29 @@ get_SNR_pages <- function(min_SNR = 14, absolute_url = character(), report_SNR =
 }
 
 
+get_SNR_feedback_async_mode <- function() {
+
+  psychTestR::reactive_page(function(state, ...) {
+
+    noise_file <- psychTestR::get_global("SNR_noise", state)
+
+    ui <- shiny::tags$div(
+      shiny::tags$p("Seeing how noisy your room is..."),
+      shiny::tags$script( htmltools::HTML( paste0('file_url = "', noise_file, '";')  ) ),
+      get_async_data_ui("handleFeedbackSNR")
+    )
+
+  psychTestR::page(ui, get_answer = function(input, state, ...) {
+    res <- round(as.numeric(stringr::str_remove(input$API_DATA_RESPONSE, "SNR:")))
+    logging::loginfo("SNR res: %s", res)
+    psychTestR::set_global("SNR", res, state)
+  })
+
+  })
+
+
+}
+
 
 #' Get SNR pages as a loop (i.e., the participant can take multiple attempts)
 #'
@@ -95,7 +119,8 @@ get_SNR_pages_loop <- function(min_SNR = 14, absolute_url = character(), report_
         record_background_page(asynchronous_api_mode),
         record_signal_page(asynchronous_api_mode = asynchronous_api_mode),
         SNR_preconclusion_page(),
-        if(asynchronous_api_mode) get_audio_file_job_process(asynchronous_api_mode, state_var_name = "SNR_noise", var_name_to_set_result = "SNR"),
+        # if(asynchronous_api_mode) get_audio_file_job_process(asynchronous_api_mode, state_var_name = "SNR_noise", var_name_to_set_result = "SNR"),
+        if(asynchronous_api_mode) get_SNR_feedback_async_mode(),
         if(!asynchronous_api_mode) { psychTestR::code_block(function(state, ...) {
 
           if(length(absolute_url) > 0) {

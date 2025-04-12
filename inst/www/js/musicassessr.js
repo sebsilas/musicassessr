@@ -1344,11 +1344,19 @@ async function fetchDataApi(triggerWhenDataBack) {
 
       console.log('Job is finished. Stopping polling.');
 
-      const message = JSON.parse(data.message);
+      let message;
 
-      console.log('message:', message);
-
+      try {
+        message = JSON.parse(data.message);
+         console.log('message:', message);
       Shiny.setInputValue("API_DATA_RESPONSE", message.feedback[0]);
+      } catch (e) {
+        message = data.message; // It's just a plain string, not JSON
+        console.log('message:', message);
+        Shiny.setInputValue("API_DATA_RESPONSE", message);
+      }
+
+
 
       stopPolling();
 
@@ -1370,6 +1378,12 @@ function handleFeedbackRhythmBpm() {
   console.log('handleFeedbackRhythmBpm!');
   document.getElementById("nextButton").className = "btn btn-default action-button";
   hideLoader();
+}
+
+function handleFeedbackSNR() {
+  console.log('handleFeedbackRhythmSNR!');
+  hideLoader();
+  next_page();
 }
 
 // Display score functionality

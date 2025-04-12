@@ -22,7 +22,9 @@ long_tone_trials(
   module_name = "long_tone_trials",
   show_progress = TRUE,
   paradigm = c("simultaneous_recall", "call_and_response"),
-  long_tone_length = 5
+  long_tone_length = 5,
+  volume_meter = FALSE,
+  volume_meter_type = "default"
 )
 }
 \arguments{

@@ -1135,7 +1135,9 @@ long_tone_trials <- function(num_items,
                              module_name = "long_tone_trials",
                              show_progress = TRUE,
                              paradigm = c("simultaneous_recall", "call_and_response"),
-                             long_tone_length = 5) {
+                             long_tone_length = 5,
+                             volume_meter = FALSE,
+                             volume_meter_type = 'default') {
 
   if(match.arg(paradigm) == "simultaneous_recall") {
     instruction_text <- shiny::div(

@@ -17,11 +17,13 @@ multi_play_long_tone_record_audio_pages(
   call_and_response_end = c("manual", "auto"),
   long_tone_length = 5,
   singing_trial = FALSE,
-  mute_midi_playback = FALSE
+  mute_midi_playback = FALSE,
+  volume_meter = FALSE,
+  volume_meter_type = "default"
 )
 }
 \arguments{
-\item{mute_midi_playback}{}
+\item{volume_meter_type}{}
 }
 \description{
 Build multiple play_long_tone_record_audio_pages based on a user's range

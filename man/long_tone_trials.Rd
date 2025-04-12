@@ -26,7 +26,7 @@ long_tone_trials(
 )
 }
 \arguments{
-\item{long_tone_length}{}
+\item{volume_meter_type}{}
 }
 \description{
 Present a block of long tone trials

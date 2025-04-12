@@ -21,11 +21,13 @@ play_long_tone_record_audio_page(
   call_and_response_end = c("manual", "auto"),
   singing_trial = TRUE,
   on_complete = NULL,
-  mute_midi_playback = FALSE
+  mute_midi_playback = FALSE,
+  volume_meter = TRUE,
+  volume_meter_type = "default"
 )
 }
 \arguments{
-\item{mute_midi_playback}{}
+\item{volume_meter_type}{}
 }
 \description{
 Create a page which produces a given tone

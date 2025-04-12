@@ -4,10 +4,15 @@
 \alias{insert_item_into_every_other_n_position_in_list}
 \title{Insert item into every other n position in list}
 \usage{
-insert_item_into_every_other_n_position_in_list(l, item_to_add, n = 2)
+insert_item_into_every_other_n_position_in_list(
+  l,
+  item_to_add,
+  n = 2,
+  scale_length = 1
+)
 }
 \arguments{
-\item{n}{}
+\item{scale_length}{}
 }
 \description{
 Insert item into every other n position in list

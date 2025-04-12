@@ -1110,6 +1110,8 @@ handle_item_sampling <- function(item_bank,
 #' @param show_progress
 #' @param paradigm
 #' @param long_tone_length
+#' @param volume_meter
+#' @param volume_meter_type
 #'
 #' @return
 #' @export
@@ -1195,7 +1197,10 @@ long_tone_trials <- function(num_items,
                                multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = page_type,
                                                                        example = TRUE, feedback = feedback, get_answer = get_answer,
                                                                        page_text = page_text, page_title = page_title,
-                                                                       trial_paradigm = paradigm, long_tone_length = long_tone_length)
+                                                                       trial_paradigm = paradigm,
+                                                                       long_tone_length = long_tone_length,
+                                                                       volume_meter = volume_meter,
+                                                                       volume_meter_type = volume_meter_type)
                              },
                              psychTestR::one_button_page(shiny::div(
                                shiny::tags$h2(page_title),
@@ -1212,7 +1217,9 @@ long_tone_trials <- function(num_items,
                                                                  page_title = page_title,
                                                                  show_progress = show_progress,
                                                                  trial_paradigm = paradigm,
-                                                                 long_tone_length = long_tone_length),
+                                                                 long_tone_length = long_tone_length,
+                                                                 volume_meter = volume_meter,
+                                                                 volume_meter_type = volume_meter_type),
 
                          psychTestR::elt_save_results_to_disk(complete = FALSE),
 

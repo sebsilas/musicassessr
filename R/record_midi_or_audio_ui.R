@@ -188,6 +188,8 @@ create_db_vars_template <- function(init_with_time_started = TRUE) {
   empty_obj$trial_time_started <- Sys.time()
   empty_obj$trial_paradigm <- "call_and_response"
   empty_obj$onset <- FALSE
+  empty_obj$pyin_type <- "notes"
+  empty_obj$attempt <- 1L
   return(empty_obj)
 }
 

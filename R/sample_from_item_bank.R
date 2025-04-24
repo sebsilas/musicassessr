@@ -388,6 +388,7 @@ sample_rhythmic <- function(item_bank, num_items, id = "rhythmic_melody", phase 
     if(is.null(span) | span < 10) {
       span <- 10
     }
+
     # Sample rhythmic
     rhythmic_item_bank_subset <- itembankr::subset_item_bank(item_bank = item_bank, span_max = span)
     if(nrow(rhythmic_item_bank_subset) <= 1) {

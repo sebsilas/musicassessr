@@ -32,3 +32,7 @@ data-raw/study_history_xgboost_model.Rmd
 data-raw/xgb_tuning_results.rda
 data-raw/Berkowitz_selected_musicxml_item_bank.csv
 data-raw/create_Berkowitz_by_measure_stimuli.Rmd
+data-raw/check_musicassessr_dict_before_merging_new.R
+data-raw/study_history_xgboost_model.Rmd
+data-raw/trials_with_item_stats.rda
+

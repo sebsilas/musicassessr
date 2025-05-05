@@ -177,9 +177,10 @@ musicassessr_init <- function(app_name = "",
                 logging::loginfo("user_id: %s", user_id)
 
                 res <- musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id)
+                #res <- musicassessrdb::store_db_session_api(experiment_id, experiment_condition_id, user_id, shiny_app_name = app_name)
                 res
 
-            }, seed = NULL, future.plan = future::multisession) %...>% (function(result) {
+            }, seed = NULL, lazy = TRUE) %...>% (function(result) {
 
               logging::loginfo("Returning promise result: %s", result)
               if(is.scalar.na.or.null(result)) {

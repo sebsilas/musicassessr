@@ -34,6 +34,10 @@ is.scalar.numeric <- function(x) {
   is.numeric(x) && is.scalar(x)
 }
 
+is.integerlike <- function(x) {
+  all(round(x) == x)
+}
+
 #' Check if an object is a scalar logical
 #'
 #' @param x

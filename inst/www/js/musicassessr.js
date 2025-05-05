@@ -40,7 +40,6 @@ let apiUrl;
 let page_label = '';
 let stimuli = "";
 let stimuli_durations = "";
-let p_id = "";
 let page_type = "";
 let musicxml_file = "";
 
@@ -511,13 +510,20 @@ function hide_happy_with_response_message() {
   happy_with_response.style.display = "none";
 }
 
+
+function hideSingImg() {
+  let sing_image = document.getElementById('singImage');
+  if(sing_image !== 'undefined') {
+    sing_image.style.display = 'none';
+  }
+}
 function displayAsyncFeedback() {
   console.log('Display async feedback!');
   intervalId = setInterval(fetchData, pollingInterval);
   async_feedback_area = document.getElementById("async-feedback");
   async_feedback_area.style.display = "block";
   async_feedback_area.style.visibility = "visible";
-  hideSingImage();
+  hideSingImg();
   hideTrialPageTitle();
   hideTrialPageText();
   hideStimuliArea();
@@ -595,10 +601,10 @@ function recordUpdateUI(page_type = null,
   removeElementIfExists("first_note");
 
   let volumeMeter = document.getElementById('volumeMeter');
+
   if(volumeMeter !== null) {
   volumeMeter.style.visibility = "visible";
   }
-
 
   if(showStop) {
     showStopButton(page_type, stop_button_text, show_sheet_music, trigger_next_page, sheet_music_id);
@@ -609,6 +615,7 @@ function recordUpdateUI(page_type = null,
   }
 
   if(showRecording) {
+    hideListenImage();
     showRecordingIcon();
   }
 }
@@ -977,6 +984,11 @@ function stopMidiRecording() {
   WebMidi.disable();
 }
 
+function getPIdFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('p_id');
+}
+
 function create_recordkey() {
 
   let currentDate = new Date();
@@ -987,8 +999,11 @@ function create_recordkey() {
     recordkey = page_label + '.' + recordkey;
   }
 
-  if (typeof p_id === 'string') {
-    recordkey = p_id + '.' + recordkey;
+  const pId = getPIdFromUrl();
+  console.log('pId:', pId);
+
+  if (typeof pId === 'string') {
+    recordkey = pId + '.' + recordkey;
   } else {
     recordkey = 'no_p_id.' + recordkey;
   }
@@ -1239,10 +1254,18 @@ function hideLoader() {
   document.getElementById('loader').style.display = 'none';
 }
 
-function hideSingImage() {
-  let sing_image = document.getElementById('singImage');
-  if(sing_image !== 'undefined') {
-    sing_image.style.display = 'none';
+
+function showListenImage() {
+  let listenImg = document.getElementById('listenImg');
+  if(listenImg !== 'undefined') {
+    listenImg.style.display = 'block';
+  }
+}
+
+function hideListenImage() {
+  let listenImg = document.getElementById('listenImg');
+  if(listenImg !== 'undefined') {
+    listenImg.style.display = 'none';
   }
 }
 

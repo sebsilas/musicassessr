@@ -443,8 +443,10 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
     new_items_id <- psychTestR::get_global('new_items_id', state)
     review_items_id <- if(is.null(review_items_id)) NA else review_items_id
     new_items_id <- if(is.null(new_items_id)) NA else new_items_id
+
     stimuli <- as.numeric(jsonlite::fromJSON(input$stimuli))
     stimuli_durations <- as.numeric(jsonlite::fromJSON(input$stimuli_durations))
+
     test_id <- psychTestR::get_global('test_id', state)
     item_id <- psychTestR::get_global('item_id', state)
     user_id <- psychTestR::get_global('user_id', state)
@@ -490,9 +492,9 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
 
     midi_trial_result <- promises::future_promise({
 
-      musicassessrdb::midi_add_trial_and_compute_trial_scores_api(stimuli = stimuli,
-                                                                  stimuli_durations = stimuli_durations,
-                                                                  test_id = test_id,
+      musicassessrdb::midi_add_trial_and_compute_trial_scores_api(stimuli = if(length(stimuli) == 0) NA else stimuli,
+                                                                  stimuli_durations = if(length(stimuli_durations) == 0) NA else stimuli_durations,
+                                                                  test_id = if(length(test_id) == 0) NA else test_id,
                                                                   item_id = if(length(item_id) == 0) NA else item_id, # N.B. needs to be a scalar character, hence the NA string
                                                                   user_id = user_id,
                                                                   instrument = instrument,
@@ -510,12 +512,12 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                                                                   note = note,
                                                                   attempt = attempt,
                                                                   additional = additional,
-                                                                  melody_block_paradigm = melody_block_paradigm,
+                                                                  melody_block_paradigm = if(length(melody_block_paradigm) > 0) melody_block_paradigm else "NA",
                                                                   page_label = if(length(page_label) > 0) page_label else "NA",
                                                                   module = module)
 
     },
-    seed = NULL, future.plan = future::multisession) %>%
+    seed = NULL) %>%
       promises::then(
         onFulfilled = function(result) {
 
@@ -714,7 +716,11 @@ get_answer_rhythm_production <- function(input,
 
 get_answer_rhythm_production_midi <- function(input, state, ...) {
 
-  midi_res <- get_answer_midi(input, state, ...)
+  if(psychTestR::get_global("asynchronous_api_mode", state)) {
+    midi_res <- get_answer_midi_melodic_production(input, state, ...)
+  } else {
+    midi_res <- get_answer_midi(input, state, ...)
+  }
 
   return(midi_res)
 }

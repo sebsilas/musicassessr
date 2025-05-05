@@ -65,7 +65,7 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     trigger_end_of_stimulus_fun <- record_triggers(record = "stop", page_type = page_type, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
 
   } else if(paradigm_type == "call_and_response") {
-    trigger_start_of_stimulus_fun <- NA
+    trigger_start_of_stimulus_fun <- wrap_js_fun_body("showListenImage();")
     if(call_and_response_end == "manual") {
       trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, attempts_left = attempts_left, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
     } else if(call_and_response_end == "auto") {

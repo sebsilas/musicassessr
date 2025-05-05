@@ -89,13 +89,15 @@ record_midi_or_audio_ui <- function(body = "",
         )
       },
 
+      shiny::tags$img(id = "listenImg",
+                      src = "https://musicassessr.com/assets/img/ear2.png",
+                      height = 150, width = 150, style = "display: none;"),
+
       if(is.null(stimuli)) shiny::tags$script("trigger_next_page = true;") else shiny::tags$div(id = "stimuliArea", stimuli),
 
       if(volume_meter) shiny::tags$div(volume_meter(volume_meter_type, start_hidden = TRUE), shiny::includeScript(path=system.file("www/js/microphone_signal_test.js", package = "musicassessr"))),
 
       present_record_button(show_record_button, page_type, record_button_text, stop_button_text, show_sheet_music_after_record, stop_recording_automatically_after_ms = record_duration * 1000),
-
-      #if(page_type == "record_audio_page") loading(),
 
       happy_with_response_message(happy_with_response, attempts_left, max_goes_forced, max_goes),
 

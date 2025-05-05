@@ -155,6 +155,7 @@ record_midi_block <- function(no_pages,
   page <- psychTestR::reactive_page(function(state, ...) {
 
     midi_device <- psychTestR::get_global("midi_device", state)
+    psychTestR::set_global("trial_time_started", Sys.time(), state)
 
     if(is.null(midi_device)) { shiny::showNotification(psychTestR::i18n("no_midi_device_selected")) }
 

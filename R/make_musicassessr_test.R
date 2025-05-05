@@ -197,7 +197,7 @@ end_session_api <- function(state, session) {
                                                                  session_complete = "0",
                                                                  user_info = user_info)
 
-    }, seed = NULL, future.plan = future::multisession) %>%
+    }, seed = NULL) %>%
       promises::then(
         onFulfilled = function(result) {
 
@@ -229,7 +229,7 @@ end_session_api <- function(state, session) {
       # Test failed early
       musicassessrdb::append_failed_session_api(user_info = user_info)
 
-    }, seed = NULL, future.plan = future::multisession) %>%
+    }, seed = NULL) %>%
       promises::then(
         onFulfilled = function(result) {
 

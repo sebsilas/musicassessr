@@ -22,7 +22,7 @@ play_long_tone_record_audio_page(
   singing_trial = TRUE,
   on_complete = NULL,
   mute_midi_playback = FALSE,
-  volume_meter = TRUE,
+  volume_meter = FALSE,
   volume_meter_type = "default"
 )
 }

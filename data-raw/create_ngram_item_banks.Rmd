@@ -1,0 +1,57 @@
+
+
+```{r}
+
+library(tidyverse)
+
+```
+
+```{r}
+
+create_all_melodic_ngram_combos <- function(number_of_intervals,
+                                            highest_int = 19) { # i.e., octave plus fifth
+                
+  ints <- 1:highest_int
+  
+    combos <- expand.grid(rep(list(ints), number_of_intervals))
+
+  
+  # Collapse each row into a string like "1,1"
+  combo_strings <- apply(combos, 1, function(row) paste(row, collapse = ","))
+  
+  # Return as a data frame
+  tibble::tibble(combination = combo_strings)
+
+}
+
+
+```
+
+
+```{r}
+
+# Started 03.05.2025, 21.06
+
+all_bigrams <- create_all_melodic_ngram_combos(2)
+
+use_data(all_bigrams)
+
+all_trigrams <- create_all_melodic_ngram_combos(3)
+
+use_data(all_trigrams)
+
+all_fourgrams <- create_all_melodic_ngram_combos(4)
+
+use_data(all_fourgrams)
+
+all_fivegrams <- create_all_melodic_ngram_combos(5)
+
+
+use_data(all_fivegrams)
+
+all_sixgrams <- create_all_melodic_ngram_combos(6)
+
+use_data(all_sixgrams)
+
+
+```

@@ -137,6 +137,10 @@ rhythfuzz <- function(ioi_class1, ioi_class2) {
   logging::loginfo("ioi_class1: %s", ioi_class1)
   logging::loginfo("ioi_class2: %s", ioi_class2)
 
+  if(is.scalar.na(ioi_class1) || is.scalar.na(ioi_class2)) {
+    return(NA)
+  }
+
   assertthat::assert_that(
     all(c(ioi_class1, ioi_class2) %in% -2:2),
     msg = "Input contains non-ioi classes!"

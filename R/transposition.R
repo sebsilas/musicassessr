@@ -13,10 +13,17 @@
 #'
 #' @examples
 transpose_melody_to_easy_or_hard_key <- function(abs_melody, difficulty, inst, bottom_range, top_range) {
+
   if (difficulty == "easy") {
     key <- sample_easy_key(inst)
+    if(is.scalar.na(key$key)) {
+      key <- sample_easy_key("Piano")
+    }
   } else {
     key <- sample_hard_key(inst)
+    if(is.scalar.na(key$key)) {
+      key <- sample_hard_key("Piano")
+    }
   }
   key <- key$key
   abs_melody <- transpose_melody_to_key(abs_melody, key, bottom_range, top_range)

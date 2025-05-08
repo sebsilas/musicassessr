@@ -468,7 +468,12 @@ sample_review <- function(num_review_items, id = "arrhythmic_melody_review", rhy
 arrhythmic_decile_sampler_codeblock <- function(item_bank, num_items_arrhythmic, id = "arrhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
 
-    arrhythmic_sample <- sample_in_deciles_wrapper(item_bank, num_items_arrhythmic, col_name = "arrhythmic_difficulty_percentile")
+    arrhythmic_sample <- sample_in_ntiles_wrapper(
+      item_bank = item_bank,
+      num_items = num_items_arrhythmic,
+      n = 10,
+      col_name = "arrhythmic_difficulty_percentile"
+    )
 
     psychTestR::set_global(id, arrhythmic_sample, state)
 
@@ -478,45 +483,21 @@ arrhythmic_decile_sampler_codeblock <- function(item_bank, num_items_arrhythmic,
 
 rhythmic_decile_sampler_codeblock <- function(item_bank, num_items_rhythmic, id = "rhythmic_melody") {
   psychTestR::code_block(function(state, ...) {
-    rhythmic_sample <- sample_in_deciles_wrapper(item_bank, num_items_rhythmic, col_name = "rhythmic_difficulty_percentile")
+
+    rhythmic_sample <- sample_in_ntiles_wrapper(
+      item_bank = item_bank,
+      num_items = num_items_rhythmic,
+      n = 10,
+      col_name = "rhythmic_difficulty_percentile"
+    )
+
     psychTestR::set_global(id, rhythmic_sample, state)
 
   })
 }
 
-sample_in_deciles_wrapper <- function(item_bank, num_items, decile_upper_bound = 5L, col_name) {
-  no_to_sample_from_each_decile <- ceiling(num_items/decile_upper_bound)
-  sample <- sample_in_deciles(item_bank,
-                                         no_to_sample_from_each_decile = no_to_sample_from_each_decile,
-                                         decile_upper_bound = decile_upper_bound,
-                                         col_name = col_name) %>%
-    dplyr::slice_sample(n = nrow(.)) %>%  # Randomise order
-    dplyr::slice_head(n = num_items) # Make sure you get the right number of items
-}
-
-sample_in_deciles <- function(item_bank, no_to_sample_from_each_decile, decile_upper_bound = 10, col_name = "rhythmic_difficulty_percentile") {
-  item_bank <- item_bank %>%
-    tibble::as_tibble()
-  1:decile_upper_bound %>%
-    purrr::map_dfr(function(decile_no) {
-      sample_in_deciles_helper(item_bank, decile_no, no_to_sample_from_each_decile, col_name)
-    })
-}
-
-sample_in_deciles_helper <- function(item_bank, decile_no, no_to_sample, col_name = "rhythmic_difficulty_percentile") {
-
-  decile_no <- decile_no - 1 # Zero-index it
-  lower_bound <- decile_no * 10
-  upper_bound <- lower_bound + 9
-  col_name <- rlang::sym(col_name)
-
-  item_bank %>%
-    dplyr::filter(dplyr::between(!! col_name, lower_bound, upper_bound)) %>%
-    dplyr::slice_sample(n = no_to_sample)
-}
 
 # Generalise to N-tiles
-
 
 #' Sample arrhythmic melodies by N-tiles
 #'
@@ -579,7 +560,7 @@ rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmi
 #' @examples
 sample_in_ntiles_wrapper <- function(item_bank,
                                      num_items,
-                                     n,
+                                     n = 10L,
                                      ntile_sampling_upper_bound = 5L,
                                      col_name,
                                      phase = "test") {
@@ -587,66 +568,64 @@ sample_in_ntiles_wrapper <- function(item_bank,
   logging::loginfo('sample_in_ntiles_wrapper')
   logging::loginfo('phase: %s', phase)
 
-
-  no_to_sample_from_each_ntile <- ceiling(num_items/ntile_sampling_upper_bound)
-
-  if(phase == "example") {
-
-    sample <- sample_in_ntiles(item_bank,
-                               n = n,
-                               no_to_sample_from_each_ntile = num_items,
-                               ntile_sampling_upper_bound = 1L, # We only want the easy trials for examples
-                               col_name = col_name) %>%
-      dplyr::slice_sample(n = nrow(.)) %>%  # Randomise order
+  if (phase == "example") {
+    # For examples, only sample from the easiest ntile
+    sample <- sample_in_ntiles(
+      item_bank = item_bank,
+      n = n,
+      no_to_sample_from_each_ntile = num_items,
+      ntile_sampling_upper_bound = 1L,
+      col_name = col_name
+    ) %>%
+      dplyr::slice_sample(n = nrow(.)) %>%
       dplyr::slice_head(n = num_items)
 
   } else {
-
-    if(num_items %% n != 0) {
-      stop("num_items must be a multiple of n!")
+    # Ensure we can sample evenly
+    if (num_items %% ntile_sampling_upper_bound != 0) {
+      stop("num_items must be a multiple of ntile_sampling_upper_bound!")
     }
 
-    sample <- sample_in_ntiles(item_bank,
-                               n = n,
-                               no_to_sample_from_each_ntile = no_to_sample_from_each_ntile,
-                               ntile_sampling_upper_bound = ntile_sampling_upper_bound,
-                               col_name = col_name) %>%
-      dplyr::slice_sample(n = nrow(.)) %>%  # Randomise order
-      dplyr::slice_head(n = num_items) # Make sure you get the right number of items
+    per_ntile <- num_items / ntile_sampling_upper_bound
+
+    sample <- sample_in_ntiles(
+      item_bank = item_bank,
+      n = n,
+      no_to_sample_from_each_ntile = per_ntile,
+      ntile_sampling_upper_bound = ntile_sampling_upper_bound,
+      col_name = col_name
+    ) %>%
+      dplyr::slice_sample(n = nrow(.)) %>%
+      dplyr::slice_head(n = num_items)
   }
 
   return(sample)
-
 }
 
-sample_in_ntiles <- function(item_bank, no_to_sample_from_each_ntile, n, ntile_sampling_upper_bound = n, col_name = "rhythmic_difficulty_percentile") {
 
-  # First create the N-tile
+sample_in_ntiles <- function(item_bank,
+                             no_to_sample_from_each_ntile,
+                             n,
+                             ntile_sampling_upper_bound = n,
+                             col_name = "rhythmic_difficulty") {
+
+  # Apply ntile division on the difficulty column
   item_bank <- item_bank %>%
     tibble::as_tibble() %>%
-    dplyr::mutate(ntile = dplyr::ntile(col_name, n = n) )
+    dplyr::filter(!is.na(.data[[col_name]])) %>%
+    dplyr::mutate(ntile = dplyr::ntile(.data[[col_name]], n = n))
 
-  1:ntile_sampling_upper_bound %>%
-    purrr::map_dfr(function(ntile_no) {
-      sample_in_ntiles_helper(item_bank, ntile_no, no_to_sample_from_each_ntile, col_name)
-    })
-}
+  # Sample from the first `ntile_sampling_upper_bound` ntiles
+  selected_ntiles <- 1:ntile_sampling_upper_bound
 
-sample_in_ntiles_helper <- function(item_bank, ntile_no, no_to_sample, col_name = "rhythmic_difficulty_percentile") {
-
-  ntile_no <- ntile_no - 1 # Zero-index it
-  lower_bound <- ntile_no * 10
-  upper_bound <- lower_bound + 9
-  col_name <- rlang::sym(col_name)
-
-  item_bank %>%
-    dplyr::filter(dplyr::between(!! col_name, lower_bound, upper_bound)) %>%
-    dplyr::slice_sample(n = no_to_sample)
+  purrr::map_dfr(selected_ntiles, function(ntile_no) {
+    item_bank %>%
+      dplyr::filter(ntile == ntile_no) %>%
+      dplyr::slice_sample(n = no_to_sample_from_each_ntile)
+  })
 }
 
 
-# t_rhy <- sample_in_deciles_wrapper(pbet_hmtm_2024_item_bank, 5, col_name = "rhythmic_difficulty_percentile")
-# t_arr <- sample_in_deciles_wrapper(pbet_hmtm_2024_item_bank, 5, col_name = "arrhythmic_difficulty_percentile")
 
 # t_rhy <- sample_in_ntiles_wrapper(pbet_hmtm_2024_item_bank,
 #                                   num_items = 8,

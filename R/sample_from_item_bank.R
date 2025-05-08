@@ -560,8 +560,8 @@ rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmi
 #' @examples
 sample_in_ntiles_wrapper <- function(item_bank,
                                      num_items,
-                                     n = 10L,
-                                     ntile_sampling_upper_bound = 5L,
+                                     n = 4,
+                                     ntile_sampling_upper_bound = 4,
                                      col_name,
                                      phase = "test") {
 

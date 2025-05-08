@@ -43,6 +43,9 @@ transpose_melody_to_key <- function(abs_melody, key, bottom_range, top_range) {
 
   logging::loginfo('Transpose melody to key')
 
+  cat(file=stderr(), "key...", "\n")
+  cat(file=stderr(), key, "\n")
+
   stopifnot(is.numeric(abs_melody),
             key %in% keys_table$key,
             is.scalar.numeric(bottom_range),

@@ -7,7 +7,7 @@
 sample_in_ntiles_wrapper(
   item_bank,
   num_items,
-  n,
+  n = 10L,
   ntile_sampling_upper_bound = 5L,
   col_name,
   phase = "test"

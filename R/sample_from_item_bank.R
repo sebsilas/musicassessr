@@ -511,14 +511,19 @@ rhythmic_decile_sampler_codeblock <- function(item_bank, num_items_rhythmic, id 
 #' @export
 #'
 #' @examples
-arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhythmic_melody", phase = "test", n = 4) {
+arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhythmic_melody", phase = "test", n = 4, ntile_sampling_upper_bound = 4L) {
   psychTestR::code_block(function(state, ...) {
 
     logging::loginfo("id: %s", id)
     logging::loginfo("phase: %s", phase)
     logging::loginfo("n: %s", n)
 
-    arrhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "arrhythmic_difficulty_percentile", n = n, phase = phase)
+    arrhythmic_sample <- sample_in_ntiles_wrapper(item_bank,
+                                                  num_items,
+                                                  col_name = "arrhythmic_difficulty_percentile",
+                                                  n = n,
+                                                  phase = phase,
+                                                  ntile_sampling_upper_bound = ntile_sampling_upper_bound)
 
     psychTestR::set_global(id, arrhythmic_sample, state)
 
@@ -537,9 +542,16 @@ arrhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "arrhy
 #' @export
 #'
 #' @examples
-rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmic_melody", phase = "test", n = 4) {
+rhythmic_ntile_sampler_codeblock <- function(item_bank, num_items, id = "rhythmic_melody", phase = "test", n = 4L, ntile_sampling_upper_bound = 4L) {
   psychTestR::code_block(function(state, ...) {
-    rhythmic_sample <- sample_in_ntiles_wrapper(item_bank, num_items, col_name = "rhythmic_difficulty_percentile", n = n, phase = phase)
+
+    rhythmic_sample <- sample_in_ntiles_wrapper(item_bank,
+                                                num_items,
+                                                col_name = "rhythmic_difficulty_percentile",
+                                                ntile_sampling_upper_bound = ntile_sampling_upper_bound,
+                                                n = n,
+                                                phase = phase)
+
     psychTestR::set_global(id, rhythmic_sample, state)
 
   })
@@ -567,6 +579,7 @@ sample_in_ntiles_wrapper <- function(item_bank,
 
   logging::loginfo('sample_in_ntiles_wrapper')
   logging::loginfo('phase: %s', phase)
+  logging::loginfo('num_items: %s', num_items)
 
   if (phase == "example") {
     # For examples, only sample from the easiest ntile
@@ -581,6 +594,7 @@ sample_in_ntiles_wrapper <- function(item_bank,
       dplyr::slice_head(n = num_items)
 
   } else {
+
     # Ensure we can sample evenly
     if (num_items %% ntile_sampling_upper_bound != 0) {
       stop("num_items must be a multiple of ntile_sampling_upper_bound!")

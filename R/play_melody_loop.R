@@ -510,9 +510,9 @@ construct_play_melody_page <- function(melody = NULL,
                                   feedback = feedback,
                                   mute_midi_playback = mute_midi_playback)
 
-    sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("sing")), " ", psychTestR::i18n("you_the_melody"))),
+    sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("sing")), " ", psychTestR::i18n("you_the_melody")), button_text = psychTestR::i18n("Next")),
                                              sing_page,
-                                             psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("play")), " ", psychTestR::i18n("the_melody_on_your_instrument"))),
+                                             psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("play")), " ", psychTestR::i18n("the_melody_on_your_instrument")), button_text = psychTestR::i18n("Next")),
                                              page)
 
     return(sing_then_play_pages)

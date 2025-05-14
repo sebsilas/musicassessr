@@ -514,7 +514,7 @@ get_answer_midi_melodic_production <- function(input, state, ...) {
                                                                   additional = additional,
                                                                   melody_block_paradigm = if(length(melody_block_paradigm) > 0) melody_block_paradigm else "NA",
                                                                   page_label = if(length(page_label) > 0) page_label else "NA",
-                                                                  module = module)
+                                                                  module = if(length(module) > 0) module else "NA")
 
     },
     seed = NULL) %>%

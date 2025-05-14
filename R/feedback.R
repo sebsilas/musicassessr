@@ -336,20 +336,28 @@ feedback_image <- function(image,
 }
 
 
-get_async_data_ui <- function(handle_feedback_fun_name = "handleFeedbackRhythmBpm") {
+get_async_data_ui <- function(handle_feedback_fun_name = "handleFeedbackRhythmBpm",
+                              val_to_grab = 0,
+                              show_next_button = TRUE,
+                              show_loader = TRUE) {
   shiny::tags$div(
-    shiny::tags$div(id = "loader", class = "loader"),
+    if (show_loader) shiny::tags$div(id = "loader", class = "loader"),
 
-    shiny::tags$button(psychTestR::i18n("Next"),
-                       id = "nextButton",
-                       class = "_hidden"),
-    shiny::tags$script(paste0("pollDataApi(", handle_feedback_fun_name, "); document.getElementById('nextButton').onclick = function() {
-                                                                      console.log('next clicked!');
-                                                                      next_page();
-                                                                    }
-                                                                    "))
+    if (show_next_button) shiny::tags$button(psychTestR::i18n("Next"), id = "nextButton", class = "_hidden"),
+
+    shiny::tags$script(paste0(
+      "pollDataApi(", handle_feedback_fun_name, ", ", val_to_grab, ");",
+      "var nextBtn = document.getElementById('nextButton');",
+      "if (nextBtn) {",
+      "  nextBtn.onclick = function() {",
+      "    console.log('next clicked!');",
+      "    next_page();",
+      "  };",
+      "}"
+    ))
   )
 }
+
 
 feedback_melodic_production_async_ui <- function() {
 

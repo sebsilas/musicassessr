@@ -4,10 +4,31 @@
 \alias{create_db_vars_template}
 \title{Create a template for db_vars}
 \usage{
-create_db_vars_template(init_with_time_started = TRUE)
+create_db_vars_template(
+  init_with_time_started = TRUE,
+  trial_time_started = Sys.time(),
+  trial_paradigm = "call_and_response",
+  onset = FALSE,
+  pyin_type = "notes",
+  attempt = 1L,
+  item_id = NULL,
+  page_label = NULL,
+  display_modality = "auditory",
+  phase = "test",
+  feedback = FALSE,
+  additional = list(),
+  test_id = 1L,
+  session_id = NULL,
+  instrument = NULL,
+  melody_block_paradigm = NULL,
+  module = "NA",
+  rhythmic = NULL,
+  user_id = NULL,
+  feedback_type = "opti3"
+)
 }
 \arguments{
-\item{init_with_time_started}{}
+\item{user_id}{}
 }
 \description{
 Create a template for db_vars

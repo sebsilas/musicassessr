@@ -9,7 +9,8 @@ rhythmic_ntile_sampler_codeblock(
   num_items,
   id = "rhythmic_melody",
   phase = "test",
-  n = 4
+  n = 4L,
+  ntile_sampling_upper_bound = 4L
 )
 }
 \arguments{

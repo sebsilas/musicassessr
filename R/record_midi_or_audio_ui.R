@@ -178,20 +178,76 @@ db_var_names <- c("stimuli",
   "pyin_type"
   )
 
+
+
 #' Create a template for db_vars
 #'
 #' @param init_with_time_started
+#' @param trial_time_started
+#' @param trial_paradigm
+#' @param onset
+#' @param pyin_type
+#' @param attempt
+#' @param item_id
+#' @param page_label
+#' @param display_modality
+#' @param phase
+#' @param feedback
+#' @param additional
+#' @param test_id
+#' @param session_id
+#' @param instrument
+#' @param melody_block_paradigm
+#' @param module
+#' @param rhythmic
+#' @param user_id
 #'
 #' @returns
 #' @export
+#'
 #' @examples
-create_db_vars_template <- function(init_with_time_started = TRUE) {
+create_db_vars_template <- function(init_with_time_started = TRUE,
+                                    trial_time_started = Sys.time(),
+                                    trial_paradigm = "call_and_response",
+                                    onset = FALSE,
+                                    pyin_type = "notes",
+                                    attempt = 1L,
+                                    item_id = NULL,
+                                    page_label = NULL,
+                                    display_modality = "auditory",
+                                    phase = "test",
+                                    feedback = FALSE,
+                                    additional = list(),
+                                    test_id = 1L,
+                                    session_id = NULL,
+                                    instrument = NULL,
+                                    melody_block_paradigm = NULL,
+                                    module = "NA",
+                                    rhythmic = NULL,
+                                    user_id = NULL,
+                                    feedback_type = "opti3") {
+
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
-  empty_obj$trial_time_started <- Sys.time()
-  empty_obj$trial_paradigm <- "call_and_response"
-  empty_obj$onset <- FALSE
-  empty_obj$pyin_type <- "notes"
-  empty_obj$attempt <- 1L
+  empty_obj$trial_time_started <- trial_time_started
+  empty_obj$trial_paradigm <- trial_paradigm
+  empty_obj$onset <- onset
+  empty_obj$pyin_type <- pyin_type
+  empty_obj$attempt <- attempt
+  empty_obj$item_id <- item_id
+  empty_obj$page_label <- page_label
+  empty_obj$display_modality <- display_modality
+  empty_obj$phase <- phase
+  empty_obj$feedback <- feedback
+  empty_obj$additional <- additional
+  empty_obj$test_id <- test_id
+  empty_obj$session_id <- session_id
+  empty_obj$instrument <- instrument
+  empty_obj$melody_block_paradigm <- melody_block_paradigm
+  empty_obj$module <- module
+  empty_obj$rhythmic <- rhythmic
+  empty_obj$user_id <- user_id
+  empty_obj$feedback_type <- feedback_type
+
   return(empty_obj)
 }
 

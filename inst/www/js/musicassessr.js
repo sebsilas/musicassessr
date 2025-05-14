@@ -1340,7 +1340,8 @@ function appendNextButton(onClick = next_page, id = 'async-feedback') {
 
 // Generalise job grabbing functionality
 
-async function fetchDataApi(triggerWhenDataBack) {
+async function fetchDataApi(triggerWhenDataBack,
+                            val_to_grab = 0) {
 
   console.log('Fetching feedback for ' + file_url);
 
@@ -1370,9 +1371,16 @@ async function fetchDataApi(triggerWhenDataBack) {
       let message;
 
       try {
-        message = JSON.parse(data.message);
+
+         message = JSON.parse(data.message);
+         console.log('val_to_grab', val_to_grab);
+         console.log('message', message);
+         console.log('message.feedback', message.feedback);
+         const fb = Object.values(message.feedback)[val_to_grab];
+         console.log('fb', fb);
          console.log('message:', message);
-      Shiny.setInputValue("API_DATA_RESPONSE", message.feedback[0]);
+          Shiny.setInputValue("API_DATA_RESPONSE", fb);
+
       } catch (e) {
         message = data.message; // It's just a plain string, not JSON
         console.log('message:', message);
@@ -1391,8 +1399,8 @@ async function fetchDataApi(triggerWhenDataBack) {
   }
 }
 
-function pollDataApi(triggerWhenDataBack) {
-  intervalId = setInterval(() => fetchDataApi(triggerWhenDataBack), pollingInterval);
+function pollDataApi(triggerWhenDataBack, val_to_grab = 0) {
+  intervalId = setInterval(() => fetchDataApi(triggerWhenDataBack, val_to_grab), pollingInterval);
 }
 
 
@@ -1407,6 +1415,11 @@ function handleFeedbackSNR() {
   console.log('handleFeedbackRhythmSNR!');
   hideLoader();
   next_page();
+}
+
+
+function handleFeedbackReflectionParadigm() {
+  console.log('handleFeedbackReflectionParadigm!');
 }
 
 // Display score functionality

@@ -294,14 +294,6 @@ get_proportion_of_correct_note_events <- function(stimuli, user_melody_input, no
   }
 }
 
-get_durations <- function(result) {
-  if(is.scalar.null(result$dur)) {
-    durations <- diff(onsets_noteon)
-  } else {
-    durations <- result$dur
-  }
-}
-
 
 #' Get opti3
 #'

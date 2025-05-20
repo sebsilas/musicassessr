@@ -346,7 +346,7 @@ get_async_data_ui <- function(handle_feedback_fun_name = "handleFeedbackRhythmBp
     if (show_next_button) shiny::tags$button(psychTestR::i18n("Next"), id = "nextButton", class = "_hidden"),
 
     shiny::tags$script(paste0(
-      "pollDataApi(", handle_feedback_fun_name, ", ", val_to_grab, ");",
+      "pollDataApi(", handle_feedback_fun_name, ", ", val_to_grab, ", true);",
       "var nextBtn = document.getElementById('nextButton');",
       "if (nextBtn) {",
       "  nextBtn.onclick = function() {",

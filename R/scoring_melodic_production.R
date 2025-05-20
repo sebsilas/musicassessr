@@ -327,18 +327,22 @@ get_opti3 <- function(stimuli, stimuli_durations = NA, stimuli_length, user_inpu
       itembankr::segment_phrase(as_string_df = FALSE)
   }
 
-  stimuli_df <- tibble::tibble(
+  stimuli_df <- create_stimuli_df(stimuli, stimuli_durations, segment_phrase)
+
+  opti3 <- opti3_df(melody1 = stimuli_df,
+                    melody2 = user_input_as_pyin)
+}
+
+
+create_stimuli_df <- function(stimuli, stimuli_durations, segment_phrase = TRUE) {
+  tibble::tibble(
     note = stimuli,
     dur = stimuli_durations,
     onset = c(0, cumsum(stimuli_durations)[1:(length(stimuli_durations)-1)]),
     ioi = c(NA, diff(onset)),
     ioi_class = itembankr::classify_duration(ioi) ) %>%
     { if(segment_phrase) itembankr::segment_phrase(., as_string_df = FALSE) else . }
-
-  opti3 <- opti3_df(melody1 = stimuli_df,
-                    melody2 = user_input_as_pyin)
 }
-
 
 
 

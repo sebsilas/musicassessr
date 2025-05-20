@@ -1,4 +1,14 @@
 
+#' Production reflection perception paradigm test
+#'
+#' @param num_items_arrhythmic
+#' @param num_items_rhythmic
+#' @param max_attempts
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 production_reflection_perception_paradigm_standalone <- function(num_items_arrhythmic = 4L,
                                                                  num_items_rhythmic = 4L,
                                                                  max_attempts = 3L) {

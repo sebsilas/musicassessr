@@ -9,11 +9,11 @@ run_appt_finder_app <- function() {
   # Load required packages
   shiny::shinyApp(
     ui = shiny::fluidPage(
-      shiny::titlePanel("Appointment Scheduler"),
+      shiny::titlePanel("Terminplaner"),
 
       shiny::sidebarLayout(
         shiny::sidebarPanel(
-          shiny::dateInput("start_date", "Select Start Date:", value = base::Sys.Date())
+          shiny::dateInput("start_date", "Startdatum auswählen:", value = base::Sys.Date())
         ),
 
         shiny::mainPanel(
@@ -31,19 +31,18 @@ run_appt_finder_app <- function() {
         day_after <- start_date + 1
 
         appointments <- list(
-          "Original Date" = start_date,
-          "Day After" = day_after,
-          "1 Week After" = day_after + 7,
-          "2 Weeks After" = day_after + 14,
-          "3 Weeks After" = day_after + 21,
-          "4 Weeks After" = day_after + 28
+          "Ursprüngliches Datum" = start_date,
+          "Tag danach" = day_after,
+          "1 Woche später" = day_after + 7,
+          "2 Wochen später" = day_after + 14,
+          "3 Wochen später" = day_after + 21,
+          "4 Wochen später" = day_after + 28
         )
-
 
         # Return as a data.frame
         tibble::tibble(
-          Appointment = names(appointments),
-          Date = purrr::map_chr(appointments, as.character)
+          Termin = names(appointments),
+          Datum = purrr::map_chr(appointments, as.character)
         )
       }
 
@@ -52,8 +51,8 @@ run_appt_finder_app <- function() {
       })
     }
   )
-
 }
+
 get_longitudinal_session_items <- function(participant_number, num_test_session) {
 
   p_items <- pbet_hmtm_longitudunal_study_matrix %>%

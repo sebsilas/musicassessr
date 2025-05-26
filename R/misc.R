@@ -53,6 +53,15 @@ run_appt_finder_app <- function() {
   )
 }
 
+#' Get longitudinal study items
+#'
+#' @param participant_number
+#' @param num_test_session
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 get_longitudinal_session_items <- function(participant_number, num_test_session) {
 
   p_items <- pbet_hmtm_longitudunal_study_matrix %>%

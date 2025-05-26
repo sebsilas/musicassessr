@@ -35,7 +35,7 @@ multi_page_play_melody_loop(
   volume_meter = FALSE,
   volume_meter_type = "default",
   melody_block_paradigm = c("standard", "sing_melody_first",
-    "learn_phase_visual_display_modality"),
+    "learn_phase_visual_display_modality", "longitudinal_review"),
   singing_trials = TRUE,
   phase = c("test", "learn", "review", "example"),
   melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
@@ -45,11 +45,12 @@ multi_page_play_melody_loop(
   learn_test_paradigm = FALSE,
   sample_item_bank_via_api = FALSE,
   pass_items_through_url_parameter = FALSE,
-  mute_midi_playback = FALSE
+  mute_midi_playback = FALSE,
+  reactive_vars_to_grab_for_additional = NULL
 )
 }
 \arguments{
-\item{mute_midi_playback}{}
+\item{reactive_vars_to_grab_for_additional}{}
 }
 \description{
 A page builder for creating a specified number of play_melody_loops

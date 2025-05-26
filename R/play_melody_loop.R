@@ -41,6 +41,7 @@
 #' @param sample_item_bank_via_api
 #' @param pass_items_through_url_parameter
 #' @param mute_midi_playback
+#' @param reactive_vars_to_grab_for_additional
 #'
 #' @return
 #' @export
@@ -74,7 +75,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         get_similarity_to_previous_melody = FALSE,
                                         volume_meter = FALSE,
                                         volume_meter_type = 'default',
-                                        melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                                        melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality', 'longitudinal_review'),
                                         singing_trials = TRUE,
                                         phase = c('test', 'learn', 'review', 'example'),
                                         melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
@@ -84,7 +85,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                         learn_test_paradigm = FALSE,
                                         sample_item_bank_via_api = FALSE,
                                         pass_items_through_url_parameter = FALSE,
-                                        mute_midi_playback = FALSE) {
+                                        mute_midi_playback = FALSE,
+                                        reactive_vars_to_grab_for_additional = NULL) {
 
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
@@ -119,7 +121,7 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.logical(get_similarity_to_previous_melody),
             is.scalar.logical(volume_meter),
             is.scalar.character(volume_meter_type),
-            melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+            melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality',  'longitudinal_review'),
             is.scalar.logical(singing_trials),
             phase %in% c('learn', 'test', 'review', 'example'),
             melody_trial_paradigm %in% c("call_and_response", "simultaneous_recall"),
@@ -129,7 +131,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
             is.scalar.logical(learn_test_paradigm),
             is.scalar.logical(sample_item_bank_via_api),
             is.scalar.logical(pass_items_through_url_parameter),
-            is.scalar.logical(mute_midi_playback)
+            is.scalar.logical(mute_midi_playback),
+            is.null.or(reactive_vars_to_grab_for_additional, is.character)
   )
 
   if(is.null(presampled_items) && is.infinite(num_items)) {
@@ -208,7 +211,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                    sample_item_bank_via_api,
                                    pass_items_through_url_parameter = pass_items_through_url_parameter,
                                    feedback = feedback,
-                                   mute_midi_playback = mute_midi_playback),
+                                   mute_midi_playback = mute_midi_playback,
+                                   reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional),
 
         psychTestR::conditional(function(state, ...) {
 
@@ -294,7 +298,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  if(sample_item_bank_via_api) start_from_trial_no else NULL,
                                  pass_items_through_url_parameter = pass_items_through_url_parameter,
                                  feedback = feedback,
-                                 mute_midi_playback = mute_midi_playback)
+                                 mute_midi_playback = mute_midi_playback,
+                                 reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional)
 
     })
 
@@ -345,7 +350,8 @@ multi_page_play_melody_loop <- function(item_bank = NULL,
                                  sample_item_bank_via_api,
                                  pass_items_through_url_parameter = pass_items_through_url_parameter,
                                  feedback = feedback,
-                                 mute_midi_playback = mute_midi_playback)
+                                 mute_midi_playback = mute_midi_playback,
+                                 reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional)
 
     })
 
@@ -407,7 +413,8 @@ construct_play_melody_page <- function(melody = NULL,
                                        start_from_trial_no = NULL,
                                        pass_items_through_url_parameter = FALSE,
                                        feedback = FALSE,
-                                       mute_midi_playback = FALSE) {
+                                       mute_midi_playback = FALSE,
+                                       reactive_vars_to_grab_for_additional = NULL) {
 
   if(!singing_trials) {
     page_text <- shiny::tags$div(
@@ -460,7 +467,8 @@ construct_play_melody_page <- function(melody = NULL,
                            start_from_trial_no = start_from_trial_no,
                            pass_items_through_url_parameter = pass_items_through_url_parameter,
                            feedback = feedback,
-                           mute_midi_playback = mute_midi_playback)
+                           mute_midi_playback = mute_midi_playback,
+                           reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional)
   # In the case of putting a sing melody page first, we do the sampling on the sing page (in code below, but which chronogically comes first); then we skip sampling on the "real" (instrument) version, and just use the sampled melody from the sing page
 
   if (melody_block_paradigm == "sing_melody_first") {
@@ -508,7 +516,8 @@ construct_play_melody_page <- function(melody = NULL,
                                   start_from_trial_no = start_from_trial_no,
                                   pass_items_through_url_parameter = pass_items_through_url_parameter,
                                   feedback = feedback,
-                                  mute_midi_playback = mute_midi_playback)
+                                  mute_midi_playback = mute_midi_playback,
+                                  reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional)
 
     sing_then_play_pages <- psychTestR::join(psychTestR::one_button_page(shiny::tags$p(psychTestR::i18n("Now_you_will"), " ", shiny::tags$strong(psychTestR::i18n("sing")), " ", psychTestR::i18n("you_the_melody")), button_text = psychTestR::i18n("Next")),
                                              sing_page,
@@ -577,6 +586,7 @@ construct_play_melody_page <- function(melody = NULL,
 #' @param pass_items_through_url_parameter
 #' @param feedback
 #' @param mute_midi_playback
+#' @param reactive_vars_to_grab_for_additional
 #'
 #'
 #' @return
@@ -621,7 +631,7 @@ play_melody_loop <- function(item_bank = NULL,
                              volume_meter_type = 'default',
                              singing_trial = TRUE,
                              phase = c('test', 'learn', 'review', 'example'),
-                             melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                             melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality',  'longitudinal_review'),
                              melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
                              first_note_message = psychTestR::i18n("first_note_is"),
                              transposed_message = psychTestR::i18n("transposed"),
@@ -633,7 +643,8 @@ play_melody_loop <- function(item_bank = NULL,
                              start_from_trial_no = NULL,
                              pass_items_through_url_parameter = FALSE,
                              feedback = FALSE,
-                             mute_midi_playback = FALSE) {
+                             mute_midi_playback = FALSE,
+                             reactive_vars_to_grab_for_additional = NULL) {
 
   save_answer <- ! example
 
@@ -719,7 +730,8 @@ play_melody_loop <- function(item_bank = NULL,
                      pass_items_through_url_parameter = pass_items_through_url_parameter,
                      feedback = feedback,
                      asynchronous_api_mode = asynchronous_api_mode,
-                     mute_midi_playback = mute_midi_playback),
+                     mute_midi_playback = mute_midi_playback,
+                     reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional),
 
       if(is.function(feedback)) feedback(),
 
@@ -764,7 +776,7 @@ present_melody <- function(stimuli,
                            volume_meter = FALSE,
                            volume_meter_type = 'default',
                            singing_trial = TRUE,
-                           melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                           melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality',  'longitudinal_review'),
                            user_rating = FALSE,
                            happy_with_response = FALSE,
                            melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
@@ -776,7 +788,8 @@ present_melody <- function(stimuli,
                            pass_items_through_url_parameter = FALSE,
                            feedback = FALSE,
                            asynchronous_api_mode = FALSE,
-                           mute_midi_playback = FALSE, ...) {
+                           mute_midi_playback = FALSE,
+                           reactive_vars_to_grab_for_additional = NULL, ...) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
   melody_trial_paradigm <- match.arg(melody_trial_paradigm)
@@ -866,13 +879,24 @@ present_melody <- function(stimuli,
         additional <- list()
       }
 
+      # Maybe something was set somewhere else, so preserve it
       old_additional <-  psychTestR::get_global("additional", state)
 
       if(!is.null(old_additional)) {
         if(is.character(old_additional)) {
           old_additional <- jsonlite::fromJSON(old_additional)
         }
-        additional <- c(old_additional, additional)
+        if(length(additional) > 0L) {
+          browser()
+          additional <- c(old_additional, additional)
+        }
+      }
+
+      if(is.character(reactive_vars_to_grab_for_additional)) {
+        extra_additional_vars <- grab_reactive_vars_for_additional(reactive_vars_to_grab_for_additional, state)
+        additional <- c(additional, extra_additional_vars)
+        logging::loginfo("names(extra_additional_vars): %s", names(extra_additional_vars))
+        logging::loginfo("extra_additional_vars: %s", extra_additional_vars)
       }
 
       psychTestR::set_global("additional", additional, state) # For MIDI
@@ -965,6 +989,18 @@ present_melody <- function(stimuli,
   )
 }
 
+
+grab_reactive_vars_for_additional <- function(reactive_vars_to_grab_for_additional, state) {
+
+  res <- setNames(vector("list", length(reactive_vars_to_grab_for_additional)), reactive_vars_to_grab_for_additional)
+
+  for(var in reactive_vars_to_grab_for_additional) {
+    res[[var]] <- psychTestR::get_global(var, state)
+  }
+
+  return(res)
+
+}
 
 grab_sampled_melody <- function(item_bank = NULL,
                                 melody_row = NULL,
@@ -1164,9 +1200,16 @@ transpose_melody <- function(rel_to_abs_mel_function, rel_melody, abs_melody, me
   logging::loginfo("Rel melody: %s", paste0(rel_melody, collapse = ", "))
 
   if(is.null(rel_to_abs_mel_function)) {
+
     if(is.data.frame(abs_melody)) {
       abs_melody <- melody %>%
-        dplyr::pull(abs_melody)
+        dplyr::pull(abs_melody) %>%
+        itembankr::str_mel_to_vector()
+    }
+
+    if(is.scalar.character(abs_melody)) {
+      abs_melody <- abs_melody %>%
+        itembankr::str_mel_to_vector()
     }
   } else {
     # ...then assume that the melody is in relative format and fit it into a key, based on a rel_to_abs_mel_functionw

@@ -56,37 +56,37 @@ run_appt_finder_app <- function() {
 get_longitudinal_session_items <- function(participant_number, num_test_session) {
 
   p_items <- pbet_hmtm_longitudunal_study_matrix %>%
-    dplyr::filter(participant_no == participant_number)
+    dplyr::filter(participant_no == !! participant_number)
 
   if(num_test_session == 1L) {
     return(p_items)
   } else if(num_test_session == 2L) {
 
-    p_items <- p_items %>% dplyr::filter(test_after_one_day) %>% dplyr::slice_sample(n = nrow(.))
+    p_items <- p_items %>% dplyr::filter(test_after_one_day)
 
     return(p_items)
 
   } else if(num_test_session == 3L) {
 
-    p_items <- p_items %>% dplyr::filter(test_after_one_week) %>% dplyr::slice_sample(n = nrow(.))
+    p_items <- p_items %>% dplyr::filter(test_after_one_week)
 
     return(p_items)
 
   } else if(num_test_session == 4L) {
 
-    p_items <- p_items %>% dplyr::filter(test_after_two_weeks) %>% dplyr::slice_sample(n = nrow(.))
+    p_items <- p_items %>% dplyr::filter(test_after_two_weeks)
 
     return(p_items)
 
   } else if(num_test_session == 5L) {
 
-    p_items <- p_items %>% dplyr::filter(test_after_three_weeks) %>% dplyr::slice_sample(n = nrow(.))
+    p_items <- p_items %>% dplyr::filter(test_after_three_weeks)
 
     return(p_items)
 
   } else if(num_test_session == 6L) {
 
-    p_items <- p_items %>% dplyr::filter(test_after_four_weeks) %>% dplyr::slice_sample(n = nrow(.))
+    p_items <- p_items %>% dplyr::filter(test_after_four_weeks)
 
     return(p_items)
 

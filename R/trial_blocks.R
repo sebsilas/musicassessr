@@ -403,6 +403,7 @@ sing_rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param pass_items_through_url_parameter
 #' @param asynchronous_api_mode
 #' @param mute_midi_playback
+#' @param reactive_vars_to_grab_for_additional
 #'
 #' @return
 #' @export
@@ -437,7 +438,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      get_similarity_to_previous_melody = FALSE,
                                      volume_meter = FALSE,
                                      volume_meter_type = 'default',
-                                     melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                                     melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality', 'longitudinal_review'),
                                      singing_trials = TRUE,
                                      review = FALSE,
                                      phase = c('test', 'learn', 'review'),
@@ -449,7 +450,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                                      start_from_sampled_trial_no = 1L,
                                      pass_items_through_url_parameter = FALSE,
                                      asynchronous_api_mode = FALSE,
-                                     mute_midi_playback = FALSE) {
+                                     mute_midi_playback = FALSE,
+                                     reactive_vars_to_grab_for_additional = NULL) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
 
@@ -495,7 +497,8 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
                 start_from_sampled_trial_no,
                 pass_items_through_url_parameter,
                 asynchronous_api_mode,
-                mute_midi_playback)
+                mute_midi_playback,
+                reactive_vars_to_grab_for_additional)
 
 }
 
@@ -546,6 +549,7 @@ arrhythmic_melody_trials <- function(var_name = "arrhythmic_melody",
 #' @param pass_items_through_url_parameter
 #' @param asynchronous_api_mode
 #' @param mute_midi_playback
+#' @param reactive_vars_to_grab_for_additional
 #'
 #' @return
 #' @export
@@ -580,7 +584,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    get_similarity_to_previous_melody = FALSE,
                                    volume_meter = FALSE,
                                    volume_meter_type = 'default',
-                                   melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                                   melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality', 'longitudinal_review'),
                                    singing_trials = TRUE,
                                    review = FALSE,
                                    phase = c('test', 'learn', 'review'),
@@ -592,7 +596,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                                    start_from_sampled_trial_no = 1L,
                                    pass_items_through_url_parameter = FALSE,
                                    asynchronous_api_mode = FALSE,
-                                   mute_midi_playback = FALSE) {
+                                   mute_midi_playback = FALSE,
+                                   reactive_vars_to_grab_for_additional = NULL) {
 
   melody_block_paradigm <- match.arg(melody_block_paradigm)
 
@@ -638,7 +643,8 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
                 start_from_sampled_trial_no,
                 pass_items_through_url_parameter,
                 asynchronous_api_mode,
-                mute_midi_playback)
+                mute_midi_playback,
+                reactive_vars_to_grab_for_additional)
 
 }
 
@@ -691,6 +697,7 @@ rhythmic_melody_trials <- function(var_name = "rhythmic_melody",
 #' @param pass_items_through_url_parameter
 #' @param asynchronous_api_mode
 #' @param mute_midi_playback
+#' @param reactive_vars_to_grab_for_additional
 #'
 #' @return
 #' @export
@@ -726,7 +733,7 @@ melody_trials <- function(var_name,
                           get_similarity_to_previous_melody = FALSE,
                           volume_meter = FALSE,
                           volume_meter_type = 'default',
-                          melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+                          melody_block_paradigm = c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality', 'longitudinal_review'),
                           singing_trials = TRUE,
                           review = FALSE,
                           phase = c('test', 'learn', 'review'),
@@ -738,7 +745,8 @@ melody_trials <- function(var_name,
                           start_from_sampled_trial_no = 1L,
                           pass_items_through_url_parameter = FALSE,
                           asynchronous_api_mode = FALSE,
-                          mute_midi_playback = FALSE) {
+                          mute_midi_playback = FALSE,
+                          reactive_vars_to_grab_for_additional = NULL) {
 
   phase <- match.arg(phase)
 
@@ -773,7 +781,7 @@ melody_trials <- function(var_name,
     is.scalar.logical(get_similarity_to_previous_melody),
     is.scalar.logical(volume_meter),
     is.scalar.character(volume_meter_type),
-    melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality'),
+    melody_block_paradigm %in% c('standard', 'sing_melody_first', 'learn_phase_visual_display_modality', 'longitudinal_review'),
     is.scalar.logical(singing_trials),
     is.scalar.logical(review),
     phase %in% c('test', 'learn', 'review'),
@@ -785,7 +793,8 @@ melody_trials <- function(var_name,
     is.scalar.numeric(start_from_sampled_trial_no),
     is.scalar.logical(pass_items_through_url_parameter),
     is.scalar.logical(asynchronous_api_mode),
-    is.scalar.logical(mute_midi_playback)
+    is.scalar.logical(mute_midi_playback),
+    is.null.or(reactive_vars_to_grab_for_additional, is.character)
   )
 
   sampler_fun_args <- c("item_bank", "num_items", "id", "phase")
@@ -873,7 +882,9 @@ melody_trials <- function(var_name,
       sample_item_bank_via_api = sample_item_bank_via_api,
       start_from_trial_no = if(sample_item_bank_via_api) start_from_sampled_trial_no + num_examples_flat else 1L,
       pass_items_through_url_parameter = pass_items_through_url_parameter,
-      mute_midi_playback = mute_midi_playback)
+      mute_midi_playback = mute_midi_playback,
+      reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional
+      )
 
     if(review) {
 
@@ -959,7 +970,8 @@ melody_trials <- function(var_name,
               sample_item_bank_via_api = sample_item_bank_via_api,
               start_from_trial_no = start_from_sampled_trial_no,
               pass_items_through_url_parameter = pass_items_through_url_parameter,
-              mute_midi_playback = mute_midi_playback
+              mute_midi_playback = mute_midi_playback,
+              reactive_vars_to_grab_for_additional = reactive_vars_to_grab_for_additional
               ) },
 
           psychTestR::one_button_page(shiny::tags$div(

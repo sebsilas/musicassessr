@@ -20,9 +20,9 @@ create_db_vars_template(
   test_id = 1L,
   session_id = NULL,
   instrument = NULL,
-  melody_block_paradigm = NULL,
+  melody_block_paradigm = "NA",
   module = "NA",
-  rhythmic = NULL,
+  rhythmic = TRUE,
   user_id = NULL,
   feedback_type = "opti3"
 )

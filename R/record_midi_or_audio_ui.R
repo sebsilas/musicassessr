@@ -46,7 +46,7 @@ record_midi_or_audio_ui <- function(body = "",
     page_text <- shiny::tags$p(page_text)
   }
 
-  attempt <- jsonlite::toJSON(max_goes - attempts_left)
+  attempt <- max_goes - attempts_left
 
   section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
@@ -61,7 +61,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       # Set attempts
       shiny::tags$script(
-        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', attempt, ');
+        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', jsonlite::toJSON(attempt), ');
                            console.log(\"This is a ', page_type, '\");'))
       ),
 
@@ -75,6 +75,8 @@ record_midi_or_audio_ui <- function(body = "",
       if(!is.scalar.null(db_vars)) set_answer_meta_data_for_db_as_js_vars(db_vars),
 
       if(show_progress) shiny::tags$h4(section_progress),
+
+      shiny::tags$h4(paste0(psychTestR::i18n("Attempt"), " ", attempt, "/", max_goes)),
 
       shiny::tags$h2(id = "trial_page_title", page_title),
 
@@ -221,9 +223,9 @@ create_db_vars_template <- function(init_with_time_started = TRUE,
                                     test_id = 1L,
                                     session_id = NULL,
                                     instrument = NULL,
-                                    melody_block_paradigm = NULL,
+                                    melody_block_paradigm = "NA",
                                     module = "NA",
-                                    rhythmic = NULL,
+                                    rhythmic = TRUE,
                                     user_id = NULL,
                                     feedback_type = "opti3") {
 

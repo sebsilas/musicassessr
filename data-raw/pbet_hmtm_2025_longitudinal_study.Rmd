@@ -1,0 +1,210 @@
+
+
+```{r}
+
+
+library(tidyverse)
+
+load_all()
+
+```
+
+
+```{r}
+
+time_conditions <- c("after one day",
+                     "after one week",
+                     "after two weeks",
+                     "after three weeks",
+                     "after four weeks")
+
+difficulty_conditions <- 1:4
+
+```
+
+
+```{r}
+
+all_combinations <- function(vec) {
+  map(1:length(vec), ~combn(vec, .x, simplify = FALSE)) %>%
+    flatten()
+}
+
+
+time_matrix <- all_combinations(time_conditions)
+
+# difficulty_matrix <- permute::allPerms(1:4)
+# We won't use this
+
+
+```
+
+
+```{r}
+
+sessions_matrix <- tibble(
+  condition = map_chr(time_matrix, paste0, collapse = "|")
+) %>% 
+  mutate(mel_id = row_number(),
+         test_after_one_day = case_when(grepl("one day", condition) ~ TRUE, TRUE ~ FALSE),
+         test_after_one_week = case_when(grepl("one week", condition) ~ TRUE, TRUE ~ FALSE),
+         test_after_two_weeks = case_when(grepl("two weeks", condition) ~ TRUE, TRUE ~ FALSE),
+         test_after_three_weeks = case_when(grepl("three weeks", condition) ~ TRUE, TRUE ~ FALSE),
+         test_after_four_weeks = case_when(grepl("four weeks", condition) ~ TRUE, TRUE ~ FALSE)
+         ) %>% 
+  relocate(mel_id)
+
+# sessions_matrix %>% writexl::write_xlsx(path = "study_history_design_matrix.xlsx")
+
+```
+
+
+```{r}
+
+sessions_matrix_long <- sessions_matrix %>% 
+  select(contains("after")) %>% 
+  pivot_longer(everything(), names_to = "test_time", values_to = "value")
+
+
+sessions_matrix_long %>% 
+  count(value)
+
+```
+
+
+```{r}
+
+melodies_per_session_count <- sessions_matrix_long %>% 
+  filter(value) %>% # i.e., only where TRUE
+  count(test_time)
+  
+
+```
+
+
+```{r}
+
+random_difficulty_assignment_from_sessions_matrix <- function() {
+  
+  nums <- rep(1:4, 8) %>% 
+    sample(size = 32)
+  
+  # We use a factor of 4 for quartiles
+  
+  nums <- nums[1:31]
+  
+  # Then randomly pop one off to give us the 31 melodies
+    
+  sessions_matrix %>% 
+    mutate(rhythmic_difficulty_quartile = nums)
+}
+
+
+```
+
+
+```{r}
+
+pbet_hmtm_2024_item_bank <- pbet_hmtm_2024_item_bank %>%
+  as_tibble() %>% 
+  mutate(rhythmic_difficulty_quartile = ntile(rhythmic_difficulty, n = 4))
+
+# (up to) 20 participants
+
+no_participants <- 20L
+
+full_matrix <- map_dfr(1:no_participants, function(.x) {
+  random_difficulty_assignment_from_sessions_matrix() %>% 
+    mutate(participant_no = .x)
+})
+
+```
+
+
+```{r}
+
+# Shuffle item bank within each quartile
+shuffled_bank <- pbet_hmtm_2024_item_bank %>%
+  group_by(rhythmic_difficulty_quartile) %>%
+  slice_sample(prop = 1, replace = FALSE) %>%
+  ungroup()
+
+# Add row numbers to help match without replacement
+full_matrix_with_idx <- full_matrix %>%
+  mutate(row_id = row_number()) %>%
+  group_by(rhythmic_difficulty_quartile) %>%
+  mutate(assign_id = row_number()) %>%
+  ungroup()
+
+shuffled_bank_with_idx <- shuffled_bank %>%
+  group_by(rhythmic_difficulty_quartile) %>%
+  mutate(assign_id = row_number()) %>%
+  ungroup()
+
+# Left join using both difficulty_quartile and assign_id
+pbet_hmtm_longitudunal_study_matrix <- full_matrix_with_idx %>%
+  left_join(shuffled_bank_with_idx, 
+            by = c("rhythmic_difficulty_quartile", "assign_id")) %>%
+  arrange(row_id) %>%
+  select(-row_id, -assign_id)
+
+
+
+use_data(pbet_hmtm_longitudunal_study_matrix, overwrite = TRUE)
+
+# Check roughly equal per quartile
+# pbet_hmtm_longitudunal_study_matrix %>% count(rhythmic_difficulty_quartile)
+
+# Check no repeat items
+# c <- pbet_hmtm_longitudunal_study_matrix %>% count(item_id)
+# c %>% filter(n > 1)
+
+
+```
+
+
+```{r}
+
+library(lme4)
+library(simr)
+
+# Step 1: Create a realistic dataset with enough variability
+n_participants <- 30
+n_timepoints <- 5
+time_points <- c(0, 1, 2, 3, 4)
+
+participant_ids <- factor(rep(1:n_participants, each = n_timepoints))
+
+data <- data.frame(
+  participant = participant_ids,
+  time = rep(time_points, times = n_participants)
+)
+
+# Step 2: Simulate outcome with true effect and noise
+set.seed(123)
+random_intercepts <- rnorm(n_participants, mean = 0, sd = 0.5)
+
+data$y <- 0 + 
+          0.3 * data$time + 
+          random_intercepts[data$participant] +
+          rnorm(nrow(data), 0, 1)
+
+# Step 3: Fit LMM and inject known fixed effect
+model <- lmer(y ~ time + (1 | participant), data = data)
+fixef(model)["time"] <- 0.3
+
+# Step 4: Extend to a range of participant numbers
+model_sim <- extend(model, along = "participant", n = 30)
+
+# Step 5: Run power curve
+pc <- powerCurve(model_sim, 
+                 along = "participant", 
+                 breaks = seq(from = 5, 
+                              to = 30, 
+                              by = 5), nsim = 100)
+plot(pc)
+summary(pc)
+
+
+
+```

@@ -1456,6 +1456,8 @@ function handleFeedbackSNR() {
 
 function handleFeedbackReflectionParadigm() {
   console.log('handleFeedbackReflectionParadigm!');
+  hideLoader();
+  next_page();
 }
 
 // Display score functionality

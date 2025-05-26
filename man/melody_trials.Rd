@@ -36,7 +36,7 @@ melody_trials(
   volume_meter = FALSE,
   volume_meter_type = "default",
   melody_block_paradigm = c("standard", "sing_melody_first",
-    "learn_phase_visual_display_modality"),
+    "learn_phase_visual_display_modality", "longitudinal_review"),
   singing_trials = TRUE,
   review = FALSE,
   phase = c("test", "learn", "review"),
@@ -48,11 +48,12 @@ melody_trials(
   start_from_sampled_trial_no = 1L,
   pass_items_through_url_parameter = FALSE,
   asynchronous_api_mode = FALSE,
-  mute_midi_playback = FALSE
+  mute_midi_playback = FALSE,
+  reactive_vars_to_grab_for_additional = NULL
 )
 }
 \arguments{
-\item{mute_midi_playback}{}
+\item{reactive_vars_to_grab_for_additional}{}
 }
 \description{
 Melody trials constructor

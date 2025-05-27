@@ -291,8 +291,8 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
     )
   } else if (attempts_left == 1L) {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(shiny::HTML(psychTestR::i18n("happy_with_response_message"))),
-                    shiny::tags$p(psychTestR::i18n("attempts_remaining_1")),
+                    if(!max_goes_forced) shiny::tags$p(shiny::HTML(psychTestR::i18n("happy_with_response_message"))),
+                    shiny::tags$p(attempts_remaining_1),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = "Try Again", label = "Try Again", onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )
@@ -304,8 +304,8 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
     )
   } else {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(psychTestR::i18n("were_you_happy")),
-                    if(!is.infinite(attempts_left)) shiny::tags$p(paste0(psychTestR::i18n("You_have"), ' ', " ", attempts_left, ' ', psychTestR::i18n("attempts_remaining_if_like"))),
+                    if(!max_goes_forced) shiny::tags$p(psychTestR::i18n("were_you_happy")),
+                    if(!is.infinite(attempts_left)) shiny::tags$p(paste0(psychTestR::i18n("You_have"), ' ', " ", attempts_left, ' ', attempts_remaining_several.2)),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = 'Try Again', label = 'Try Again', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = 'Continue', label = 'Continue', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )

@@ -76,7 +76,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       if(show_progress) shiny::tags$h4(section_progress),
 
-      shiny::tags$h4(paste0(psychTestR::i18n("Attempt"), " ", attempt, "/", max_goes)),
+      if(attempt > 0) shiny::tags$h4(paste0(psychTestR::i18n("Attempt"), " ", attempt, "/", max_goes)),
 
       shiny::tags$h2(id = "trial_page_title", page_title),
 

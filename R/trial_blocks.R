@@ -1125,6 +1125,7 @@ handle_item_sampling <- function(item_bank,
 #' @param long_tone_length
 #' @param volume_meter
 #' @param volume_meter_type
+#' @param call_and_response_end
 #'
 #' @return
 #' @export
@@ -1150,7 +1151,8 @@ long_tone_trials <- function(num_items,
                              paradigm = c("simultaneous_recall", "call_and_response"),
                              long_tone_length = 5,
                              volume_meter = FALSE,
-                             volume_meter_type = 'default') {
+                             volume_meter_type = 'default',
+                             call_and_response_end = "manual") {
 
   if(match.arg(paradigm) == "simultaneous_recall") {
     instruction_text <- shiny::div(
@@ -1200,12 +1202,14 @@ long_tone_trials <- function(num_items,
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_midi_page",
                                                                                   example = TRUE, feedback = feedback,
                                                                                   get_answer = get_answer, trial_paradigm = paradigm,
+                                                                                  call_and_response_end = call_and_response_end,
                                                                                   page_text = page_text, page_title = page_title,
                                                                                   long_tone_length = long_tone_length))
 
                                psychTestR::conditional(function(state, ...){
                                  psychTestR::get_global("response_type", state) == "Microphone"
                                }, logic = multi_play_long_tone_record_audio_pages(no_items = num_examples, page_type = "record_audio_page",
+                                                                                  call_and_response_end = call_and_response_end,
                                                                                   example = TRUE, feedback = feedback, get_answer = get_answer, trial_paradigm = paradigm, long_tone_length = long_tone_length))
 
                              } else {
@@ -1213,6 +1217,7 @@ long_tone_trials <- function(num_items,
                                                                        example = TRUE, feedback = feedback, get_answer = get_answer,
                                                                        page_text = page_text, page_title = page_title,
                                                                        trial_paradigm = paradigm,
+                                                                       call_and_response_end = call_and_response_end,
                                                                        long_tone_length = long_tone_length,
                                                                        volume_meter = volume_meter,
                                                                        volume_meter_type = volume_meter_type)
@@ -1230,6 +1235,7 @@ long_tone_trials <- function(num_items,
                                                                  get_answer = get_answer,
                                                                  page_text = page_text,
                                                                  page_title = page_title,
+                                                                 call_and_response_end = call_and_response_end,
                                                                  show_progress = show_progress,
                                                                  trial_paradigm = paradigm,
                                                                  long_tone_length = long_tone_length,

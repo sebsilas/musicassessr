@@ -24,11 +24,12 @@ long_tone_trials(
   paradigm = c("simultaneous_recall", "call_and_response"),
   long_tone_length = 5,
   volume_meter = FALSE,
-  volume_meter_type = "default"
+  volume_meter_type = "default",
+  call_and_response_end = "manual"
 )
 }
 \arguments{
-\item{volume_meter_type}{}
+\item{call_and_response_end}{}
 }
 \description{
 Present a block of long tone trials

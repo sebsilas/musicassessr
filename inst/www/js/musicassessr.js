@@ -750,11 +750,13 @@ function showRecordingIcon() {
 
 function hideRecordingIcon() {
   let rec_icon = document.getElementById("recordingIcon");
-  if (rec_icon.style.display === "none") {
-    rec_icon.style.display = "block";
-   } else {
-    rec_icon.style.display = "none";
-   }
+  if (rec_icon) {  // Check if rec_icon is defined
+    if (rec_icon.style.display === "none") {
+      rec_icon.style.display = "block";
+    } else {
+      rec_icon.style.display = "none";
+    }
+  }
 }
 
 

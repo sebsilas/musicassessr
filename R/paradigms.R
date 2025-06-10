@@ -69,7 +69,7 @@ paradigm <- function(paradigm_type = c("call_and_response", "simultaneous_recall
     if(call_and_response_end == "manual") {
       trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, attempts_left = attempts_left, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
     } else if(call_and_response_end == "auto") {
-      trigger_end_of_stimulus_fun <- record_triggers(record = "start", page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds, attempts_left = attempts_left, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
+      trigger_end_of_stimulus_fun <- record_triggers(record = "start", show_stop = FALSE, page_type = page_type, stop_recording_after_x_seconds = stop_recording_after_x_seconds, attempts_left = attempts_left, stimuli_type = stimuli_type, asynchronous_api_mode = asynchronous_api_mode, feedback = feedback)
     } else {
       stop('call_and_response_end not understood')
     }
@@ -155,6 +155,7 @@ record_triggers <- function(record = c("start", "stop"),
       instantiate_midi_fun <- paste0('instantiateMIDI(\"',midi_device,'\", false, ', TRUE_to_js_true(mute_midi_playback), ');')
       funs <- paste0(funs, instantiate_midi_fun)
     }
+
 
     funs <- paste0(funs, stop_recording_after)
 

@@ -116,7 +116,7 @@ play_long_tone_record_audio_page <- function(note = NULL,
 
   trial_paradigm <- match.arg(trial_paradigm)
   call_and_response_end <- match.arg(call_and_response_end)
-  paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, stop_recording_after_x_seconds = long_tone_length * 1000)
+  paradigm <- paradigm(paradigm_type = trial_paradigm, page_type = page_type, call_and_response_end = call_and_response_end, stop_recording_after_x_seconds = long_tone_length)
 
   if(trial_paradigm == "simultaneous_recall") {
   } else if(trial_paradigm == "call_and_response") {

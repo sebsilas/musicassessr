@@ -67,7 +67,7 @@ get_longitudinal_session_items <- function(participant_number, num_test_session)
   p_items <- pbet_hmtm_longitudunal_study_matrix %>%
     dplyr::filter(participant_no == !! participant_number)
 
-  if(num_test_session == 1L) {
+  if(num_test_session %in% c(1L, 6L)) {
     return(p_items)
   } else if(num_test_session == 2L) {
 

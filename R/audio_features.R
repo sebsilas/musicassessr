@@ -33,6 +33,12 @@ extract_audio_features <- function(audio_file_path) {
 
   # Extract spectral features
   spec <- seewave::spec(audio, plot = FALSE, fftw = F)
+
+  if(anyNA(spec[, "x"])) {
+    logging::logwarn("Removing NAs from x")
+    spec <- spec[!is.na(spec[, "x"]), ]
+  }
+
   spec_prop <- seewave::specprop(spec)
   spec_df <- as.data.frame(t(spec_prop))
 
@@ -48,7 +54,8 @@ extract_audio_features <- function(audio_file_path) {
     tempo_df,
     ecoacoustics_df) %>%
     dplyr::mutate(file_key = basename(audio_file_path)) %>%
-    dplyr::relocate(file_key)
+    dplyr::relocate(file_key) %>%
+    dplyr::mutate(dplyr::across(dplyr::where(is.list), ~ purrr::map_dbl(., as.numeric)))
 
   return(features_df)
 }

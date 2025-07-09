@@ -258,7 +258,6 @@ learn_test_pbet_sampler <- function(no_trials) {
 
     }
     if(!is.scalar.na(highest_reading_note)) {
-
       item_bank_filtered <- item_bank_filtered %>%
         dplyr::filter(highest_note < highest_reading_note)
 

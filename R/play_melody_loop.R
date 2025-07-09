@@ -887,7 +887,6 @@ present_melody <- function(stimuli,
           old_additional <- jsonlite::fromJSON(old_additional)
         }
         if(length(additional) > 0L) {
-          browser()
           additional <- c(old_additional, additional)
         }
       }

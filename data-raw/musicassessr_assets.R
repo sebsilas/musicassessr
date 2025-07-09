@@ -158,5 +158,5 @@ document()
 
 credentials::set_github_pat()
 
-install()
+#install()
 

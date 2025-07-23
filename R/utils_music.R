@@ -151,3 +151,12 @@ set_default_range <- function(instrument) {
 
 
 
+is_rhythmic <- function(melody_durations) {
+
+  if(is.scalar.character(melody_durations)) {
+    melody_durations <- itembankr::str_mel_to_vector(melody_durations)
+  }
+
+  return(!var(melody_durations) == 0)
+
+}

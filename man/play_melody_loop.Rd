@@ -45,7 +45,7 @@ play_melody_loop(
   singing_trial = TRUE,
   phase = c("test", "learn", "review", "example"),
   melody_block_paradigm = c("standard", "sing_melody_first",
-    "learn_phase_visual_display_modality"),
+    "learn_phase_visual_display_modality", "longitudinal_review"),
   melody_trial_paradigm = c("call_and_response", "simultaneous_recall"),
   first_note_message = psychTestR::i18n("first_note_is"),
   transposed_message = psychTestR::i18n("transposed"),
@@ -57,7 +57,8 @@ play_melody_loop(
   start_from_trial_no = NULL,
   pass_items_through_url_parameter = FALSE,
   feedback = FALSE,
-  mute_midi_playback = FALSE
+  mute_midi_playback = FALSE,
+  reactive_vars_to_grab_for_additional = NULL
 )
 }
 \arguments{
@@ -65,7 +66,7 @@ play_melody_loop(
 
 \item{phase}{Can be one of 'learn', 'test', 'review' or 'example'}
 
-\item{mute_midi_playback}{}
+\item{reactive_vars_to_grab_for_additional}{}
 }
 \description{
 Create a psychTestR test loop for having several attempts at playing back a melody.

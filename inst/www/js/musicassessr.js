@@ -750,11 +750,13 @@ function showRecordingIcon() {
 
 function hideRecordingIcon() {
   let rec_icon = document.getElementById("recordingIcon");
-  if (rec_icon.style.display === "none") {
-    rec_icon.style.display = "block";
-   } else {
-    rec_icon.style.display = "none";
-   }
+  if (rec_icon) {  // Check if rec_icon is defined
+    if (rec_icon.style.display === "none") {
+      rec_icon.style.display = "block";
+    } else {
+      rec_icon.style.display = "none";
+    }
+  }
 }
 
 
@@ -1340,7 +1342,33 @@ function appendNextButton(onClick = next_page, id = 'async-feedback') {
 
 // Generalise job grabbing functionality
 
-async function fetchDataApi(triggerWhenDataBack) {
+function moveOnPopup() {
+  // Create the popup element
+    const popup = document.createElement('div');
+    popup.textContent = "Moving you on!";
+    popup.style.position = 'fixed';
+    popup.style.top = '20px';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.backgroundColor = '#333';
+    popup.style.color = '#fff';
+    popup.style.padding = '15px 30px';
+    popup.style.borderRadius = '10px';
+    popup.style.zIndex = 1000;
+    popup.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+
+    // Add the popup to the page
+    document.body.appendChild(popup);
+
+    // Remove it after 5 seconds
+    setTimeout(() => {
+        popup.remove();
+    }, 5000);
+}
+
+async function fetchDataApi(triggerWhenDataBack,
+                            val_to_grab = null,
+                            popupIfPerfect = false) {
 
   console.log('Fetching feedback for ' + file_url);
 
@@ -1370,16 +1398,34 @@ async function fetchDataApi(triggerWhenDataBack) {
       let message;
 
       try {
-        message = JSON.parse(data.message);
+
+         message = JSON.parse(data.message);
+
+         console.log('val_to_grab', val_to_grab);
+         console.log('message', message);
+         console.log('message.feedback', message.feedback);
+
+         let fb;
+
+         if(val_to_grab === null) {
+           fb = message.feedback[0];
+         } else {
+           fb = message.feedback[val_to_grab];
+         }
+
+         if(fb === 1) {
+           moveOnPopup()
+         }
+
+         console.log('fb', fb);
          console.log('message:', message);
-      Shiny.setInputValue("API_DATA_RESPONSE", message.feedback[0]);
+          Shiny.setInputValue("API_DATA_RESPONSE", fb);
+
       } catch (e) {
         message = data.message; // It's just a plain string, not JSON
         console.log('message:', message);
         Shiny.setInputValue("API_DATA_RESPONSE", message);
       }
-
-
 
       stopPolling();
 
@@ -1391,8 +1437,8 @@ async function fetchDataApi(triggerWhenDataBack) {
   }
 }
 
-function pollDataApi(triggerWhenDataBack) {
-  intervalId = setInterval(() => fetchDataApi(triggerWhenDataBack), pollingInterval);
+function pollDataApi(triggerWhenDataBack, val_to_grab = 0, popupIfPerfect = false) {
+  intervalId = setInterval(() => fetchDataApi(triggerWhenDataBack, val_to_grab, popupIfPerfect), pollingInterval);
 }
 
 
@@ -1405,6 +1451,13 @@ function handleFeedbackRhythmBpm() {
 
 function handleFeedbackSNR() {
   console.log('handleFeedbackRhythmSNR!');
+  hideLoader();
+  next_page();
+}
+
+
+function handleFeedbackReflectionParadigm() {
+  console.log('handleFeedbackReflectionParadigm!');
   hideLoader();
   next_page();
 }

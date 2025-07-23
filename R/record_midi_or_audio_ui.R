@@ -46,7 +46,7 @@ record_midi_or_audio_ui <- function(body = "",
     page_text <- shiny::tags$p(page_text)
   }
 
-  attempt <- jsonlite::toJSON(max_goes - attempts_left)
+  attempt <- max_goes - attempts_left
 
   section_progress <- if(reactive_melody_no) paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no) else paste0(psychTestR::i18n("Section_Progress"), ': ', melody_no, "/", total_no_melodies)
 
@@ -61,7 +61,7 @@ record_midi_or_audio_ui <- function(body = "",
 
       # Set attempts
       shiny::tags$script(
-        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', attempt, ');
+        shiny::HTML(paste0('Shiny.setInputValue("attempt", ', jsonlite::toJSON(attempt), ');
                            console.log(\"This is a ', page_type, '\");'))
       ),
 
@@ -75,6 +75,9 @@ record_midi_or_audio_ui <- function(body = "",
       if(!is.scalar.null(db_vars)) set_answer_meta_data_for_db_as_js_vars(db_vars),
 
       if(show_progress) shiny::tags$h4(section_progress),
+
+      # Two checks: a) that it exists, b) that it's actually a relevant number
+      if(length(attempt) > 0L && attempt > 0L) shiny::tags$h4(paste0(psychTestR::i18n("Attempt"), " ", attempt, "/", max_goes)),
 
       shiny::tags$h2(id = "trial_page_title", page_title),
 
@@ -178,20 +181,76 @@ db_var_names <- c("stimuli",
   "pyin_type"
   )
 
+
+
 #' Create a template for db_vars
 #'
 #' @param init_with_time_started
+#' @param trial_time_started
+#' @param trial_paradigm
+#' @param onset
+#' @param pyin_type
+#' @param attempt
+#' @param item_id
+#' @param page_label
+#' @param display_modality
+#' @param phase
+#' @param feedback
+#' @param additional
+#' @param test_id
+#' @param session_id
+#' @param instrument
+#' @param melody_block_paradigm
+#' @param module
+#' @param rhythmic
+#' @param user_id
 #'
 #' @returns
 #' @export
+#'
 #' @examples
-create_db_vars_template <- function(init_with_time_started = TRUE) {
+create_db_vars_template <- function(init_with_time_started = TRUE,
+                                    trial_time_started = Sys.time(),
+                                    trial_paradigm = "call_and_response",
+                                    onset = FALSE,
+                                    pyin_type = "notes",
+                                    attempt = 1L,
+                                    item_id = NULL,
+                                    page_label = NULL,
+                                    display_modality = "auditory",
+                                    phase = "test",
+                                    feedback = FALSE,
+                                    additional = list(),
+                                    test_id = 1L,
+                                    session_id = NULL,
+                                    instrument = NULL,
+                                    melody_block_paradigm = "NA",
+                                    module = "NA",
+                                    rhythmic = TRUE,
+                                    user_id = NULL,
+                                    feedback_type = "opti3") {
+
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)
-  empty_obj$trial_time_started <- Sys.time()
-  empty_obj$trial_paradigm <- "call_and_response"
-  empty_obj$onset <- FALSE
-  empty_obj$pyin_type <- "notes"
-  empty_obj$attempt <- 1L
+  empty_obj$trial_time_started <- trial_time_started
+  empty_obj$trial_paradigm <- trial_paradigm
+  empty_obj$onset <- onset
+  empty_obj$pyin_type <- pyin_type
+  empty_obj$attempt <- attempt
+  empty_obj$item_id <- item_id
+  empty_obj$page_label <- page_label
+  empty_obj$display_modality <- display_modality
+  empty_obj$phase <- phase
+  empty_obj$feedback <- feedback
+  empty_obj$additional <- additional
+  empty_obj$test_id <- test_id
+  empty_obj$session_id <- session_id
+  empty_obj$instrument <- instrument
+  empty_obj$melody_block_paradigm <- melody_block_paradigm
+  empty_obj$module <- module
+  empty_obj$rhythmic <- rhythmic
+  empty_obj$user_id <- user_id
+  empty_obj$feedback_type <- feedback_type
+
   return(empty_obj)
 }
 
@@ -233,8 +292,8 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
     )
   } else if (attempts_left == 1L) {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(shiny::HTML(psychTestR::i18n("happy_with_response_message"))),
-                    shiny::tags$p(psychTestR::i18n("attempts_remaining_1")),
+                    if(!max_goes_forced) shiny::tags$p(shiny::HTML(psychTestR::i18n("happy_with_response_message"))),
+                    shiny::tags$p(attempts_remaining_1),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = "Try Again", label = "Try Again", onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = psychTestR::i18n("Continue"), label = psychTestR::i18n("Continue"), onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )
@@ -246,8 +305,8 @@ return_correct_attempts_left <- function(attempts_left, max_goes_forced = FALSE)
     )
   } else {
     shiny::tags$div(id = "happy_with_response", style = "display:none;",
-                    shiny::tags$p(psychTestR::i18n("were_you_happy")),
-                    if(!is.infinite(attempts_left)) shiny::tags$p(paste0(psychTestR::i18n("You_have"), ' ', " ", attempts_left, ' ', psychTestR::i18n("attempts_remaining_if_like"))),
+                    if(!max_goes_forced) shiny::tags$p(psychTestR::i18n("were_you_happy")),
+                    if(!is.infinite(attempts_left)) shiny::tags$p(paste0(psychTestR::i18n("You_have"), ' ', " ", attempts_left, ' ', attempts_remaining_several.2)),
                     shiny::tags$button(psychTestR::i18n("Try_Again"), id = 'Try Again', label = 'Try Again', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button"),
                     if(!max_goes_forced) shiny::tags$button(psychTestR::i18n("Continue"), id = 'Continue', label = 'Continue', onclick = "hide_happy_with_response_message();Shiny.setInputValue('user_satisfied', this.id); next_page();", class="btn btn-default action-button")
     )

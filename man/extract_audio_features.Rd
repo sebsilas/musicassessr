@@ -4,11 +4,28 @@
 \alias{extract_audio_features}
 \title{Extract audio features from an audio file}
 \usage{
-extract_audio_features(audio_file_path)
+extract_audio_features(
+  audio_file_path,
+  reencode_audio_file_to_lame_mp3 = FALSE,
+  reencode_audio_file_to_lame_mp3_verbose = FALSE
+)
 }
 \arguments{
-\item{audio_file_path}{}
+\item{audio_file_path}{Path to the audio file}
+
+\item{reencode_audio_file_to_lame_mp3}{Logical; whether to re-encode the file to MP3}
+
+\item{reencode_audio_file_to_lame_mp3_verbose}{Logical; verbose re-encoding output}
+}
+\value{
+None — this function errors immediately
 }
 \description{
-Extract audio features from an audio file
+\strong{DEPRECATED}: This function has been removed.
+Use \code{itembankr::extract_audio_features()} instead.
+}
+\examples{
+\dontrun{
+extract_audio_features("path/to/audio.wav") # will throw an error
+}
 }

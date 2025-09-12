@@ -227,7 +227,7 @@ create_db_vars_template <- function(init_with_time_started = TRUE,
                                     melody_block_paradigm = "NA",
                                     module = "NA",
                                     rhythmic = TRUE,
-                                    user_id = NA_integer,
+                                    user_id = NA_integer_,
                                     feedback_type = "opti3") {
 
   empty_obj <- setNames(as.list(rep(NA, length(db_var_names))), db_var_names)

@@ -97,7 +97,15 @@ get_musicassessr_state_js_script <- function(asynchronous_api_mode = FALSE) {
       system2(command = "npx", args = "kill-port 3000", wait = TRUE)
     }
 
-    system2(command = "node", args = 'node/app.js', wait = FALSE)
+    if (Sys.which("node") == "") {
+      stop("Node.js is not installed. Please install Node.js and try again.")
+    }
+
+    system2(
+      command = "node",
+      args = "node/app.js",
+      wait = FALSE
+    )
 
     system.file("www/js/musicassessr_test.js", package = "musicassessr")
   }
